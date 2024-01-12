@@ -110,7 +110,9 @@ int CaloAna::Init(PHCompositeNode*)
 
   h_nclusters = new TH1F("h_nclusters", "", 1000, 0, 1000);
 
-
+  // pT differential Inv Mass 
+  h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 1.2);
+  h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass" , "Invariant Mass", 2*64, 0, 64, 100, 0, 1.2);
   return 0;
 }
 
@@ -345,6 +347,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     h_pt1->Fill(photon1.Pt());
     h_pt2->Fill(photon2.Pt());
     h_InvMass->Fill(pi0.M());
+    h_pTdiff_InvMass->Fill(pi0.Pt(),pi0.M());
     if (lt_eta > 95) continue;
     h_mass_eta_lt[lt_eta]->Fill(pi0.M());
   }

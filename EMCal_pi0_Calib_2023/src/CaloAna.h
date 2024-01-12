@@ -60,6 +60,7 @@ class CaloAna : public SubsysReco
   
   TH1F* h_InvMass = nullptr;
   TH1F* h_InvMassMix = nullptr;
+  TH2F* h_pTdiff_InvMass = nullptr;
 
   TH2F* h_cemc_etaphi = nullptr;
   TH2F* h_hcalin_etaphi = nullptr;
