@@ -266,7 +266,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_pt = E_vec_cluster.perp();
     float clus_chisq = recoCluster->get_chi2();
     h_clusE->Fill(clusE);
-    std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
+    //std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
 
     if (clus_chisq > clus_chisq_cut && cutson) continue;
 
