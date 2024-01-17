@@ -114,7 +114,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 1.2);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass" , "Invariant Mass", 2*64, 0, 64, 100, 0, 1.2);
 
-  int funkyCaloStuffcounter=0;
+  funkyCaloStuffcounter=0;
   return 0;
 }
 

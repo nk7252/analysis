@@ -129,6 +129,7 @@ class CaloAna : public SubsysReco
   std::vector<int> m_bbc_type;
   std::vector<int> m_bbc_side;
   int _eventcounter;
+  int funkyCaloStuffcounter;
   int _range = 1;
   float _vz = 0.;
   bool m_vtxCut = false;
