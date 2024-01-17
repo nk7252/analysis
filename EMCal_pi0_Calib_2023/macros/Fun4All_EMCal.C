@@ -78,11 +78,13 @@ void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",i
   rc->set_StringFlag("CDB_GLOBALTAG", "MDC2");
   // // 64 bit timestamp
   rc->set_uint64Flag("TIMESTAMP", runnumber);
-
+  cout << "tag, timestamp done" << endl;
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_TOWERS");
+  cout << "add listfiles to input manager" << endl;
   in->AddListFile(fname);
+  cout << "files added" << endl;
   se->registerInputManager(in);
-
+  cout << "input manager registered" << endl;
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
   std::string OutFile = Form("OUTHIST_iter%d_%s",iter , filename.c_str());
 
