@@ -134,6 +134,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float emcal_hit_threshold = 0.5;  // GeV
 
   // cuts
+  bool cutson = false;
   float maxDr = 1.1;
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
@@ -222,8 +223,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_pt = E_vec_cluster.perp();
     float clus_chisq = recoCluster->get_chi2();
 
-    if (clus_pt < nClus_ptCut) continue;
-    if (clus_chisq > clus_chisq_cut) continue;
+    if (clus_pt < nClus_ptCut && cutson) continue;
+    if (clus_chisq > clus_chisq_cut && cutson) continue;
 
     nClusCount++;
   }
@@ -262,7 +263,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_chisq = recoCluster->get_chi2();
     h_clusE->Fill(clusE);
 
-    if (clus_chisq > clus_chisq_cut) continue;
+    if (clus_chisq > clus_chisq_cut && cutson) continue;
 
     // loop over the towers in the cluster
     RawCluster::TowerConstRange towerCR = recoCluster->get_towers();
@@ -297,7 +298,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   
 
-  if (clus_pt < pt1ClusCut) continue;
+  if (clus_pt < pt1ClusCut && cutson) continue;
 
   for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
   {
@@ -315,8 +316,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus2_pt = E_vec_cluster2.perp();
     float clus2_chisq = recoCluster2->get_chi2();
 
-    if (clus2_pt < pt2ClusCut) continue;
-    if (clus2_chisq > clus_chisq_cut) continue;
+    if (clus2_pt < pt2ClusCut && cutson) continue;
+    if (clus2_chisq > clus_chisq_cut && cutson) continue;
 
     // loop over the towers in the cluster
     RawCluster::TowerConstRange towerCR2 = recoCluster2->get_towers();
@@ -337,12 +338,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     TLorentzVector photon2;
     photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
 
-    if (fabs(clusE - clus2E) / (clusE + clus2E) > maxAlpha) continue;
+    if (fabs(clusE - clus2E) / (clusE + clus2E) > maxAlpha && cutson) continue;
 
-    if (photon1.DeltaR(photon2) > maxDr) continue;
+    if (photon1.DeltaR(photon2) > maxDr && cutson) continue;
 
     TLorentzVector pi0 = photon1 + photon2;
-    if (pi0.Pt() < pi0ptcut) continue;
+    if (pi0.Pt() < pi0ptcut && cutson) continue;
 
     h_pt1->Fill(photon1.Pt());
     h_pt2->Fill(photon2.Pt());
