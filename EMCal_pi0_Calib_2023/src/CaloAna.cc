@@ -290,7 +290,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           hotClus = true;
     }
 
-    if (dynMaskClus && hotClus == true) continue;
+    if (dynMaskClus && hotClus == true && cutson) continue;
 
     h_etaphi_clus->Fill(clus_eta, clus_phi);
 
@@ -334,7 +334,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         if (towerphi == ht_phi[i] && towereta == ht_phi[i]) hotClus2 = true;
       }
     }
-    if (dynMaskClus && hotClus2 == true) continue;
+    if (dynMaskClus && hotClus2 == true && cutson) continue;
 
     TLorentzVector photon2;
     photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
