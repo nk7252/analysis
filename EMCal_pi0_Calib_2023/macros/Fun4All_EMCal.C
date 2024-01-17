@@ -91,6 +91,7 @@ void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",i
 
   if (iter == 0)
   {
+    cout << "creating emcal calib" << endl;
     createLocalEMCalCalibFile(calib_fname.c_str(), runnumber);
     cout << "creating " << calib_fname.c_str() << " and exiting" << endl;
     return;
