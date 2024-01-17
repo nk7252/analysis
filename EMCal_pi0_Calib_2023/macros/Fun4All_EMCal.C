@@ -164,16 +164,16 @@ void createLocalEMCalCalibFile(const string fname, int runNumber)
   std::cout << "calib:GET URL" << std::endl;
   string calibdir = CDBInterface::instance()->getUrl(m_calibName);
   string filePath;
-
+  std::cout << "calib:check calibdir" << std::endl;
   if (!calibdir.empty())
   {
-    std::cout << "calibdir not empty" << std::endl;
+    std::cout << "calib:calibdir not empty" << std::endl;
     filePath = calibdir;
     // cdbttree = new CDBTTree(calibdir);
   }
   else
   {
-    std::cout << "Calibdir maybe empty" << std::endl;
+    std::cout << "calib:Calibdir maybe empty" << std::endl;
     calibdir = CDBInterface::instance()->getUrl(default_time_independent_calib);
 
     if (calibdir.empty())
