@@ -1,4 +1,6 @@
 #include <caloreco/RawClusterPositionCorrection.h>
+#include <caloreco/CaloTowerCalib.h>
+#include <caloreco/RawClusterBuilderTemplate.h>
 
 #include <ffamodules/FlagHandler.h>
 #include <ffamodules/HeadReco.h>
