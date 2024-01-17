@@ -113,6 +113,8 @@ int CaloAna::Init(PHCompositeNode*)
   // pT differential Inv Mass 
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 1.2);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass" , "Invariant Mass", 2*64, 0, 64, 100, 0, 1.2);
+
+  int funkyCaloStuffcounter=0;
   return 0;
 }
 
@@ -195,6 +197,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   if (!clusterContainer)
   {
     std::cout << PHWHERE << "funkyCaloStuff::process_event - Fatal Error - CLUSTER_CEMC node is missing. " << std::endl;
+    funkyCaloStuffcounter++;
     return 0;
   }
 
@@ -263,6 +266,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_pt = E_vec_cluster.perp();
     float clus_chisq = recoCluster->get_chi2();
     h_clusE->Fill(clusE);
+    std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
 
     if (clus_chisq > clus_chisq_cut && cutson) continue;
 
@@ -371,6 +375,7 @@ int CaloAna::End(PHCompositeNode* /*topNode*/)
   outfile->Close();
   delete outfile;
   hm->dumpHistos(outfilename, "UPDATE");
+  std::cout << "funkycounter: " << funkyCaloStuffcounter << std::endl;
   return 0;
 }
 
