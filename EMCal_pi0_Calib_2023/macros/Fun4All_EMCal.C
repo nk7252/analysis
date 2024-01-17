@@ -173,7 +173,7 @@ void createLocalEMCalCalibFile(const string fname, int runNumber)
   }
   else
   {
-    std::cout << "Calibdir empty" << std::endl;
+    std::cout << "Calibdir maybe empty" << std::endl;
     calibdir = CDBInterface::instance()->getUrl(default_time_independent_calib);
 
     if (calibdir.empty())
