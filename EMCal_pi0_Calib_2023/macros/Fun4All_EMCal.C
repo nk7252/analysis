@@ -161,17 +161,19 @@ void createLocalEMCalCalibFile(const string fname, int runNumber)
 {
   string default_time_independent_calib = "cemc_pi0_twrSlope_v1_default";
   string m_calibName = "cemc_pi0_twrSlope_v1";
-
+  std::cout << "calib:GET URL" << std::endl;
   string calibdir = CDBInterface::instance()->getUrl(m_calibName);
   string filePath;
 
   if (!calibdir.empty())
   {
+    std::cout << "calibdir not empty" << std::endl;
     filePath = calibdir;
     // cdbttree = new CDBTTree(calibdir);
   }
   else
   {
+    std::cout << "Calibdir empty" << std::endl;
     calibdir = CDBInterface::instance()->getUrl(default_time_independent_calib);
 
     if (calibdir.empty())
