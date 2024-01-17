@@ -135,6 +135,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   // cuts
   bool cutson = false;
+  if(cutson){std::cout << "Cuts are on" << std::endl;}else{std::cout << "Cuts are off" << std::endl;}
   float maxDr = 1.1;
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
@@ -231,7 +232,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   h_nclusters->Fill(nClusCount);
 
-  if (nClusCount > max_nClusCount) return Fun4AllReturnCodes::EVENT_OK;
+  if (nClusCount > max_nClusCount&& cutson) return Fun4AllReturnCodes::EVENT_OK;
 
   float pt1ClusCut = 2;  // 1.3
   float pt2ClusCut = 1.3;  // 0.7
