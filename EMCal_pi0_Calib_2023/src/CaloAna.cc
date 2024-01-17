@@ -136,8 +136,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float emcal_hit_threshold = 0.5;  // GeV
 
   // cuts
-  bool cutson = false;
-  if(cutson){std::cout << "Cuts are on" << std::endl;}else{std::cout << "Cuts are off" << std::endl;}
+  bool cutson = true;
+  //if(cutson){std::cout << "Cuts are on" << std::endl;}else{std::cout << "Cuts are off" << std::endl;}
   float maxDr = 1.1;
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
