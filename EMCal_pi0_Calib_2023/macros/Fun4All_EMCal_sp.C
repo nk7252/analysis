@@ -77,6 +77,7 @@ void Fun4All_EMCal_sp(int nevents = 100000, const std::string &fname = "inputdat
 
   //////////////////
   // Clusters
+  /*
   std::cout << "Building clusters" << std::endl;
   RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
   ClusterBuilder->Detector("CEMC");
@@ -87,6 +88,7 @@ void Fun4All_EMCal_sp(int nevents = 100000, const std::string &fname = "inputdat
   ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
   ClusterBuilder->setOutputClusterNodeName("CLUSTERINFO_CEMC2");
   se->registerSubsystem(ClusterBuilder);
+*/
 
 /*
   std::cout << "Applying Position Dependent Correction" << std::endl;
