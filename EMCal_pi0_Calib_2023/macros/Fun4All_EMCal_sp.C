@@ -64,32 +64,6 @@ void Fun4All_EMCal_sp(int nevents = 100000, const std::string &fname = "inputdat
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
   std::string OutFile = Form("OUTHIST_iter_%s",filename.c_str());
 
-
-  ////////////////////
-  // Calibrate towers
-  /*
-  std::cout << "Calibrating EMCal" << std::endl;
-  CaloTowerCalib *calibEMC = new CaloTowerCalib("CEMCCALIB");
-  calibEMC->set_detector_type(CaloTowerDefs::CEMC);
-  calibEMC->set_directURL(calib_fname.c_str());
-  se->registerSubsystem(calibEMC);
-  */
-
-  //////////////////
-  // Clusters
-  /*
-  std::cout << "Building clusters" << std::endl;
-  RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
-  ClusterBuilder->Detector("CEMC");
-  ClusterBuilder->set_threshold_energy(0.20);  // for when using basic calibration
-  std::string emc_prof = getenv("CALIBRATIONROOT");
-  emc_prof += "/EmcProfile/CEMCprof_Thresh30MeV.root";
-  ClusterBuilder->LoadProfile(emc_prof);
-  ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
-  ClusterBuilder->setOutputClusterNodeName("CLUSTERINFO_CEMC2");
-  se->registerSubsystem(ClusterBuilder);
-//*/
-
 /*
   std::cout << "Applying Position Dependent Correction" << std::endl;
   RawClusterPositionCorrection *clusterCorrection = new RawClusterPositionCorrection("CEMC");
