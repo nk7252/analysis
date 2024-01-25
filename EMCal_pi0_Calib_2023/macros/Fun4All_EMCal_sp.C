@@ -32,7 +32,7 @@ R__LOAD_LIBRARY(libffamodules.so)
 #include <caloana/CaloAna.h>
 R__LOAD_LIBRARY(libcaloana.so)
 
-void Fun4All_EMCal_sp(int nevents = 100000, const std::string &fname = "inputdata_sp.txt")
+void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt")
 {
 
   Fun4AllServer *se = Fun4AllServer::instance();
