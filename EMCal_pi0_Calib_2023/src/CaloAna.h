@@ -62,6 +62,10 @@ class CaloAna : public SubsysReco
   TH1F* h_InvMassMix = nullptr;
   TH2F* h_pTdiff_InvMass = nullptr;
 
+  TH1F* h_phidist_InvMass_under200M = nullptr;
+  TH1F* h_phidist_InvMass_over200M = nullptr;
+  // should add truth histos too?
+
   TH2F* h_cemc_etaphi = nullptr;
   TH2F* h_hcalin_etaphi = nullptr;
   TH2F* h_hcalout_etaphi = nullptr;

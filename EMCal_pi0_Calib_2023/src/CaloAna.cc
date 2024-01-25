@@ -114,6 +114,9 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 1.2);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass" , "Invariant Mass", 2*64, 0, 64, 100, 0, 1.2);
 
+  h_phidist_InvMass_under200M=new TH1F("h_phidist_InvMass_under200M", "Delta Phi dist for Inv mass under 200 MeV", 360, -1*TMath::Pi(), 1*TMath::Pi());
+  h_phidist_InvMass_over200M=new TH1F("h_phidist_InvMass_over200M", "Delta Phi dist for Inv mass over 200 MeV", 360, -1*TMath::Pi(), 1*TMath::Pi());
+
   funkyCaloStuffcounter=0;
   return 0;
 }
@@ -355,6 +358,22 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     h_pt1->Fill(photon1.Pt());
     h_pt2->Fill(photon2.Pt());
+
+
+    //maybe need two more histograms for safety. 
+    //is it possible for them to be bent more than 180 from each other?
+    // does it matter here?
+    float dphi = clus_phi - clus2_phi;// for now ensure it is -pi to pi
+	  if (dphi > 3.14159) dphi -= 2*3.14159;
+	  if (dphi < -3.14159) dphi += 2*3.14159;
+
+    if(pi0.M()>0.2){
+      h_phidist_InvMass_over200M->Fill(dphi);
+    }
+    else{
+      h_phidist_InvMass_under200M->Fill(dphi);
+    }
+    
     h_InvMass->Fill(pi0.M());
     h_pTdiff_InvMass->Fill(pi0.Pt(),pi0.M());
     if (lt_eta > 95) continue;
