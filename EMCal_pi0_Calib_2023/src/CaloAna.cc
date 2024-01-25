@@ -305,7 +305,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   
 
-  if (clus_pt < pt1ClusCut || clus_pt > ptClusMax && cutson) continue;
+  if ((clus_pt < pt1ClusCut || clus_pt > ptClusMax) && cutson) continue;
   // || clus_pt > ptClusMax this was in the cuts to data.
   for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
   {
@@ -323,7 +323,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus2_pt = E_vec_cluster2.perp();
     float clus2_chisq = recoCluster2->get_chi2();
 
-    if (clus2_pt < pt2ClusCut || clus2_pt > ptClusMax && cutson) continue;
+    if ((clus2_pt < pt2ClusCut || clus2_pt > ptClusMax) && cutson) continue;
     // || clus2_pt > ptClusMax is found in the data.
     if (clus2_chisq > clus_chisq_cut && cutson) continue;
 
