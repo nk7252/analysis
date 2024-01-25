@@ -142,7 +142,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
   float nClus_ptCut = 0.5;
-  int max_nClusCount = 300;
+  int max_nClusCount = 75;
 
   //----------------------------------get vertex------------------------------------------------------//
 
@@ -166,7 +166,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   vector<float> ht_eta;
   vector<float> ht_phi;
 
-  // if (!m_vtxCut || abs(vtx_z) > _vz)  return Fun4AllReturnCodes::EVENT_OK;
+  //if (!m_vtxCut || abs(vtx_z) > _vz)  return Fun4AllReturnCodes::EVENT_OK;
 
   TowerInfoContainer* towers = findNode::getClass<TowerInfoContainer>(topNode, "TOWERINFO_CALIB_CEMC");
   if (towers)
@@ -237,14 +237,16 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   if (nClusCount > max_nClusCount&& cutson) return Fun4AllReturnCodes::EVENT_OK;
 
-  float pt1ClusCut = 2;  // 1.3
-  float pt2ClusCut = 1.3;  // 0.7
 
-  if (nClusCount > 30)
-  {
-    pt1ClusCut += 1.4 * (nClusCount - 29) / 200.0;
-    pt2ClusCut += 1.4 * (nClusCount - 29) / 200.0;
-  }
+  float ptClusMax = 7;
+  float pt1ClusCut = 1.3;  // 1.3
+  float pt2ClusCut = 0.7;  // 0.7
+
+  //if (nClusCount > 30)// no cluster dependent cut.
+  //{
+  //  pt1ClusCut += 1.4 * (nClusCount - 29) / 200.0;
+  //  pt2ClusCut += 1.4 * (nClusCount - 29) / 200.0;
+  //}
 
   float pi0ptcut = 1.22 * (pt1ClusCut + pt2ClusCut);
 
@@ -303,8 +305,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   
 
-  if (clus_pt < pt1ClusCut && cutson) continue;
-
+  if (clus_pt < pt1ClusCut || clus_pt > ptClusMax && cutson) continue;
+  // || clus_pt > ptClusMax this was in the cuts to data.
   for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
   {
     if (clusterIter == clusterIter2)
@@ -321,7 +323,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus2_pt = E_vec_cluster2.perp();
     float clus2_chisq = recoCluster2->get_chi2();
 
-    if (clus2_pt < pt2ClusCut && cutson) continue;
+    if (clus2_pt < pt2ClusCut || clus2_pt > ptClusMax && cutson) continue;
+    // || clus2_pt > ptClusMax is found in the data.
     if (clus2_chisq > clus_chisq_cut && cutson) continue;
 
     // loop over the towers in the cluster
