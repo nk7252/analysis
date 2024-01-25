@@ -114,8 +114,10 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 1.2);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass" , "Invariant Mass", 2*64, 0, 64, 100, 0, 1.2);
 
-  h_phidist_InvMass_under200M=new TH1F("h_phidist_InvMass_under200M", "Delta Phi dist for Inv mass under 200 MeV", 360, -1*TMath::Pi(), 1*TMath::Pi());
-  h_phidist_InvMass_over200M=new TH1F("h_phidist_InvMass_over200M", "Delta Phi dist for Inv mass over 200 MeV", 360, -1*TMath::Pi(), 1*TMath::Pi());
+  h_Dphidist_InvMass_under200M=new TH1F("h_Dphidist_InvMass_under200M", "Delta Phi dist for Inv mass under 200 MeV", 90, -1*TMath::Pi()/4, 1*TMath::Pi()/4);
+  h_Dphidist_InvMass_over200M=new TH1F("h_Dphidist_InvMass_over200M", "Delta Phi dist for Inv mass over 200 MeV", 90, -1*TMath::Pi()/4, 1*TMath::Pi()/4);
+  h_phidist_InvMass_under200M=new TH1F("h_phidist_InvMass_under200M", "Phi dist for Inv mass under 200 MeV", 360, -2*TMath::Pi(), 2*TMath::Pi());
+  h_phidist_InvMass_over200M=new TH1F("h_phidist_InvMass_over200M", "Phi dist for Inv mass over 200 MeV", 360, -2*TMath::Pi(), 2*TMath::Pi());
 
   funkyCaloStuffcounter=0;
   return 0;
@@ -368,10 +370,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 	  if (dphi < -3.14159) dphi += 2*3.14159;
 
     if(pi0.M()>0.2){
-      h_phidist_InvMass_over200M->Fill(dphi);
+      h_Dphidist_InvMass_over200M->Fill(dphi);
+      h_phidist_InvMass_over200M->Fill(clus_phi);
+      h_phidist_InvMass_over200M->Fill(clus2_phi);
     }
     else{
-      h_phidist_InvMass_under200M->Fill(dphi);
+      h_Dphidist_InvMass_under200M->Fill(dphi);
+      h_phidist_InvMass_under200M->Fill(clus_phi);
+      h_phidist_InvMass_under200M->Fill(clus2_phi);
     }
     
     h_InvMass->Fill(pi0.M());
