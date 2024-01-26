@@ -32,7 +32,7 @@ R__LOAD_LIBRARY(libffamodules.so)
 #include <caloana/CaloAna.h>
 R__LOAD_LIBRARY(libcaloana.so)
 
-void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt")
+void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "G4Hits.list")
 {
 
   Fun4AllServer *se = Fun4AllServer::instance();
@@ -58,8 +58,13 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   rc->set_uint64Flag("TIMESTAMP", runnumber);
 
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_TOWERS");
+  Fun4AllInputManager *intruth = new Fun4AllDstInputManager("DST_TRUTH");
+
   in->AddListFile(fname);
+  intruth->AddListFile(fname_truth);
+
   se->registerInputManager(in);
+  se->registerInputManager(intruth);
 
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
   std::string OutFile = Form("OUTHIST_iter_%s",filename.c_str());

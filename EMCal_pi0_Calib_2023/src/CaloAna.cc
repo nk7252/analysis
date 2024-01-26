@@ -4,9 +4,7 @@
 #include <TLorentzVector.h>
 #include <g4main/PHG4Hit.h>
 #include <g4main/PHG4HitContainer.h>
-
-// G4Truth Includes ?
-//#include <PHG4TruthInfoContainer.h>
+#include <g4main/PHG4Particle.h>
 
 // G4Cells includes
 #include <g4detectors/PHG4Cell.h>
@@ -65,6 +63,8 @@
 #include <ffamodules/CDBInterface.h>
 #include <phool/recoConsts.h>
 
+#include <g4main/PHG4TruthInfoContainer.h>
+
 R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
 
 using namespace std;
@@ -94,7 +94,11 @@ int CaloAna::Init(PHCompositeNode*)
   outfile = new TFile(outfilename.c_str(), "RECREATE");
 
   // correlation plots
-  for (int i = 0; i < 96; i++) h_mass_eta_lt[i] = new TH1F(Form("h_mass_eta_lt%d", i), "", 50, 0, 0.5);
+  for (int i = 0; i < 96; i++)
+  {
+    h_mass_eta_lt[i] = new TH1F(Form("h_mass_eta_lt%d", i), "", 50, 0, 0.5);
+    h_pt_eta[i] = new TH1F(Form("h_pt_eta%d", i), "", 100, 0, 10);
+  }
 
   h_cemc_etaphi = new TH2F("h_cemc_etaphi", "", 96, 0, 96, 256, 0, 256);
 
@@ -112,33 +116,35 @@ int CaloAna::Init(PHCompositeNode*)
   h_pt2 = new TH1F("h_pt2", "", 100, 0, 5);
 
   h_nclusters = new TH1F("h_nclusters", "", 1000, 0, 1000);
+  // Truth histos
+  h_truth_eta = new TH1F("h_truth_eta", "", 100, -1.2, 1.2);
+  h_truth_e = new TH1F("h_truth_e", "", 100, 0, 10);
+  h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 10);
 
-  // pT differential Inv Mass 
+  // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 1.2);
-  h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass" , "Invariant Mass", 2*64, 0, 64, 100, 0, 1.2);
+  h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
+  // high mass tail diagnostic
+  h_Dphidist_InvMass_under200M = new TH1F("h_Dphidist_InvMass_under200M", "Delta Phi dist for Inv mass under 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
+  h_Dphidist_InvMass_over200M = new TH1F("h_Dphidist_InvMass_over200M", "Delta Phi dist for Inv mass over 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
+  h_phidist_InvMass_under200M = new TH1F("h_phidist_InvMass_under200M", "Phi dist for Inv mass under 200 MeV", 360, -2 * TMath::Pi(), 2 * TMath::Pi());
+  h_phidist_InvMass_over200M = new TH1F("h_phidist_InvMass_over200M", "Phi dist for Inv mass over 200 MeV", 360, -2 * TMath::Pi(), 2 * TMath::Pi());
 
-  h_Dphidist_InvMass_under200M=new TH1F("h_Dphidist_InvMass_under200M", "Delta Phi dist for Inv mass under 200 MeV", 90, -1*TMath::Pi()/4, 1*TMath::Pi()/4);
-  h_Dphidist_InvMass_over200M=new TH1F("h_Dphidist_InvMass_over200M", "Delta Phi dist for Inv mass over 200 MeV", 90, -1*TMath::Pi()/4, 1*TMath::Pi()/4);
-  h_phidist_InvMass_under200M=new TH1F("h_phidist_InvMass_under200M", "Phi dist for Inv mass under 200 MeV", 360, -2*TMath::Pi(), 2*TMath::Pi());
-  h_phidist_InvMass_over200M=new TH1F("h_phidist_InvMass_over200M", "Phi dist for Inv mass over 200 MeV", 360, -2*TMath::Pi(), 2*TMath::Pi());
-
-  h_Detadist_InvMass_under200M=new TH1F("h_Detadist_InvMass_under200M", "Delta Eta dist for Inv mass under 200 MeV", 140, -1.2, 1.2);
-  h_Detadist_InvMass_over200M=new TH1F("h_Detadist_InvMass_over200M", "Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
-
+  h_Detadist_InvMass_under200M = new TH1F("h_Detadist_InvMass_under200M", "Delta Eta dist for Inv mass under 200 MeV", 140, -1.2, 1.2);
+  h_Detadist_InvMass_over200M = new TH1F("h_Detadist_InvMass_over200M", "Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
 
   h_etaphidist_combined_InvMass_under200M = new TH2F("h_etaphidist_combined_InvMass_under200M", "p1&2 Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_etaphidist_combined_InvMass_over200M = new TH2F("h_etaphidist_combined_InvMass_over200M", "p1&2 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());//eta used to be 140
+  h_etaphidist_combined_InvMass_over200M = new TH2F("h_etaphidist_combined_InvMass_over200M", "p1&2 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
 
   h_etaphidist_p1_InvMass_under200M = new TH2F("h_etaphidist_p1_InvMass_under200M", "p1 Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_etaphidist_p1_InvMass_over200M = new TH2F("h_etaphidist_p1_InvMass_over200M", "p1 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());//eta used to be 140
+  h_etaphidist_p1_InvMass_over200M = new TH2F("h_etaphidist_p1_InvMass_over200M", "p1 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
   h_etaphidist_p2_InvMass_under200M = new TH2F("h_etaphidist_p2_InvMass_under200M", "p2 Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_etaphidist_p2_InvMass_over200M = new TH2F("h_etaphidist_p2_InvMass_over200M", "p2 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());//eta used to be 140
-
+  h_etaphidist_p2_InvMass_over200M = new TH2F("h_etaphidist_p2_InvMass_over200M", "p2 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
 
   h_pi0etaphidist_InvMass_under200M = new TH2F("h_pi0etaphidist_InvMass_under200M", "pi0 Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_pi0etaphidist_InvMass_over200M = new TH2F("h_pi0etaphidist_InvMass_over200M", "pi0 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());//eta used to be 140
+  h_pi0etaphidist_InvMass_over200M = new TH2F("h_pi0etaphidist_InvMass_over200M", "pi0 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
 
-  funkyCaloStuffcounter=0;
+  funkyCaloStuffcounter = 0;
   return 0;
 }
 
@@ -161,7 +167,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   // cuts
   bool cutson = true;
-  //if(cutson){std::cout << "Cuts are on" << std::endl;}else{std::cout << "Cuts are off" << std::endl;}
+  // if(cutson){std::cout << "Cuts are on" << std::endl;}else{std::cout << "Cuts are off" << std::endl;}
   float maxDr = 1.1;
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
@@ -170,27 +176,30 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   //----------------------------------get vertex------------------------------------------------------//
 
-  GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
-  if (!vertexmap)
-  {
-    // std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
-    std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
-    // return Fun4AllReturnCodes::ABORTRUN;
-  }
   float vtx_z = 0;
-  if (vertexmap && !vertexmap->empty())
+  if (getVtx)
   {
-    GlobalVertex* vtx = vertexmap->begin()->second;
-    if (vtx)
+    GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
+    if (!vertexmap)
     {
-      vtx_z = vtx->get_z();
+      // std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
+      std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
+      // return Fun4AllReturnCodes::ABORTRUN;
+    }
+    if (vertexmap && !vertexmap->empty())
+    {
+      GlobalVertex* vtx = vertexmap->begin()->second;
+      if (vtx)
+      {
+        vtx_z = vtx->get_z();
+      }
     }
   }
 
   vector<float> ht_eta;
   vector<float> ht_phi;
 
-  //if (!m_vtxCut || abs(vtx_z) > _vz)  return Fun4AllReturnCodes::EVENT_OK;
+  // if (!m_vtxCut || abs(vtx_z) > _vz)  return Fun4AllReturnCodes::EVENT_OK;
 
   TowerInfoContainer* towers = findNode::getClass<TowerInfoContainer>(topNode, "TOWERINFO_CALIB_CEMC");
   if (towers)
@@ -217,7 +226,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
   }
 
-  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_CEMC");// changed from CLUSTERINFO_CEMC2
+  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_CEMC");  // changed from CLUSTERINFO_CEMC2
+  // Blair using "CLUSTER_POS_COR_CEMC" now. stay change for now.
   if (!clusterContainer)
   {
     std::cout << PHWHERE << "funkyCaloStuff::process_event - Fatal Error - CLUSTER_CEMC node is missing. " << std::endl;
@@ -259,18 +269,19 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   h_nclusters->Fill(nClusCount);
 
-  if (nClusCount > max_nClusCount&& cutson) return Fun4AllReturnCodes::EVENT_OK;
+  if (nClusCount > max_nClusCount && cutson) return Fun4AllReturnCodes::EVENT_OK;
 
+  float ptMaxCut = 3;  // 7 in data? ** keep this in mind.
 
-  float ptClusMax = 7;
+  // float ptClusMax = 7;
   float pt1ClusCut = 1.3;  // 1.3
   float pt2ClusCut = 0.7;  // 0.7
 
-  //if (nClusCount > 30)// no cluster dependent cut.
+  // if (nClusCount > 30)// no cluster dependent cut.
   //{
-  //  pt1ClusCut += 1.4 * (nClusCount - 29) / 200.0;
-  //  pt2ClusCut += 1.4 * (nClusCount - 29) / 200.0;
-  //}
+  //   pt1ClusCut += 1.4 * (nClusCount - 29) / 200.0;
+  //   pt2ClusCut += 1.4 * (nClusCount - 29) / 200.0;
+  // }
 
   float pi0ptcut = 1.22 * (pt1ClusCut + pt2ClusCut);
 
@@ -292,7 +303,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_pt = E_vec_cluster.perp();
     float clus_chisq = recoCluster->get_chi2();
     h_clusE->Fill(clusE);
-    //std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
+    // std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
 
     if (clus_chisq > clus_chisq_cut && cutson) continue;
 
@@ -320,6 +331,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           hotClus = true;
     }
 
+    if (lt_eta > 95) continue;
+
+    h_pt_eta[lt_eta]->Fill(clus_pt);
+
     if (dynMaskClus && hotClus == true && cutson) continue;
 
     h_etaphi_clus->Fill(clus_eta, clus_phi);
@@ -327,112 +342,131 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     TLorentzVector photon1;
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
 
-  
-
-  if ((clus_pt < pt1ClusCut || clus_pt > ptClusMax) && cutson) continue;
-  // || clus_pt > ptClusMax this was in the cuts to data.
-  for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
-  {
-    if (clusterIter == clusterIter2)
+    if ((clus_pt < pt1ClusCut || clus_pt > ptMaxCut) && cutson) continue;
+    // || clus_pt > ptClusMax this was in the cuts to data.
+    for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
     {
-      continue;
-    }
-    RawCluster* recoCluster2 = clusterIter2->second;
-
-    CLHEP::Hep3Vector E_vec_cluster2 = RawClusterUtility::GetECoreVec(*recoCluster2, vertex);
-
-    float clus2E = E_vec_cluster2.mag();
-    float clus2_eta = E_vec_cluster2.pseudoRapidity();
-    float clus2_phi = E_vec_cluster2.phi();
-    float clus2_pt = E_vec_cluster2.perp();
-    float clus2_chisq = recoCluster2->get_chi2();
-
-    if ((clus2_pt < pt2ClusCut || clus2_pt > ptClusMax) && cutson) continue;
-    // || clus2_pt > ptClusMax is found in the data.
-    if (clus2_chisq > clus_chisq_cut && cutson) continue;
-
-    // loop over the towers in the cluster
-    RawCluster::TowerConstRange towerCR2 = recoCluster2->get_towers();
-    RawCluster::TowerConstIterator toweriter2;
-    bool hotClus2 = false;
-    for (toweriter2 = towerCR2.first; toweriter2 != towerCR2.second; ++toweriter2)
-    {
-      int towereta = m_geometry->get_tower_geometry(toweriter2->first)->get_bineta();
-      int towerphi = m_geometry->get_tower_geometry(toweriter2->first)->get_binphi();
-
-      for (size_t i = 0; i < ht_eta.size(); i++)
+      if (clusterIter == clusterIter2)
       {
-        if (towerphi == ht_phi[i] && towereta == ht_phi[i]) hotClus2 = true;
+        continue;
       }
+      RawCluster* recoCluster2 = clusterIter2->second;
+
+      CLHEP::Hep3Vector E_vec_cluster2 = RawClusterUtility::GetECoreVec(*recoCluster2, vertex);
+
+      float clus2E = E_vec_cluster2.mag();
+      float clus2_eta = E_vec_cluster2.pseudoRapidity();
+      float clus2_phi = E_vec_cluster2.phi();
+      float clus2_pt = E_vec_cluster2.perp();
+      float clus2_chisq = recoCluster2->get_chi2();
+
+      if ((clus2_pt < pt2ClusCut || clus2_pt > ptMaxCut) && cutson) continue;
+      // || clus2_pt > ptClusMax is found in the data.
+      if (clus2_chisq > clus_chisq_cut && cutson) continue;
+      // loop over the towers in the cluster
+      RawCluster::TowerConstRange towerCR2 = recoCluster2->get_towers();
+      RawCluster::TowerConstIterator toweriter2;
+      bool hotClus2 = false;
+      for (toweriter2 = towerCR2.first; toweriter2 != towerCR2.second; ++toweriter2)
+      {
+        int towereta = m_geometry->get_tower_geometry(toweriter2->first)->get_bineta();
+        int towerphi = m_geometry->get_tower_geometry(toweriter2->first)->get_binphi();
+
+        for (size_t i = 0; i < ht_eta.size(); i++)
+        {
+          if (towerphi == ht_phi[i] && towereta == ht_phi[i]) hotClus2 = true;
+        }
+      }
+
+      if (dynMaskClus && hotClus2 == true && cutson) continue;
+
+      TLorentzVector photon2;
+      photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
+
+      if (fabs(clusE - clus2E) / (clusE + clus2E) > maxAlpha && cutson) continue;
+
+      if (photon1.DeltaR(photon2) > maxDr && cutson) continue;
+
+      TLorentzVector pi0 = photon1 + photon2;
+      if (pi0.Pt() < pi0ptcut) continue;
+
+      // maybe need two more histograms for safety.
+      // is it possible for them to be bent more than 180 from each other?
+      //  does it matter here?
+      float dphi = clus_phi - clus2_phi;  // for now ensure it is -pi to pi
+      if (dphi > 3.14159) dphi -= 2 * 3.14159;
+      if (dphi < -3.14159) dphi += 2 * 3.14159;
+
+      float deta = clus_eta - clus2_eta;
+
+      if (pi0.M() > 0.2)
+      {
+        h_Dphidist_InvMass_over200M->Fill(dphi);
+        h_phidist_InvMass_over200M->Fill(clus_phi);
+        h_phidist_InvMass_over200M->Fill(clus2_phi);
+
+        h_Detadist_InvMass_over200M->Fill(deta);
+
+        h_etaphidist_combined_InvMass_over200M->Fill(clus_eta, clus_phi);
+        h_etaphidist_combined_InvMass_over200M->Fill(clus2_eta, clus2_phi);
+        h_etaphidist_p1_InvMass_over200M->Fill(clus_eta, clus_phi);
+        h_etaphidist_p2_InvMass_over200M->Fill(clus2_eta, clus2_phi);
+
+        h_pi0etaphidist_InvMass_over200M->Fill(pi0.Eta(), pi0.Phi());
+      }
+      else
+      {
+        h_Dphidist_InvMass_under200M->Fill(dphi);
+        h_phidist_InvMass_under200M->Fill(clus_phi);
+        h_phidist_InvMass_under200M->Fill(clus2_phi);
+
+        h_Detadist_InvMass_under200M->Fill(deta);
+
+        h_etaphidist_combined_InvMass_under200M->Fill(clus_eta, clus_phi);
+        h_etaphidist_combined_InvMass_under200M->Fill(clus2_eta, clus2_phi);
+        h_etaphidist_p1_InvMass_under200M->Fill(clus_eta, clus_phi);
+        h_etaphidist_p2_InvMass_under200M->Fill(clus2_eta, clus2_phi);
+
+        h_pi0etaphidist_InvMass_under200M->Fill(pi0.Eta(), pi0.Phi());
+      }
+
+      h_pt1->Fill(photon1.Pt());
+      h_pt2->Fill(photon2.Pt());
+      h_pTdiff_InvMass->Fill(pi0.Pt(), pi0.M());
+      h_InvMass->Fill(pi0.M());
+      h_mass_eta_lt[lt_eta]->Fill(pi0.M());
     }
-    if (dynMaskClus && hotClus2 == true && cutson) continue;
+  }  // clus1 loop
 
-    TLorentzVector photon2;
-    photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
+  /////////////////////////////////////////////////
+  //// Truth info
+  float wieght = 1;
+  PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
+  if (truthinfo)
+  {
+    PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
+    for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
+    {
+      // Get truth particle
+      const PHG4Particle* truth = iter->second;
+      if (!truthinfo->is_primary(truth)) continue;
+      TLorentzVector myVector;
+      myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
 
-    if (fabs(clusE - clus2E) / (clusE + clus2E) > maxAlpha && cutson) continue;
+      float energy = myVector.E();
+      h_truth_eta->Fill(myVector.Eta());
+      h_truth_e->Fill(energy, wieght);
+      h_truth_pt->Fill(myVector.Pt());
 
-    if (photon1.DeltaR(photon2) > maxDr && cutson) continue;
-
-    TLorentzVector pi0 = photon1 + photon2;
-    if (pi0.Pt() < pi0ptcut && cutson) continue;
-
-    h_pt1->Fill(photon1.Pt());
-    h_pt2->Fill(photon2.Pt());
-
-
-    //maybe need two more histograms for safety. 
-    //is it possible for them to be bent more than 180 from each other?
-    // does it matter here?
-    float dphi = clus_phi - clus2_phi;// for now ensure it is -pi to pi
-	  if (dphi > 3.14159) dphi -= 2*3.14159;
-	  if (dphi < -3.14159) dphi += 2*3.14159;
-
-    float deta = clus_eta - clus2_eta;
-
-    if(pi0.M()>0.2){
-      h_Dphidist_InvMass_over200M->Fill(dphi);
-      h_phidist_InvMass_over200M->Fill(clus_phi);
-      h_phidist_InvMass_over200M->Fill(clus2_phi);
-
-      h_Detadist_InvMass_over200M->Fill(deta);
-
-      h_etaphidist_combined_InvMass_over200M->Fill(clus_eta, clus_phi);
-      h_etaphidist_combined_InvMass_over200M->Fill(clus2_eta, clus2_phi);
-      h_etaphidist_p1_InvMass_over200M->Fill(clus_eta, clus_phi);
-      h_etaphidist_p2_InvMass_over200M->Fill(clus2_eta, clus2_phi);
-
-      h_pi0etaphidist_InvMass_over200M->Fill(pi0.Eta(), pi0.Phi());
-
+      // int id =  truth->get_pid();
+      // std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
     }
-    else{
-      h_Dphidist_InvMass_under200M->Fill(dphi);
-      h_phidist_InvMass_under200M->Fill(clus_phi);
-      h_phidist_InvMass_under200M->Fill(clus2_phi);
-
-      h_Detadist_InvMass_under200M->Fill(deta);
-
-      h_etaphidist_combined_InvMass_under200M->Fill(clus_eta, clus_phi);
-      h_etaphidist_combined_InvMass_under200M->Fill(clus2_eta, clus2_phi);
-      h_etaphidist_p1_InvMass_under200M->Fill(clus_eta, clus_phi);
-      h_etaphidist_p2_InvMass_under200M->Fill(clus2_eta, clus2_phi);
-
-      h_pi0etaphidist_InvMass_under200M->Fill(pi0.Eta(), pi0.Phi());
-    }
-    
-    h_InvMass->Fill(pi0.M());
-    h_pTdiff_InvMass->Fill(pi0.Pt(),pi0.M());
-    if (lt_eta > 95) continue;
-    h_mass_eta_lt[lt_eta]->Fill(pi0.M());
   }
-}  // clus1 loop
 
+  ht_phi.clear();
+  ht_eta.clear();
 
-
-ht_phi.clear();
-ht_eta.clear();
-
-return Fun4AllReturnCodes::EVENT_OK;
+  return Fun4AllReturnCodes::EVENT_OK;
 }
 
 int CaloAna::End(PHCompositeNode* /*topNode*/)
