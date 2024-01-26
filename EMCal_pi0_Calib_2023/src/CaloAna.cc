@@ -388,7 +388,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       h_Detadist_InvMass_over200M->Fill(deta);
 
-      h_etaphidist_InvMass_over200M->Fill(pi0.Eta(), pi0.Phi());
+      h_etaphidist_InvMass_over200M->Fill(clus_eta, clus_phi);
+      h_etaphidist_InvMass_over200M->Fill(clus2_eta, clus2_phi);
 
     }
     else{
@@ -398,7 +399,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       h_Detadist_InvMass_under200M->Fill(deta);
 
-      h_etaphidist_InvMass_under200M->Fill(pi0.Eta(), pi0.Phi());
+      h_etaphidist_InvMass_under200M->Fill(clus_eta, clus_phi);
+      h_etaphidist_InvMass_under200M->Fill(clus2_eta, clus2_phi);
     }
     
     h_InvMass->Fill(pi0.M());
