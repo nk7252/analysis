@@ -163,7 +163,7 @@ class CaloAna : public SubsysReco
   TH1F* h_pt2;
   TH1F* h_nclusters; 
   TH1F* h_mass_eta_lt[96];
-  TH1F* h_pt_eta_lt[96];
+  TH1F* h_pt_eta[96];
   TH1F* h_emcal_e_eta;
   TH1F* h_truth_eta;
   TH1F* h_truth_phi;
