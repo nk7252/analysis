@@ -169,6 +169,7 @@ class CaloAna : public SubsysReco
   TH1F* h_truth_phi;
   TH1F* h_truth_e;
   TH1F* h_truth_pt;
+  TH1F* h_truth_pid;
 
   float target_pi0_mass = 0.145;
 

@@ -120,6 +120,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_eta = new TH1F("h_truth_eta", "", 100, -1.2, 1.2);
   h_truth_e = new TH1F("h_truth_e", "", 100, 0, 10);
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 10);
+  h_truth_pid = new TH1F("h_truth_pid", "", 150, -30, 120);
 
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 1.2);
@@ -458,8 +459,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_truth_e->Fill(energy, wieght);
       h_truth_pt->Fill(myVector.Pt());
 
-      // int id =  truth->get_pid();
-      // std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
+      int id =  truth->get_pid();
+      h_truth_pid->Fill(id);
+      //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
     }
   }
 
