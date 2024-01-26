@@ -450,7 +450,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       // Get truth particle
       const PHG4Particle* truth = iter->second;
-      if (!truthinfo->is_primary(truth)) continue;
+      //if (!truthinfo->is_primary(truth)) continue;// continue if it is not the primary? turn off for now. and see what secondaries there are.
       TLorentzVector myVector;
       myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
 
