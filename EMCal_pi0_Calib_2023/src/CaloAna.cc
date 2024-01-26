@@ -6,7 +6,7 @@
 #include <g4main/PHG4HitContainer.h>
 
 // G4Truth Includes ?
-#include <PHG4TruthInfoContainer.h>
+//#include <PHG4TruthInfoContainer.h>
 
 // G4Cells includes
 #include <g4detectors/PHG4Cell.h>
