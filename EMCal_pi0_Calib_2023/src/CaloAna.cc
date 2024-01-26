@@ -129,6 +129,9 @@ int CaloAna::Init(PHCompositeNode*)
   h_etaphidist_InvMass_under200M = new TH2F("h_etaphidist_InvMass_under200M", "Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
   h_etaphidist_InvMass_over200M = new TH2F("h_etaphidist_InvMass_over200M", "Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());//eta used to be 140
 
+  h_pi0etaphidist_InvMass_under200M = new TH2F("h_pi0etaphidist_InvMass_under200M", "pi0 Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+  h_pi0etaphidist_InvMass_over200M = new TH2F("h_pi0etaphidist_InvMass_over200M", "pi0 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());//eta used to be 140
+
   funkyCaloStuffcounter=0;
   return 0;
 }
@@ -391,6 +394,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_etaphidist_InvMass_over200M->Fill(clus_eta, clus_phi);
       h_etaphidist_InvMass_over200M->Fill(clus2_eta, clus2_phi);
 
+      h_pi0etaphidist_InvMass_over200M->Fill(pi0.Eta(), pi0.Phi());
+
     }
     else{
       h_Dphidist_InvMass_under200M->Fill(dphi);
@@ -401,6 +406,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       h_etaphidist_InvMass_under200M->Fill(clus_eta, clus_phi);
       h_etaphidist_InvMass_under200M->Fill(clus2_eta, clus2_phi);
+
+      h_pi0etaphidist_InvMass_under200M->Fill(pi0.Eta(), pi0.Phi());
     }
     
     h_InvMass->Fill(pi0.M());

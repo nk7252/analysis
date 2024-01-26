@@ -72,8 +72,13 @@ class CaloAna : public SubsysReco
 
   TH2F* h_etaphidist_InvMass_under200M = nullptr;
   TH2F* h_etaphidist_InvMass_over200M = nullptr;
-  // should add truth histos too? h_etaphidist_InvMass_over200M->Draw("COLZ")
-  // h_etaphidist_InvMass_under200M->Draw("COLZ")
+
+  TH2F* h_pi0etaphidist_InvMass_under200M = nullptr;
+  TH2F* h_pi0etaphidist_InvMass_over200M = nullptr;
+  // should add truth histos too? 
+  //h_etaphidist_InvMass_over200M->Draw("LEGO")
+  // h_etaphidist_InvMass_under200M->Draw("LEGO")
+  //gPad->SetLogz()
 
   TH2F* h_cemc_etaphi = nullptr;
   TH2F* h_hcalin_etaphi = nullptr;
