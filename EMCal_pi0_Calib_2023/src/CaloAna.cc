@@ -126,8 +126,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_Detadist_InvMass_over200M=new TH1F("h_Detadist_InvMass_over200M", "Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
 
 
-  h_etaphidist_InvMass_under200M = new TH2F("h_etaphidist_InvMass_under200M", "Eta-Phi dist for Inv mass under 200 MeV", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_etaphidist_InvMass_over200M = new TH2F("h_etaphidist_InvMass_over200M", "Eta-Phi dist for Inv mass over 200 MeV", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+  h_etaphidist_InvMass_under200M = new TH2F("h_etaphidist_InvMass_under200M", "Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+  h_etaphidist_InvMass_over200M = new TH2F("h_etaphidist_InvMass_over200M", "Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());//eta used to be 140
 
   funkyCaloStuffcounter=0;
   return 0;
