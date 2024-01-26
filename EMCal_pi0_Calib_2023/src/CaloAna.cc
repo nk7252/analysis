@@ -450,7 +450,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       // Get truth particle
       const PHG4Particle* truth = iter->second;
-      //if (!truthinfo->is_primary(truth)) continue;// continue if it is not the primary? turn off for now. and see what secondaries there are.
+      if (!truthinfo->is_primary(truth)) continue;// continue if it is not the primary? turn off for now. and see what secondaries there are.
       TLorentzVector myVector;
       myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
 
@@ -463,6 +463,26 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_truth_pid->Fill(id);
       //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
     }
+  // try to see secondaries
+  PHG4TruthInfoContainer::Range ranges = truthinfo->GetSecondaryParticleRange();
+    for (PHG4TruthInfoContainer::ConstIterator iters = ranges.first; iters != ranges.second; ++iters)
+    {
+      // Get truth particle
+      const PHG4Particle* truths = iters->second;
+      
+      //myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+
+      //float energy = myVector.E();
+      //h_truth_eta->Fill(myVector.Eta());
+      //h_truth_e->Fill(energy, wieght);
+      //h_truth_pt->Fill(myVector.Pt());
+
+      int id =  truths->get_pid();
+      h_truth_pid->Fill(id);
+      //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
+    }
+
+
   }
 
   ht_phi.clear();
