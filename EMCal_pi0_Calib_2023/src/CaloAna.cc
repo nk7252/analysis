@@ -5,6 +5,9 @@
 #include <g4main/PHG4Hit.h>
 #include <g4main/PHG4HitContainer.h>
 
+// G4Truth Includes ?
+#include <PHG4TruthInfoContainer.h>
+
 // G4Cells includes
 #include <g4detectors/PHG4Cell.h>
 #include <g4detectors/PHG4CellContainer.h>
@@ -121,6 +124,10 @@ int CaloAna::Init(PHCompositeNode*)
 
   h_Detadist_InvMass_under200M=new TH1F("h_Detadist_InvMass_under200M", "Delta Eta dist for Inv mass under 200 MeV", 140, -1.2, 1.2);
   h_Detadist_InvMass_over200M=new TH1F("h_Detadist_InvMass_over200M", "Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
+
+
+  h_etaphidist_InvMass_under200M = new TH2F("h_etaphidist_InvMass_under200M", "Eta-Phi dist for Inv mass under 200 MeV", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+  h_etaphidist_InvMass_over200M = new TH2F("h_etaphidist_InvMass_over200M", "Eta-Phi dist for Inv mass over 200 MeV", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
 
   funkyCaloStuffcounter=0;
   return 0;
@@ -380,6 +387,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_phidist_InvMass_over200M->Fill(clus2_phi);
 
       h_Detadist_InvMass_over200M->Fill(deta);
+
+      h_etaphidist_InvMass_over200M->Fill(pi0.Eta(), pi0.Phi());
+
     }
     else{
       h_Dphidist_InvMass_under200M->Fill(dphi);
@@ -387,6 +397,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_phidist_InvMass_under200M->Fill(clus2_phi);
 
       h_Detadist_InvMass_under200M->Fill(deta);
+
+      h_etaphidist_InvMass_under200M->Fill(pi0.Eta(), pi0.Phi());
     }
     
     h_InvMass->Fill(pi0.M());
