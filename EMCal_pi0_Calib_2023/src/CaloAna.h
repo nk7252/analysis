@@ -70,8 +70,13 @@ class CaloAna : public SubsysReco
   TH1F* h_Detadist_InvMass_under200M = nullptr;
   TH1F* h_Detadist_InvMass_over200M = nullptr;
 
-  TH2F* h_etaphidist_InvMass_under200M = nullptr;
-  TH2F* h_etaphidist_InvMass_over200M = nullptr;
+  TH2F* h_etaphidist_combined_InvMass_under200M = nullptr;
+  TH2F* h_etaphidist_combined_InvMass_over200M = nullptr;
+
+  TH2F* h_etaphidist_p1_InvMass_under200M = nullptr;
+  TH2F* h_etaphidist_p1_InvMass_over200M = nullptr;
+  TH2F* h_etaphidist_p2_InvMass_under200M = nullptr;
+  TH2F* h_etaphidist_p2_InvMass_over200M = nullptr;
 
   TH2F* h_pi0etaphidist_InvMass_under200M = nullptr;
   TH2F* h_pi0etaphidist_InvMass_over200M = nullptr;
