@@ -78,7 +78,6 @@ CaloAna::CaloAna(const std::string& name, const std::string& filename)
   , outfilename(filename)
 {
   _eventcounter = 0;
-  std::mt19937 rng;  // Mersenne Twister random number generator
   std::random_device rd;  // Obtain a random number from hardware
   rng.seed(rd());         // Seed the generator
 }

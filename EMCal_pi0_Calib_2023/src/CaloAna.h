@@ -50,6 +50,7 @@ class CaloAna : public SubsysReco
   double generateRandomNumber(); // Declaration of the method
 
  protected:
+  std::mt19937 rng;  // Mersenne Twister random number generator
   std::string detector;
   std::string outfilename;
   int Getpeaktime(TH1 *h);
