@@ -526,10 +526,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       // Get truth particle
       const PHG4Particle* truths = iters->second;
-      //TLorentzVector myVector;
-      //myVector.SetXYZM(truths->get_px(), truths->get_py(), truths->get_pz(), 0.13497);
+      TLorentzVector myVector;
+      myVector.SetXYZM(truths->get_px(), truths->get_py(), truths->get_pz(), 0.13497);
        
-      //float energy = myVector.E();
+      float energy = myVector.E();
       //h_truth_eta->Fill(myVector.Eta());
       //h_truth_e->Fill(energy, wieght);
       //h_truth_pt->Fill(myVector.Pt());
