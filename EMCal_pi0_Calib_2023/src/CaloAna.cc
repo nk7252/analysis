@@ -430,10 +430,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_Dphidist_InvMass_over200M->Fill(dphi);
 
 
-        h_phidist_InvMass_under200M[i] 
-        h_etadist_InvMass_under200M[i] 
-        h_etaphidist_InvMass_under200M[i] 
-
         for (size_t i = 0; i < 4; ++i) {//h_phidist_InvMass_under200M.size()
           // For the first three histograms, fill with the corresponding TLorentzVector
           if (i < 3) {
