@@ -48,9 +48,9 @@ class CaloAna : public SubsysReco
   void  fitEtaSlices(std::string infile, std::string outfile,std::string cdbFile);
 
   double generateRandomNumber(); // Declaration of the method
-
- protected:
   std::mt19937 rng;  // Mersenne Twister random number generator
+ protected:
+  
   std::string detector;
   std::string outfilename;
   int Getpeaktime(TH1 *h);
