@@ -18,8 +18,6 @@ class TLorentzVector;
 
 class CaloAna : public SubsysReco
 {
- private:
-  std::mt19937 rng;  // Mersenne Twister random number generator
  public:
   //! constructor
   CaloAna(const std::string &name = "CaloAna", const std::string &fname = "MyNtuple.root");
