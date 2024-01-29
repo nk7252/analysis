@@ -136,7 +136,8 @@ int CaloAna::Init(PHCompositeNode*)
   // high mass tail diagnostic
   std::vector<std::string> HistList={"photon1","photon2","all photons","pions"};
   for(int i=0; i<4;i++){
-    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear:%f",badcalibsmear[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%f",badcalibsmear[i]) 120, 0, 0.6);
+    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmear[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%d",badcalibsmear[i]) 120, 0, 0.6);
+
     // eta and phi distributions
     h_phidist_InvMass_under200M[i] = new TH1F(Form("h_phidist_%s_InvMass_under200M",HistList[i].c_str()), Form("Phi dist for Inv mass under 200 MeV:%s",HistList[i].c_str()) , 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
     h_phidist_InvMass_over200M[i] = new TH1F(Form("h_phidist_%s_InvMass_over200M",HistList[i].c_str()), Form("Phi dist for Inv mass over 200 MeV:%s",HistList[i].c_str()), 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
