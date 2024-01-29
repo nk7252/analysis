@@ -66,20 +66,20 @@ class CaloAna : public SubsysReco
   TH1F* h_InvMass = nullptr;
   TH1F* h_InvMassMix = nullptr;
   TH2F* h_pTdiff_InvMass = nullptr;
-  TH1F* h_InvMass_badcalib_smear[4] = nullptr;
+  TH1F* h_InvMass_badcalib_smear[4];
 
   TH1F* h_Dphidist_InvMass_under200M = nullptr;
   TH1F* h_Dphidist_InvMass_over200M = nullptr;
   TH1F* h_Detadist_InvMass_under200M = nullptr;
   TH1F* h_Detadist_InvMass_over200M = nullptr;
 
-  TH1F* h_phidist_InvMass_under200M[4] = nullptr;
-  TH1F* h_etadist_InvMass_under200M[4] = nullptr;  
-  TH2F* h_etaphidist_InvMass_under200M[4] = nullptr;
+  TH1F* h_phidist_InvMass_under200M[4];
+  TH1F* h_etadist_InvMass_under200M[4];  
+  TH2F* h_etaphidist_InvMass_under200M[4];
 
-  TH1F* h_phidist_InvMass_over200M[4] = nullptr;
-  TH1F* h_etadist_InvMass_over200M[4] = nullptr;
-  TH2F* h_etaphidist_InvMass_over200M[4] = nullptr;
+  TH1F* h_phidist_InvMass_over200M[4];
+  TH1F* h_etadist_InvMass_over200M[4];
+  TH2F* h_etaphidist_InvMass_over200M[4];
   // should add truth histos too? 
   //h_etaphidist_InvMass_over200M->Draw("LEGO")
   // h_etaphidist_InvMass_under200M->Draw("LEGO")
@@ -153,7 +153,7 @@ class CaloAna : public SubsysReco
   std::vector<int> m_bbc_side;
 
   std::vector<int> badcalibsmear;
-
+  std::vector<float> pidcuts;
 
 
   int _eventcounter;
