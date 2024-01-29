@@ -54,10 +54,13 @@
 
 #include <iostream>
 #include <utility>
+#include <vector>
+#include <string>
 #include "TCanvas.h"
 #include "TF1.h"
 #include "TFile.h"
 #include "TH1F.h"
+#include <TMath.h>
 
 #include <cdbobjects/CDBTTree.h>  // for CDBTTree
 #include <ffamodules/CDBInterface.h>
@@ -75,6 +78,8 @@ CaloAna::CaloAna(const std::string& name, const std::string& filename)
   , outfilename(filename)
 {
   _eventcounter = 0;
+  std::random_device rd;  // Obtain a random number from hardware
+  rng.seed(rd());         // Seed the generator
 }
 
 CaloAna::~CaloAna()
@@ -123,27 +128,37 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_pid = new TH1F("h_truth_pid", "", 150, -30, 120);
 
   // pT differential Inv Mass
-  h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 1.2);
+  h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 0.6);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
+
+  // vector for bad calib smearing.
+  badcalibsmear={1,3,5,10};
   // high mass tail diagnostic
-  h_Dphidist_InvMass_under200M = new TH1F("h_Dphidist_InvMass_under200M", "Delta Phi dist for Inv mass under 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
-  h_Dphidist_InvMass_over200M = new TH1F("h_Dphidist_InvMass_over200M", "Delta Phi dist for Inv mass over 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
-  h_phidist_InvMass_under200M = new TH1F("h_phidist_InvMass_under200M", "Phi dist for Inv mass under 200 MeV", 360, -2 * TMath::Pi(), 2 * TMath::Pi());
-  h_phidist_InvMass_over200M = new TH1F("h_phidist_InvMass_over200M", "Phi dist for Inv mass over 200 MeV", 360, -2 * TMath::Pi(), 2 * TMath::Pi());
+  std::vector<std::string> HistList={"photon1","photon2","all photons","pions"};
+  for(int i=0; i<4;i++){
+    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear:%f",badcalibsmear[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%f",badcalibsmear[i]) 120, 0, 0.6);
+    // eta and phi distributions
+    h_phidist_InvMass_under200M[i] = new TH1F(Form("h_phidist_%s_InvMass_under200M",HistList[i]), Form("Phi dist for Inv mass under 200 MeV:%s",HistList[i]) , 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
+    h_phidist_InvMass_over200M[i] = new TH1F(Form("h_phidist_%s_InvMass_over200M",HistList[i]), Form("Phi dist for Inv mass over 200 MeV:%s",HistList[i]), 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
 
-  h_Detadist_InvMass_under200M = new TH1F("h_Detadist_InvMass_under200M", "Delta Eta dist for Inv mass under 200 MeV", 140, -1.2, 1.2);
-  h_Detadist_InvMass_over200M = new TH1F("h_Detadist_InvMass_over200M", "Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
+    h_etadist_InvMass_under200M[i] = new TH1F(Form("h_etadist_%s_InvMass_under200M",HistList[i]),Form("Eta dist for Inv mass under 200 MeV:%s",HistList[i]) , 140, -1.2, 1.2);
+    h_etadist_InvMass_over200M[i] = new TH1F(Form("h_etadist_%s_InvMass_over200M",HistList[i]), Form("Eta dist for Inv mass over 200 MeV:%s",HistList[i]), 140, -1.2, 1.2);
 
-  h_etaphidist_combined_InvMass_under200M = new TH2F("h_etaphidist_combined_InvMass_under200M", "p1&2 Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_etaphidist_combined_InvMass_over200M = new TH2F("h_etaphidist_combined_InvMass_over200M", "p1&2 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
+    // eta-phi distributions
+    h_etaphidist_InvMass_under200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_under200M",HistList[i]),Form("Eta-Phi dist for Inv mass under 200 MeV:%s",HistList[i]) , 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+    h_etaphidist_InvMass_over200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_over200M",HistList[i]),Form("Eta-Phi dist for Inv mass over 200 MeV:%s",HistList[i]) , 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
+  }
+  
+  // dist of deta or dphi
+  h_Dphidist_InvMass_under200M = new TH1F("h_Dphidist_InvMass_under200M","Delta Phi dist for Inv mass under 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
+  h_Dphidist_InvMass_over200M = new TH1F("h_Dphidist_InvMass_over200M","Delta Phi dist for Inv mass over 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
+  h_Detadist_InvMass_under200M = new TH1F("h_Detadist_InvMass_under200M","Delta Eta dist for Inv mass under 200 MeV", 140, -1.2, 1.2);
+  h_Detadist_InvMass_over200M = new TH1F("h_Detadist_InvMass_over200M","Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
 
-  h_etaphidist_p1_InvMass_under200M = new TH2F("h_etaphidist_p1_InvMass_under200M", "p1 Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_etaphidist_p1_InvMass_over200M = new TH2F("h_etaphidist_p1_InvMass_over200M", "p1 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
-  h_etaphidist_p2_InvMass_under200M = new TH2F("h_etaphidist_p2_InvMass_under200M", "p2 Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_etaphidist_p2_InvMass_over200M = new TH2F("h_etaphidist_p2_InvMass_over200M", "p2 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
-
-  h_pi0etaphidist_InvMass_under200M = new TH2F("h_pi0etaphidist_InvMass_under200M", "pi0 Eta-Phi dist for Inv mass under 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_pi0etaphidist_InvMass_over200M = new TH2F("h_pi0etaphidist_InvMass_over200M", "pi0 Eta-Phi dist for Inv mass over 200 MeV", 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
+  std::vector<float> pidcuts ={0.5,1,5,10,20,50};
+  for(int i=0; i<6; i++){
+    h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%d",pidcuts[i]), Form("truth pid cut at %d MeV",pidcuts[i]), 150, -30, 120); 
+  }
 
   funkyCaloStuffcounter = 0;
   return 0;
@@ -297,6 +312,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     CLHEP::Hep3Vector vertex(0, 0, vtx_z);
     CLHEP::Hep3Vector E_vec_cluster = RawClusterUtility::GetECoreVec(*recoCluster, vertex);
+    std::vector<TLorentzVector> pi0gammavec(3);
+    std::vector<TLorentzVector> pi0smearvec(4);// only filled with pions. each is a different level of smearing. smearing level is defined in init(?)
+
 
     float clusE = E_vec_cluster.mag();
     float clus_eta = E_vec_cluster.pseudoRapidity();
@@ -389,6 +407,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       if (photon1.DeltaR(photon2) > maxDr && cutson) continue;
 
       TLorentzVector pi0 = photon1 + photon2;
+      pi0gammavec[0]=photon1;//photon1
+      pi0gammavec[1]=photon2;//photon2
+      pi0gammavec[2]=pi0;//pion
+
       if (pi0.Pt() < pi0ptcut) continue;
 
       // maybe need two more histograms for safety.
@@ -402,39 +424,77 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       if (pi0.M() > 0.2)
       {
-        h_Dphidist_InvMass_over200M->Fill(dphi);
-        h_phidist_InvMass_over200M->Fill(clus_phi);
-        h_phidist_InvMass_over200M->Fill(clus2_phi);
-
+        // need to fix the fill loops 
         h_Detadist_InvMass_over200M->Fill(deta);
+        h_Dphidist_InvMass_over200M->Fill(dphi);
 
-        h_etaphidist_combined_InvMass_over200M->Fill(clus_eta, clus_phi);
-        h_etaphidist_combined_InvMass_over200M->Fill(clus2_eta, clus2_phi);
-        h_etaphidist_p1_InvMass_over200M->Fill(clus_eta, clus_phi);
-        h_etaphidist_p2_InvMass_over200M->Fill(clus2_eta, clus2_phi);
 
-        h_pi0etaphidist_InvMass_over200M->Fill(pi0.Eta(), pi0.Phi());
+        h_phidist_InvMass_under200M[i] 
+        h_etadist_InvMass_under200M[i] 
+        h_etaphidist_InvMass_under200M[i] 
+
+        for (size_t i = 0; i < h_phidist_InvMass_under200M.size(); ++i) {
+          // For the first three histograms, fill with the corresponding TLorentzVector
+          if (i < 3) {
+            //histograms[i]->Fill(tlorentzVectors[i].Phi()); // Example property
+            h_phidist_InvMass_over200M[i]->Fill(pi0gammavec[i].Phi()); 
+            h_etadist_InvMass_over200M[i]->Fill(pi0gammavec[i].Eta()); 
+            // eta-phi distributions
+            h_etaphidist_InvMass_over200M[i]->Fill(pi0gammavec[i].Eta(),pi0gammavec[i].Phi()); 
+          } 
+          // Special case: 4th histogram gets filled with both the 1st and 2nd TLorentzVectors
+          else if (i == 3) {
+            //ph1
+            h_phidist_InvMass_over200M[i]->Fill(pi0gammavec[0].Phi()); 
+            h_etadist_InvMass_over200M[i]->Fill(pi0gammavec[0].Eta()); 
+            // eta-phi distributions
+            h_etaphidist_InvMass_over200M[i]->Fill(pi0gammavec[0].Eta(),pi0gammavec[0].Phi()); 
+            //ph2
+            h_phidist_InvMass_over200M[i]->Fill(pi0gammavec[1].Phi()); 
+            h_etadist_InvMass_over200M[i]->Fill(pi0gammavec[1].Eta()); 
+            // eta-phi distributions
+            h_etaphidist_InvMass_over200M[i]->Fill(pi0gammavec[1].Eta(),pi0gammavec[1].Phi()); 
+          }
+        }
       }
       else
       {
-        h_Dphidist_InvMass_under200M->Fill(dphi);
-        h_phidist_InvMass_under200M->Fill(clus_phi);
-        h_phidist_InvMass_under200M->Fill(clus2_phi);
-
         h_Detadist_InvMass_under200M->Fill(deta);
+        h_Dphidist_InvMass_under200M->Fill(dphi);
 
-        h_etaphidist_combined_InvMass_under200M->Fill(clus_eta, clus_phi);
-        h_etaphidist_combined_InvMass_under200M->Fill(clus2_eta, clus2_phi);
-        h_etaphidist_p1_InvMass_under200M->Fill(clus_eta, clus_phi);
-        h_etaphidist_p2_InvMass_under200M->Fill(clus2_eta, clus2_phi);
-
-        h_pi0etaphidist_InvMass_under200M->Fill(pi0.Eta(), pi0.Phi());
+       for (size_t i = 0; i < h_phidist_InvMass_under200M.size(); ++i) {
+          // For the first three histograms, fill with the corresponding TLorentzVector
+          if (i < 3) {
+            //histograms[i]->Fill(tlorentzVectors[i].Phi()); // Example property
+            h_phidist_InvMass_under200M[i]->Fill(pi0gammavec[i].Phi()); 
+            h_etadist_InvMass_under200M[i]->Fill(pi0gammavec[i].Eta()); 
+            // eta-phi distributions
+            h_etaphidist_InvMass_under200M[i]->Fill(pi0gammavec[i].Eta(),pi0gammavec[i].Phi()); 
+          } 
+          // Special case: 4th histogram gets filled with both the 1st and 2nd TLorentzVectors
+          else if (i == 3) {
+            //ph1
+            h_phidist_InvMass_under200M[i]->Fill(pi0gammavec[0].Phi()); 
+            h_etadist_InvMass_under200M[i]->Fill(pi0gammavec[0].Eta()); 
+            // eta-phi distributions
+            h_etaphidist_InvMass_under200M[i]->Fill(pi0gammavec[0].Eta(),pi0gammavec[0].Phi()); 
+            //ph2
+            h_phidist_InvMass_under200M[i]->Fill(pi0gammavec[1].Phi()); 
+            h_etadist_InvMass_under200M[i]->Fill(pi0gammavec[1].Eta()); 
+            // eta-phi distributions
+            h_etaphidist_InvMass_under200M[i]->Fill(pi0gammavec[1].Eta(),pi0gammavec[1].Phi()); 
+          }
+        }
       }
 
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
       h_pTdiff_InvMass->Fill(pi0.Pt(), pi0.M());
       h_InvMass->Fill(pi0.M());
+      for(int i=0; i<4; i++){
+        pi0smearvec[i]=photon1*(generateRandomNumber()*badcalibsmear[i]+1)+photon2*(generateRandomNumber()*badcalibsmear[i]+1);
+        h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[i].M());
+      }
       h_mass_eta_lt[lt_eta]->Fill(pi0.M());
     }
   }  // clus1 loop
@@ -469,16 +529,25 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       // Get truth particle
       const PHG4Particle* truths = iters->second;
-      
-      //myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
-
-      //float energy = myVector.E();
+      TLorentzVector myVector;
+      myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+       
+      float energy = myVector.E();
       //h_truth_eta->Fill(myVector.Eta());
       //h_truth_e->Fill(energy, wieght);
       //h_truth_pt->Fill(myVector.Pt());
 
       int id =  truths->get_pid();
       h_truth_pid->Fill(id);
+
+      for(int i=0; i<6; i++){
+        if(energy>pidcuts[i]){
+          h_truth_pid_cuts[i]->Fill(id);
+        }
+        else{
+          break;
+        }
+      }
       //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
     }
 
@@ -583,4 +652,10 @@ void CaloAna::fitEtaSlices(std::string infile, std::string fitOutFile, std::stri
   cout << "finish fitting suc" << endl;
 
   return;
+}
+
+// Method to generate random numbers
+double generateRandomNumber() {
+    std::normal_distribution<double> dist(0.0, 1.0);// mean 0, sigma 1
+    return dist(rng);
 }

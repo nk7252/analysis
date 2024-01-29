@@ -64,22 +64,16 @@ class CaloAna : public SubsysReco
 
   TH1F* h_Dphidist_InvMass_under200M = nullptr;
   TH1F* h_Dphidist_InvMass_over200M = nullptr;
-  TH1F* h_phidist_InvMass_under200M = nullptr;
-  TH1F* h_phidist_InvMass_over200M = nullptr;
-
   TH1F* h_Detadist_InvMass_under200M = nullptr;
   TH1F* h_Detadist_InvMass_over200M = nullptr;
 
-  TH2F* h_etaphidist_combined_InvMass_under200M = nullptr;
-  TH2F* h_etaphidist_combined_InvMass_over200M = nullptr;
+  TH1F* h_phidist_InvMass_under200M[4] = nullptr;
+  TH1F* h_etadist_InvMass_under200M[4] = nullptr;  
+  TH2F* h_etaphidist_InvMass_under200M[4] = nullptr;
 
-  TH2F* h_etaphidist_p1_InvMass_under200M = nullptr;
-  TH2F* h_etaphidist_p1_InvMass_over200M = nullptr;
-  TH2F* h_etaphidist_p2_InvMass_under200M = nullptr;
-  TH2F* h_etaphidist_p2_InvMass_over200M = nullptr;
-
-  TH2F* h_pi0etaphidist_InvMass_under200M = nullptr;
-  TH2F* h_pi0etaphidist_InvMass_over200M = nullptr;
+  TH1F* h_phidist_InvMass_over200M[4] = nullptr;
+  TH1F* h_etadist_InvMass_over200M[4] = nullptr;
+  TH2F* h_etaphidist_InvMass_over200M[4] = nullptr;
   // should add truth histos too? 
   //h_etaphidist_InvMass_over200M->Draw("LEGO")
   // h_etaphidist_InvMass_under200M->Draw("LEGO")
@@ -170,6 +164,7 @@ class CaloAna : public SubsysReco
   TH1F* h_truth_e;
   TH1F* h_truth_pt;
   TH1F* h_truth_pid;
+  TH1F* h_truth_pid_cuts[6];
 
   float target_pi0_mass = 0.145;
 
