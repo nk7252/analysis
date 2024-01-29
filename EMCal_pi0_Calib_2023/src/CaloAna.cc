@@ -653,7 +653,7 @@ void CaloAna::fitEtaSlices(std::string infile, std::string fitOutFile, std::stri
 }
 
 // Method to generate random numbers
-double generateRandomNumber() {
+double CaloAna::generateRandomNumber() {
     std::normal_distribution<double> dist(0.0, 1.0);// mean 0, sigma 1
     return dist(rng);
 }
