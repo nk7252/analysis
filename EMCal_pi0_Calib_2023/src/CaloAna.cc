@@ -490,7 +490,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_pTdiff_InvMass->Fill(pi0.Pt(), pi0.M());
       h_InvMass->Fill(pi0.M());
       for(int i=0; i<4; i++){
-        pi0smearvec[i]=photon1*(generateRandomNumber()*badcalibsmear[i]+1)+photon2*(generateRandomNumber()*badcalibsmear[i]+1);
+        pi0smearvec[i]=photon1*((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1)+photon2*((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1);
         h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[i].M());
       }
       h_mass_eta_lt[lt_eta]->Fill(pi0.M());
