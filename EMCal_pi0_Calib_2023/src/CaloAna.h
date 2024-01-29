@@ -18,6 +18,8 @@ class TLorentzVector;
 
 class CaloAna : public SubsysReco
 {
+ private:
+  std::mt19937 rng;  // Mersenne Twister random number generator
  public:
   //! constructor
   CaloAna(const std::string &name = "CaloAna", const std::string &fname = "MyNtuple.root");
@@ -48,9 +50,8 @@ class CaloAna : public SubsysReco
   void  fitEtaSlices(std::string infile, std::string outfile,std::string cdbFile);
 
   double generateRandomNumber(); // Declaration of the method
-  std::mt19937 rng;  // Mersenne Twister random number generator
- protected:
   
+ protected:
   std::string detector;
   std::string outfilename;
   int Getpeaktime(TH1 *h);
