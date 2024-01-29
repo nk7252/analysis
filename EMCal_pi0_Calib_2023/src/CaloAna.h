@@ -3,6 +3,7 @@
 
 #include <fun4all/SubsysReco.h>
 #include <vector>
+#include <random>
 // Forward declarations
 class Fun4AllHistoManager;
 class PHCompositeNode;
@@ -17,6 +18,8 @@ class TLorentzVector;
 
 class CaloAna : public SubsysReco
 {
+ private:
+  std::mt19937 rng;  // Mersenne Twister random number generator
  public:
   //! constructor
   CaloAna(const std::string &name = "CaloAna", const std::string &fname = "MyNtuple.root");
@@ -46,6 +49,8 @@ class CaloAna : public SubsysReco
   std::pair<double, double> fitHistogram(TH1F* h) ;
   void  fitEtaSlices(std::string infile, std::string outfile,std::string cdbFile);
 
+  double generateRandomNumber(); // Declaration of the method
+
  protected:
   std::string detector;
   std::string outfilename;
@@ -61,6 +66,7 @@ class CaloAna : public SubsysReco
   TH1F* h_InvMass = nullptr;
   TH1F* h_InvMassMix = nullptr;
   TH2F* h_pTdiff_InvMass = nullptr;
+  TH1F* h_InvMass_badcalib_smear[4] = nullptr;
 
   TH1F* h_Dphidist_InvMass_under200M = nullptr;
   TH1F* h_Dphidist_InvMass_over200M = nullptr;
@@ -145,6 +151,11 @@ class CaloAna : public SubsysReco
   std::vector<float> m_bbc_energy;
   std::vector<int> m_bbc_type;
   std::vector<int> m_bbc_side;
+
+  std::vector<int> badcalibsmear;
+
+
+
   int _eventcounter;
   int funkyCaloStuffcounter;
   int _range = 1;

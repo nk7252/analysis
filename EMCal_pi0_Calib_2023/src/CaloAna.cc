@@ -138,15 +138,15 @@ int CaloAna::Init(PHCompositeNode*)
   for(int i=0; i<4;i++){
     h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear:%f",badcalibsmear[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%f",badcalibsmear[i]) 120, 0, 0.6);
     // eta and phi distributions
-    h_phidist_InvMass_under200M[i] = new TH1F(Form("h_phidist_%s_InvMass_under200M",HistList[i]), Form("Phi dist for Inv mass under 200 MeV:%s",HistList[i]) , 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
-    h_phidist_InvMass_over200M[i] = new TH1F(Form("h_phidist_%s_InvMass_over200M",HistList[i]), Form("Phi dist for Inv mass over 200 MeV:%s",HistList[i]), 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
+    h_phidist_InvMass_under200M[i] = new TH1F(Form("h_phidist_%s_InvMass_under200M",HistList[i].c_str()), Form("Phi dist for Inv mass under 200 MeV:%s",HistList[i].c_str()) , 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
+    h_phidist_InvMass_over200M[i] = new TH1F(Form("h_phidist_%s_InvMass_over200M",HistList[i].c_str()), Form("Phi dist for Inv mass over 200 MeV:%s",HistList[i].c_str()), 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
 
-    h_etadist_InvMass_under200M[i] = new TH1F(Form("h_etadist_%s_InvMass_under200M",HistList[i]),Form("Eta dist for Inv mass under 200 MeV:%s",HistList[i]) , 140, -1.2, 1.2);
-    h_etadist_InvMass_over200M[i] = new TH1F(Form("h_etadist_%s_InvMass_over200M",HistList[i]), Form("Eta dist for Inv mass over 200 MeV:%s",HistList[i]), 140, -1.2, 1.2);
+    h_etadist_InvMass_under200M[i] = new TH1F(Form("h_etadist_%s_InvMass_under200M",HistList[i].c_str()),Form("Eta dist for Inv mass under 200 MeV:%s",HistList[i].c_str()) , 140, -1.2, 1.2);
+    h_etadist_InvMass_over200M[i] = new TH1F(Form("h_etadist_%s_InvMass_over200M",HistList[i].c_str()), Form("Eta dist for Inv mass over 200 MeV:%s",HistList[i].c_str()), 140, -1.2, 1.2);
 
     // eta-phi distributions
-    h_etaphidist_InvMass_under200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_under200M",HistList[i]),Form("Eta-Phi dist for Inv mass under 200 MeV:%s",HistList[i]) , 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-    h_etaphidist_InvMass_over200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_over200M",HistList[i]),Form("Eta-Phi dist for Inv mass over 200 MeV:%s",HistList[i]) , 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
+    h_etaphidist_InvMass_under200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_under200M",HistList[i].c_str()),Form("Eta-Phi dist for Inv mass under 200 MeV:%s",HistList[i].c_str()) , 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+    h_etaphidist_InvMass_over200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_over200M",HistList[i].c_str()),Form("Eta-Phi dist for Inv mass over 200 MeV:%s",HistList[i].c_str()) , 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
   }
   
   // dist of deta or dphi
@@ -157,7 +157,7 @@ int CaloAna::Init(PHCompositeNode*)
 
   std::vector<float> pidcuts ={0.5,1,5,10,20,50};
   for(int i=0; i<6; i++){
-    h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%d",pidcuts[i]), Form("truth pid cut at %d MeV",pidcuts[i]), 150, -30, 120); 
+    h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
   }
 
   funkyCaloStuffcounter = 0;
@@ -433,7 +433,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_etadist_InvMass_under200M[i] 
         h_etaphidist_InvMass_under200M[i] 
 
-        for (size_t i = 0; i < h_phidist_InvMass_under200M.size(); ++i) {
+        for (size_t i = 0; i < 4; ++i) {//h_phidist_InvMass_under200M.size()
           // For the first three histograms, fill with the corresponding TLorentzVector
           if (i < 3) {
             //histograms[i]->Fill(tlorentzVectors[i].Phi()); // Example property
@@ -462,7 +462,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_Detadist_InvMass_under200M->Fill(deta);
         h_Dphidist_InvMass_under200M->Fill(dphi);
 
-       for (size_t i = 0; i < h_phidist_InvMass_under200M.size(); ++i) {
+       for (size_t i = 0; i < 4; ++i) {
           // For the first three histograms, fill with the corresponding TLorentzVector
           if (i < 3) {
             //histograms[i]->Fill(tlorentzVectors[i].Phi()); // Example property
