@@ -156,8 +156,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_Detadist_InvMass_over200M = new TH1F("h_Detadist_InvMass_over200M","Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
 
   pidcuts ={0.001,0.005,0.01,0.05,0.1,1};//GeV? pretty sure that is the case
-  for(int value : badcalibsmearint){//int i=0; i<6; i++
-    badcalibsmear.push_back(static_cast<float>(value) / 100.0f);
+  for(int i=0; i<6; i++){//size_t i = 0; i < badcalibsmearint.size(); i++
+    badcalibsmear.push_back(static_cast<float>(badcalibsmearint[i]) / 100.0f);
     h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
     h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%d",badcalibsmearint[i]), 120, 0, 0.6);
   }
