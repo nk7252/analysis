@@ -314,7 +314,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     CLHEP::Hep3Vector vertex(0, 0, vtx_z);
     CLHEP::Hep3Vector E_vec_cluster = RawClusterUtility::GetECoreVec(*recoCluster, vertex);
     std::vector<TLorentzVector> pi0gammavec(3);
-    std::vector<TLorentzVector> pi0smearvec(4);// only filled with pions. each is a different level of smearing. smearing level is defined in init(?)
+    std::vector<TLorentzVector> pi0smearvec(6);// only filled with pions. each is a different level of smearing. smearing level is defined in init(?)
 
 
     float clusE = E_vec_cluster.mag();
