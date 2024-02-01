@@ -153,6 +153,7 @@ class CaloAna : public SubsysReco
   std::vector<int> m_bbc_side;
 
   std::vector<float> badcalibsmear;
+  std::vector<int> badcalibsmearint;
   std::vector<float> pidcuts;
 
 
