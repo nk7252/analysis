@@ -133,12 +133,10 @@ int CaloAna::Init(PHCompositeNode*)
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
-  badcalibsmear={0.01,0.03,0.05,0.1};
+  badcalibsmear={0.01,0.03,0.05,0.1,0.5,1.0};
   // high mass tail diagnostic
   std::vector<std::string> HistList={"photon1","photon2","all photons","pions"};
   for(int i=0; i<4;i++){
-    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear_%f",badcalibsmear[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%f",badcalibsmear[i]), 120, 0, 0.6);
-
     // eta and phi distributions
     h_phidist_InvMass_under200M[i] = new TH1F(Form("h_phidist_%s_InvMass_under200M",HistList[i].c_str()), Form("Phi dist for Inv mass under 200 MeV:%s",HistList[i].c_str()) , 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
     h_phidist_InvMass_over200M[i] = new TH1F(Form("h_phidist_%s_InvMass_over200M",HistList[i].c_str()), Form("Phi dist for Inv mass over 200 MeV:%s",HistList[i].c_str()), 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
@@ -160,6 +158,7 @@ int CaloAna::Init(PHCompositeNode*)
   pidcuts ={0.001,0.005,0.01,0.05,0.1,1};//GeV? pretty sure that is the case
   for(int i=0; i<6; i++){
     h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
+    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear_%f",badcalibsmear[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%f",badcalibsmear[i]), 120, 0, 0.6);
   }
 
   funkyCaloStuffcounter = 0;
