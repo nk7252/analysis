@@ -159,7 +159,7 @@ int CaloAna::Init(PHCompositeNode*)
   pidcuts ={0.001,0.005,0.01,0.05,0.1,1};//GeV? pretty sure that is the case
   for(int i=0; i<6; i++){
     h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
-    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear_%f",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%f",badcalibsmearint[i]), 120, 0, 0.6);
+    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%d",badcalibsmearint[i]), 120, 0, 0.6);
   }
 
   funkyCaloStuffcounter = 0;
