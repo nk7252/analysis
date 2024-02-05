@@ -159,7 +159,7 @@ int CaloAna::Init(PHCompositeNode*)
   for(int i=0; i<6; i++){//size_t i = 0; i < badcalibsmearint.size(); i++
     badcalibsmear.push_back(static_cast<float>(badcalibsmearint[i]) / 100.0f);
     h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
-    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied:%d",badcalibsmearint[i]), 120, 0, 0.6);
+    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint[i]), 120, 0, 0.6);
   }
 
   funkyCaloStuffcounter = 0;
@@ -289,7 +289,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   if (nClusCount > max_nClusCount && cutson) return Fun4AllReturnCodes::EVENT_OK;
 
-  float ptMaxCut = 3;  // 7 in data? ** keep this in mind.
+  float ptMaxCut = 7;  // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is 
 
   // float ptClusMax = 7;
   float pt1ClusCut = 1.3;  // 1.3
