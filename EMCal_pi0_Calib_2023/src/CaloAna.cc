@@ -679,6 +679,6 @@ void CaloAna::fitEtaSlices(std::string infile, std::string fitOutFile, std::stri
 double CaloAna::generateRandomNumber() {
     std::normal_distribution<double> dist(0.0, 1.0);// mean 0, sigma 1
     float rand=dist(rng);
-    cout << "test rnd gen code: " << rand << endl;
+    //cout << "test rnd gen code: " << rand << endl;
     return rand;
 }
