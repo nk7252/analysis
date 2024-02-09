@@ -132,7 +132,7 @@ int CaloAna::Init(PHCompositeNode*)
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 0.6);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 120, 0, 0.6);
-  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 10000, 0, 1);
+  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 10000, 0, 1e6);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.

@@ -184,7 +184,7 @@ class CaloAna : public SubsysReco
 
   float target_pi0_mass = 0.145;
   double truth_pt;
-  double WeightScale=1e+7;
+  double WeightScale=1e+14;
   double inv_yield;
 
 };
