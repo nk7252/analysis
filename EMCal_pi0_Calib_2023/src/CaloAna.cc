@@ -432,7 +432,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       /////////////////////////////////////////////////
       //// Truth info
       float wieght = 1;
-      double truth_pt;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
       if (truthinfo)
       {
