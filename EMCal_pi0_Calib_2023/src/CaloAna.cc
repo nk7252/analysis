@@ -489,7 +489,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       double p0 = 1.466;
       double Pt = truth_pt;
       double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
-      inv_yield =  Pt * weight_function; //WeightScale*
+      inv_yield =  WeightScale*Pt * weight_function; //
       std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
       }
 
