@@ -132,7 +132,7 @@ int CaloAna::Init(PHCompositeNode*)
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 0.6);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 120, 0, 0.6);
-  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 10000, 0, 1e6);
+  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 100, 0, 1e13);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
@@ -560,11 +560,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_pionreco_pt->Fill(pi0.Pt());
       h_InvMass->Fill(pi0.M());
       h_inv_yield->Fill(inv_yield);
-      h_InvMass_weighted->Fill(pi0.M(),inv_yield);
+      h_InvMass_weighted->Fill(pi0.M(), inv_yield);
       for(int i=0; i<6; i++){
-        double smear1=((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1);
-        double smear2=((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1);
-        pi0smearvec[i]=photon1*smear1+photon2*smear2;
+        double smear1=( ( generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()) ) + 1 );
+        double smear2=( ( generateRandomNumber()*badcalibsmear[i]/sqrt(photon2.E()) ) + 1 );
+        pi0smearvec[i]= photon1*smear1+photon2*smear2;
         //inv_yield[i]=pi0smearvec[i].pT()*exp(-pi0smearvec[i].pT()/0.3);
         h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[i].M());
         h_InvMass_badcalib_smear_weighted[i]->Fill(pi0smearvec[i].M(), inv_yield);
