@@ -120,6 +120,7 @@ int CaloAna::Init(PHCompositeNode*)
 
   h_pt1 = new TH1F("h_pt1", "", 100, 0, 5);
   h_pt2 = new TH1F("h_pt2", "", 100, 0, 5);
+  h_pionreco_pt = new TH1F("h_pt2", "", 400, 0, 20);
 
   h_nclusters = new TH1F("h_nclusters", "", 1000, 0, 1000);
   // Truth histos
@@ -130,10 +131,12 @@ int CaloAna::Init(PHCompositeNode*)
 
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 0.6);
+  h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 120, 0, 0.6);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
   badcalibsmearint={1,3,5,10,50,100};
+  
   // high mass tail diagnostic
   std::vector<std::string> HistList={"photon1","photon2","all photons","pions"};
   for(int i=0; i<4;i++){
@@ -159,7 +162,9 @@ int CaloAna::Init(PHCompositeNode*)
   for(int i=0; i<6; i++){//size_t i = 0; i < badcalibsmearint.size(); i++
     badcalibsmear.push_back(static_cast<float>(badcalibsmearint[i]) / 100.0f);
     h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
-    h_InvMass_badcalib_smear[i]= new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint[i]), 120, 0, 0.6);
+    h_InvMass_badcalib_smear[i] = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint[i]), 120, 0, 0.6);
+
+    h_InvMass_badcalib_smear_weighted[i] = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %d percent",badcalibsmearint[i]), 120, 0, 0.6);
   }
 
   funkyCaloStuffcounter = 0;
@@ -412,7 +417,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       pi0gammavec[0]=photon1;//photon1
       pi0gammavec[1]=photon2;//photon2
       pi0gammavec[2]=pi0;//pion
-
+      
       if (pi0.Pt() < pi0ptcut) continue;
 
       // maybe need two more histograms for safety.
@@ -423,6 +428,70 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       if (dphi < -3.14159) dphi += 2 * 3.14159;
 
       float deta = clus_eta - clus2_eta;
+
+      /////////////////////////////////////////////////
+      //// Truth info
+      float wieght = 1;
+      double truth_pt;
+      PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
+      if (truthinfo)
+      {
+        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
+        {
+          // Get truth particle
+          const PHG4Particle* truth = iter->second;
+          if (!truthinfo->is_primary(truth)) continue;// continue if it is not the primary? turn off for now. and see what secondaries there are.
+          TLorentzVector myVector;
+          myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+
+          float energy = myVector.E();
+          h_truth_eta->Fill(myVector.Eta());
+          h_truth_e->Fill(energy, wieght);
+          h_truth_pt->Fill(myVector.Pt());
+          truth_pt=myVector.Pt();
+
+          int id =  truth->get_pid();
+          h_truth_pid->Fill(id);
+          //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
+        }
+        // try to see secondaries
+        PHG4TruthInfoContainer::Range ranges = truthinfo->GetSecondaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator iters = ranges.first; iters != ranges.second; ++iters)
+        {
+          // Get truth particle
+          const PHG4Particle* truths = iters->second;
+          TLorentzVector myVector;
+          myVector.SetXYZM(truths->get_px(), truths->get_py(), truths->get_pz(), 0.13497);
+          
+          float energy = myVector.E();
+          //h_truth_eta->Fill(myVector.Eta());
+          //h_truth_e->Fill(energy, wieght);
+          //h_truth_pt->Fill(myVector.Pt());
+
+          int id =  truths->get_pid();
+          h_truth_pid->Fill(id);
+
+          for(int i=0; i<6; i++){
+            if(energy>pidcuts[i]){
+              h_truth_pid_cuts[i]->Fill(id);
+            }
+          }
+          //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
+        }
+      //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
+      double t = 4.5;
+      double w = 0.114;
+      double A = 229.6;
+      double B = 14.43;
+      double n = 8.1028;
+      double m_param = 10.654;
+      double p0 = 1.466;
+      double Pt = truth_pt;
+      double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
+      double inv_yield= WeightScale* Pt * weight_function; 
+
+      }
 
       if (pi0.M() > 0.2)
       {
@@ -488,66 +557,20 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
       h_pTdiff_InvMass->Fill(pi0.Pt(), pi0.M());
+      h_pionreco_pt->Fill(pi0.Pt());
       h_InvMass->Fill(pi0.M());
+      h_InvMass_weighted->Fill(pi0.M(),inv_yield);
       for(int i=0; i<6; i++){
         pi0smearvec[i]=photon1*((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1)+photon2*((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1);
+        //inv_yield[i]=pi0smearvec[i].pT()*exp(-pi0smearvec[i].pT()/0.3);
         h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[i].M());
+        h_InvMass_badcalib_smear_weighted[i]->Fill(pi0smearvec[i].M(),inv_yield);
       }
       h_mass_eta_lt[lt_eta]->Fill(pi0.M());
     }
   }  // clus1 loop
 
-  /////////////////////////////////////////////////
-  //// Truth info
-  float wieght = 1;
-  PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
-  if (truthinfo)
-  {
-    PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
-    for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
-    {
-      // Get truth particle
-      const PHG4Particle* truth = iter->second;
-      if (!truthinfo->is_primary(truth)) continue;// continue if it is not the primary? turn off for now. and see what secondaries there are.
-      TLorentzVector myVector;
-      myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
 
-      float energy = myVector.E();
-      h_truth_eta->Fill(myVector.Eta());
-      h_truth_e->Fill(energy, wieght);
-      h_truth_pt->Fill(myVector.Pt());
-
-      int id =  truth->get_pid();
-      h_truth_pid->Fill(id);
-      //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
-    }
-  // try to see secondaries
-  PHG4TruthInfoContainer::Range ranges = truthinfo->GetSecondaryParticleRange();
-    for (PHG4TruthInfoContainer::ConstIterator iters = ranges.first; iters != ranges.second; ++iters)
-    {
-      // Get truth particle
-      const PHG4Particle* truths = iters->second;
-      TLorentzVector myVector;
-      myVector.SetXYZM(truths->get_px(), truths->get_py(), truths->get_pz(), 0.13497);
-       
-      float energy = myVector.E();
-      //h_truth_eta->Fill(myVector.Eta());
-      //h_truth_e->Fill(energy, wieght);
-      //h_truth_pt->Fill(myVector.Pt());
-
-      int id =  truths->get_pid();
-      h_truth_pid->Fill(id);
-
-      for(int i=0; i<6; i++){
-        if(energy>pidcuts[i]){
-          h_truth_pid_cuts[i]->Fill(id);
-        }
-      }
-      //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
-    }
-
-
-  }
 
   ht_phi.clear();
   ht_eta.clear();

@@ -64,9 +64,11 @@ class CaloAna : public SubsysReco
   TH2F* h_emcal_zdc_correlation = nullptr;
   
   TH1F* h_InvMass = nullptr;
+  TH1F* h_InvMass_weighted = nullptr;
   TH1F* h_InvMassMix = nullptr;
   TH2F* h_pTdiff_InvMass = nullptr;
   TH1F* h_InvMass_badcalib_smear[6];
+  TH1F* h_InvMass_badcalib_smear_weighted[6];
 
   TH1F* h_Dphidist_InvMass_under200M = nullptr;
   TH1F* h_Dphidist_InvMass_over200M = nullptr;
@@ -175,10 +177,12 @@ class CaloAna : public SubsysReco
   TH1F* h_truth_phi;
   TH1F* h_truth_e;
   TH1F* h_truth_pt;
+  TH1F* h_pionreco_pt;
   TH1F* h_truth_pid;
   TH1F* h_truth_pid_cuts[6];
 
   float target_pi0_mass = 0.145;
+  int WeightScale=1e+14;
 
 };
 
