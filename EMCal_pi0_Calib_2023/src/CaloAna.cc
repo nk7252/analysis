@@ -132,7 +132,7 @@ int CaloAna::Init(PHCompositeNode*)
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 0.6);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 120, 0, 0.6);
-  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 1000, 0, 1e3);
+  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 10000, 0, 1);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
@@ -678,5 +678,7 @@ void CaloAna::fitEtaSlices(std::string infile, std::string fitOutFile, std::stri
 // Method to generate random numbers
 double CaloAna::generateRandomNumber() {
     std::normal_distribution<double> dist(0.0, 1.0);// mean 0, sigma 1
-    return dist(rng);
+    float rand=dist(rng);
+    cout << "test rnd gen code: " << rand << endl;
+    return rand;
 }
