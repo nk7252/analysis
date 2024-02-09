@@ -120,7 +120,7 @@ int CaloAna::Init(PHCompositeNode*)
 
   h_pt1 = new TH1F("h_pt1", "", 100, 0, 5);
   h_pt2 = new TH1F("h_pt2", "", 100, 0, 5);
-  h_pionreco_pt = new TH1F("h_pt2", "", 400, 0, 20);
+  h_pionreco_pt = new TH1F("h_pion_pt", "", 400, 0, 20);
 
   h_nclusters = new TH1F("h_nclusters", "", 1000, 0, 1000);
   // Truth histos
@@ -132,6 +132,7 @@ int CaloAna::Init(PHCompositeNode*)
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 0.6);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 120, 0, 0.6);
+  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 1000, 0, 1e10);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
@@ -488,7 +489,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       double p0 = 1.466;
       double Pt = truth_pt;
       double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
-      inv_yield= WeightScale* Pt * weight_function; 
+      inv_yield =  Pt * weight_function; //WeightScale*
 
       }
 
@@ -558,12 +559,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_pTdiff_InvMass->Fill(pi0.Pt(), pi0.M());
       h_pionreco_pt->Fill(pi0.Pt());
       h_InvMass->Fill(pi0.M());
+      h_inv_yield->Fill(inv_yield);
       h_InvMass_weighted->Fill(pi0.M(),inv_yield);
       for(int i=0; i<6; i++){
-        pi0smearvec[i]=photon1*((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1)+photon2*((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1);
+        double smear1=((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1);
+        double smear2=((generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()))+1);
+        pi0smearvec[i]=photon1*smear1+photon2*smear2;
         //inv_yield[i]=pi0smearvec[i].pT()*exp(-pi0smearvec[i].pT()/0.3);
         h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[i].M());
-        h_InvMass_badcalib_smear_weighted[i]->Fill(pi0smearvec[i].M(),inv_yield);
+        h_InvMass_badcalib_smear_weighted[i]->Fill(pi0smearvec[i].M(), inv_yield);
       }
       h_mass_eta_lt[lt_eta]->Fill(pi0.M());
     }
