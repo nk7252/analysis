@@ -132,7 +132,7 @@ int CaloAna::Init(PHCompositeNode*)
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 0.6);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 120, 0, 0.6);
-  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 1000, 0, 1e10);
+  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 1000, 0, 1e3);
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
@@ -490,7 +490,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       double Pt = truth_pt;
       double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
       inv_yield =  Pt * weight_function; //WeightScale*
-
+      std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
       }
 
       if (pi0.M() > 0.2)
