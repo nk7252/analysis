@@ -136,7 +136,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
-  badcalibsmearint={1,3,5,10,50,100};
+  badcalibsmearint={10,12,14,16,18,20};
   
   // high mass tail diagnostic
   std::vector<std::string> HistList={"photon1","photon2","all photons","pions"};
