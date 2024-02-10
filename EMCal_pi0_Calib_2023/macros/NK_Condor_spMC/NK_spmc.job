@@ -1,6 +1,6 @@
 ## condor job file
-## HCalAna.sh is script that runs Fun4All_Calo.C, which is an adaptation of Timothy Rinn's code for calorimeter validation
-## command is $condor_submit NK_HCal_Ana.job
+## NK_spmc.sh is script that runs Fun4All_EMCal_sp.C, which is an adaptation of Blair Seidlitz's code for calorimeter validation/analysis
+## command is $condor_submit NK_spmc.job
 ## from terminal
 
 Universe       = vanilla
@@ -12,12 +12,12 @@ request_cpus   = 1
 request_memory = 2.0GB
 ##request_disk   = 10240k
 
-Initialdir     = /sphenix/u/nkumar/Calo_Validation_Package/macros
-Executable     = $(Initialdir)/HCalAna.sh
-Output         = $(Initialdir)/HCalAna_Output.out
-Error          = $(Initialdir)/HCalAna_Error.err
-Log            = $(Initialdir)/HCalAna_Log.log
+Initialdir     = /sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros
+Executable     = $(Initialdir)/NK_Condor_spMC/NK_spmc.sh
+Output         = $(Initialdir)/NK_Condor_spMC/NK_spmc_Output.out
+Error          = $(Initialdir)/NK_Condor_spMC/NK_spmc_Error.err
+Log            = $(Initialdir)/NK_Condor_spMC/NK_spmc_Log.log
 
-Arguments      = 200
+Arguments      = 200 "inputdata_sp.txt" "G4Hits.list"
 
 Queue

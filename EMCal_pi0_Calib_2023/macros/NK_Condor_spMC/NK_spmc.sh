@@ -9,8 +9,7 @@ fi
 
 n_events="$1"
 inputdata_sp="$2"
-sp_truth_list="$3
-"
+sp_truth_list="$3"
 
 #important setup for path if you are running on condor
 export USER="nkumar -u -n"
@@ -32,6 +31,5 @@ printenv
 cd $baseDir
 
 # Execute the custom ROOT script with arguments
-root -l -q "Fun4All_Calo.C(\"$n_events\",)"
+root -l -q "Fun4All_EMCal_sp.C(\"$n_events\",\"$inputdata_sp\",\"$sp_truth_list\")"
 
-Fun4All_EMCal_sp
