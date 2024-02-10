@@ -120,7 +120,8 @@ int CaloAna::Init(PHCompositeNode*)
 
   h_pt1 = new TH1F("h_pt1", "", 100, 0, 5);
   h_pt2 = new TH1F("h_pt2", "", 100, 0, 5);
-  h_pion_pt = new TH1F("h_pion_pt", "", 400, 0, 20);
+  h_pion_pt = new TH1F("h_pion_pt", "", 400, 0, 14);
+  h_pion_pt_weight = new TH1F("h_pion_pt_weight", "", 400, 0, 14);
 
   h_nclusters = new TH1F("h_nclusters", "", 1000, 0, 1000);
   // Truth histos
@@ -564,6 +565,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_pt2->Fill(photon2.Pt());
       h_pTdiff_InvMass->Fill(pi0.Pt(), pi0.M());
       h_pion_pt->Fill(pi0.Pt());
+      h_pion_pt_weight->Fill(pi0.Pt(),inv_yield);
       h_InvMass->Fill(pi0.M());
       h_inv_yield->Fill(inv_yield);
       h_InvMass_weighted->Fill(pi0.M(), inv_yield);
