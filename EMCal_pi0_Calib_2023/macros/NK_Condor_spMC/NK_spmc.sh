@@ -32,5 +32,5 @@ printenv
 cd $baseDir
 
 # Execute the custom ROOT script with arguments
-root -l -q "Fun4All_EMCal_sp.C(\"$n_events\",\"$inputdata_sp\",\"$sp_truth_list\")"
+root -l -q "Fun4All_EMCal_sp.C($n_events,\"$inputdata_sp\",\"$sp_truth_list\")"
 
