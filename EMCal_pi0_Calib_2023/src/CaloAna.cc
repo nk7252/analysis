@@ -570,8 +570,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_inv_yield->Fill(inv_yield);
       h_InvMass_weighted->Fill(pi0.M(), inv_yield);
       for(size_t i=0; i<badcalibsmearint.size(); i++){
-        double smear1=( ( generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()) ) + 1 );
-        double smear2=( ( generateRandomNumber()*badcalibsmear[i]/sqrt(photon2.E()) ) + 1 );
+        double smear1=( ( generateRandomNumber()*badcalibsmear[i] ) + 1 );///sqrt(photon1.E())
+        double smear2=( ( generateRandomNumber()*badcalibsmear[i] ) + 1 );///sqrt(photon2.E())
         pi0smearvec[i]= photon1*smear1+photon2*smear2;
         //inv_yield[i]=pi0smearvec[i].pT()*exp(-pi0smearvec[i].pT()/0.3);
         h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[i].M());
