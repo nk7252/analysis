@@ -12,6 +12,11 @@ n_events="$1"
 inputdata_sp="$2"
 sp_truth_list="$3"
 
+#create absolute path for input files
+input_file1="/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/${inputdata_sp}"
+input_file2="/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/${sp_truth_list}"
+
+
 #important setup for path if you are running on condor
 export USER="nkumar -u -n"
 export LOGNAME=${USER}
@@ -31,6 +36,7 @@ echo $baseDir
 printenv
 cd $baseDir
 
+
 # Execute the custom ROOT script with arguments
-root -l -q "Fun4All_EMCal_sp.C($n_events,\"$inputdata_sp\",\"$sp_truth_list\")"
+root -l -q "Fun4All_EMCal_sp.C($n_events,\"$input_file1\",\"$input_file2\")"
 
