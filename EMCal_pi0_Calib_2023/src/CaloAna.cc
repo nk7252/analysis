@@ -136,7 +136,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
-  badcalibsmearint={10,12,14,16,18,20};
+  badcalibsmearint={15,16,17,18,19,20};
   
   // high mass tail diagnostic
   std::vector<std::string> HistList={"photon1","photon2","all photons","pions"};
@@ -490,7 +490,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       double Pt = truth_pt;
       double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
       inv_yield =  WeightScale*Pt * weight_function; //
-      std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
+      //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
       }
 
       if (pi0.M() > 0.2)
