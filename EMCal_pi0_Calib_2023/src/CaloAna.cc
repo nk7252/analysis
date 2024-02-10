@@ -120,8 +120,8 @@ int CaloAna::Init(PHCompositeNode*)
 
   h_pt1 = new TH1F("h_pt1", "", 100, 0, 5);
   h_pt2 = new TH1F("h_pt2", "", 100, 0, 5);
-  h_pion_pt = new TH1F("h_pion_pt", "", 400, 0, 14);
-  h_pion_pt_weight = new TH1F("h_pion_pt_weight", "", 400, 0, 14);
+  h_pion_pt = new TH1F("h_pion_pt", "", 100, 0, 10);
+  h_pion_pt_weight = new TH1F("h_pion_pt_weight", "", 100, 0, 10);
 
   h_nclusters = new TH1F("h_nclusters", "", 1000, 0, 1000);
   // Truth histos
