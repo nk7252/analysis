@@ -18,6 +18,6 @@ Output         = $(Initialdir)/NK_Condor_spMC/NK_spmc_Output.out
 Error          = $(Initialdir)/NK_Condor_spMC/NK_spmc_Error.err
 Log            = $(Initialdir)/NK_Condor_spMC/NK_spmc_Log.log
 
-Arguments      = 200 "inputdata_sp.txt" "G4Hits.list"
+Arguments      = 200 inputdata_sp.txt G4Hits.list
 
 Queue
