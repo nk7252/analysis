@@ -4,7 +4,7 @@
 #the others are const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "G4Hits.list"
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0  <n_events> <inputdata_sp> <sp_truth_list>"
-    echo "Default Usage is: $0  10000 inputdata_sp.txt G4Hits.list"
+    echo "Default Usage is: $0  10000 inputdata_sp.txt g4hits.list"
     exit 1
 fi
 
