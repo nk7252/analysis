@@ -1,0 +1,23 @@
+## condor job file
+## HCalAna.sh is script that runs Fun4All_Calo.C, which is an adaptation of Timothy Rinn's code for calorimeter validation
+## command is $condor_submit NK_HCal_Ana.job
+## from terminal
+
+Universe       = vanilla
+Notification   = Never
+Priority       = 1
+PeriodicHold   = (NumJobStarts>=1 && JobStatus ==1)
+
+request_cpus   = 1
+request_memory = 2.0GB
+##request_disk   = 10240k
+
+Initialdir     = /sphenix/u/nkumar/Calo_Validation_Package/macros
+Executable     = $(Initialdir)/HCalAna.sh
+Output         = $(Initialdir)/HCalAna_Output.out
+Error          = $(Initialdir)/HCalAna_Error.err
+Log            = $(Initialdir)/HCalAna_Log.log
+
+Arguments      = 200
+
+Queue
