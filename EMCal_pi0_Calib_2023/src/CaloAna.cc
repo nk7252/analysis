@@ -136,7 +136,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
-  badcalibsmearint={22,23,24,25,26,27};
+  
   
   // high mass tail diagnostic
   std::vector<std::string> HistList={"photon1","photon2","all photons","pions"};
@@ -160,14 +160,20 @@ int CaloAna::Init(PHCompositeNode*)
   h_Detadist_InvMass_over200M = new TH1F("h_Detadist_InvMass_over200M","Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
 
   pidcuts ={0.001,0.005,0.01,0.05,0.1,1};//GeV? pretty sure that is the case
-  for(int i=0; i<6; i++){//size_t i = 0; i < badcalibsmearint.size(); i++
-    badcalibsmear.push_back(static_cast<float>(badcalibsmearint[i]) / 100.0f);
-    h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
-    h_InvMass_badcalib_smear[i] = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint[i]), 120, 0, 0.6);
 
+  for(int i=0; i<6; i++){
+    h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
+  }
+
+  for(int i=0; i<40; i++){//size_t i = 0; i < badcalibsmearint.size(); i++
+    badcalibsmearint.push_back(i+1);
+    badcalibsmear.push_back(static_cast<float>(badcalibsmearint[i]) / 100.0f);
+
+    h_InvMass_badcalib_smear[i] = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint[i]), 120, 0, 0.6);
     h_InvMass_badcalib_smear_weighted[i] = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %d percent",badcalibsmearint[i]), 120, 0, 0.6);
   }
 
+  
   funkyCaloStuffcounter = 0;
   return 0;
 }
@@ -321,7 +327,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     CLHEP::Hep3Vector vertex(0, 0, vtx_z);
     CLHEP::Hep3Vector E_vec_cluster = RawClusterUtility::GetECoreVec(*recoCluster, vertex);
     std::vector<TLorentzVector> pi0gammavec(3);
-    std::vector<TLorentzVector> pi0smearvec(6);// only filled with pions. each is a different level of smearing. smearing level is defined in init(?)
+    std::vector<TLorentzVector> pi0smearvec(badcalibsmearint.size());// only filled with pions. each is a different level of smearing. smearing level is defined in init(?)
 
 
     float clusE = E_vec_cluster.mag();
@@ -561,7 +567,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_InvMass->Fill(pi0.M());
       h_inv_yield->Fill(inv_yield);
       h_InvMass_weighted->Fill(pi0.M(), inv_yield);
-      for(int i=0; i<6; i++){
+      for(int i=0; i<badcalibsmearint.size(); i++){
         double smear1=( ( generateRandomNumber()*badcalibsmear[i]/sqrt(photon1.E()) ) + 1 );
         double smear2=( ( generateRandomNumber()*badcalibsmear[i]/sqrt(photon2.E()) ) + 1 );
         pi0smearvec[i]= photon1*smear1+photon2*smear2;
