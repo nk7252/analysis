@@ -305,8 +305,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float ptMaxCut = 7;  // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is 
 
   // float ptClusMax = 7;
-  float pt1ClusCut = 2.2;  // centrality dependence cuts 2.2 now // 1.3
-  float pt2ClusCut = 2.2;  // // 0.7
+  float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
+  float pt2ClusCut = 0.7;  // // 0.7
 
   // if (nClusCount > 30)// no cluster dependent cut.
   //{
