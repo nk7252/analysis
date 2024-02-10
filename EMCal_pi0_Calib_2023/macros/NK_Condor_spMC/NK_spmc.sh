@@ -1,10 +1,16 @@
 #!/bin/bash
 
-# Check for the correct number of arguments
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0  <n_runs>"
+# Check for the correct number of arguments. for now only worry about the first
+#the others are const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "G4Hits.list"
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0  <n_events> <inputdata_sp> <sp_truth_list>"
     exit 1
 fi
+
+n_events="$1"
+inputdata_sp="$2"
+sp_truth_list="$3
+"
 
 #important setup for path if you are running on condor
 export USER="nkumar -u -n"
@@ -25,3 +31,7 @@ echo $baseDir
 printenv
 cd $baseDir
 
+# Execute the custom ROOT script with arguments
+root -l -q "Fun4All_Calo.C(\"$n_events\",)"
+
+Fun4All_EMCal_sp
