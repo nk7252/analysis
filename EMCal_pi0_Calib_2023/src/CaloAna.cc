@@ -805,6 +805,44 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       pi0gammavec[0]=photon1;//photon1
       pi0gammavec[1]=photon2;//photon2
       pi0gammavec[2]=pi0;//pion
+      /////////////////////////////////////////////////
+      //// Truth info
+      float wieght = 1;
+      PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
+      if (truthinfo)
+      {
+        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
+        {
+          // Get truth particle
+          const PHG4Particle* truth = iter->second;
+          if (!truthinfo->is_primary(truth)) continue;// continue if it is not the primary? turn off for now. and see what secondaries there are.
+          TLorentzVector myVector;
+          myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+
+          //float energy = myVector.E();
+          //h_truth_eta->Fill(myVector.Eta());
+          //h_truth_e->Fill(energy, wieght);
+          //h_truth_pt->Fill(myVector.Pt());
+          truth_pt=myVector.Pt();
+
+          //int id =  truth->get_pid();
+          //h_truth_pid->Fill(id);
+          //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
+        }
+      //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
+      double t = 4.5;
+      double w = 0.114;
+      double A = 229.6;
+      double B = 14.43;
+      double n = 8.1028;
+      double m_param = 10.654;
+      double p0 = 1.466;
+      double Pt = truth_pt;
+      double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
+      inv_yield =  WeightScale*Pt * weight_function; //
+      //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
+      }
 
       for(size_t i=0; i<badcalibsmearint.size(); i++){
         //std::cout << "smear " << i << "start" <<std::endl;
@@ -835,70 +873,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       //if (photon1.DeltaR(photon2) > maxDr && cutson) continue;      
       //if (pi0.Pt() < pi0ptcut) continue;
 
-      /////////////////////////////////////////////////
-      //// Truth info
-      float wieght = 1;
-      PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
-      if (truthinfo)
-      {
-        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
-        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
-        {
-          // Get truth particle
-          const PHG4Particle* truth = iter->second;
-          if (!truthinfo->is_primary(truth)) continue;// continue if it is not the primary? turn off for now. and see what secondaries there are.
-          TLorentzVector myVector;
-          myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
-
-          float energy = myVector.E();
-          h_truth_eta->Fill(myVector.Eta());
-          h_truth_e->Fill(energy, wieght);
-          h_truth_pt->Fill(myVector.Pt());
-          truth_pt=myVector.Pt();
-
-          int id =  truth->get_pid();
-          h_truth_pid->Fill(id);
-          //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
-        }
-        // try to see secondaries
-        PHG4TruthInfoContainer::Range ranges = truthinfo->GetSecondaryParticleRange();
-        for (PHG4TruthInfoContainer::ConstIterator iters = ranges.first; iters != ranges.second; ++iters)
-        {
-          // Get truth particle
-          const PHG4Particle* truths = iters->second;
-          TLorentzVector myVector;
-          myVector.SetXYZM(truths->get_px(), truths->get_py(), truths->get_pz(), 0.13497);
-          
-          float energy = myVector.E();
-          //h_truth_eta->Fill(myVector.Eta());
-          //h_truth_e->Fill(energy, wieght);
-          //h_truth_pt->Fill(myVector.Pt());
-
-          int id =  truths->get_pid();
-          h_truth_pid->Fill(id);
-
-          for(int i=0; i<6; i++){
-            if(energy>pidcuts[i]){
-              h_truth_pid_cuts[i]->Fill(id);
-            }
-          }
-          //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
-        }
-
-      //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
-      double t = 4.5;
-      double w = 0.114;
-      double A = 229.6;
-      double B = 14.43;
-      double n = 8.1028;
-      double m_param = 10.654;
-      double p0 = 1.466;
-      double Pt = truth_pt;
-      double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
-      inv_yield =  WeightScale*Pt * weight_function; //
-      //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
-      }
-
+      
 
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
