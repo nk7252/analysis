@@ -600,7 +600,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // cuts
   float maxDr = 1.1;
   float maxAlpha = 0.6;
-  //float clus_chisq_cut = 4;
+  float clus_chisq_cut = 4;
   float nClus_ptCut = 0.5;
   int max_nClusCount = 75;
 
