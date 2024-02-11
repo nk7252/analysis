@@ -191,6 +191,7 @@ int CaloAna::process_event(PHCompositeNode* topNode)
 int CaloAna::process_towers(PHCompositeNode* topNode)
 {
   if(additionalsmearing==false){
+  std::cout << "additional smearing is not being added" << std::endl;
 
   
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
@@ -591,6 +592,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   return Fun4AllReturnCodes::EVENT_OK;
   }
   else{
+  std::cout << "additional smearing is being added" << std::endl;
 
   
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
@@ -805,14 +807,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       pi0gammavec[2]=pi0;//pion
 
       for(size_t i=0; i<badcalibsmearint.size(); i++){
+        std::cout << "smear " << i << "start" <<std::endl;
         double smear1=( ( generateRandomNumber()*badcalibsmear[i] ) + 1 );
         double smear2=( ( generateRandomNumber()*badcalibsmear[i] ) + 1 );
         pi0smearvec[0][i]= photon1*smear1;
         pi0smearvec[1][i]= photon2*smear2;
         pi0smearvec[2][i]= pi0smearvec[0][i]+pi0smearvec[1][i];
+        std::cout << "smear " << i << "end" <<std::endl;
         if((pi0smearvec[0][i].Pt() > pt1ClusCut || pi0smearvec[0][i].Pt() < ptMaxCut) && (pi0smearvec[1][i].Pt() > pt2ClusCut || pi0smearvec[1][i].Pt() < ptMaxCut) && fabs(pi0smearvec[0][i].E() - pi0smearvec[1][i].E()) / (pi0smearvec[0][i].E() + pi0smearvec[1][i].E()) < maxAlpha && pi0smearvec[0][i].DeltaR(pi0smearvec[1][i]) < maxDr && pi0smearvec[2][i].Pt() > pi0ptcut){
+          std::cout << "cuts passed for smear" << i <<std::endl;
           h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[2][i].M());
           h_InvMass_badcalib_smear_weighted[i]->Fill(pi0smearvec[2][i].M(), inv_yield);
+          std::cout << "histograms filled" << i <<std::endl;
         }
       }
 
