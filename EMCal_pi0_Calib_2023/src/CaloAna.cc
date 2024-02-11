@@ -600,7 +600,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // cuts
   float maxDr = 1.1;
   float maxAlpha = 0.6;
-  float clus_chisq_cut = 4;
+  //float clus_chisq_cut = 4;
   float nClus_ptCut = 0.5;
   int max_nClusCount = 75;
 
@@ -724,7 +724,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_eta = E_vec_cluster.pseudoRapidity();
     float clus_phi = E_vec_cluster.phi();
     float clus_pt = E_vec_cluster.perp();
-    float clus_chisq = recoCluster->get_chi2();
+    //float clus_chisq = recoCluster->get_chi2();
     h_clusE->Fill(clusE);
     // std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
 
@@ -775,7 +775,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float clus2_eta = E_vec_cluster2.pseudoRapidity();
       float clus2_phi = E_vec_cluster2.phi();
       float clus2_pt = E_vec_cluster2.perp();
-      float clus2_chisq = recoCluster2->get_chi2();
+      //float clus2_chisq = recoCluster2->get_chi2();
 
 
       // loop over the towers in the cluster
