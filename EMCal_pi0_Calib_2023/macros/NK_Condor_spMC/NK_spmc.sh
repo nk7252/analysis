@@ -2,6 +2,8 @@
 
 # Check for the correct number of arguments. for now only worry about the first
 #the others are const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "G4Hits.list"
+#./NK_spmc.sh  100 inputdata_sp.txt g4hits.list
+
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0  <n_events> <inputdata_sp> <sp_truth_list>"
     echo "Default Usage is: $0  10000 inputdata_sp.txt g4hits.list"
