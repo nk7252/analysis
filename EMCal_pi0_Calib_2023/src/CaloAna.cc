@@ -807,7 +807,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       pi0gammavec[2]=pi0;//pion
       /////////////////////////////////////////////////
       //// Truth info
-      float wieght = 1;
+      //float wieght = 1;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
       if (truthinfo)
       {
