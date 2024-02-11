@@ -166,7 +166,7 @@ int CaloAna::Init(PHCompositeNode*)
     h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
   }
 
-  for(int i=0; i<40; i++){//size_t i = 0; i < badcalibsmearint.size(); i++
+  for(int i=0; i<smearitt; i++){//size_t i = 0; i < badcalibsmearint.size(); i++
     badcalibsmearint.push_back(i+1);
     badcalibsmear.push_back(static_cast<float>(badcalibsmearint[i]) / 100.0f);
 
@@ -594,7 +594,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   else{
   std::cout << "additional smearing is being added" << std::endl;
 
-  
+  if ((_eventcounter % 10) == 0) std::cout << _eventcounter << std::endl;
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
 
   float emcal_hit_threshold = 0.5;  // GeV
@@ -815,10 +815,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         pi0smearvec[2][i]= pi0smearvec[0][i]+pi0smearvec[1][i];
         //std::cout << "smear " << i << "end" <<std::endl;
         if((pi0smearvec[0][i].Pt() > pt1ClusCut || pi0smearvec[0][i].Pt() < ptMaxCut) && (pi0smearvec[1][i].Pt() > pt2ClusCut || pi0smearvec[1][i].Pt() < ptMaxCut) && fabs(pi0smearvec[0][i].E() - pi0smearvec[1][i].E()) / (pi0smearvec[0][i].E() + pi0smearvec[1][i].E()) < maxAlpha && pi0smearvec[0][i].DeltaR(pi0smearvec[1][i]) < maxDr && pi0smearvec[2][i].Pt() > pi0ptcut){
-          std::cout << "cuts passed for smear " << i <<std::endl;
+          //std::cout << "cuts passed for smear " << i <<std::endl;
           h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[2][i].M());
           h_InvMass_badcalib_smear_weighted[i]->Fill(pi0smearvec[2][i].M(), inv_yield);
-          std::cout << "histograms filled for " << i <<std::endl;
+          //std::cout << "histograms filled for " << i <<std::endl;
         }
       }
 
