@@ -809,36 +809,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       //// Truth info
       //float wieght = 1;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
-      if (truthinfo)
-      {
-        //PHG4Particle* particle = truthinfo->GetParticle( track_j->get_truth_track_id() );
-        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
-        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
-        {
-          // Get truth particle
-          const PHG4Particle* truth = iter->second;// You may ask yourself, why second?
-          // In C++ the iterator is a map, which has two members
-          // first is the key (analogous the index of an arry),
-          // second is the value (analogous to the value stored for the array index)
-          std::cout << "track id " << truth->get_track_id() <<std::endl;
-          if (!truthinfo->is_primary(truth)){
-              std::cout << "was not primary" <<std::endl;
-
-            continue;// continue if it is not the primary?
-          } 
-          TLorentzVector myVector;
-          myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
-
-          //float energy = myVector.E();
-          //h_truth_eta->Fill(myVector.Eta());
-          //h_truth_e->Fill(energy, wieght);
-          //h_truth_pt->Fill(myVector.Pt());
-          truth_pt=myVector.Pt();
-
-          //int id =  truth->get_pid();
-          //h_truth_pid->Fill(id);
-          //std::cout << "id=" << id << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
+      if (truthinfo){
+        PHG4Particle* particle = truthinfo->GetParticle( 1 );
+        //check if this is correct
+        if(particle->get_pid()!=111){
+          std::cout << "track 1 primary pid " << particle->get_pid() <<std::endl;
+          break;
         }
+        TLorentzVector myVector;
+        myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+        truth_pt=myVector.Pt();
+      }
       //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
       double t = 4.5;
       double w = 0.114;
