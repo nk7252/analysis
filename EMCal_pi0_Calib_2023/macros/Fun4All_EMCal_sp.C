@@ -53,7 +53,8 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   cout << "run number = " << runnumber << endl;
 
   // global tag
-  rc->set_StringFlag("CDB_GLOBALTAG", "MDC2");
+  rc->set_StringFlag("CDB_GLOBALTAG","PROD_ana.401");//not sure what this does?
+  //rc->set_StringFlag("CDB_GLOBALTAG", "MDC2");
   // // 64 bit timestamp
   rc->set_uint64Flag("TIMESTAMP", runnumber);
 
