@@ -429,7 +429,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       pi0gammavec[1]=photon2;//photon2
       pi0gammavec[2]=pi0;//pion
       
-      if (pi0.Pt() < pi0ptcut) continue;
+      if (pi0.Pt() < pi0ptcut && cutson) continue;
 
       // maybe need two more histograms for safety.
       // is it possible for them to be bent more than 180 from each other?
