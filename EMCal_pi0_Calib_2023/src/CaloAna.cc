@@ -819,19 +819,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         TLorentzVector myVector;
         myVector.SetXYZM(particle->get_px(), particle->get_py(), particle->get_pz(), 0.13497);
         truth_pt=myVector.Pt();
-      }
-      //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
-      double t = 4.5;
-      double w = 0.114;
-      double A = 229.6;
-      double B = 14.43;
-      double n = 8.1028;
-      double m_param = 10.654;
-      double p0 = 1.466;
-      double Pt = truth_pt;
-      double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
-      inv_yield =  WeightScale*Pt * weight_function; //
-      //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
+        //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
+        double t = 4.5;
+        double w = 0.114;
+        double A = 229.6;
+        double B = 14.43;
+        double n = 8.1028;
+        double m_param = 10.654;
+        double p0 = 1.466;
+        double Pt = truth_pt;
+        double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
+        inv_yield =  WeightScale*Pt * weight_function; //
+        //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
       }
 
       for(size_t i=0; i<badcalibsmearint.size(); i++){
