@@ -162,7 +162,7 @@ class CaloAna : public SubsysReco
 
   int _eventcounter;
   int funkyCaloStuffcounter;
-  bool additionalsmearing = true;
+  bool additionalsmearing = false;
   bool cutson = true;
   int _range = 1;
   float _vz = 0.;
