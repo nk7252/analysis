@@ -595,8 +595,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   std::cout << "additional smearing is being added" << std::endl;
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
 
-  float emcal_hit_threshold = 0.5;  // GeV
-
   // cuts
   float maxDr = 1.1;
   float maxAlpha = 0.6;
