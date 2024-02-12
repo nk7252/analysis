@@ -811,7 +811,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
       if (truthinfo)
       {
-        PHG4Particle* particle = truthinfo->GetParticle( track_j->get_truth_track_id() );
+        //PHG4Particle* particle = truthinfo->GetParticle( track_j->get_truth_track_id() );
         PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
         for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
         {
