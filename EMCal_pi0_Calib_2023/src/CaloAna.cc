@@ -593,8 +593,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   }
   else{
   std::cout << "additional smearing is being added" << std::endl;
-
-  if ((_eventcounter % 10) == 0) std::cout << _eventcounter << std::endl;
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
 
   float emcal_hit_threshold = 0.5;  // GeV
@@ -634,29 +632,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // if (!m_vtxCut || abs(vtx_z) > _vz)  return Fun4AllReturnCodes::EVENT_OK;
 
   TowerInfoContainer* towers = findNode::getClass<TowerInfoContainer>(topNode, "TOWERINFO_CALIB_CEMC");
-  if (towers)
-  {
-    int size = towers->size();  // online towers should be the same!
-    for (int channel = 0; channel < size; channel++)
-    {
-      TowerInfo* tower = towers->get_tower_at_channel(channel);
-      float offlineenergy = tower->get_energy();
-      unsigned int towerkey = towers->encode_key(channel);
-      int ieta = towers->getTowerEtaBin(towerkey);
-      int iphi = towers->getTowerPhiBin(towerkey);
-      bool isGood = !(tower->get_isBadChi2());
-      if (!isGood && offlineenergy > 0.2)
-      {
-        ht_eta.push_back(ieta);
-        ht_phi.push_back(iphi);
-      }
-      if (isGood) h_emcal_e_eta->Fill(ieta, offlineenergy);
-      if (offlineenergy > emcal_hit_threshold)
-      {
-        h_cemc_etaphi->Fill(ieta, iphi);
-      }
-    }
-  }
 
   RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_POS_COR_CEMC");  // changed from CLUSTERINFO_CEMC2
   // Blair using "CLUSTER_POS_COR_CEMC" now. change from CLUSTER_CEMC
@@ -719,7 +694,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     CLHEP::Hep3Vector vertex(0, 0, vtx_z);
     CLHEP::Hep3Vector E_vec_cluster = RawClusterUtility::GetECoreVec(*recoCluster, vertex);
-    std::vector<TLorentzVector> pi0gammavec(3);
     std::vector<std::vector<TLorentzVector>> pi0smearvec(3, std::vector<TLorentzVector>(badcalibsmearint.size()));
 
     float clusE = E_vec_cluster.mag();
@@ -802,9 +776,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       TLorentzVector photon2;
       photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
       TLorentzVector pi0 = photon1 + photon2;
-      pi0gammavec[0]=photon1;//photon1
-      pi0gammavec[1]=photon2;//photon2
-      pi0gammavec[2]=pi0;//pion
       /////////////////////////////////////////////////
       //// Truth info
       //float wieght = 1;
