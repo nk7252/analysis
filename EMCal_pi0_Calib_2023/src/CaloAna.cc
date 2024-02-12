@@ -817,7 +817,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           break;
         }
         TLorentzVector myVector;
-        myVector.SetXYZM(truthinfo->get_px(), truthinfo->get_py(), truthinfo->get_pz(), 0.13497);
+        myVector.SetXYZM(particle->get_px(), particle->get_py(), particle->get_pz(), 0.13497);
         truth_pt=myVector.Pt();
       }
       //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
