@@ -754,7 +754,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       if (clus2_chisq > clus_chisq_cut && cutson) continue;
       TLorentzVector photon2;
       photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
-
+      TLorentzVector pi0 = photon1 + photon2;
 
       pi0smearvec[1]=SmearPhoton4vector(photon2, badcalibsmear);  
 
