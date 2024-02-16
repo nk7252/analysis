@@ -167,9 +167,9 @@ int CaloAna::Init(PHCompositeNode*)
   }
 
 
-  badcalibsmear=static_cast<float>(badcalibsmearint) / 100.0f;
-  h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint), 120, 0, 0.6);
-  h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %d percent",badcalibsmearint), 120, 0, 0.6);
+  badcalibsmear=static_cast<float>(badcalibsmearint) / 1000.0f;
+  h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint/10), 120, 0, 0.6);
+  h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %d percent",badcalibsmearint/10), 120, 0, 0.6);
 
 
   
