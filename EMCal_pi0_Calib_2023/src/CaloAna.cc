@@ -167,7 +167,7 @@ int CaloAna::Init(PHCompositeNode*)
   }
 
 
-  badcalibsmear.push_back(static_cast<float>(badcalibsmearint) / 100.0f);
+  badcalibsmear=static_cast<float>(badcalibsmearint) / 100.0f;
   h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint), 120, 0, 0.6);
   h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %d percent",badcalibsmearint), 120, 0, 0.6);
 
@@ -765,7 +765,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson) continue;
       if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson) continue;     
 
-      TLorentzVector pi0smearvec[2]= pi0smearvec[0]+pi0smearvec[1];
+      pi0smearvec[2]= pi0smearvec[0] + pi0smearvec[1];
       if (pi0smearvec[2].Pt() < pi0ptcut) continue;
 
 
