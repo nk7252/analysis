@@ -49,7 +49,8 @@ class CaloAna : public SubsysReco
   std::pair<double, double> fitHistogram(TH1F* h) ;
   void  fitEtaSlices(std::string infile, std::string outfile,std::string cdbFile);
 
-  double generateRandomNumber(); // Declaration of the method
+  double generateRandomNumber(); 
+  TLorentzVector SmearPhoton4vector(TLorentzVector sourcephoton, double smearfactor);
   
  protected:
   std::string detector;
@@ -67,9 +68,8 @@ class CaloAna : public SubsysReco
   TH1F* h_InvMass_weighted = nullptr;
   TH1F* h_InvMassMix = nullptr;
   TH2F* h_pTdiff_InvMass = nullptr;
-  int smearitt =5;
-  TH1F* h_InvMass_badcalib_smear[5];
-  TH1F* h_InvMass_badcalib_smear_weighted[5];
+  TH1F* h_InvMass_badcalib_smear;
+  TH1F* h_InvMass_badcalib_smear_weighted;
 
   TH1F* h_Dphidist_InvMass_under200M = nullptr;
   TH1F* h_Dphidist_InvMass_over200M = nullptr;
@@ -155,14 +155,14 @@ class CaloAna : public SubsysReco
   std::vector<int> m_bbc_type;
   std::vector<int> m_bbc_side;
 
-  std::vector<float> badcalibsmear;
-  std::vector<int> badcalibsmearint;
+  float badcalibsmear;
+  int badcalibsmearint=4;
   std::vector<float> pidcuts;
 
 
   int _eventcounter;
   int funkyCaloStuffcounter;
-  bool additionalsmearing = false;
+  bool additionalsmearing = true;
   bool cutson = true;
   int _range = 1;
   float _vz = 0.;

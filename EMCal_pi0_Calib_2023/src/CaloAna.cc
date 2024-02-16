@@ -166,13 +166,11 @@ int CaloAna::Init(PHCompositeNode*)
     h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
   }
 
-  for(int i=0; i<smearitt; i++){//size_t i = 0; i < badcalibsmearint.size(); i++
-    badcalibsmearint.push_back(i+1);
-    badcalibsmear.push_back(static_cast<float>(badcalibsmearint[i]) / 100.0f);
 
-    h_InvMass_badcalib_smear[i] = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint[i]), 120, 0, 0.6);
-    h_InvMass_badcalib_smear_weighted[i] = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint[i]), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %d percent",badcalibsmearint[i]), 120, 0, 0.6);
-  }
+  badcalibsmear.push_back(static_cast<float>(badcalibsmearint) / 100.0f);
+  h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %d percent",badcalibsmearint), 120, 0, 0.6);
+  h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %d percent",badcalibsmearint), 120, 0, 0.6);
+
 
   
   funkyCaloStuffcounter = 0;
@@ -331,7 +329,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     CLHEP::Hep3Vector vertex(0, 0, vtx_z);
     CLHEP::Hep3Vector E_vec_cluster = RawClusterUtility::GetECoreVec(*recoCluster, vertex);
     std::vector<TLorentzVector> pi0gammavec(3);
-    std::vector<TLorentzVector> pi0smearvec(badcalibsmearint.size());// only filled with pions. each is a different level of smearing. smearing level is defined in init(?)
 
 
     float clusE = E_vec_cluster.mag();
@@ -572,14 +569,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_InvMass->Fill(pi0.M());
       h_inv_yield->Fill(inv_yield);
       h_InvMass_weighted->Fill(pi0.M(), inv_yield);
-      for(size_t i=0; i<badcalibsmearint.size(); i++){
-        double smear1=( ( generateRandomNumber()*badcalibsmear[i] ) + 1 );///sqrt(photon1.E())
-        double smear2=( ( generateRandomNumber()*badcalibsmear[i] ) + 1 );///sqrt(photon2.E())
-        pi0smearvec[i]= photon1*smear1+photon2*smear2;
-        //inv_yield[i]=pi0smearvec[i].pT()*exp(-pi0smearvec[i].pT()/0.3);
-        h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[i].M());
-        h_InvMass_badcalib_smear_weighted[i]->Fill(pi0smearvec[i].M(), inv_yield);
-      }
+      
       h_mass_eta_lt[lt_eta]->Fill(pi0.M());
     }
   }  // clus1 loop
@@ -692,13 +682,24 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     CLHEP::Hep3Vector vertex(0, 0, vtx_z);
     CLHEP::Hep3Vector E_vec_cluster = RawClusterUtility::GetECoreVec(*recoCluster, vertex);
-    std::vector<std::vector<TLorentzVector>> pi0smearvec(3, std::vector<TLorentzVector>(badcalibsmearint.size()));
+    std::vector<TLorentzVector> pi0smearvec(3);
 
     float clusE = E_vec_cluster.mag();
     float clus_eta = E_vec_cluster.pseudoRapidity();
     float clus_phi = E_vec_cluster.phi();
     float clus_pt = E_vec_cluster.perp();
-    //float clus_chisq = recoCluster->get_chi2();
+    float clus_chisq = recoCluster->get_chi2();
+    if (clus_chisq > clus_chisq_cut && cutson) continue;
+    TLorentzVector photon1;
+    photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
+
+
+    pi0smearvec[0]=SmearPhoton4vector(photon1, badcalibsmear);  
+
+
+    if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson) continue;
+
+
     h_clusE->Fill(clusE);
     // std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
 
@@ -732,8 +733,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     if (dynMaskClus && hotClus == true && cutson) continue;
 
-    TLorentzVector photon1;
-    photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
+
 
     for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
     {
@@ -749,7 +749,24 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float clus2_eta = E_vec_cluster2.pseudoRapidity();
       float clus2_phi = E_vec_cluster2.phi();
       float clus2_pt = E_vec_cluster2.perp();
-      //float clus2_chisq = recoCluster2->get_chi2();
+      float clus2_chisq = recoCluster2->get_chi2();
+
+      if (clus2_chisq > clus_chisq_cut && cutson) continue;
+      TLorentzVector photon2;
+      photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
+
+
+      pi0smearvec[1]=SmearPhoton4vector(photon2, badcalibsmear);  
+
+      
+      if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson) continue;
+      
+
+      if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson) continue;
+      if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson) continue;     
+
+      TLorentzVector pi0smearvec[2]= pi0smearvec[0]+pi0smearvec[1];
+      if (pi0smearvec[2].Pt() < pi0ptcut) continue;
 
 
       // loop over the towers in the cluster
@@ -771,9 +788,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       if (dynMaskClus && hotClus2 == true && cutson) continue;
 
-      TLorentzVector photon2;
-      photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
-      TLorentzVector pi0 = photon1 + photon2;
+
       /////////////////////////////////////////////////
       //// Truth info
       //float wieght = 1;
@@ -802,36 +817,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
       }
 
-      for(size_t i=0; i<badcalibsmearint.size(); i++){
-        //std::cout << "smear " << i << "start" <<std::endl;
-        double smear1=( ( generateRandomNumber()*badcalibsmear[i] ) + 1 );
-        double smear2=( ( generateRandomNumber()*badcalibsmear[i] ) + 1 );
-        pi0smearvec[0][i]= photon1*smear1;
-        pi0smearvec[1][i]= photon2*smear2;
-        pi0smearvec[2][i]= pi0smearvec[0][i]+pi0smearvec[1][i];
-        //std::cout << "smear " << i << "end" <<std::endl;
-        if((pi0smearvec[0][i].Pt() > pt1ClusCut || pi0smearvec[0][i].Pt() < ptMaxCut) && (pi0smearvec[1][i].Pt() > pt2ClusCut || pi0smearvec[1][i].Pt() < ptMaxCut) && fabs(pi0smearvec[0][i].E() - pi0smearvec[1][i].E()) / (pi0smearvec[0][i].E() + pi0smearvec[1][i].E()) < maxAlpha && pi0smearvec[0][i].DeltaR(pi0smearvec[1][i]) < maxDr && pi0smearvec[2][i].Pt() > pi0ptcut){
-          //std::cout << "cuts passed for smear " << i <<std::endl;
-          h_InvMass_badcalib_smear[i]->Fill(pi0smearvec[2][i].M());
-          h_InvMass_badcalib_smear_weighted[i]->Fill(pi0smearvec[2][i].M(), inv_yield);
-          //std::cout << "histograms filled for " << i <<std::endl;
-        }
-      }
-
-
-      //idk what to do for these cuts
-      //if (clus_chisq > clus_chisq_cut && cutson) continue;
-      //if (clus2_chisq > clus_chisq_cut && cutson) continue;
-
-      //I can work with these cuts.
-
-      //if ((clus_pt < pt1ClusCut || clus_pt > ptMaxCut) && cutson) continue;
-      //if ((clus2_pt < pt2ClusCut || clus2_pt > ptMaxCut) && cutson) continue;
-      //if (fabs(clusE - clus2E) / (clusE + clus2E) > maxAlpha && cutson) continue;
-      //if (photon1.DeltaR(photon2) > maxDr && cutson) continue;      
-      //if (pi0.Pt() < pi0ptcut) continue;
-
-      
+      h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
+      h_InvMass_badcalib_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
 
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
@@ -941,10 +928,20 @@ void CaloAna::fitEtaSlices(std::string infile, std::string fitOutFile, std::stri
   return;
 }
 
-// Method to generate random numbers
+// function to generate random numbers
 double CaloAna::generateRandomNumber() {
     std::normal_distribution<double> dist(0.0, 1.0);// mean 0, sigma 1
     float rand=dist(rng);
     //cout << "test rnd gen code: " << rand << endl;
     return rand;
 }
+
+// function to smear photon 4 vectors
+
+TLorentzVector CaloAna::SmearPhoton4vector(TLorentzVector sourcephoton, double smearfactor) {
+  double smear= generateRandomNumber()*smearfactor  + 1 ;
+  TLorentzVector smearedphoton=sourcephoton*smear;
+  return smearedphoton;
+}
+
+
