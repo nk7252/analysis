@@ -260,8 +260,16 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
   }
 
-  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_CEMC");  // changed from CLUSTERINFO_CEMC2
+  if(poscor==true) {
+    RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_POS_COR_CEMC");
+  }
+  else{
+    RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_CEMC");
+  }    // changed from CLUSTERINFO_CEMC2
   // Blair using "CLUSTER_POS_COR_CEMC" now. change from CLUSTER_CEMC
+
+
+
   if (!clusterContainer)
   {
     std::cout << PHWHERE << "funkyCaloStuff::process_event - Fatal Error - CLUSTER_CEMC node is missing. " << std::endl;

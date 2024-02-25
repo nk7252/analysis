@@ -156,14 +156,17 @@ class CaloAna : public SubsysReco
   std::vector<int> m_bbc_side;
 
   float badcalibsmear;
-  int badcalibsmearint=125;//thousandths
+  int badcalibsmearint=130;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   std::vector<float> pidcuts;
 
 
   int _eventcounter;
   int funkyCaloStuffcounter;
+
   bool additionalsmearing = true;
   bool cutson = true;
+  bool poscor = true;
+
   int _range = 1;
   float _vz = 0.;
   bool m_vtxCut = false;
