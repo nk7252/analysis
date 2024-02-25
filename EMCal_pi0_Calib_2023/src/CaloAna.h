@@ -166,7 +166,7 @@ class CaloAna : public SubsysReco
   bool additionalsmearing = true;
   bool cutson = true;
   bool poscor = true;
-  char* clustposcorstring;
+  std::string clustposcorstring;
 
   int _range = 1;
   float _vz = 0.;

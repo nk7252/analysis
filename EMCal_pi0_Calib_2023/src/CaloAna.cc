@@ -266,7 +266,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   else{
     clustposcorstring = "CLUSTER_CEMC";
   }
-  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s",clustposcorstring));    
+  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s",clustposcorstring.c_str()));    
   // changed from CLUSTERINFO_CEMC2
   // Blair using "CLUSTER_POS_COR_CEMC" now. change from CLUSTER_CEMC
 
