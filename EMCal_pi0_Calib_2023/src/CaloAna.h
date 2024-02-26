@@ -156,17 +156,28 @@ class CaloAna : public SubsysReco
   std::vector<int> m_bbc_side;
 
   float badcalibsmear;
-  int badcalibsmearint=132;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  int badcalibsmearint=125;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   std::vector<float> pidcuts;
 
 
   int _eventcounter;
   int funkyCaloStuffcounter;
 
-  bool additionalsmearing = false;
+  bool additionalsmearing = true;
   bool cutson = true;
-  bool poscor = true;
+  bool poscor = false;
   std::string clustposcorstring;
+
+  //cuts
+  //float maxDr = 1.1;
+  //float maxAlpha = 0.6;
+  //float clus_chisq_cut = 4;
+  //float nClus_ptCut = 0.5;
+  //int max_nClusCount = 37;
+  //float ptMaxCut = 7;  // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is 
+  //float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
+  //float pt2ClusCut = 0.7;  // // 0.7
+  //float pi0ptcut = 1.22 * (pt1ClusCut + pt2ClusCut);
 
   int _range = 1;
   float _vz = 0.;
