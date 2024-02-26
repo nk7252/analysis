@@ -172,6 +172,14 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %d percent",badcalibsmearint/10), 120, 0, 0.6);
 
 
+  if(poscor==true) {
+    clustposcorstring = "CLUSTER_POS_COR_CEMC";
+  }
+  else{
+    clustposcorstring = "CLUSTER_CEMC";
+  }
+
+
   
   funkyCaloStuffcounter = 0;
   if(additionalsmearing==false) std::cout << "additional smearing is not being added" << std::endl;
@@ -260,12 +268,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
   }
 
-  if(poscor==true) {
-    clustposcorstring = "CLUSTER_POS_COR_CEMC";
-  }
-  else{
-    clustposcorstring = "CLUSTER_CEMC";
-  }
+
   RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s",clustposcorstring.c_str()));    
   // changed from CLUSTERINFO_CEMC2
   // Blair using "CLUSTER_POS_COR_CEMC" now. change from CLUSTER_CEMC
@@ -632,7 +635,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   TowerInfoContainer* towers = findNode::getClass<TowerInfoContainer>(topNode, "TOWERINFO_CALIB_CEMC");
 
-  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_CEMC");  // changed from CLUSTERINFO_CEMC2
+  
+  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s",clustposcorstring.c_str()));  
+   // changed from CLUSTERINFO_CEMC2
   // Blair using "CLUSTER_POS_COR_CEMC" now. change from CLUSTER_CEMC
   if (!clusterContainer)
   {
