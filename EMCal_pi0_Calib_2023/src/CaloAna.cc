@@ -214,7 +214,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
   float nClus_ptCut = 0.5;
-  int max_nClusCount = 37;
+  int max_nClusCount = 75;
 
   //----------------------------------get vertex------------------------------------------------------//
 
@@ -604,7 +604,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
   float nClus_ptCut = 0.5;
-  int max_nClusCount = 37;
+  int max_nClusCount = 75;
 
   //----------------------------------get vertex------------------------------------------------------//
 
