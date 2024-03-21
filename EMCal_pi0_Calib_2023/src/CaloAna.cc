@@ -75,7 +75,7 @@ using namespace std;
 
 CaloAna::CaloAna(const std::string& name, const std::string& filename)
   : SubsysReco(name)
-  , detector("HCALIN")
+  , detector("CEMC")//HCALIN
   , outfilename(filename)
 {
   _eventcounter = 0;
