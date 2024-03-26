@@ -25,7 +25,12 @@
 #include <calobase/TowerInfoContainer.h>
 #include <calobase/TowerInfo.h>
 
+#include <globalvertex/GlobalVertexMap.h>
+#include <globalvertex/GlobalVertexMapv1.h>
+
 #include <jetbackground/TowerBackground.h>
+
+#include <mbd/MbdOut.h>
 
 #include "fastjet/AreaDefinition.hh"
 #include "fastjet/ClusterSequenceArea.hh"
@@ -56,18 +61,29 @@ JetBkgdSub::JetBkgdSub(const double jet_R, const std::string& outputfilename)
   , m_etaRange(-1.1, 1.1)
   , m_ptRange(0.0, 100000.0)
   , _minrecopT(5.0)
+  , m_vtxZ_cut(10.0)
   , _doIterative(false)
   , _doAreaSub(false)
   , _doMultSub(false)
   , _doTruth(false)
+  , _doData(false)
+  , _doEmbed(false)
+  , _doTowerECut(false)
   , m_event(-1)
   , m_rhoA_jets(0)
   , m_mult_jets(0)
   , m_iter_jets(0)
   , m_truth_jets(0)
   , m_centrality(-1)
+  , m_mbd_NS(0.0)
   , m_rho_area(-1)
   , m_rho_area_sigma(-1)
+  , m_rho_area_CEMC(-1)
+  , m_rho_area_sigma_CEMC(-1)
+  , m_rho_area_IHCAL(-1)
+  , m_rho_area_sigma_IHCAL(-1)
+  , m_rho_area_OHCAL(-1)
+  , m_rho_area_sigma_OHCAL(-1)
   , m_event_leading_truth_pt(-1)
   , m_tree(nullptr)
   , m_iter_eta()
@@ -128,6 +144,7 @@ int JetBkgdSub::Init(PHCompositeNode *topNode)
   m_tree->Branch("event", &m_event, "event/I");
   m_tree->Branch("event_leading_truth_pt", &m_event_leading_truth_pt, "event_leading_truth_pt/F");
   m_tree->Branch("centrality", &m_centrality, "centrality/I");
+  m_tree->Branch("mbd_NS", &m_mbd_NS, "mbd_NS/D");
   if(_doTruth)
   {
     m_tree->Branch("truth_jets", &m_truth_jets, "truth_jets/I");
@@ -140,6 +157,12 @@ int JetBkgdSub::Init(PHCompositeNode *topNode)
   {
     m_tree->Branch("rho_area", &m_rho_area, "rho_area/D");
     m_tree->Branch("rho_area_sigma", &m_rho_area_sigma, "rho_area_sigma/D");
+    m_tree->Branch("rho_area_CEMC", &m_rho_area_CEMC, "rho_area_CEMC/D");
+    m_tree->Branch("rho_area_sigma_CEMC", &m_rho_area_sigma_CEMC, "rho_area_sigma_CEMC/D");
+    m_tree->Branch("rho_area_IHCAL", &m_rho_area_IHCAL, "rho_area_IHCAL/D");
+    m_tree->Branch("rho_area_sigma_IHCAL", &m_rho_area_sigma_IHCAL, "rho_area_sigma_IHCAL/D");
+    m_tree->Branch("rho_area_OHCAL", &m_rho_area_OHCAL, "rho_area_OHCAL/D");
+    m_tree->Branch("rho_area_sigma_OHCAL", &m_rho_area_sigma_OHCAL, "rho_area_sigma_OHCAL/D");
     m_tree->Branch("rhoA_jets", &m_rhoA_jets, "rhoA_jets/I");
     m_tree->Branch("rhoA_eta", &m_rhoA_eta);
     m_tree->Branch("rhoA_phi", &m_rhoA_phi);
@@ -194,6 +217,23 @@ int JetBkgdSub::process_event(PHCompositeNode *topNode)
   // std::cout << "JetBkgdSub::process_event(PHCompositeNode *topNode) Processing event " << m_event << std::endl;
   ++m_event;
 
+  GlobalVertexMap *vtxMap = findNode::getClass<GlobalVertexMapv1>(topNode,"GlobalVertexMap");
+  if (!vtxMap)
+    {
+      if(Verbosity()) std::cout << "JetBkgdSub::processEvent(PHCompositeNode *topNode) Could not find global vertex map node" << std::endl;
+      exit(-1);
+    }
+  if (!vtxMap->get(0))
+    {
+      if(Verbosity()) std::cout << "no vertex found" << std::endl;
+      return Fun4AllReturnCodes::ABORTEVENT;
+    }
+  if (fabs(vtxMap->get(0)->get_z()) > m_vtxZ_cut)
+    {
+      if(Verbosity()) std::cout << "vertex not in range" << std::endl;
+      return Fun4AllReturnCodes::ABORTEVENT;
+    }
+
   // min reco jet pt cut 
   // sets min for all subtraction types
   double min_reco_jet_pt = _minrecopT;
@@ -205,7 +245,14 @@ int JetBkgdSub::process_event(PHCompositeNode *topNode)
   // std::cout << "JetBkgdSub::process_event(PHCompositeNode *topNode) Centrality: " << m_centrality << std::endl;
 
   // Leading truth jet pt (R = 0.4) (for simulation event selection)
-  m_event_leading_truth_pt = LeadingR04TruthJet(topNode);
+  if (_doData || _doEmbed || !_doTruth)
+    {
+      m_event_leading_truth_pt = -1.0;
+    }
+  else
+    {
+      m_event_leading_truth_pt = LeadingR04TruthJet(topNode);
+    }
   // std::cout << "JetBkgdSub::process_event(PHCompositeNode *topNode) Leading truth jet pt: " << m_event_leading_truth_pt << std::endl;
 
   // ==================================
@@ -381,6 +428,9 @@ int JetBkgdSub::process_event(PHCompositeNode *topNode)
   {
     // get fastjet input from tower nodes
     std::vector<fastjet::PseudoJet> calo_pseudojets;
+    std::vector<fastjet::PseudoJet> CEMC_pseudojets;
+    std::vector<fastjet::PseudoJet> IHCAL_pseudojets;
+    std::vector<fastjet::PseudoJet> OHCAL_pseudojets;
     for (auto & _input : _inputs)
     {
       std::vector<Jet *> parts = _input->get_input(topNode);
@@ -392,16 +442,40 @@ int JetBkgdSub::process_event(PHCompositeNode *topNode)
         float this_px = parts[i]->get_px();
         float this_py = parts[i]->get_py();
         float this_pz = parts[i]->get_pz();
-        if (this_e < 0)
-        {
-          // make energy = +1 MeV for purposes of clustering
-          float e_ratio = 0.001 / this_e;
-          this_e  = this_e * e_ratio;
-          this_px = this_px * e_ratio;
-          this_py = this_py * e_ratio;
-          this_pz = this_pz * e_ratio;
-        }
+	if(_doTowerECut)
+	{
+	  if(this_e < m_towerThreshold) continue;
+	  if (this_e < 0)
+	  {
+	    // make energy = +1 MeV for purposes of clustering
+	    float e_ratio = 0.001 / this_e;
+	    this_e  = this_e * e_ratio;
+	    this_px = this_px * e_ratio;
+	    this_py = this_py * e_ratio;
+	    this_pz = this_pz * e_ratio;
+	  }
+	}
         fastjet::PseudoJet pseudojet(this_px, this_py, this_pz, this_e);
+	
+	if(_input->get_src() == Jet::SRC::CEMC_TOWERINFO ||
+	   _input->get_src() == Jet::SRC::CEMC_TOWERINFO_EMBED ||
+	   _input->get_src() == Jet::SRC::CEMC_TOWERINFO_SIM ||
+	   _input->get_src() == Jet::SRC::CEMC_TOWERINFO_RETOWER)
+	  {
+	    CEMC_pseudojets.push_back(pseudojet);
+	  }
+	if(_input->get_src() == Jet::SRC::HCALIN_TOWERINFO ||
+	   _input->get_src() == Jet::SRC::HCALIN_TOWERINFO_EMBED ||
+	   _input->get_src() == Jet::SRC::HCALIN_TOWERINFO_SIM)
+	  {
+	    IHCAL_pseudojets.push_back(pseudojet);
+	  }
+	if(_input->get_src() == Jet::SRC::HCALOUT_TOWERINFO ||
+	   _input->get_src() == Jet::SRC::HCALOUT_TOWERINFO_EMBED ||
+	   _input->get_src() == Jet::SRC::HCALOUT_TOWERINFO_SIM)
+	  {
+	    OHCAL_pseudojets.push_back(pseudojet);
+	  }
         calo_pseudojets.push_back(pseudojet);
       }
       for (auto &p : parts) delete p;
@@ -421,14 +495,28 @@ int JetBkgdSub::process_event(PHCompositeNode *topNode)
     fastjet::AreaDefinition area_def(fastjet::active_area_explicit_ghosts, fastjet::GhostedAreaSpec(ghost_max_rap, 1, ghost_R));
     fastjet::JetDefinition jet_def_antikt(fastjet::antikt_algorithm, m_jet_R);
     fastjet::JetDefinition jet_def_bkgd(fastjet::kt_algorithm, m_jet_R); 
-    fastjet::Selector selector_rm2 = jetrap * (!fastjet::SelectorNHardest(2));
-    fastjet::JetMedianBackgroundEstimator bge_rm2 {selector_rm2, jet_def_bkgd, area_def};
+    fastjet::Selector selector_rm_jets;
+    if (_doEmbed) selector_rm_jets = jetrap * (!fastjet::SelectorNHardest(4));
+    else selector_rm_jets = jetrap * (!fastjet::SelectorNHardest(2));
+    fastjet::JetMedianBackgroundEstimator bge {selector_rm_jets, jet_def_bkgd, area_def};
+    fastjet::JetMedianBackgroundEstimator bge_CEMC {selector_rm_jets, jet_def_bkgd, area_def};
+    fastjet::JetMedianBackgroundEstimator bge_IHCAL {selector_rm_jets, jet_def_bkgd, area_def};
+    fastjet::JetMedianBackgroundEstimator bge_OHCAL {selector_rm_jets, jet_def_bkgd, area_def};
     // set particles for background estimation
-    bge_rm2.set_particles(calo_pseudojets);
+    bge.set_particles(calo_pseudojets);
+    bge_CEMC.set_particles(CEMC_pseudojets);
+    bge_IHCAL.set_particles(IHCAL_pseudojets);
+    bge_OHCAL.set_particles(OHCAL_pseudojets);
     
     // rho and sigma
-    m_rho_area = bge_rm2.rho();
-    m_rho_area_sigma = bge_rm2.sigma();
+    m_rho_area = bge.rho();
+    m_rho_area_sigma = bge.sigma();
+    m_rho_area_CEMC = bge_CEMC.rho();
+    m_rho_area_sigma_CEMC = bge_CEMC.sigma();
+    m_rho_area_IHCAL = bge_IHCAL.rho();
+    m_rho_area_sigma_IHCAL = bge_IHCAL.sigma();
+    m_rho_area_OHCAL = bge_OHCAL.rho();
+    m_rho_area_sigma_OHCAL = bge_OHCAL.sigma();
     
     // cluster jets
     fastjet::ClusterSequenceArea clustSeq(calo_pseudojets, jet_def_antikt, area_def);
@@ -505,7 +593,36 @@ void JetBkgdSub::GetCentInfo(PHCompositeNode *topNode)
       std::cout << "JetBkgdSub::process_event() ERROR: Can't find CentralityInfo" << std::endl;
       exit(-1);
   }
-  m_centrality = cent_node->get_centile(CentralityInfo::PROP::bimp);
+  
+  if (!_doData)
+    {
+      m_centrality = cent_node->get_centile(CentralityInfo::PROP::bimp);
+      m_mbd_NS = cent_node->get_quantity(CentralityInfo::PROP::mbd_NS);
+    }
+  else
+    {
+      m_centrality = (int)(100*cent_node->get_centile(CentralityInfo::PROP::mbd_NS));
+
+      PHNodeIterator iter(topNode);
+      PHCompositeNode *mbdNode = dynamic_cast<PHCompositeNode *>(iter.findFirst("PHCompositeNode", "MBD"));
+      if(!mbdNode)
+	{
+	  std::cerr << Name() << "::" <<  __PRETTY_FUNCTION__
+		    << "MBD Node missing, doing nothing." << std::endl;
+	  throw std::runtime_error(
+				   "Failed to find MBD node in JetBkgdSub::GetCentInfo");
+	}
+      MbdOut *_data_MBD = findNode::getClass<MbdOut>(mbdNode, "MbdOut");
+      if(!_data_MBD)
+	{
+	  std::cerr << Name() << "::" <<  __PRETTY_FUNCTION__
+		    << "MbdOut Node missing, doing nothing." << std::endl;
+	  throw std::runtime_error(
+				   "Failed to find MbdOut node in JetBkgdSub::GetCentInfo");
+	}
+
+      m_mbd_NS = _data_MBD->get_q(0) + _data_MBD->get_q(1);
+    }
   return ;
 }
 
