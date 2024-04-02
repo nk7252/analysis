@@ -171,12 +171,12 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
   h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
 
-  h_smear_pi0E = new TH1F(Form("h_pi0E_smear_%d",badcalibsmearint), Form("Pi0 E with smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
-  h_nosmear_pi0E= new TH1F("h_pi0E_nosmear", "Pi0 E with no add. smearing" , 120, 0, 0.6);
-  h_smear_pi0E_weighted= new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
-  h_nosmear_pi0E_weighted = new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
-  h_smear_nosmear_pi0E;
-  h_smear_nosmear_pi0E_weighted=new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
+  // h_smear_pi0E = new TH1F(Form("h_pi0E_smear_%d",badcalibsmearint), Form("Pi0 E with smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
+  // h_nosmear_pi0E= new TH1F("h_pi0E_nosmear", "Pi0 E with no add. smearing" , 120, 0, 0.6);
+  // h_smear_pi0E_weighted= new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
+  //  h_nosmear_pi0E_weighted = new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
+  // h_smear_nosmear_pi0E;
+  // h_smear_nosmear_pi0E_weighted=new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
 
   if(poscor==true) {
     clustposcorstring = "CLUSTER_POS_COR_CEMC";
