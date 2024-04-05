@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /sphenix/u/bseidlitz/setup.sh
+source /sphenix/u/nkumar/setup.sh
 
 echo "------------------setting up environment--------------------"
 export Cur_dir=$(pwd)
