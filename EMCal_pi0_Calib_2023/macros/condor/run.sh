@@ -76,7 +76,6 @@ Priority                      = +12
 Output                        = condor.out
 Error                         = condor.err
 Log                           = /tmp/condor$li.log
-Notify_user                   = bs3402@columbia.edu
 
 Queue
 EOF
