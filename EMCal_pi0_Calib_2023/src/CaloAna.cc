@@ -694,7 +694,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float ptMaxCut = 7;  // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is 
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;  // // 0.7
-  float pi0ptcut = 1.22 * (pt1ClusCut + pt2ClusCut);
+  float pi0ptcut =1.22 * (pt1ClusCut + pt2ClusCut);
 
   vector<float> save_pt;
   vector<float> save_eta;
@@ -828,6 +828,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         TLorentzVector myVector;
         myVector.SetXYZM(particle->get_px(), particle->get_py(), particle->get_pz(), 0.13497);
         truth_pt=myVector.Pt();
+	h_truth_eta->Fill(myVector.Eta());
+	h_truth_pt->Fill(truth_pt);
         //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
         double t = 4.5;
         double w = 0.114;
