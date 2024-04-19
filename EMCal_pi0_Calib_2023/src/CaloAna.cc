@@ -55,6 +55,7 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <cmath>
 #include <string>
 #include "TCanvas.h"
 #include "TF1.h"
@@ -171,11 +172,20 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
   h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
 
-  h_InvMass_smear_risingpt = new TH1F(Form("h_InvMass_smear_risingpt_%d",badcalibsmearint), Form("Invariant Mass, rising pt + smearing: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
+  std::vector<std::string> RestrictEtaCuts={"Low_Eta","Mid_Eta","High_Eta"};
+  etaRanges = {
+    {0.0, 0.2},  // pair1
+    {0.2, 0.4},  // pair2
+    {0.4, 1.1}   // pair3
+  };
+  for(int i=0; i<3; i++){
+    h_InvMass_smear_risingpt[i] = new TH1F(Form("h_InvMass_smear_risingpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i]), Form("Invariant Mass, rising_pt+%s+smearing: %f percent", RestrictEtaCuts[i] ,badcalibsmearint/10.0f), 120, 0, 0.6);
 
-  h_InvMass_smear_fallingpt = new TH1F(Form("h_InvMass_smear_fallingpt_%d",badcalibsmearint), Form("Invariant Mass, falling pt + smearing: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
+    h_InvMass_smear_fallingpt[i] = new TH1F(Form("h_InvMass_smear_fallingpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i]), Form("Invariant Mass, falling_pt+%s+smearing: %f percent", RestrictEtaCuts[i] ,badcalibsmearint/10.0f), 120, 0, 0.6);
 
-  h_InvMass_smear_flatpt = new TH1F(Form("h_InvMass_smear_flatpt_%d",badcalibsmearint), Form("Invariant Mass, flat pt + smearing: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
+    h_InvMass_smear_flatpt[i] = new TH1F(Form("h_InvMass_smear_flatpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i]), Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i] ,badcalibsmearint/10.0f), 120, 0, 0.6);
+  }
+  
   // h_smear_pi0E = new TH1F(Form("h_pi0E_smear_%d",badcalibsmearint), Form("Pi0 E with smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
   // h_nosmear_pi0E= new TH1F("h_pi0E_nosmear", "Pi0 E with no add. smearing" , 120, 0, 0.6);
   // h_smear_pi0E_weighted= new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
@@ -847,15 +857,32 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
         inv_yield =  WeightScale*Pt * weight_function; //
         //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
-        if(Pt<4.75){
-          h_InvMass_smear_risingpt->Fill(pi0smearvec[2].M()); 
+
+
+        for (size_t i = 0; i < count; i++){
+          bool shouldContinue = false;
+          for (const auto& pair : etaRanges) {
+              if (std::abs(myVector.Eta()) > pair.first && std::abs(myVector.Eta()) < pair.second) {
+                  shouldContinue = true;
+                  break;  // Exit the inner loop if condition is met
+              }
+          }
+          if (shouldContinue) continue;
+
+          if(Pt<4.75){
+            h_InvMass_smear_risingpt[i]->Fill(pi0smearvec[2].M()); 
+          }
+          else if(4.75 < Pt && Pt < 5.25){
+            h_InvMass_smear_flatpt[i]->Fill(pi0smearvec[2].M());
+          }
+          else{
+            h_InvMass_smear_fallingpt[i]->Fill(pi0smearvec[2].M());
+          }
+
         }
-        else if(4.75 < Pt && Pt < 5.25){
-          h_InvMass_smear_flatpt->Fill(pi0smearvec[2].M());
-        }
-        else{
-          h_InvMass_smear_fallingpt->Fill(pi0smearvec[2].M());
-        }
+        
+        
+
       }
 
       h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
