@@ -179,11 +179,17 @@ int CaloAna::Init(PHCompositeNode*)
     {0.4, 1.1}   // pair3
   };
   for(int i=0; i<3; i++){
-    h_InvMass_smear_risingpt[i] = new TH1F(Form("h_InvMass_smear_risingpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i]), Form("Invariant Mass, rising_pt+%s+smearing: %f percent", RestrictEtaCuts[i] ,badcalibsmearint/10.0f), 120, 0, 0.6);
+    h_InvMass_smear_risingpt[i] = new TH1F(
+      Form("h_InvMass_smear_risingpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i].c_str()), 
+      Form("Invariant Mass, rising_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str() ,badcalibsmearint/10.0f), 120, 0, 0.6);
 
-    h_InvMass_smear_fallingpt[i] = new TH1F(Form("h_InvMass_smear_fallingpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i]), Form("Invariant Mass, falling_pt+%s+smearing: %f percent", RestrictEtaCuts[i] ,badcalibsmearint/10.0f), 120, 0, 0.6);
+    h_InvMass_smear_fallingpt[i] = new TH1F(
+      Form("h_InvMass_smear_fallingpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i].c_str()), 
+      Form("Invariant Mass, falling_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str() ,badcalibsmearint/10.0f), 120, 0, 0.6);
 
-    h_InvMass_smear_flatpt[i] = new TH1F(Form("h_InvMass_smear_flatpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i]), Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i] ,badcalibsmearint/10.0f), 120, 0, 0.6);
+    h_InvMass_smear_flatpt[i] = new TH1F(
+      Form("h_InvMass_smear_flatpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i].c_str()), 
+      Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str() ,badcalibsmearint/10.0f), 120, 0, 0.6);
   }
   
   // h_smear_pi0E = new TH1F(Form("h_pi0E_smear_%d",badcalibsmearint), Form("Pi0 E with smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
