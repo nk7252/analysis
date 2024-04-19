@@ -171,6 +171,11 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
   h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
 
+  h_InvMass_smear_risingpt = new TH1F(Form("h_InvMass_smear_risingpt_%d",badcalibsmearint), Form("Invariant Mass, rising pt + smearing: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
+
+  h_InvMass_smear_fallingpt = new TH1F(Form("h_InvMass_smear_fallingpt_%d",badcalibsmearint), Form("Invariant Mass, falling pt + smearing: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
+
+  h_InvMass_smear_flatpt = new TH1F(Form("h_InvMass_smear_flatpt_%d",badcalibsmearint), Form("Invariant Mass, flat pt + smearing: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
   // h_smear_pi0E = new TH1F(Form("h_pi0E_smear_%d",badcalibsmearint), Form("Pi0 E with smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
   // h_nosmear_pi0E= new TH1F("h_pi0E_nosmear", "Pi0 E with no add. smearing" , 120, 0, 0.6);
   // h_smear_pi0E_weighted= new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
@@ -827,9 +832,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         }
         TLorentzVector myVector;
         myVector.SetXYZM(particle->get_px(), particle->get_py(), particle->get_pz(), 0.13497);
-        truth_pt=myVector.Pt();
-	h_truth_eta->Fill(myVector.Eta());
-	h_truth_pt->Fill(truth_pt);
+	      
+        h_truth_eta->Fill(myVector.Eta());
+	      h_truth_pt->Fill(myVector.Pt());
         //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
         double t = 4.5;
         double w = 0.114;
@@ -838,7 +843,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         double n = 8.1028;
         double m_param = 10.654;
         double p0 = 1.466;
-        double Pt = truth_pt;
+        double Pt = myVector.Pt();
         double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
         inv_yield =  WeightScale*Pt * weight_function; //
         //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
@@ -846,6 +851,16 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
       h_InvMass_badcalib_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
+       
+      if(Pt<4.5){
+        h_InvMass_smear_risingpt->Fill(pi0smearvec[2].M()); 
+      }
+      else if(4.5<Pt<5.5){
+        h_InvMass_smear_flatpt->Fill(pi0smearvec[2].M());
+      }
+      else{
+        h_InvMass_smear_fallingpt->Fill(pi0smearvec[2].M());
+      }
 
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
