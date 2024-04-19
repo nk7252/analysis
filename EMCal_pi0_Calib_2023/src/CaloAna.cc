@@ -865,7 +865,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
 
 
-        for (size_t i = 0; i < count; i++){
+        for (size_t i = 0; i < 3; i++){
           bool shouldContinue = false;
           for (const auto& pair : etaRanges) {
               if (std::abs(myVector.Eta()) > pair.first && std::abs(myVector.Eta()) < pair.second) {
