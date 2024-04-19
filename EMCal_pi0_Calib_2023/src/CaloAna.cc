@@ -848,9 +848,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         inv_yield =  WeightScale*Pt * weight_function; //
         //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
         if(Pt<4.5){
-        h_InvMass_smear_risingpt->Fill(pi0smearvec[2].M()); 
+          h_InvMass_smear_risingpt->Fill(pi0smearvec[2].M()); 
         }
-        else if(4.5<Pt<5.5){
+        else if(4.5 < Pt && Pt < 5.5){
           h_InvMass_smear_flatpt->Fill(pi0smearvec[2].M());
         }
         else{
