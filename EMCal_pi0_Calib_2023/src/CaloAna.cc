@@ -866,25 +866,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
 
         for (size_t i = 0; i < 3; i++){
-          bool shouldContinue = false;
-          for (const auto& pair : etaRanges) {
-              if (std::abs(myVector.Eta()) > pair.first && std::abs(myVector.Eta()) < pair.second) {
-                  shouldContinue = true;
-                  break;  // Exit the inner loop if condition is met
+            if (std::abs(myVector.Eta()) > pair.first && std::abs(myVector.Eta()) < pair.second) {
+              if(Pt<4.75){
+                h_InvMass_smear_risingpt[i]->Fill(pi0smearvec[2].M()); 
               }
-          }
-          if (shouldContinue) continue;
-
-          if(Pt<4.75){
-            h_InvMass_smear_risingpt[i]->Fill(pi0smearvec[2].M()); 
-          }
-          else if(4.75 < Pt && Pt < 5.25){
-            h_InvMass_smear_flatpt[i]->Fill(pi0smearvec[2].M());
-          }
-          else{
-            h_InvMass_smear_fallingpt[i]->Fill(pi0smearvec[2].M());
-          }
-
+              else if(4.75 < Pt && Pt < 5.25){
+                h_InvMass_smear_flatpt[i]->Fill(pi0smearvec[2].M());
+              }
+              else{
+                h_InvMass_smear_fallingpt[i]->Fill(pi0smearvec[2].M());
+              }
+            }
         }
         
         
