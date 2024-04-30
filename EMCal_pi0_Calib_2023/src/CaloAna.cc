@@ -866,7 +866,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
 
         for (size_t i = 0; i < 3; i++){
-            if (std::abs(myVector.Eta()) > pair.first && std::abs(myVector.Eta()) < pair.second) {
+            if (std::abs(myVector.Eta()) > pair[i].first && std::abs(myVector.Eta()) < pair[i].second) {
               if(Pt<4.75){
                 h_InvMass_smear_risingpt[i]->Fill(pi0smearvec[2].M()); 
               }
