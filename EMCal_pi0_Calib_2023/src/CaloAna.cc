@@ -482,8 +482,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
         for (auto tr_phot : truth_photons){
           float delR = photon1.DeltaR(tr_phot);
           h_delR_recTrth->Fill(delR);
-          if (debug) std::cout << delR << " ";
-          if (delR < 0.015){
+          //if (debug) std::cout << delR << " ";
+          if (delR < 0.015){//choose this value based on looking at delR distribution
             float res = photon1.E()/tr_phot.E();
             h_matched_res->Fill(res,photon1.Eta());
           }
