@@ -67,13 +67,16 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   se->registerInputManager(in);
   se->registerInputManager(intruth);
 
+  Fun4AllInputManager *in2 = new Fun4AllDstInputManager("DST_TOWERS2");
+  in2->AddListFile(fnamehits);
+  se->registerInputManager(in2);
+
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
   std::string OutFile = Form("OUTHIST_iter_%s",filename.c_str());
-
 /*
   std::cout << "Applying Position Dependent Correction" << std::endl;
   RawClusterPositionCorrection *clusterCorrection = new RawClusterPositionCorrection("CEMC");
-  clusterCorrection->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
+  //clusterCorrection->set_UseTowerInfo(1);  
   se->registerSubsystem(clusterCorrection);
 */
 
