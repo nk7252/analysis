@@ -1,3 +1,4 @@
+
 //module for producing a TTree with jet information for doing jet validation studies
 // for questions/bugs please contact Virginia Bailey vbailey13@gsu.edu
 #include <fun4all/Fun4AllBase.h>
@@ -28,6 +29,14 @@
 #include <iomanip>
 #include <cmath>
 #include <vector>
+
+#include "fastjet/ClusterSequence.hh"
+#include "fastjet/contrib/SoftDrop.hh"                                                                                          
+
+using namespace fastjet;
+
+// ROOT, for histogramming.                                                                                                                                                                                 
+
 #include "TH1.h"
 #include "TH2.h"
 #include "TFile.h"
@@ -82,6 +91,7 @@ JetValidation::~JetValidation()
 }
 
 //____________________________________________________________________________..
+//____________________________________________________________________________..
 int JetValidation::Init(PHCompositeNode *topNode)
 {
   std::cout << "JetValidation::Init(PHCompositeNode *topNode) Initializing" << std::endl;
@@ -129,7 +139,7 @@ int JetValidation::Init(PHCompositeNode *topNode)
     m_T->Branch("subseedE", &m_e_subseed);
     m_T->Branch("subseedCut", &m_subseed_cut);
   }
-
+  
   return Fun4AllReturnCodes::EVENT_OK;
 }
 
@@ -137,6 +147,7 @@ int JetValidation::Init(PHCompositeNode *topNode)
 int JetValidation::InitRun(PHCompositeNode *topNode)
 {
   std::cout << "JetValidation::InitRun(PHCompositeNode *topNode) Initializing for Run XXX" << std::endl;
+  
   return Fun4AllReturnCodes::EVENT_OK;
 }
 
@@ -173,7 +184,7 @@ int JetValidation::process_event(PHCompositeNode *topNode)
     {
       std::cout
 	<< "MyJetAnalysis::process_event - Error can not find DST raw seed jets "
-	<< std::endl;
+<< std::endl;
       exit(-1);
     }
 
@@ -181,8 +192,8 @@ int JetValidation::process_event(PHCompositeNode *topNode)
   if (!seedjetssub && m_doSeeds)
     {
       std::cout
-	<< "MyJetAnalysis::process_event - Error can not find DST subtracted seed jets "
-	<< std::endl;
+<< "MyJetAnalysis::process_event - Error can not find DST subtracted seed jets "
+<< std::endl;
       exit(-1);
     }
 
@@ -216,7 +227,7 @@ int JetValidation::process_event(PHCompositeNode *topNode)
     GlobalVertex *vtx = vertexmap->begin()->second;
   m_zvtx = vtx->get_z();
   
-
+ 
   //calorimeter towers
   TowerInfoContainer *towersEM3 = findNode::getClass<TowerInfoContainer>(topNode, "TOWERINFO_CALIB_CEMC_RETOWER_SUB1");
   TowerInfoContainer *towersIH3 = findNode::getClass<TowerInfoContainer>(topNode, "TOWERINFO_CALIB_HCALIN_SUB1");
@@ -279,13 +290,13 @@ int JetValidation::process_event(PHCompositeNode *topNode)
 	  float totalPz = 0;
 	  float totalE = 0;
 	  int nconst = 0;
-	  
+	    
 	  for (auto comp: jet->get_comp_vec())
 	    {
 	      TowerInfo *tower;
 	      nconst++;
 	      unsigned int channel = comp.second;
-	      
+	            
 	      if (comp.first == 15 ||  comp.first == 30)
 		{
 		  tower = towersIH3->get_tower_at_channel(channel);
@@ -314,7 +325,7 @@ int JetValidation::process_event(PHCompositeNode *topNode)
 		    {
 		      continue;
 		    }
-		  
+		    
 		  unsigned int calokey = towersOH3->encode_key(channel);
 		  int ieta = towersOH3->getTowerEtaBin(calokey);
 		  int iphi = towersOH3->getTowerPhiBin(calokey);
@@ -322,7 +333,7 @@ int JetValidation::process_event(PHCompositeNode *topNode)
 		  float UE = background->get_UE(2).at(ieta);
 		  float tower_phi = tower_geomOH->get_tower_geometry(key)->get_phi();
 		  float tower_eta = tower_geomOH->get_tower_geometry(key)->get_eta();
-		  
+		    
 		  UE = UE * (1 + 2 * background_v2 * cos(2 * (tower_phi - background_Psi2)));
 		  totalE +=tower->get_energy() + UE;
 		  double pt = (tower->get_energy() + UE) / cosh(tower_eta);
@@ -337,7 +348,7 @@ int JetValidation::process_event(PHCompositeNode *topNode)
 		    {
 		      continue;
 		    }
-		  
+		    
 		  unsigned int calokey = towersEM3->encode_key(channel);
 		  int ieta = towersEM3->getTowerEtaBin(calokey);
 		  int iphi = towersEM3->getTowerPhiBin(calokey);
@@ -345,14 +356,14 @@ int JetValidation::process_event(PHCompositeNode *topNode)
 		  float UE = background->get_UE(0).at(ieta);
 		  float tower_phi = tower_geom->get_tower_geometry(key)->get_phi();
 		  float tower_eta = tower_geom->get_tower_geometry(key)->get_eta();
-		  
+		    
 		  UE = UE * (1 + 2 * background_v2 * cos(2 * (tower_phi - background_Psi2)));
 		  totalE +=tower->get_energy() + UE;
 		  double pt = (tower->get_energy() + UE) / cosh(tower_eta);
 		  totalPx += pt * cos(tower_phi);
 		  totalPy += pt * sin(tower_phi);
 		  totalPz += pt * sinh(tower_eta);
-		  
+		    
 		}
 	    }
 	  //get unsubtracted jet
@@ -373,10 +384,10 @@ int JetValidation::process_event(PHCompositeNode *topNode)
     {
       m_nTruthJet = 0;
       //for (JetMap::Iter iter = jetsMC->begin(); iter != jetsMC->end(); ++iter)
-      for (auto truthjet : *jetsMC)	
+      for (auto truthjet : *jetsMC)
 	{
 	  //Jet* truthjet = iter->second;
-	  
+	    
 	  bool eta_cut = (truthjet->get_eta() >= m_etaRange.first) and (truthjet->get_eta() <= m_etaRange.second);
 	  bool pt_cut = (truthjet->get_pt() >= m_ptRange.first) and (truthjet->get_pt() <= m_ptRange.second);
 	  if ((not eta_cut) or (not pt_cut)) continue;
@@ -416,7 +427,7 @@ int JetValidation::process_event(PHCompositeNode *topNode)
   
   //fill the tree
   m_T->Fill();
-  
+
   return Fun4AllReturnCodes::EVENT_OK;
 }
 
