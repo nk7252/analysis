@@ -4,9 +4,9 @@
 export USER="nkumar"
 export LOGNAME=${USER}
 export HOME=/sphenix/u/${LOGNAME}
-baseDir=${HOME}/analysis/EMCal_pi0_calib_2023/macros/condor
+baseDir=${HOME}/analysis/EMCal_pi0_calib_2023/macros
 # Setting the target directory
-export TargetDir=${baseDir}/condorout
+export TargetDir=${baseDir}/condor/condorout
 
 # Cleaning or creating the target directory
 if [ -d ${TargetDir} ]; then
@@ -24,7 +24,7 @@ rm -f $listfile
 rm -f $listfile2
 
 # Creating new file lists
-CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 1000 DST_CALO_CLUSTER G4Hits
+CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 10000 DST_CALO_CLUSTER G4Hits
 
 # Calculating the number of jobs
 j=500
@@ -71,8 +71,8 @@ for ((q = 0; q < njob; q++)); do
   sed -n $start_file,${end_file}p ${listfile} > ${WorkDir}/inputdata.txt
   sed -n $start_file,${end_file}p ${listfile2} > ${WorkDir}/inputdatahits.txt
   #copy job template and macro in to job workdir and rename job template
-  cp -v "$PWD"/../../CondorRun.sh ${WorkDir}/CondorRunJob$q.sh
-  cp "$PWD"/../../../Fun4All_EMCal_sp.C ${WorkDir}
+  cp -v ${baseDir}/condor/CondorRun.sh ${WorkDir}/CondorRunJob$q.sh
+  cp ${baseDir}/Fun4All_EMCal_sp.C ${WorkDir}
 
   chmod +x ${WorkDir}/CondorRunJob$q.sh
   #create submission file for each job
