@@ -24,7 +24,7 @@ rm -f $listfile
 rm -f $listfile2
 
 # Creating new file lists
-CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 10000 DST_CALO_CLUSTER G4Hits
+CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 1000 DST_CALO_CLUSTER G4Hits
 
 # Calculating the number of jobs
 j=500
