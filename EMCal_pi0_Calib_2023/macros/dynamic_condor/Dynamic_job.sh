@@ -6,7 +6,7 @@ export LOGNAME=${USER}
 export HOME=/sphenix/u/${LOGNAME}
 baseDir=${HOME}/analysis/EMCal_pi0_calib_2023/macros
 # Setting the target directory
-export TargetDir=${baseDir}/condor/condorout
+export TargetDir=${baseDir}/dynamic_condor/condorout
 
 # Cleaning or creating the target directory
 if [ -d ${TargetDir} ]; then
