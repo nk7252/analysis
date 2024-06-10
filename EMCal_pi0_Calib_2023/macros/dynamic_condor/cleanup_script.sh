@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #important setup for path if you are running on condor, -u -n
-export USER="nkumar"
+export USER="nkumar -u -n"
 export LOGNAME=${USER}
 export HOME=/sphenix/u/${LOGNAME}
 baseDir=${HOME}/analysis/EMCal_pi0_calib_2023/macros/condor
