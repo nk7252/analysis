@@ -4,7 +4,7 @@
 export USER="nkumar"
 export LOGNAME=${USER}
 export HOME=/sphenix/u/${LOGNAME}
-baseDir=${HOME}/analysis/EMCal_pi0_calib_2023/macros/dynamic_condor
+baseDir=${HOME}/analysis/EMCal_pi0_Calib_2023/macros/dynamic_condor
 
 #always run this setup anyway
 source /opt/sphenix/core/bin/sphenix_setup.sh -n new
