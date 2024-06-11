@@ -70,6 +70,17 @@ echo "njob: $njob"
 dagfile="jobs.dag"
 rm -f $dagfile
 
+# Verify the source files exist before entering the loop
+if [ ! -f ${baseDir}/dynamic_condor/CondorRun.sh ]; then
+  echo "CondorRun.sh does not exist at ${baseDir}/dynamic_condor/CondorRun.sh"
+  exit 1
+fi
+
+if [ ! -f ${baseDir}/Fun4All_EMCal_sp.C ]; then
+  echo "Fun4All_EMCal_sp.C does not exist at ${baseDir}/Fun4All_EMCal_sp.C"
+  exit 1
+fi
+
 # Loop to create subjobs
 for ((q = 0; q < njob; q++)); do
   #create output dir for each job
