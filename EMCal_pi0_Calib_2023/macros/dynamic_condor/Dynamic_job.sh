@@ -14,7 +14,7 @@ if [ -d ${TargetDir} ]; then
     rm -rf ${TargetDir}/OutDir*
   fi
 else
-  mkdir ${TargetDir}
+  mkdir -p ${TargetDir}
 fi
 
 # Defining list files and cleaning old ones
@@ -60,7 +60,7 @@ rm -f $dagfile
 # Loop to create subjobs
 for ((q = 0; q < njob; q++)); do
   #create output dir for each job
-  mkdir ${TargetDir}/OutDir$q
+  mkdir -p ${TargetDir}/OutDir$q
   export WorkDir="${TargetDir}/OutDir$q"
   echo "WorkDir: ${WorkDir}"
   #calculate start and end files(of total list) for each job
