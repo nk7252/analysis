@@ -75,6 +75,11 @@ for ((q = 0; q < njob; q++)); do
   #create output dir for each job
   mkdir -p ${TargetDir}/OutDir$q
   export WorkDir="${TargetDir}/OutDir$q"
+  # Debugging: Check if WorkDir was created successfully
+  if [ ! -d ${WorkDir} ]; then
+    echo "Failed to create working directory: ${WorkDir}"
+    exit 1
+  fi
   echo "WorkDir: ${WorkDir}"
   #calculate start and end files(of total list) for each job
   start_file=$((q * files_per_job + 1))
@@ -83,9 +88,29 @@ for ((q = 0; q < njob; q++)); do
   #extract relevant filenames from master listfile and makes a new listfile for the individual job in the job workdir
   sed -n $start_file,${end_file}p ${listfile} > ${WorkDir}/inputdata.txt
   sed -n $start_file,${end_file}p ${listfile2} > ${WorkDir}/inputdatahits.txt
+  # Debugging: Ensure inputdata.txt and inputdatahits.txt are created
+  if [ ! -f ${WorkDir}/inputdata.txt ]; then
+    echo "Failed to create inputdata.txt in ${WorkDir}"
+    exit 1
+  fi
+
+  if [ ! -f ${WorkDir}/inputdatahits.txt ]; then
+    echo "Failed to create inputdatahits.txt in ${WorkDir}"
+    exit 1
+  fi
   #copy job template and macro in to job workdir and rename job template
   cp -v ${baseDir}/dynamic_condor/CondorRun.sh ${WorkDir}/CondorRunJob$q.sh
   cp ${baseDir}/Fun4All_EMCal_sp.C ${WorkDir}
+  # Debugging: Ensure files are copied successfully
+  if [ ! -f ${WorkDir}/CondorRunJob$q.sh ]; then
+    echo "Failed to copy CondorRun.sh to ${WorkDir}/CondorRunJob$q.sh"
+    exit 1
+  fi
+
+  if [ ! -f ${WorkDir}/Fun4All_EMCal_sp.C ]; then
+    echo "Failed to copy Fun4All_EMCal_sp.C to ${WorkDir}"
+    exit 1
+  fi
 
   chmod +x ${WorkDir}/CondorRunJob$q.sh
   #create submission file for each job
