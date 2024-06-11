@@ -139,9 +139,10 @@ Error                         = condor.err
 Log                           = /tmp/condor$q.log
 should_transfer_files         = YES
 when_to_transfer_output       = ON_EXIT
-transfer_output_files         = condor.out, condor.err, condor.log
+
 Queue
 EOF
+  #transfer_output_files         = condor.out, condor.err, condor.log
   # each job submission file is added to the dag file. with a jobname (Job$q) and path to the submission file
   echo "JOB Job$q ${WorkDir}/ff.sub" >> $dagfile
 done
