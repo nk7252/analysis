@@ -137,10 +137,10 @@ Priority                      = +12
 Output                        = condor.out
 Error                         = condor.err
 Log                           = /tmp/condor$q.log
-should_transfer_files         = YES
-when_to_transfer_output       = ON_EXIT
 Queue
 EOF
+ #should_transfer_files         = YES
+ #when_to_transfer_output       = ON_EXIT
   #transfer_output_files         = condor.out, condor.err, condor.log
   # each job submission file is added to the dag file. with a jobname (Job$q) and path to the submission file
   echo "JOB Job$q ${WorkDir}/ff.sub" >> $dagfile
@@ -154,11 +154,11 @@ arguments       =
 output          = cleanup_output.txt
 error           = cleanup_error.txt
 log             = cleanup_log.txt
-should_transfer_files = YES
-when_to_transfer_output = ON_EXIT
 queue
 EOF
 #transfer_output_files = ./output/merged_file.root
+#should_transfer_files = YES
+#when_to_transfer_output = ON_EXIT
 #add a cleanup job to the end of the dagfile
 echo "JOB CLEANUP cleanup.sub" >> $dagfile
 #mark all jobs from 0->njob-1 as parents, and the cleanup as child. child jobs run only after ALL parent jobs are completed.
