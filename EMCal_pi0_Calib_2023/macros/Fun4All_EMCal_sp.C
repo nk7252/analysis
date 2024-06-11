@@ -67,9 +67,9 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   se->registerInputManager(in);
   se->registerInputManager(intruth);
 
-  Fun4AllInputManager *in2 = new Fun4AllDstInputManager("DST_TOWERS2");
-  in2->AddListFile(fnamehits);
-  se->registerInputManager(in2);
+  //Fun4AllInputManager *in2 = new Fun4AllDstInputManager("DST_TOWERS2");
+  //in2->AddListFile(fnamehits);
+  //se->registerInputManager(in2);
 
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
   std::string OutFile = Form("OUTHIST_iter_%s",filename.c_str());
