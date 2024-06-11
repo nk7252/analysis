@@ -139,7 +139,6 @@ Error                         = condor.err
 Log                           = /tmp/condor$q.log
 should_transfer_files         = YES
 when_to_transfer_output       = ON_EXIT
-
 Queue
 EOF
   #transfer_output_files         = condor.out, condor.err, condor.log
@@ -150,17 +149,16 @@ done
 # Add the final cleanup job
 cat > cleanup.sub << EOF
 universe        = vanilla
-executable      = ${WorkDir}/NK_Condor_spMC/cleanup_script.sh
+executable      = ${baseDir}/dynamic_condor/cleanup_script.sh
 arguments       =
 output          = cleanup_output.txt
 error           = cleanup_error.txt
 log             = cleanup_log.txt
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_output_files = ./output/merged_file.root
 queue
 EOF
-
+#transfer_output_files = ./output/merged_file.root
 #add a cleanup job to the end of the dagfile
 echo "JOB CLEANUP cleanup.sub" >> $dagfile
 #mark all jobs from 0->njob-1 as parents, and the cleanup as child. child jobs run only after ALL parent jobs are completed.
