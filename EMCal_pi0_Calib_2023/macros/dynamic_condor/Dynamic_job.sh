@@ -71,7 +71,7 @@ for ((q = 0; q < njob; q++)); do
   sed -n $start_file,${end_file}p ${listfile} > ${WorkDir}/inputdata.txt
   sed -n $start_file,${end_file}p ${listfile2} > ${WorkDir}/inputdatahits.txt
   #copy job template and macro in to job workdir and rename job template
-  cp -v ${baseDir}/condor/CondorRun.sh ${WorkDir}/CondorRunJob$q.sh
+  cp -v ${baseDir}/dynamic_condor/CondorRun.sh ${WorkDir}/CondorRunJob$q.sh
   cp ${baseDir}/Fun4All_EMCal_sp.C ${WorkDir}
 
   chmod +x ${WorkDir}/CondorRunJob$q.sh
