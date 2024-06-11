@@ -5,17 +5,30 @@ export USER="nkumar"
 export LOGNAME=${USER}
 export HOME=/sphenix/u/${LOGNAME}
 baseDir=${HOME}/analysis/EMCal_pi0_calib_2023/macros
+echo "Base Directory: $baseDir"
 # Setting the target directory
 export TargetDir=${baseDir}/dynamic_condor/condorout
-
+echo "Target Directory: $TargetDir"
 # Cleaning or creating the target directory
 if [ -d ${TargetDir} ]; then
+  echo "Target directory exists."
   if [ -n "$(ls -A ${TargetDir}/OutDir*)" ]; then
+    echo "Cleaning target directory."
     rm -rf ${TargetDir}/OutDir*
+  else
+    echo "Target directory is empty."
   fi
 else
+  echo "Creating target directory."
   mkdir -p ${TargetDir}
 fi
+
+# Check if directory was created successfully
+if [ ! -d ${TargetDir} ]; then
+  echo "Failed to create target directory: ${TargetDir}"
+  exit 1
+fi
+
 
 # Defining list files and cleaning old ones
 export listfile="dst_calo_cluster.list"
