@@ -165,4 +165,4 @@ echo "JOB CLEANUP cleanup.sub" >> $dagfile
 echo "PARENT $(seq -s ' ' -f "Job%.0f" 0 $((njob - 1))) CHILD CLEANUP" >> $dagfile
 
 # Submit the DAG file
-condor_submit_dag -f -debug $dagfile
+condor_submit_dag -f $dagfile
