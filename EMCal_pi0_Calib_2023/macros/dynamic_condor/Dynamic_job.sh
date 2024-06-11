@@ -4,7 +4,7 @@
 export USER="nkumar"
 export LOGNAME=${USER}
 export HOME=/sphenix/u/${LOGNAME}
-baseDir=${HOME}/analysis/EMCal_pi0_calib_2023/macros
+baseDir=${HOME}/analysis/EMCal_pi0_Calib_2023/macros
 echo "Base Directory: $baseDir"
 # Setting the target directory
 export TargetDir=${baseDir}/dynamic_condor/condorout
