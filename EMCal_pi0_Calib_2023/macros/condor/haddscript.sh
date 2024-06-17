@@ -8,7 +8,7 @@ output_dir="$PWD/output"
 mkdir -p "$output_dir"
 
 # Find all ROOT files and merge them
-find condorout/OutDir* -name "CALOHIST*.root" > root_files.txt
+find condorout/OutDir* -name "OUTHIST*.root" > root_files.txt
 
 # Check if root_files.txt is not empty
 if [ -s root_files.txt ]; then
