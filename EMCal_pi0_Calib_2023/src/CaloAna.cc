@@ -52,18 +52,18 @@
 #include <sstream>
 #include <string>
 
+#include <TMath.h>
+#include <cmath>
 #include <iostream>
+#include <random>
+#include <string>
 #include <utility>
 #include <vector>
-#include <cmath>
-#include <string>
 #include "TCanvas.h"
 #include "TF1.h"
 #include "TFile.h"
 #include "TH1F.h"
-#include <TMath.h>
-#include <random>
-#include"TRandom3.h"
+#include "TRandom3.h"
 
 #include <cdbobjects/CDBTTree.h>  // for CDBTTree
 #include <ffamodules/CDBInterface.h>
@@ -77,7 +77,7 @@ using namespace std;
 
 CaloAna::CaloAna(const std::string& name, const std::string& filename)
   : SubsysReco(name)
-  , detector("CEMC")//HCALIN
+  , detector("CEMC")  // HCALIN
   , outfilename(filename)
 {
   _eventcounter = 0;
@@ -135,7 +135,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 10);
   h_truth_pid = new TH1F("h_truth_pid", "", 150, -30, 120);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 500, 0, 5);
-  h_matched_res = new TH2F("h_matched_res","",100,0,1.5,20,-1,1);
+  h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
 
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 0.6);
@@ -144,74 +144,68 @@ int CaloAna::Init(PHCompositeNode*)
   h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
 
   // vector for bad calib smearing.
-  
-  
-  // high mass tail diagnostic
-  std::vector<std::string> HistList={"photon1","photon2","all photons","pions"};
-  for(int i=0; i<4;i++){
-    // eta and phi distributions
-    h_phidist_InvMass_under200M[i] = new TH1F(Form("h_phidist_%s_InvMass_under200M",HistList[i].c_str()), Form("Phi dist for Inv mass under 200 MeV:%s",HistList[i].c_str()) , 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
-    h_phidist_InvMass_over200M[i] = new TH1F(Form("h_phidist_%s_InvMass_over200M",HistList[i].c_str()), Form("Phi dist for Inv mass over 200 MeV:%s",HistList[i].c_str()), 140, -7/8 * TMath::Pi(), 7/8 * TMath::Pi());
 
-    h_etadist_InvMass_under200M[i] = new TH1F(Form("h_etadist_%s_InvMass_under200M",HistList[i].c_str()),Form("Eta dist for Inv mass under 200 MeV:%s",HistList[i].c_str()) , 140, -1.2, 1.2);
-    h_etadist_InvMass_over200M[i] = new TH1F(Form("h_etadist_%s_InvMass_over200M",HistList[i].c_str()), Form("Eta dist for Inv mass over 200 MeV:%s",HistList[i].c_str()), 140, -1.2, 1.2);
+  // high mass tail diagnostic
+  std::vector<std::string> HistList = {"photon1", "photon2", "all photons", "pions"};
+  for (int i = 0; i < 4; i++)
+  {
+    // eta and phi distributions
+    h_phidist_InvMass_under200M[i] = new TH1F(Form("h_phidist_%s_InvMass_under200M", HistList[i].c_str()), Form("Phi dist for Inv mass under 200 MeV:%s", HistList[i].c_str()), 140, -7 / 8 * TMath::Pi(), 7 / 8 * TMath::Pi());
+    h_phidist_InvMass_over200M[i] = new TH1F(Form("h_phidist_%s_InvMass_over200M", HistList[i].c_str()), Form("Phi dist for Inv mass over 200 MeV:%s", HistList[i].c_str()), 140, -7 / 8 * TMath::Pi(), 7 / 8 * TMath::Pi());
+
+    h_etadist_InvMass_under200M[i] = new TH1F(Form("h_etadist_%s_InvMass_under200M", HistList[i].c_str()), Form("Eta dist for Inv mass under 200 MeV:%s", HistList[i].c_str()), 140, -1.2, 1.2);
+    h_etadist_InvMass_over200M[i] = new TH1F(Form("h_etadist_%s_InvMass_over200M", HistList[i].c_str()), Form("Eta dist for Inv mass over 200 MeV:%s", HistList[i].c_str()), 140, -1.2, 1.2);
 
     // eta-phi distributions
-    h_etaphidist_InvMass_under200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_under200M",HistList[i].c_str()),Form("Eta-Phi dist for Inv mass under 200 MeV:%s",HistList[i].c_str()) , 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-    h_etaphidist_InvMass_over200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_over200M",HistList[i].c_str()),Form("Eta-Phi dist for Inv mass over 200 MeV:%s",HistList[i].c_str()) , 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
+    h_etaphidist_InvMass_under200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_under200M", HistList[i].c_str()), Form("Eta-Phi dist for Inv mass under 200 MeV:%s", HistList[i].c_str()), 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+    h_etaphidist_InvMass_over200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_over200M", HistList[i].c_str()), Form("Eta-Phi dist for Inv mass over 200 MeV:%s", HistList[i].c_str()), 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
   }
-  
+
   // dist of deta or dphi
-  h_Dphidist_InvMass_under200M = new TH1F("h_Dphidist_InvMass_under200M","Delta Phi dist for Inv mass under 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
-  h_Dphidist_InvMass_over200M = new TH1F("h_Dphidist_InvMass_over200M","Delta Phi dist for Inv mass over 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
-  h_Detadist_InvMass_under200M = new TH1F("h_Detadist_InvMass_under200M","Delta Eta dist for Inv mass under 200 MeV", 140, -1.2, 1.2);
-  h_Detadist_InvMass_over200M = new TH1F("h_Detadist_InvMass_over200M","Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
+  h_Dphidist_InvMass_under200M = new TH1F("h_Dphidist_InvMass_under200M", "Delta Phi dist for Inv mass under 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
+  h_Dphidist_InvMass_over200M = new TH1F("h_Dphidist_InvMass_over200M", "Delta Phi dist for Inv mass over 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
+  h_Detadist_InvMass_under200M = new TH1F("h_Detadist_InvMass_under200M", "Delta Eta dist for Inv mass under 200 MeV", 140, -1.2, 1.2);
+  h_Detadist_InvMass_over200M = new TH1F("h_Detadist_InvMass_over200M", "Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
 
-  pidcuts ={0.001,0.005,0.01,0.05,0.1,1};//GeV? pretty sure that is the case
+  pidcuts = {0.001, 0.005, 0.01, 0.05, 0.1, 1};  // GeV? pretty sure that is the case
 
-  for(int i=0; i<6; i++){
-    h_truth_pid_cuts[i]= new TH1F(Form("h_truth_pid_cut_%f",pidcuts[i]), Form("truth pid cut at %f MeV",pidcuts[i]), 150, -30, 120); 
+  for (int i = 0; i < 6; i++)
+  {
+    h_truth_pid_cuts[i] = new TH1F(Form("h_truth_pid_cut_%f", pidcuts[i]), Form("truth pid cut at %f MeV", pidcuts[i]), 150, -30, 120);
   }
-
-  h_truth_eta = new TH1F("h_truth_eta", "", 100, -1.2, 1.2);
-  h_truth_e = new TH1F("h_truth_e", "", 100, 0, 10);
-  h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 10);
-  h_delR_recTrth = new TH1F("h_delR_recTrth", "", 500, 0, 5);
-  h_matched_res = new TH2F("h_matched_res","",100,0,1.5,20,-1,1);
-
 
   //////////////////////////
   // pT rewieghting
   frw = new TFile("/sphenix/u/bseidlitz/work/analysis/EMCal_pi0_Calib_2023/macros/rw_pt.root");
-  for(int i=0; i<96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
+  for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
 
-  rnd = new TRandom3(); 
+  rnd = new TRandom3();
 
+  badcalibsmear = static_cast<float>(badcalibsmearint) / 1000.0f;
+  h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d", badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %f percent", badcalibsmearint / 10.0f), 120, 0, 0.6);
+  h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d", badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %f percent", badcalibsmearint / 10.0f), 120, 0, 0.6);
 
-  badcalibsmear=static_cast<float>(badcalibsmearint) / 1000.0f;
-  h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
-  h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d",badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
-
-  std::vector<std::string> RestrictEtaCuts={"Low_Eta","Mid_Eta","High_Eta"};
+  std::vector<std::string> RestrictEtaCuts = {"Low_Eta", "Mid_Eta", "High_Eta"};
   etaRanges = {
-    {0.0, 0.2},  // pair1
-    {0.2, 0.4},  // pair2
-    {0.4, 1.1}   // pair3
+      {0.0, 0.2},  // pair1
+      {0.2, 0.4},  // pair2
+      {0.4, 1.1}   // pair3
   };
-  for(int i=0; i<3; i++){
+  for (int i = 0; i < 3; i++)
+  {
     h_InvMass_smear_risingpt[i] = new TH1F(
-      Form("h_InvMass_smear_risingpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i].c_str()), 
-      Form("Invariant Mass, rising_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str() ,badcalibsmearint/10.0f), 120, 0, 0.6);
+        Form("h_InvMass_smear_risingpt_%d_%s", badcalibsmearint, RestrictEtaCuts[i].c_str()),
+        Form("Invariant Mass, rising_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
 
     h_InvMass_smear_fallingpt[i] = new TH1F(
-      Form("h_InvMass_smear_fallingpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i].c_str()), 
-      Form("Invariant Mass, falling_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str() ,badcalibsmearint/10.0f), 120, 0, 0.6);
+        Form("h_InvMass_smear_fallingpt_%d_%s", badcalibsmearint, RestrictEtaCuts[i].c_str()),
+        Form("Invariant Mass, falling_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
 
     h_InvMass_smear_flatpt[i] = new TH1F(
-      Form("h_InvMass_smear_flatpt_%d_%s",badcalibsmearint, RestrictEtaCuts[i].c_str()), 
-      Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str() ,badcalibsmearint/10.0f), 120, 0, 0.6);
+        Form("h_InvMass_smear_flatpt_%d_%s", badcalibsmearint, RestrictEtaCuts[i].c_str()),
+        Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
   }
-  
+
   // h_smear_pi0E = new TH1F(Form("h_pi0E_smear_%d",badcalibsmearint), Form("Pi0 E with smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
   // h_nosmear_pi0E= new TH1F("h_pi0E_nosmear", "Pi0 E with no add. smearing" , 120, 0, 0.6);
   // h_smear_pi0E_weighted= new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
@@ -219,18 +213,18 @@ int CaloAna::Init(PHCompositeNode*)
   // h_smear_nosmear_pi0E;
   // h_smear_nosmear_pi0E_weighted=new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
 
-  if(poscor==true) {
+  if (poscor == true)
+  {
     clustposcorstring = "CLUSTER_POS_COR_CEMC";
   }
-  else{
+  else
+  {
     clustposcorstring = "CLUSTER_CEMC";
   }
 
-
-  
   funkyCaloStuffcounter = 0;
-  if(additionalsmearing==false) std::cout << "additional smearing is not being added" << std::endl;
-  if(additionalsmearing==true) std::cout << "additional smearing is being added" << std::endl;
+  if (additionalsmearing == false) std::cout << "additional smearing is not being added" << std::endl;
+  if (additionalsmearing == true) std::cout << "additional smearing is being added" << std::endl;
   return 0;
 }
 
@@ -243,7 +237,8 @@ int CaloAna::process_event(PHCompositeNode* topNode)
   return Fun4AllReturnCodes::EVENT_OK;
 }
 
-int CaloAna::process_towers(PHCompositeNode* topNode){
+int CaloAna::process_towers(PHCompositeNode* topNode)
+{
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
 
   // cuts
@@ -275,10 +270,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
     }
   }
 
-
-
   //////////////////////////////////////////////
-  //         towers 
+  //         towers
   vector<float> ht_eta;
   vector<float> ht_phi;
 
@@ -286,74 +279,16 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
 
   TowerInfoContainer* towers = findNode::getClass<TowerInfoContainer>(topNode, "TOWERINFO_CALIB_CEMC");
 
-  
-  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s",clustposcorstring.c_str()));  
-   // changed from CLUSTERINFO_CEMC2
+  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s", clustposcorstring.c_str()));
+  // changed from CLUSTERINFO_CEMC2
   // Blair using "CLUSTER_POS_COR_CEMC" now. change from CLUSTER_CEMC
-  //RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_POS_COR_CEMC");
+  // RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_POS_COR_CEMC");
   if (!clusterContainer)
   {
     std::cout << PHWHERE << "funkyCaloStuff::process_event - Fatal Error - CLUSTER_CEMC node is missing. " << std::endl;
     funkyCaloStuffcounter++;
     return 0;
   }
-
-  float weight =1;
-
-  /////////////////////////////////////////////////
-  //// Truth info
-  float wieght = 1;
-  PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
-  vector <TLorentzVector> truth_photons;
-  if (truthinfo)
-  {
-    PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
-    for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
-    {
-      // Get truth particle
-      const PHG4Particle* truth = iter->second;
-      if (!truthinfo->is_primary(truth)) continue;
-      TLorentzVector myVector;
-      myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
-
-      float energy = myVector.E();
-      h_truth_eta->Fill(myVector.Eta());
-      h_truth_e->Fill(energy, wieght);
-      weight = myVector.Pt()*TMath::Exp(-3*myVector.Pt());
-      h_truth_pt->Fill(myVector.Pt(),weight);
-      // int id =  truth->get_pid();
-      if (debug) std::cout << "M=" <<  myVector.M()  << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
-    }
-
-    PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
-    float m_g4 = 0;
-
-    for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first;
-          siter != second_range.second; ++siter) {
-      if (m_g4 >= 19999) break;
-      // Get photons from pi0 decays 
-      const PHG4Particle *truth = siter->second;
-
-      if (truth->get_pid() == 22) {
-        PHG4Particle *parent = truthinfo->GetParticle(truth->get_parent_id());
-        if (parent->get_pid() == 111 && parent->get_track_id() > 0) {
-          float phot_pt = sqrt(truth->get_px() * truth->get_px()
-                            + truth->get_py() * truth->get_py());
-          //float phot_pz = truth->get_pz();
-          float phot_e = truth->get_e();
-          float phot_phi = atan2(truth->get_py(), truth->get_px());
-          float phot_eta = atanh(truth->get_pz() / sqrt(truth->get_px()*truth->get_px()+truth->get_py()*truth->get_py()+truth->get_pz()*truth->get_pz()));
-
-          TLorentzVector photon = TLorentzVector();
-          photon.SetPtEtaPhiE(phot_pt, phot_eta, phot_phi,phot_e);
-          truth_photons.push_back(photon);
-
-          if (debug) std::cout<< "pt=" <<  phot_pt <<   " e=" << phot_e << " phi=" << phot_phi << " eta=" << phot_eta << endl; 
-       }
-     }
-   }
-  }
-
 
   //////////////////////////////////////////
   // geometry for hot tower/cluster masking
@@ -391,7 +326,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
 
   if (nClusCount > max_nClusCount && cutson) return Fun4AllReturnCodes::EVENT_OK;
 
-  float ptMaxCut = 7;  // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is 
+  float ptMaxCut = 7;      // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;  // // 0.7
 
@@ -403,7 +338,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
   }*/
 
   float pi0ptcut = 1.22 * (pt1ClusCut + pt2ClusCut);
-  float ptMaxCut = 4;
 
   vector<float> save_pt;
   vector<float> save_eta;
@@ -424,29 +358,26 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
     float clus_eta = E_vec_cluster.pseudoRapidity();
     float clus_phi = E_vec_cluster.phi();
     float clus_pt = E_vec_cluster.perp();
-    clus_pt *= rnd->Gaus(1,smear);
+    clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
     if (clus_chisq > clus_chisq_cut && cutson) continue;
     TLorentzVector photon1;
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
 
-
-    pi0smearvec[0]=SmearPhoton4vector(photon1, badcalibsmear);  
-
+    pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
 
     if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson) continue;
 
-
     h_clusE->Fill(clusE);
-    //if (clusE < 0.2) continue;
-    // std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
-
+    // if (clusE < 0.2) continue;
+    //  std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
 
     // loop over the towers in the cluster
     RawCluster::TowerConstRange towerCR = recoCluster->get_towers();
     RawCluster::TowerConstIterator toweriter;
     float lt_e = -1000;
     unsigned int lt_eta = -1;
+    bool hotClus = false;
     for (toweriter = towerCR.first; toweriter != towerCR.second; ++toweriter)
     {
       int towereta = m_geometry->get_tower_geometry(toweriter->first)->get_bineta();
@@ -459,7 +390,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
         lt_e = energy;
         lt_eta = towereta;
       }
-
     }
 
     if (lt_eta > 95) continue;
@@ -467,9 +397,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
 
     if (dynMaskClus && hotClus == true && cutson) continue;
 
-
-      TLorentzVector photon2;
-      photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
+    TLorentzVector photon2;
+    photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
 
     for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
     {
@@ -492,18 +421,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
       photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
       TLorentzVector pi0 = photon1 + photon2;
 
-      pi0smearvec[1]=SmearPhoton4vector(photon2, badcalibsmear);  
+      pi0smearvec[1] = SmearPhoton4vector(photon2, badcalibsmear);
 
-      
       if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson) continue;
-      
 
       if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson) continue;
-      if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson) continue;     
+      if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson) continue;
 
-      pi0smearvec[2]= pi0smearvec[0] + pi0smearvec[1];
+      pi0smearvec[2] = pi0smearvec[0] + pi0smearvec[1];
       if (pi0smearvec[2].Pt() < pi0ptcut) continue;
-
 
       // loop over the towers in the cluster
       RawCluster::TowerConstRange towerCR2 = recoCluster2->get_towers();
@@ -517,72 +443,81 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
         for (size_t i = 0; i < ht_eta.size(); i++)
         {
           if (towerphi == ht_phi[i] && towereta == ht_phi[i]) hotClus2 = true;
-
         }
       }
       h_etaphi_clus->Fill(clus_eta, clus_phi);
 
       if (dynMaskClus && hotClus2 == true && cutson) continue;
 
-
       /////////////////////////////////////////////////
       //// Truth info
       //float wieght = 1;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
-      vector <TLorentzVector> truth_photons;
-      if (truthinfo){
-
-        PHG4Particle* particle = truthinfo->GetParticle( 1 );//primary for the SPMC
-        //check if this is correct
-        if(particle->get_pid()!=111){
-          std::cout << "track 1 primary pid " << particle->get_pid() <<std::endl;
-          break;
+      vector<TLorentzVector> truth_photons;
+      if (truthinfo)
+      {
+        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
+        {
+          // Get truth particle
+          //PHG4Particle* particle = truthinfo->GetParticle(1);  // primary for the SPMC
+          const PHG4Particle* truth = iter->second;
+          if (!truthinfo->is_primary(truth)) continue;
+          TLorentzVector myVector;
+          myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+          float energy = myVector.E();
+          h_truth_e->Fill(energy, wieght);
+          h_truth_eta->Fill(myVector.Eta());
+          h_truth_pt->Fill(myVector.Pt());
+          //weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
+          //h_truth_pt->Fill(myVector.Pt(), weight);
+          // int id =  truth->get_pid();
+          if (debug) std::cout << "M=" << myVector.M() << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
         }
-        TLorentzVector myVector;
-        myVector.SetXYZM(particle->get_px(), particle->get_py(), particle->get_pz(), 0.13497);
-        h_truth_eta->Fill(myVector.Eta());
-	      h_truth_pt->Fill(myVector.Pt());
 
-        //truth secondary loops
+        // truth secondary loops
         PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
         float m_g4 = 0;
-        for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first;siter != second_range.second; ++siter) {
+        for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
+        {
           if (m_g4 >= 19999) break;
-          // Get photons from pi0 decays 
-          const PHG4Particle *truth = siter->second;
+          // Get photons from pi0 decays
+          const PHG4Particle* truth = siter->second;
 
-          if (truth->get_pid() == 22) {
-            PHG4Particle *parent = truthinfo->GetParticle(truth->get_parent_id());
-            if (parent->get_pid() == 111 && parent->get_track_id() > 0) {
-              float phot_pt = sqrt(truth->get_px() * truth->get_px()
-                                + truth->get_py() * truth->get_py());
-              //float phot_pz = truth->get_pz();
+          if (truth->get_pid() == 22)
+          {
+            PHG4Particle* parent = truthinfo->GetParticle(truth->get_parent_id());
+            if (parent->get_pid() == 111 && parent->get_track_id() > 0)
+            {
+              float phot_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+              // float phot_pz = truth->get_pz();
               float phot_e = truth->get_e();
               float phot_phi = atan2(truth->get_py(), truth->get_px());
-              float phot_eta = atanh(truth->get_pz() / sqrt(truth->get_px()*truth->get_px()+truth->get_py()*truth->get_py()+truth->get_pz()*truth->get_pz()));
+              float phot_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
 
               TLorentzVector photon = TLorentzVector();
-              photon.SetPtEtaPhiE(phot_pt, phot_eta, phot_phi,phot_e);
+              photon.SetPtEtaPhiE(phot_pt, phot_eta, phot_phi, phot_e);
               truth_photons.push_back(photon);
 
-              //if (debug) std::cout<< "pt=" <<  phot_pt <<   " e=" << phot_e << " phi=" << phot_phi << " eta=" << phot_eta << endl; 
+              // if (debug) std::cout<< "pt=" <<  phot_pt <<   " e=" << phot_e << " phi=" << phot_phi << " eta=" << phot_eta << endl;
             }
           }
         }
 
-        for (auto tr_phot : truth_photons){
+        for (auto tr_phot : truth_photons)
+        {
           float delR = photon1.DeltaR(tr_phot);
           h_delR_recTrth->Fill(delR);
-          //if (debug) std::cout << delR << " ";
-          if (delR < 0.015){//choose this value based on looking at delR distribution
-            float res = photon1.E()/tr_phot.E();
-            h_matched_res->Fill(res,photon1.Eta());
+          // if (debug) std::cout << delR << " ";
+          if (delR < 0.015)
+          {  // choose this value based on looking at delR distribution
+            float res = photon1.E() / tr_phot.E();
+            h_matched_res->Fill(res, photon1.Eta());
           }
         }
 
-
-        //--------------------Alternative paramaterization, woods saxon+hagedorn+power law
-        double t = 4.5;
+        //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
+        double t = 4.5; 
         double w = 0.114;
         double A = 229.6;
         double B = 14.43;
@@ -590,48 +525,47 @@ int CaloAna::process_towers(PHCompositeNode* topNode){
         double m_param = 10.654;
         double p0 = 1.466;
         double Pt = myVector.Pt();
-        double weight_function=((1/(1+exp((Pt-t)/w)))*A/pow(1+Pt/p0,m_param)+(1-(1/(1+exp((Pt-t)/w))))*B/(pow(Pt,n)));
-        inv_yield =  WeightScale*Pt * weight_function; //
-        //std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
+        double weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
+        inv_yield = WeightScale * Pt * weight_function;  //
+        // std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
 
-
-        for (size_t i = 0; i < 3; i++){
-          if (std::abs(myVector.Eta()) > etaRanges[i].first && std::abs(myVector.Eta()) < etaRanges[i].second) {
-            if(Pt<4.75){
-              h_InvMass_smear_risingpt[i]->Fill(pi0smearvec[2].M()); 
+        for (size_t i = 0; i < 3; i++)
+        {
+          if (std::abs(myVector.Eta()) > etaRanges[i].first && std::abs(myVector.Eta()) < etaRanges[i].second)
+          {
+            if (Pt < 4.75)
+            {
+              h_InvMass_smear_risingpt[i]->Fill(pi0smearvec[2].M());
             }
-            else if(4.75 < Pt && Pt < 5.25){
+            else if (4.75 < Pt && Pt < 5.25)
+            {
               h_InvMass_smear_flatpt[i]->Fill(pi0smearvec[2].M());
             }
-            else{
+            else
+            {
               h_InvMass_smear_fallingpt[i]->Fill(pi0smearvec[2].M());
             }
           }
         }
-        
-        
-
       }
 
-      h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
-      h_InvMass_badcalib_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
-       
-      
 
+      h_InvMass_badcalib_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
+      //h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
+      h_inv_yield->Fill(inv_yield);
+      h_InvMass_weighted->Fill(pi0.M(), inv_yield);
+
+      h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
       h_pTdiff_InvMass->Fill(pi0.Pt(), pi0.M());
       h_pion_pt->Fill(pi0.Pt());
-      h_pion_pt_weight->Fill(pi0.Pt(),inv_yield);
       h_InvMass->Fill(pi0.M());
-      h_inv_yield->Fill(inv_yield);
-      h_InvMass_weighted->Fill(pi0.M(), inv_yield);
-    } //clusterIter2
+    }  // clusterIter2
   }  // clusteriter1 loop
-    return Fun4AllReturnCodes::EVENT_OK;
+  return Fun4AllReturnCodes::EVENT_OK;
   //}
 }
-
 
 int CaloAna::End(PHCompositeNode* /*topNode*/)
 {
@@ -645,13 +579,13 @@ int CaloAna::End(PHCompositeNode* /*topNode*/)
   return 0;
 }
 
-float CaloAna::getWeight(int ieta, float pt){
+float CaloAna::getWeight(int ieta, float pt)
+{
   if (ieta < 0 || ieta > 95) return 0;
   float val = h_pt_rw[ieta]->GetBinContent(h_pt_rw[ieta]->FindBin(pt));
-  if (val==0) return 0;
-  return 1/val;
+  if (val == 0) return 0;
+  return 1 / val;
 }
-
 
 TF1* CaloAna::fitHistogram(TH1* h)
 {
@@ -665,13 +599,13 @@ TF1* CaloAna::fitHistogram(TH1* h)
   fitFunc->SetParameter(5, 0.0);
   fitFunc->SetParameter(6, 100);
 
-  fitFunc->SetParLimits(0, 0,10);
+  fitFunc->SetParLimits(0, 0, 10);
   fitFunc->SetParLimits(1, 0.113, 0.25);
   fitFunc->SetParLimits(2, 0.01, 0.04);
-  fitFunc->SetParLimits(3,-2 ,1 );
-  fitFunc->SetParLimits(4,0 ,40 );
-  fitFunc->SetParLimits(5, -150,50 );
-  fitFunc->SetParLimits(6, 0,200 );
+  fitFunc->SetParLimits(3, -2, 1);
+  fitFunc->SetParLimits(4, 0, 40);
+  fitFunc->SetParLimits(5, -150, 50);
+  fitFunc->SetParLimits(6, 0, 200);
 
   fitFunc->SetRange(0.05, 0.7);
 
@@ -680,7 +614,6 @@ TF1* CaloAna::fitHistogram(TH1* h)
 
   return fitFunc;
 }
-
 
 void CaloAna::fitEtaSlices(const std::string& infile, const std::string& fitOutFile, const std::string& cdbFile)
 {
@@ -702,7 +635,7 @@ void CaloAna::fitEtaSlices(const std::string& infile, const std::string& fitOutF
   for (int i = 0; i < 96; i++)
   {
     h_M_eta[i] = (TH1F*) fin->Get(Form("h_mass_eta_lt_rw%d", i));
-    h_M_eta[i]->Scale(1./h_M_eta[i]->Integral(),"width");
+    h_M_eta[i]->Scale(1. / h_M_eta[i]->Integral(), "width");
   }
 
   TF1* fitFunOut[96];
@@ -714,27 +647,28 @@ void CaloAna::fitEtaSlices(const std::string& infile, const std::string& fitOutF
     }
 
     fitFunOut[i] = fitHistogram(h_M_eta[i]);
-    fitFunOut[i]->SetName(Form("f_pi0_eta%d",i));
+    fitFunOut[i]->SetName(Form("f_pi0_eta%d", i));
     float mass_val_out = fitFunOut[i]->GetParameter(1);
     float mass_err_out = fitFunOut[i]->GetParError(1);
     h_peak_eta->SetBinContent(i + 1, mass_val_out);
-    if (isnan(h_M_eta[i]->GetEntries())){
-       h_peak_eta->SetBinError(i + 1, 0);
-       continue;
+    if (isnan(h_M_eta[i]->GetEntries()))
+    {
+      h_peak_eta->SetBinError(i + 1, 0);
+      continue;
     }
     h_peak_eta->SetBinError(i + 1, mass_err_out);
-    h_sigma_eta->SetBinContent(i+1,fitFunOut[i]->GetParameter(2));
-    h_sigma_eta->SetBinError(i+1,fitFunOut[i]->GetParError(2));
-    h_p3_eta->SetBinContent(i+1,fitFunOut[i]->GetParameter(3));
-    h_p3_eta->SetBinError(i+1,fitFunOut[i]->GetParError(3));
-    h_p4_eta->SetBinContent(i+1,fitFunOut[i]->GetParameter(4));
-    h_p4_eta->SetBinError(i+1,fitFunOut[i]->GetParError(4));
-    h_p5_eta->SetBinContent(i+1,fitFunOut[i]->GetParameter(5));
-    h_p5_eta->SetBinError(i+1,fitFunOut[i]->GetParError(5));
-    h_p6_eta->SetBinContent(i+1,fitFunOut[i]->GetParameter(6));
-    h_p6_eta->SetBinError(i+1,fitFunOut[i]->GetParError(6));
-    h_p0_eta->SetBinContent(i+1,fitFunOut[i]->GetParameter(0));
-    h_p0_eta->SetBinError(i+1,fitFunOut[i]->GetParError(0));
+    h_sigma_eta->SetBinContent(i + 1, fitFunOut[i]->GetParameter(2));
+    h_sigma_eta->SetBinError(i + 1, fitFunOut[i]->GetParError(2));
+    h_p3_eta->SetBinContent(i + 1, fitFunOut[i]->GetParameter(3));
+    h_p3_eta->SetBinError(i + 1, fitFunOut[i]->GetParError(3));
+    h_p4_eta->SetBinContent(i + 1, fitFunOut[i]->GetParameter(4));
+    h_p4_eta->SetBinError(i + 1, fitFunOut[i]->GetParError(4));
+    h_p5_eta->SetBinContent(i + 1, fitFunOut[i]->GetParameter(5));
+    h_p5_eta->SetBinError(i + 1, fitFunOut[i]->GetParError(5));
+    h_p6_eta->SetBinContent(i + 1, fitFunOut[i]->GetParameter(6));
+    h_p6_eta->SetBinError(i + 1, fitFunOut[i]->GetParError(6));
+    h_p0_eta->SetBinContent(i + 1, fitFunOut[i]->GetParameter(0));
+    h_p0_eta->SetBinError(i + 1, fitFunOut[i]->GetParError(0));
   }
 
   CDBTTree* cdbttree1 = new CDBTTree(cdbFile.c_str());
@@ -786,19 +720,19 @@ void CaloAna::fitEtaSlices(const std::string& infile, const std::string& fitOutF
 }
 
 // function to generate random numbers
-double CaloAna::generateRandomNumber() {
-    std::normal_distribution<double> dist(0.0, 1.0);// mean 0, sigma 1
-    float rand=dist(rng);
-    //cout << "test rnd gen code: " << rand << endl;
-    return rand;
+double CaloAna::generateRandomNumber()
+{
+  std::normal_distribution<double> dist(0.0, 1.0);  // mean 0, sigma 1
+  float rand = dist(rng);
+  // cout << "test rnd gen code: " << rand << endl;
+  return rand;
 }
 
 // function to smear photon 4 vectors
 
-TLorentzVector CaloAna::SmearPhoton4vector(TLorentzVector sourcephoton, double smearfactor) {
-  double smear= generateRandomNumber()*smearfactor  + 1 ;
-  TLorentzVector smearedphoton=sourcephoton*smear;
+TLorentzVector CaloAna::SmearPhoton4vector(TLorentzVector sourcephoton, double smearfactor)
+{
+  double smear = generateRandomNumber() * smearfactor + 1;
+  TLorentzVector smearedphoton = sourcephoton * smear;
   return smearedphoton;
 }
-
-
