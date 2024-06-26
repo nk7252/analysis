@@ -451,7 +451,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       /////////////////////////////////////////////////
       //// Truth info
-      //float wieght = 1;
+      // float wieght = 1;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
       vector<TLorentzVector> truth_photons;
       if (truthinfo)
@@ -460,7 +460,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
         {
           // Get truth particle
-          //PHG4Particle* particle = truthinfo->GetParticle(1);  // primary for the SPMC
+          // PHG4Particle* particle = truthinfo->GetParticle(1);  // primary for the SPMC
           const PHG4Particle* truth = iter->second;
           if (!truthinfo->is_primary(truth)) continue;
           TLorentzVector myVector;
@@ -469,9 +469,48 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_truth_e->Fill(energy, wieght);
           h_truth_eta->Fill(myVector.Eta());
           h_truth_pt->Fill(myVector.Pt());
-          //weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
-          //h_truth_pt->Fill(myVector.Pt(), weight);
-          // int id =  truth->get_pid();
+          // weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
+          // h_truth_pt->Fill(myVector.Pt(), weight);
+          //  int id =  truth->get_pid();
+          //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
+          //  std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
+          double t = 4.5;
+          double w = 0.114;
+          double A = 229.6;
+          double B = 14.43;
+          double n = 8.1028;
+          double m_param = 10.654;
+          double p0 = 1.466;
+          double Pt = myVector.Pt();
+          double weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
+          inv_yield = WeightScale * Pt * weight_function;  //
+          h_InvMass_badcalib_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
+          // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
+          h_inv_yield->Fill(inv_yield);
+          h_InvMass_weighted->Fill(pi0.M(), inv_yield);
+
+          if (debug)// break up inv mass spectrum if debugging.
+          {
+            for (size_t i = 0; i < 3; i++)
+            {
+              if (std::abs(myVector.Eta()) > etaRanges[i].first && std::abs(myVector.Eta()) < etaRanges[i].second)
+              {
+                if (Pt < 4.75)
+                {
+                  h_InvMass_smear_risingpt[i]->Fill(pi0smearvec[2].M());
+                }
+                else if (4.75 < Pt && Pt < 5.25)
+                {
+                  h_InvMass_smear_flatpt[i]->Fill(pi0smearvec[2].M());
+                }
+                else
+                {
+                  h_InvMass_smear_fallingpt[i]->Fill(pi0smearvec[2].M());
+                }
+              }
+            }
+          }
+
           if (debug) std::cout << "M=" << myVector.M() << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
         }
 
@@ -515,46 +554,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             h_matched_res->Fill(res, photon1.Eta());
           }
         }
-
-        //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
-        double t = 4.5; 
-        double w = 0.114;
-        double A = 229.6;
-        double B = 14.43;
-        double n = 8.1028;
-        double m_param = 10.654;
-        double p0 = 1.466;
-        double Pt = myVector.Pt();
-        double weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
-        inv_yield = WeightScale * Pt * weight_function;  //
-        // std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
-
-        for (size_t i = 0; i < 3; i++)
-        {
-          if (std::abs(myVector.Eta()) > etaRanges[i].first && std::abs(myVector.Eta()) < etaRanges[i].second)
-          {
-            if (Pt < 4.75)
-            {
-              h_InvMass_smear_risingpt[i]->Fill(pi0smearvec[2].M());
-            }
-            else if (4.75 < Pt && Pt < 5.25)
-            {
-              h_InvMass_smear_flatpt[i]->Fill(pi0smearvec[2].M());
-            }
-            else
-            {
-              h_InvMass_smear_fallingpt[i]->Fill(pi0smearvec[2].M());
-            }
-          }
-        }
       }
-
-
-      h_InvMass_badcalib_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
-      //h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
-      h_inv_yield->Fill(inv_yield);
-      h_InvMass_weighted->Fill(pi0.M(), inv_yield);
-
+      
       h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
