@@ -464,10 +464,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
           float energy = myVector.E();
           weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
-          h_truth_e->Fill(energy, wieght);
-          h_truth_eta->Fill(myVector.Eta());
-          h_truth_pt->Fill(myVector.Pt());  
-          // h_truth_pt->Fill(myVector.Pt(), weight);
+          h_truth_e->Fill(energy, weight);
+          h_truth_eta->Fill(myVector.Eta(), weight);
+          //h_truth_pt->Fill(myVector.Pt());  
+          h_truth_pt->Fill(myVector.Pt(), weight);
           //  int id =  truth->get_pid();
           //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
           //  std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
