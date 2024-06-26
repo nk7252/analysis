@@ -107,7 +107,6 @@ class CaloAna : public SubsysReco
   TH1* h_delR_recTrth = nullptr;
   TH1* h_matched_res;
   TH1* h_totalzdc_e;
-  TH1* h_delR_recTrth = nullptr;
 
   TProfile2D*    h_cemc_etaphi_time = nullptr;
   TProfile2D*  h_hcalin_etaphi_time = nullptr;
@@ -209,7 +208,6 @@ class CaloAna : public SubsysReco
   TH1F* h_pt_eta_rw[96];
   TH1F* h_pt_rw[96];
   TFile* frw;
-  TH1* h_matched_res;
   TH1F* h_emcal_e_eta;
   TH1F* h_truth_eta;
   TH1F* h_truth_phi;

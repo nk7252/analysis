@@ -448,7 +448,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       /////////////////////////////////////////////////
       //// Truth info
-      float wieght = 1;
+      float weight = 1;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
       vector<TLorentzVector> truth_photons;
       if (truthinfo)
