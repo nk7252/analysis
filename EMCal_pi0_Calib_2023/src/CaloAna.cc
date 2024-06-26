@@ -344,7 +344,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   vector<float> save_phi;
   vector<float> save_e;
 
-  float smear = 0.00;
+  //float smear = 0.00;
 
   for (clusterIter = clusterEnd.first; clusterIter != clusterEnd.second; clusterIter++)
   {
@@ -358,7 +358,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_eta = E_vec_cluster.pseudoRapidity();
     float clus_phi = E_vec_cluster.phi();
     float clus_pt = E_vec_cluster.perp();
-    clus_pt *= rnd->Gaus(1, smear);
+    //clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
     if (clus_chisq > clus_chisq_cut && cutson) continue;
     TLorentzVector photon1;
@@ -396,9 +396,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     h_pt_eta[lt_eta]->Fill(clus_pt);
 
     if (dynMaskClus && hotClus == true && cutson) continue;
-
-    TLorentzVector photon2;
-    photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
 
     for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
     {
@@ -451,7 +448,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       /////////////////////////////////////////////////
       //// Truth info
-      // float wieght = 1;
+      float wieght = 1;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
       vector<TLorentzVector> truth_photons;
       if (truthinfo)
@@ -466,10 +463,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           TLorentzVector myVector;
           myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
           float energy = myVector.E();
+          weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
           h_truth_e->Fill(energy, wieght);
           h_truth_eta->Fill(myVector.Eta());
-          h_truth_pt->Fill(myVector.Pt());
-          // weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
+          h_truth_pt->Fill(myVector.Pt());  
           // h_truth_pt->Fill(myVector.Pt(), weight);
           //  int id =  truth->get_pid();
           //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
@@ -555,7 +552,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           }
         }
       }
-      
+
       h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
