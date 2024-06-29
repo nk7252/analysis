@@ -176,7 +176,7 @@ class CaloAna : public SubsysReco
   int _eventcounter;
   int funkyCaloStuffcounter;
 
-  bool additionalsmearing = true;
+  bool additionalsmearing = false;
   bool cutson = true;
   bool poscor = false;
   std::string clustposcorstring;
