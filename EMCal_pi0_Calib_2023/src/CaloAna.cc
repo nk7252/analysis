@@ -133,7 +133,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_eta = new TH1F("h_truth_eta", "", 100, -1.2, 1.2);
   h_truth_e = new TH1F("h_truth_e", "", 100, 0, 10);
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 10);
-  h_truth_pid = new TH1F("h_truth_pid", "", 150, -30, 120);
+  h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 400, -200, 200);
+  h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 400, -200, 200);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 500, 0, 5);
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
 
@@ -344,7 +345,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   vector<float> save_phi;
   vector<float> save_e;
 
-  //float smear = 0.00;
+  // float smear = 0.00;
 
   for (clusterIter = clusterEnd.first; clusterIter != clusterEnd.second; clusterIter++)
   {
@@ -358,7 +359,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_eta = E_vec_cluster.pseudoRapidity();
     float clus_phi = E_vec_cluster.phi();
     float clus_pt = E_vec_cluster.perp();
-    //clus_pt *= rnd->Gaus(1, smear);
+    // clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
     if (clus_chisq > clus_chisq_cut && cutson) continue;
     TLorentzVector photon1;
@@ -366,7 +367,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
 
-    if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson) continue;
+    if (additionalsmearing)
+    {
+      if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson) continue;
+    }
+    else if (!additionalsmearing)
+    {
+      if ((photon1[0].Pt() < pt1ClusCut || photon1[0].Pt() > ptMaxCut) && cutson) continue;
+    }
 
     h_clusE->Fill(clusE);
     // if (clusE < 0.2) continue;
@@ -419,15 +427,22 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       TLorentzVector pi0 = photon1 + photon2;
 
       pi0smearvec[1] = SmearPhoton4vector(photon2, badcalibsmear);
-
-      if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson) continue;
-
-      if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson) continue;
-      if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson) continue;
-
+      
       pi0smearvec[2] = pi0smearvec[0] + pi0smearvec[1];
-      if (pi0smearvec[2].Pt() < pi0ptcut) continue;
-
+      if (additionalsmearing)
+      {
+        if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson) continue;
+        if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson) continue;
+        if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson) continue;
+        if (pi0smearvec[2].Pt() < pi0ptcut) continue;
+      }
+      else if (!additionalsmearing)
+      {
+        if ((photon2.Pt() < pt2ClusCut || photon2.Pt() > ptMaxCut) && cutson) continue;
+        if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson) continue;
+        if (photon1.DeltaR(photon2) > maxDr && cutson) continue;
+        if (pi0.Pt() < pi0ptcut) continue;
+      }
       // loop over the towers in the cluster
       RawCluster::TowerConstRange towerCR2 = recoCluster2->get_towers();
       RawCluster::TowerConstIterator toweriter2;
@@ -466,9 +481,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
           h_truth_e->Fill(energy, weight);
           h_truth_eta->Fill(myVector.Eta(), weight);
-          //h_truth_pt->Fill(myVector.Pt());  
+          // h_truth_pt->Fill(myVector.Pt());
           h_truth_pt->Fill(myVector.Pt(), weight);
-          //  int id =  truth->get_pid();
+          int id =  truth->get_pid();
+          h_truth_pid_p->Fill(id);
           //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
           //  std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
           double t = 4.5;
@@ -486,7 +502,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_inv_yield->Fill(inv_yield);
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
 
-          if (debug)// break up inv mass spectrum if debugging.
+          if (additionalsmearing)  // break up inv mass spectrum if debugging.
           {
             for (size_t i = 0; i < 3; i++)
             {
@@ -519,7 +535,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           if (m_g4 >= 19999) break;
           // Get photons from pi0 decays
           const PHG4Particle* truth = siter->second;
-
+          int id =  truth->get_pid();
+          h_truth_pid_s->Fill(id);
           if (truth->get_pid() == 22)
           {
             PHG4Particle* parent = truthinfo->GetParticle(truth->get_parent_id());
@@ -553,7 +570,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         }
       }
 
-      h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
+      
+      if (additionalsmearing)
+      {
+        h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
+      }
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
       h_pTdiff_InvMass->Fill(pi0.Pt(), pi0.M());

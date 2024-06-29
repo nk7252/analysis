@@ -178,7 +178,7 @@ class CaloAna : public SubsysReco
 
   bool additionalsmearing = true;
   bool cutson = true;
-  bool poscor = true;
+  bool poscor = false;
   std::string clustposcorstring;
 
   //cuts
@@ -215,7 +215,8 @@ class CaloAna : public SubsysReco
   TH1F* h_truth_pt;
   TH1F* h_pion_pt;
   TH1F* h_pion_pt_weight;
-  TH1F* h_truth_pid;
+  TH1F* h_truth_pid_p;
+  TH1F* h_truth_pid_s;
   TH1F* h_truth_pid_cuts[6];
   TH1F* h_inv_yield;
   TH1F* h_smear_pi0E;
