@@ -373,7 +373,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
     else if (!additionalsmearing)
     {
-      if ((photon1[0].Pt() < pt1ClusCut || photon1[0].Pt() > ptMaxCut) && cutson) continue;
+      if ((photon1.Pt() < pt1ClusCut || photon1.Pt() > ptMaxCut) && cutson) continue;
     }
 
     h_clusE->Fill(clusE);
