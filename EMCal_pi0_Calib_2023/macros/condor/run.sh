@@ -18,9 +18,21 @@ fi
   rm $listfile2
 
   #CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 10000 DST_CALO_CLUSTER G4Hits
-  CreateFileList.pl DST_CALO_CLUSTER DST_GLOBAL G4Hits -type 3 -run 11 -nopileup -n 1000000
+  CreateFileList.pl DST_CALO_CLUSTER DST_GLOBAL G4Hits -type 3 -run 11 -nopileup -n 10000000
+
   #number of jobs
   j=500
+
+  # Count the number of lines in dst_calo_cluster.list
+  #num_lines=$(wc -l < dst_calo_cluster.list)
+
+  # Set j to half the number of lines (round down)
+  #j=$((num_lines / 2))
+
+  # Cap j at 1000 if it exceeds this value
+  #if [ $j -gt 1000 ]; then
+  #  j=1000
+  #fi
 
   tot_files=$( cat ${listfile} | wc -l )
   echo "total files: $tot_files"
