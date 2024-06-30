@@ -230,16 +230,8 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   leg1->AddEntry(polyPart, "Background Fit");
   leg1->AddEntry(combinedFit, "Combined Fit");
   leg1->Draw();
-  // Access the list of legend entries
-  TList *legendEntries = leg1->GetListOfPrimitives();
-  // Set the alignment and text size for individual entries
-  TLatex *entry1 = (TLatex*)legendEntries->At(1)->GetObject();
-  entry1->SetTextAlign(12);  // Center-left alignment
-  //entry1->SetTextSize(0.04); // Larger text size
 
-  TLatex *entry2 = (TLatex*)legendEntries->At(2)->GetObject();
-  entry2->SetTextAlign(12);  // Center-right alignment
-  //entry2->SetTextSize(0.02); // Smaller text size
+  leg1->SetTextAlign(12);  // Center-left alignment
   // Update the canvas
   c1->Update();
 
