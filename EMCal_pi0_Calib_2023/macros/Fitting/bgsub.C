@@ -252,6 +252,7 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   leg->SetFillStyle(0);
   leg->AddEntry("", "#it{#bf{sPHENIX}} Internal", "");
   leg->AddEntry("", "pythia:p+p #sqrt{s_{NN}} = 200 GeV", "");
+  leg->SetTextAlign(32);  // Center-left alignment
   histSubtracted->SetStats(0);
 
   TPaveText *pt2 = new TPaveText(xbleft + .1, 0.5, xtright, 0.78, "NDC");  // Adjust coordinates as needed
