@@ -246,7 +246,7 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   histSubtracted->GetYaxis()->SetTitleOffset(1.5);
   float xbleft = 0.5;
   float ybleft = 0.8;
-  float xtright = 0.85;
+  float xtright = 0.93;
   float ytright = 0.93;
   TLegend *leg = new TLegend(xbleft, ybleft, xtright, ytright);
   leg->SetFillStyle(0);
