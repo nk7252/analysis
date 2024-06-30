@@ -231,7 +231,7 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   leg1->AddEntry(combinedFit, "Combined Fit");
   leg1->Draw();
 
-  leg1->SetTextAlign(12);  // Center-left alignment
+  leg1->SetTextAlign(32);  // Center-left alignment
   // Update the canvas
   c1->Update();
 
