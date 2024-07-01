@@ -93,7 +93,7 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
     //old file->cluster dependent cuts. sig fraction implement that cut. cut on centrality? 
     //TFile *file = new TFile("diClusMass_23726_23746_nomPi0CalibCuts.root");
     //new file. cluster dependent cut removed.
-    TFile *file = new TFile("diClusMass_allruns_peripheral.root");
+    TFile *file = new TFile("../condor/output/merged_file.root");
     TH1F *hist = (TH1F*)file->Get("h_InvMass");
     
     // Rebin the histogram to have 'numBins' bins
