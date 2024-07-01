@@ -222,7 +222,7 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   combinedFit->Draw("SAME");  // draw the combined fit
 
   // Add a legend
-  TLegend *leg1 = new TLegend(0.5, 0.5, 0.95, 0.85);  // bot left x, bot left y, top right x, top right y
+  TLegend *leg1 = new TLegend(0.5, 0.5, 0.95, 0.95);  // bot left x, bot left y, top right x, top right y
   //0.5, 0.2, 0.85, 0.5  bottom right
   leg1->SetFillStyle(0);
   leg1->AddEntry("", "#it{#bf{sPHENIX}} Internal", "");
@@ -230,6 +230,8 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   leg1->AddEntry(polyPart, "Background Fit");
   leg1->AddEntry(combinedFit, "Combined Fit");
   leg1->Draw();
+  leg1->GetListOfPrimitives()->At(1)->SetTextAlign(12);  // Set the text alignment to left
+  leg1->GetListOfPrimitives()->At(2)->SetTextAlign(12);  // Set the text alignment to left
 
   // Save the canvas
   c1->SaveAs("combined_fits.pdf");
@@ -247,7 +249,7 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   TLegend *leg = new TLegend(xbleft, ybleft, xtright, ytright);
   leg->SetFillStyle(0);
   leg->AddEntry("", "#it{#bf{sPHENIX}} Internal", "");
-  leg->AddEntry("", "Au+Au #sqrt{s_{NN}} = 200 GeV", "");
+  leg->AddEntry("", "pythia:p+p #sqrt{s_{NN}} = 200 GeV", "");
   histSubtracted->SetStats(0);
 
   TPaveText *pt2 = new TPaveText(xbleft + .1, 0.5, xtright, 0.78, "NDC");  // Adjust coordinates as needed
