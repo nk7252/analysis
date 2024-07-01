@@ -129,7 +129,7 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   //  limits on gauss and poly
   float leftpolylim = 0.11;
   float rightpolylim = 0.19;
-  hist->GetXaxis()->SetRangeUser(0, 0.4);
+  hist->GetXaxis()->SetRangeUser(0, 1.0);
   // Double_t scale_factor = 2.5; // Replace with the factor by which you want to scale the errors
   // Double_t error_replace= 0.1;
   scale_histogram_errors(hist, scale_factor);
