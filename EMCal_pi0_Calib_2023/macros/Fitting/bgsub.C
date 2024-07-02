@@ -319,6 +319,7 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
   // Overall limits
   float rightmost_limit = 0.3;  // fit range limit
   float leftmost_limit = 0.05;  // fit range limit. normally 0.05
+  
   // Limits on gauss and poly
   float leftpolylim = 0.11;
   float rightpolylim = 0.19;
@@ -413,6 +414,7 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
       etaPeak.push_back(0);
       etaRes.push_back(0);
     }
+
     // Create a new function for just the polynomial part
     TF1 *polyPart = new TF1("polyPart", "pol4", leftmost_limit, rightmost_limit);
     for (int j = 0; j < 5; ++j) polyPart->SetParameter(j, combinedFit->GetParameter(j + 3));
@@ -518,11 +520,14 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
     TCanvas *cEtaRes = new TCanvas("cEtaRes", "Eta Relative Resolution", 800, 600);
     gEtaRes->Draw("ALP");
     cEtaRes->Print("2D_Histogram_Fits.pdf");
+
+    // Clean up for eta graphs
     delete cEtaPeak;
     delete cEtaRes;
     delete gEtaPeak;
     delete gEtaRes;
   }
+
   // Close the PDF file
   dummyCanvas->Print("2D_Histogram_Fits.pdf]");
 
