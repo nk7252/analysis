@@ -138,7 +138,7 @@ void fit_histogram(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, f
   }
 
   // Overall limits
-  float rightmost_limit = 0.3;  // fit range limit
+  float rightmost_limit = 0.9;  // fit range limit
   float leftmost_limit = 0.05;  // fit range limit. normally 0.05
   // Limits on gauss and poly
   float leftpolylim = 0.11;
@@ -327,7 +327,7 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
     if (endBin == -1) endBin = nBinsX;  // Default to the last bin if not specified
 
     // Overall limits
-    float rightmost_limit = 0.3;  // fit range limit
+    float rightmost_limit = 0.9;  // fit range limit
     float leftmost_limit = 0.05;  // fit range limit. normally 0.05
     // Limits on gauss and poly
     float leftpolylim = 0.11;
@@ -569,7 +569,6 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
     delete gPionPeak;
     delete gPionRes;
 }
-
 
 void bgsub(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
 {
