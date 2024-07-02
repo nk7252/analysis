@@ -116,7 +116,7 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, Double_t scale_fac
   }
 }
 
-void fit_histogram(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3, bool fitEtaPeak = false)
+void fit_histogram(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.9, bool fitEtaPeak = false)
 {
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   SetsPhenixStyle();
@@ -281,18 +281,26 @@ void fit_histogram(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, f
   pt->AddText("Data Fit");
   pt->AddText("Fit Parameters:");
   pt->AddText(Form("Combined Fit Range = %f to %f", leftmost_limit, rightmost_limit));
-  pt->AddText(Form("Peak Mean = %f +/- %f", combinedFit->GetParameter(1), combinedFit->GetParError(1)));
-  pt->AddText(Form("Peak Sigma = %f +/- %f", combinedFit->GetParameter(2), combinedFit->GetParError(2)));
+  pt->AddText(Form("Pion Peak Mean = %f +/- %f", combinedFit->GetParameter(1), combinedFit->GetParError(1)));
+  pt->AddText(Form("Pion Peak Sigma = %f +/- %f", combinedFit->GetParameter(2), combinedFit->GetParError(2)));
   if (fitEtaPeak)
   {
     pt->AddText(Form("Eta Peak Mean = %f +/- %f", combinedFit->GetParameter(9), combinedFit->GetParError(9)));
     pt->AddText(Form("Eta Peak Sigma = %f +/- %f", combinedFit->GetParameter(10), combinedFit->GetParError(10)));
+    pt->AddText(Form("Eta Peak Relative Width = %f", combinedFit->GetParameter(10)/combinedFit->GetParameter(9)));
   }
   pt->AddText(Form("Background Subtracted Peak Fit = %f to %f", leftmost_gauslimit, rightmost_gauslimit));
-  pt->AddText(Form("Mean = %f +/- %f", gausFit2->GetParameter(1), gausFit2->GetParError(1)));
-  pt->AddText(Form("Sigma = %f +/- %f", gausFit2->GetParameter(2), gausFit2->GetParError(2)));
-  pt->AddText(Form("Relative Width: %f", gausFit2->GetParameter(2) * 100.0f / gausFit2->GetParameter(1)));
-  pt->AddText(Form("Chi2/NDF = %f / %d = %f", gausFit2->GetChisquare(), gausFit2->GetNDF(), gausFit2->GetChisquare() / gausFit2->GetNDF()));
+  pt->AddText(Form("Pion Mean = %f +/- %f", gausFit2->GetParameter(1), gausFit2->GetParError(1)));
+  pt->AddText(Form("Pion Sigma = %f +/- %f", gausFit2->GetParameter(2), gausFit2->GetParError(2)));
+  pt->AddText(Form("Pion Relative Width: %f", gausFit2->GetParameter(2) * 100.0f / gausFit2->GetParameter(1)));
+  pt->AddText(Form("Pion Chi2/NDF = %f / %d = %f", gausFit2->GetChisquare(), gausFit2->GetNDF(), gausFit2->GetChisquare() / gausFit2->GetNDF()));
+  if (fitEtaPeak)
+  {
+    //pt->AddText(Form("Pion Mean = %f +/- %f", gausFit2->GetParameter(1), gausFit2->GetParError(1)));
+    //pt->AddText(Form("Pion Sigma = %f +/- %f", gausFit2->GetParameter(2), gausFit2->GetParError(2)));
+    //pt->AddText(Form("Pion Relative Width: %f", gausFit2->GetParameter(2) * 100.0f / gausFit2->GetParameter(1)));
+    //pt->AddText(Form("Pion Chi2/NDF = %f / %d = %f", gausFit2->GetChisquare(), gausFit2->GetNDF(), gausFit2->GetChisquare() / gausFit2->GetNDF()));
+  }
 
   pt->Draw();
   c3->Print("fit_results.pdf");
