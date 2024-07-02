@@ -313,6 +313,13 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
     int nBinsX = hist2D->GetNbinsX();
     int nBinsY = hist2D->GetNbinsY();
 
+      // overall limits
+    float rightmost_limit = 0.3;  // fit range limit
+    float leftmost_limit = 0.05;  // fit range limit. normally 0.05
+    //  limits on gauss and poly
+    float leftpolylim = 0.11;
+    float rightpolylim = 0.19;
+
     // Create a PDF to save the canvases
     TCanvas *c = new TCanvas("c", "2D Histogram Fits", 800, 600);
     c->Print("2D_Histogram_Fits.pdf[");
