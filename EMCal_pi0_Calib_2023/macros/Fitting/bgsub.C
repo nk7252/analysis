@@ -106,7 +106,7 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, Double_t scale_fac
   }
 }
 
-void fit_histogram(Double_t scale_factor = 1, float leftmost_gauslimit, float rightmost_gauslimit, bool fitEtaPeak = false)
+void fit_histogram(Double_t scale_factor = 1, float leftmost_gauslimit= 0.05, float rightmost_gauslimit= 0.3, bool fitEtaPeak = false)
 {
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   SetsPhenixStyle();
