@@ -319,7 +319,7 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
   // Overall limits
   float rightmost_limit = 0.3;  // fit range limit
   float leftmost_limit = 0.05;  // fit range limit. normally 0.05
-  
+
   // Limits on gauss and poly
   float leftpolylim = 0.11;
   float rightpolylim = 0.19;
@@ -543,6 +543,6 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
 void bgsub(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
 {
   fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, false);
-  fit_2d_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, false, startBin = 1, endBin = -1);
+  fit_2d_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, false, 1, -1);
   // return 0;
 }
