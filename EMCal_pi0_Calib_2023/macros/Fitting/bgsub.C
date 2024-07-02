@@ -51,7 +51,6 @@ void scale_histogram_errors(TH1F *hist_error_scale, Double_t scale_factor)
     // std::cout << "orig bin cont: " << hist_error_scale->GetBinContent(i) << " . bin error: " << current_error << " . New bin error: " << hist_error_scale->GetBinError(i) <<std::endl;
   }
 }
-// try ignoring the errors
 // scale the histogram's error bars
 void replace_histogram_errors(TH1F *hist_error_replace, Double_t error_replace)
 {
@@ -93,7 +92,7 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, Double_t scale_fac
   }
 }
 
-void fit_histogram(Double_t scale_factor=1, float leftmost_gauslimit, float rightmost_gauslimit)
+void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightmost_gauslimit)
 {
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
@@ -303,7 +302,7 @@ void fit_histogram(Double_t scale_factor=1, float leftmost_gauslimit, float righ
   delete leg1;
 }
 
-void fit_2d_histogram(Double_t scale_factor=1, float leftmost_gauslimit, float rightmost_gauslimit) {
+void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightmost_gauslimit) {
     ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
     SetsPhenixStyle();
 
@@ -430,7 +429,7 @@ void fit_2d_histogram(Double_t scale_factor=1, float leftmost_gauslimit, float r
     delete c;
 }
 
-void bgsub(Double_t scale_factor, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
+void bgsub(Double_t scale_factor=1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
 {
   fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit);
   fit_2d_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit);
