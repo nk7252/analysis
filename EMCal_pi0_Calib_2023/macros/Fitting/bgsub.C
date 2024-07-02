@@ -1,10 +1,20 @@
+// root includes
 #include <Math/MinimizerOptions.h>
 #include <TCanvas.h>
 #include <TF1.h>
 #include <TFile.h>
+#include <TGraph.h>
 #include <TH1F.h>
+#include <TH2F.h>
 #include <TLegend.h>
+#include <TPaveText.h>
+#include <TString.h>
+#include <TStyle.h>
+// general includes
 #include <fstream>
+#include <iostream>
+#include <vector>
+// sphenix includes
 #include "sPhenixStyle.C"
 #include "sPhenixStyle.h"
 
@@ -106,7 +116,7 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, Double_t scale_fac
   }
 }
 
-void fit_histogram(Double_t scale_factor = 1, float leftmost_gauslimit= 0.05, float rightmost_gauslimit= 0.3, bool fitEtaPeak = false)
+void fit_histogram(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3, bool fitEtaPeak = false)
 {
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   SetsPhenixStyle();
@@ -319,7 +329,6 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
   // Overall limits
   float rightmost_limit = 0.3;  // fit range limit
   float leftmost_limit = 0.05;  // fit range limit. normally 0.05
-
   // Limits on gauss and poly
   float leftpolylim = 0.11;
   float rightpolylim = 0.19;
@@ -434,6 +443,7 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
 
     // Draw the fits and subtracted histograms
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
+    hist->SetTitle(Form("Combined Fit; Inv. Mass (GeV); Counts; pT: %s", ptRange.Data()));
     hist->Draw("E");
     polyPart->SetLineColor(kRed);
     polyPart->Draw("SAME");
@@ -452,9 +462,9 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
     c1->Print("2D_Histogram_Fits.pdf");
 
     TCanvas *c2 = new TCanvas(Form("c2_%s", ptRange.Data()), "Subtracted Peak", 800, 600);
+    histSubtracted->SetTitle(Form("Background Subtracted Peak; Inv. Mass (GeV); Counts (Background subtracted); pT: %s", ptRange.Data()));
     histSubtracted->Draw();
     histSubtracted->SetMinimum(0.0);
-    histSubtracted->SetTitle("Background Subtracted Peak; Inv. Mass (GeV); Counts (Background subtracted)");
     histSubtracted->GetYaxis()->SetTitleOffset(1.5);
     TLegend *leg = new TLegend(0.5, 0.8, 0.93, 0.93);
     leg->SetFillStyle(0);
@@ -543,6 +553,6 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
 void bgsub(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
 {
   fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, false);
-  fit_2d_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, false, 1, -1);
+  fit_2d_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, false, 1, 28);
   // return 0;
 }
