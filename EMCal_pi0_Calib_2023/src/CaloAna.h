@@ -72,7 +72,7 @@ class CaloAna : public SubsysReco
   TH1F* h_InvMass_weighted = nullptr;
   TH1F* h_InvMass_w = nullptr;
   TH1F* h_InvMassMix = nullptr;
-  TH2F* h_pTdiff_InvMass = nullptr;
+  TH2F* h_InvMass_2d = nullptr;
   TH1F* h_InvMass_badcalib_smear;
   TH1F* h_InvMass_badcalib_smear_weighted;
 

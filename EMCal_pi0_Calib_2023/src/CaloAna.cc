@@ -139,10 +139,10 @@ int CaloAna::Init(PHCompositeNode*)
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
 
   // pT differential Inv Mass
-  h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 120, 0, 0.6);
-  h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 120, 0, 0.6);
+  h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 100, 0, 1.0);
+  h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 100, 0, 1.0);
   h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 100, 0, 1e13);
-  h_pTdiff_InvMass = new TH2F("h_pTdiff_InvMass", "Invariant Mass", 2 * 64, 0, 64, 100, 0, 1.2);
+  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 4 * 30, 0, 30, 100, 0, 1.0);
 
   // vector for bad calib smearing.
 
@@ -577,7 +577,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       }
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
-      h_pTdiff_InvMass->Fill(pi0.Pt(), pi0.M());
+      h_InvMass_2d->Fill(pi0.Pt(), pi0.M());
       h_pion_pt->Fill(pi0.Pt());
       h_InvMass->Fill(pi0.M());
     }  // clusterIter2

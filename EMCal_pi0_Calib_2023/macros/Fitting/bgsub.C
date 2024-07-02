@@ -93,18 +93,13 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, Double_t scale_fac
   }
 }
 
-void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightmost_gauslimit)
+void fit_histogram(Double_t scale_factor=1, float leftmost_gauslimit, float rightmost_gauslimit)
 {
-  // more thorough minimizer for fit
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
-  // Set the global fit strategy
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   SetsPhenixStyle();
 
   // Open the ROOT file and get the histogram
-  // old file->cluster dependent cuts. sig fraction implement that cut. cut on centrality?
-  // TFile *file = new TFile("diClusMass_23726_23746_nomPi0CalibCuts.root");
-  // new file. cluster dependent cut removed.
   TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/merged_file.root");
   TH1F *hist = (TH1F *) file->Get("h_InvMass");
 
@@ -124,16 +119,13 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   // overall limits
   float rightmost_limit = 0.3;  // fit range limit
   float leftmost_limit = 0.05;  // fit range limit. normally 0.05
-  // float rightmost_limit= 0.257;// fit range limit
-  // float leftmost_limit= 0.07; // fit range limit
   //  limits on gauss and poly
   float leftpolylim = 0.11;
   float rightpolylim = 0.19;
+
   hist->GetXaxis()->SetRangeUser(0, 1.0);
-  // Double_t scale_factor = 2.5; // Replace with the factor by which you want to scale the errors
-  // Double_t error_replace= 0.1;
   scale_histogram_errors(hist, scale_factor);
-  // replace_histogram_errors(hist, error_replace);
+  //replace_histogram_errors(hist, error_replace);
 
   // Fit left and right regions with a polynomial, excluding Gaussian region
   TF1 *leftRightFit = new TF1("leftRightFit", leftRightPolynomial, leftmost_limit, rightmost_limit, 5);
@@ -311,8 +303,136 @@ void fit_histogram(Double_t scale_factor, float leftmost_gauslimit, float rightm
   delete leg1;
 }
 
+void fit_2d_histogram(Double_t scale_factor=1, float leftmost_gauslimit, float rightmost_gauslimit) {
+    ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
+    SetsPhenixStyle();
+
+    // Open the ROOT file and get the 2D histogram
+    TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/merged_file.root");
+    TH2F *hist2D = (TH2F *)file->Get("h_InvMass_2d");
+
+    int nBinsX = hist2D->GetNbinsX();
+    int nBinsY = hist2D->GetNbinsY();
+
+    // Create a PDF to save the canvases
+    TCanvas *c = new TCanvas("c", "2D Histogram Fits", 800, 600);
+    c->Print("2D_Histogram_Fits.pdf[");
+
+    for (int i = 1; i <= nBinsX; ++i) {
+        // Project the histogram along the Y-axis
+        TH1D *hist = hist2D->ProjectionY(Form("proj_%d", i), i, i);
+
+        // Rebin and scale the histogram
+        int numBins = 120;
+        int currentNumBins = hist->GetNbinsX();
+        double currentXMax = hist->GetXaxis()->GetXmax();
+        int rebinFactor = currentNumBins / numBins;
+        if (rebinFactor > 1) {
+            std::cout << "current nbins: " << currentNumBins << " requested nbins: " << numBins << " rebin by: " << rebinFactor << std::endl;
+            hist->Rebin(rebinFactor);
+            std::cout << "new nbin check: " << hist->GetNbinsX() << std::endl;
+        }
+
+        // Set histogram range and scale errors
+        hist->GetXaxis()->SetRangeUser(0, 1.0);
+        scale_histogram_errors(hist, scale_factor);
+
+        // Fit left and right regions with a polynomial, excluding Gaussian region
+        TF1 *leftRightFit = new TF1("leftRightFit", leftRightPolynomial, leftmost_limit, rightmost_limit, 5);
+        hist->Fit(leftRightFit, "R");
+
+        // Fit Gaussian in the specified range
+        TF1 *gausFit = new TF1("gausFit", "gaus", leftpolylim, rightpolylim);
+        hist->Fit(gausFit, "R");
+
+        // Combined Gaussian + Polynomial fit
+        TF1 *combinedFit = new TF1("combinedFit", combinedFunction, leftmost_limit, rightmost_limit, 8);
+        for (int i = 0; i < 3; ++i) combinedFit->SetParameter(i, gausFit->GetParameter(i));
+        for (int i = 3; i < 8; ++i) combinedFit->SetParameter(i, leftRightFit->GetParameter(i - 3));
+        hist->Fit(combinedFit, "RL");
+
+        // Create a new function for just the polynomial part
+        TF1 *polyPart = new TF1("polyPart", "pol4", leftmost_limit, rightmost_limit);
+        for (int i = 0; i < 5; ++i) polyPart->SetParameter(i, combinedFit->GetParameter(i + 3));
+
+        // Create a new histogram to store the subtracted data
+        TH1F *histSubtracted = (TH1F *)hist->Clone(Form("histSubtracted_%d", i));
+        for (int i = 1; i <= hist->GetNbinsX(); ++i) {
+            double x = hist->GetBinCenter(i);
+            double y = hist->GetBinContent(i) - polyPart->Eval(x);
+            histSubtracted->SetBinContent(i, y);
+        }
+
+        TF1 *gausFit2 = new TF1("gausFit2", "gaus", leftmost_gauslimit, rightmost_gauslimit);
+        for (int i = 0; i < 3; ++i) gausFit2->SetParameter(i, combinedFit->GetParameter(i));
+        histSubtracted->Fit(gausFit2, "R");
+
+        // Draw the fits and subtracted histograms
+        TCanvas *c1 = new TCanvas(Form("c1_%d", i), "Fits", 800, 600);
+        hist->Draw("E");
+        polyPart->SetLineColor(kRed);
+        polyPart->Draw("SAME");
+        combinedFit->SetLineColor(kBlack);
+        combinedFit->Draw("SAME");
+
+        TLegend *leg1 = new TLegend(0.5, 0.5, 0.95, 0.95);
+        leg1->SetFillStyle(0);
+        leg1->AddEntry("", "#it{#bf{sPHENIX}} Internal", "");
+        leg1->AddEntry("", "pythia: p+p #sqrt{s_{NN}} = 200 GeV", "");
+        leg1->AddEntry(polyPart, "Background Fit");
+        leg1->AddEntry(combinedFit, "Combined Fit");
+        leg1->Draw();
+        leg1->SetTextAlign(32);
+        c1->Update();
+        c1->Print("2D_Histogram_Fits.pdf");
+
+        TCanvas *c2 = new TCanvas(Form("c2_%d", i), "Subtracted Peak", 800, 600);
+        histSubtracted->Draw();
+        histSubtracted->SetMinimum(0.0);
+        histSubtracted->SetTitle("Background Subtracted Peak; Inv. Mass (GeV); Counts (Background subtracted)");
+        histSubtracted->GetYaxis()->SetTitleOffset(1.5);
+        TLegend *leg = new TLegend(0.5, 0.8, 0.93, 0.93);
+        leg->SetFillStyle(0);
+        leg->AddEntry("", "#it{#bf{sPHENIX}} Internal", "");
+        leg->AddEntry("", "pythia: p+p #sqrt{s_{NN}} = 200 GeV", "");
+        leg->SetTextAlign(32);
+        histSubtracted->SetStats(0);
+
+        TPaveText *pt2 = new TPaveText(0.6, 0.5, 0.93, 0.78, "NDC");
+        pt2->SetFillColor(0);
+        pt2->SetFillStyle(0);
+        pt2->AddText(Form("#chi^{2}/NDF = %.2f", gausFit2->GetChisquare() / gausFit2->GetNDF()));
+        pt2->AddText(Form("Mean = %.4f", gausFit2->GetParameter(1)));
+        pt2->AddText(Form("Sigma = %.4f", gausFit2->GetParameter(2)));
+        pt2->AddText(Form("Relative Width: %.2f%%", gausFit2->GetParameter(2) * 100.0f / gausFit2->GetParameter(1)));
+        pt2->Draw("SAME");
+        c2->Print("2D_Histogram_Fits.pdf");
+
+        appendtextfile(combinedFit, Form("Combined Fit_%d", i), scale_factor);
+        appendtextfile(gausFit2, Form("subpgaus fit_%d", i), scale_factor);
+
+        delete hist;
+        delete leftRightFit;
+        delete gausFit;
+        delete combinedFit;
+        delete polyPart;
+        delete histSubtracted;
+        delete gausFit2;
+        delete leg1;
+        delete leg;
+        delete pt2;
+        delete c1;
+        delete c2;
+    }
+
+    c->Print("2D_Histogram_Fits.pdf]");
+    delete file;
+    delete c;
+}
+
 void bgsub(Double_t scale_factor, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
 {
   fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit);
+  fit_2d_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit);
   // return 0;
 }
