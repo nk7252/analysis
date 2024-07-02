@@ -518,6 +518,10 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
     TCanvas *cEtaRes = new TCanvas("cEtaRes", "Eta Relative Resolution", 800, 600);
     gEtaRes->Draw("ALP");
     cEtaRes->Print("2D_Histogram_Fits.pdf");
+    delete cEtaPeak;
+    delete cEtaRes;
+    delete gEtaPeak;
+    delete gEtaRes;
   }
   // Close the PDF file
   dummyCanvas->Print("2D_Histogram_Fits.pdf]");
@@ -529,13 +533,6 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
   delete cPionRes;
   delete gPionPeak;
   delete gPionRes;
-  if (fitEtaPeak)
-  {
-    delete cEtaPeak;
-    delete cEtaRes;
-    delete gEtaPeak;
-    delete gEtaRes;
-  }
 }
 
 void bgsub(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
