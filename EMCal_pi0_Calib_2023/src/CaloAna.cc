@@ -120,7 +120,6 @@ int CaloAna::Init(PHCompositeNode*)
   // cluster QA
   h_etaphi_clus = new TH2F("h_etaphi_clus", "", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
   h_clusE = new TH1F("h_clusE", "", 100, 0, 10);
-
   h_emcal_e_eta = new TH1F("h_emcal_e_eta", "", 96, 0, 96);
 
   h_pt1 = new TH1F("h_pt1", "", 100, 0, 5);
@@ -325,9 +324,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   h_nclusters->Fill(nClusCount);
 
-  if (nClusCount > max_nClusCount && cutson) return Fun4AllReturnCodes::EVENT_OK;
+  //if (nClusCount > max_nClusCount && cutson) return Fun4AllReturnCodes::EVENT_OK;
 
-  float ptMaxCut = 13;      // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
+  float ptMaxCut = 7;      // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;  // // 0.7
 
@@ -336,7 +335,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   {
     pt1ClusCut += 1.4 * (nClusCount - 29) / 200.0;
     pt2ClusCut += 1.4 * (nClusCount - 29) / 200.0;
-  }*/
+  }
+  //*/
 
   float pi0ptcut = 1.22 * (pt1ClusCut + pt2ClusCut);
 
