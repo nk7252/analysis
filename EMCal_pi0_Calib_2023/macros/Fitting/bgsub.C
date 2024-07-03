@@ -581,6 +581,6 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
 void bgsub(Double_t scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
 {
   fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true);
-  fit_2d_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true, 1, 30);
+  fit_2d_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true, 1, 24);
   // return 0;
 }
