@@ -337,7 +337,7 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
     // Overall limits
     float rightmost_limit = 0.9;  // fit range limit
     float leftmost_limit = 0.05;  // fit range limit. normally 0.05
-    
+
     // Limits on gauss and poly
     float leftpolylim = 0.11;
     float rightpolylim = 0.19;
@@ -408,9 +408,9 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
         if (fitEtaPeak)
         {
             // Set initial guesses for the second Gaussian (eta peak)
-            combinedFit->SetParameter(8, gausFit->GetParameter(0) / 3);  // Assume a smaller amplitude
-            combinedFit->SetParameter(9, 0.55);                          // Rough guess for eta peak mean
-            combinedFit->SetParameter(10, 0.05);                         // Rough guess for eta peak sigma
+            combinedFit->SetParameter(8, gausFit->GetParameter(0) / 5);  // Assume a smaller amplitude
+            combinedFit->SetParameter(9, 0.6);                          // Rough guess for eta peak mean
+            combinedFit->SetParameter(10, 0.10);                         // Rough guess for eta peak sigma
         }
 
         // Fit the combined function
@@ -475,6 +475,7 @@ void fit_2d_histogram(Double_t scale_factor, float leftmost_gauslimit, float rig
         histSubtracted->Draw();
         histSubtracted->SetMinimum(0.0);
         histSubtracted->GetYaxis()->SetTitleOffset(1.5);
+
         TLegend *leg = new TLegend(0.5, 0.8, 0.93, 0.93);
         leg->SetFillStyle(0);
         leg->AddEntry("", "#it{#bf{sPHENIX}} Internal", "");

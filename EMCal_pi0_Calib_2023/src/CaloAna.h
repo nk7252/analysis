@@ -179,6 +179,7 @@ class CaloAna : public SubsysReco
   bool additionalsmearing = false;
   bool cutson = true;
   bool poscor = false;
+  //bool pileup = false;
   std::string clustposcorstring;
 
   //cuts

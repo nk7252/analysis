@@ -141,7 +141,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 200, 0, 1.0);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 200, 0, 1.0);
   h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 100, 0, 1e13);
-  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 1 * 10, 0, 10, 100, 0, 1.0);
+  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 2 * 10, 0, 10, 100, 0, 1.0);
 
   // vector for bad calib smearing.
 
@@ -326,7 +326,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   //if (nClusCount > max_nClusCount && cutson) return Fun4AllReturnCodes::EVENT_OK;
 
-  float ptMaxCut = 7;      // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
+  float ptMaxCut = 20;      // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;  // // 0.7
 
