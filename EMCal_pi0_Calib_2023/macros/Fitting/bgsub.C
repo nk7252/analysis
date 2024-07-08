@@ -364,7 +364,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
 
   // Create a PDF to save the canvases
   TCanvas *dummyCanvas = new TCanvas();
-  dummyCanvas->Print("2D_Histogram_Fits.pdf[");
+  dummyCanvas->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf[");
 
   // Vectors to store fit results
   std::vector<double> pionPt, pionPeak, pionRes, etaPeak, etaRes;
@@ -511,7 +511,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
     leg1->Draw();
     leg1->SetTextAlign(32);
     c1->Update();
-    c1->Print("2D_Histogram_Fits.pdf");
+    c1->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf");
 
     TCanvas *c2 = new TCanvas(Form("c2_%s", ptRange.Data()), "Subtracted Peak", 800, 600);
     histSubtracted->SetTitle(Form("Background Subtracted Peak; Inv. Mass (GeV); Counts (Background subtracted); pT: %s", ptRange.Data()));
@@ -539,7 +539,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
       pt2->AddText(Form("Eta Relative Width: %.2f%%", doubleGaussFit->GetParameter(5) * 100.0f / doubleGaussFit->GetParameter(4)));
     }
     pt2->Draw("SAME");
-    c2->Print("2D_Histogram_Fits.pdf");
+    c2->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf");
 
     // Create a canvas to display the fit parameters
     TCanvas *c3 = new TCanvas(Form("fitInfo_%s", ptRange.Data()), "Fit Parameters", 800, 600);
@@ -563,7 +563,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
       fitInfo->AddText(Form("Eta Relative Width: %f", doubleGaussFit->GetParameter(5) * 100.0f / doubleGaussFit->GetParameter(4)));
     }
     fitInfo->Draw();
-    c3->Print("2D_Histogram_Fits.pdf");
+    c3->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf");
 
     appendtextfile(combinedFit, Form("Combined Fit_%s", ptRange.Data()), scale_factor);
     appendtextfile(doubleGaussFit, Form("subpgaus fit_%s", ptRange.Data()), scale_factor);
@@ -623,7 +623,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
   }
 
   // Close the PDF file
-  dummyCanvas->Print("2D_Histogram_Fits.pdf]");
+  dummyCanvas->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf]");
 
   // Clean up
   delete file;
