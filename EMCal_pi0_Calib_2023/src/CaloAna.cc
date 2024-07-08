@@ -245,7 +245,21 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float maxDr = 1.1;
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
-  float nClus_ptCut = 0.5;
+  float nClus_ptCut = 0.0;//0.5
+  float pi0ptcutfactor = 0;
+  float ptMaxCut = 100;      // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
+  float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
+  float pt2ClusCut = 0.7;  // // 0.7
+
+  /*
+  if (nClusCount > 30)
+  {
+    pt1ClusCut += 1.4 * (nClusCount - 29) / 200.0;
+    pt2ClusCut += 1.4 * (nClusCount - 29) / 200.0;
+  }
+  //*/
+
+  float pi0ptcut = pi0ptcutfactor * (pt1ClusCut + pt2ClusCut);
   //int max_nClusCount = 75;
 
   //-----------------------get vertex----------------------------------------//
@@ -325,20 +339,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   h_nclusters->Fill(nClusCount);
 
   //if (nClusCount > max_nClusCount && cutson) return Fun4AllReturnCodes::EVENT_OK;
-
-  float ptMaxCut = 20;      // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
-  float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
-  float pt2ClusCut = 0.7;  // // 0.7
-
-  /*
-  if (nClusCount > 30)
-  {
-    pt1ClusCut += 1.4 * (nClusCount - 29) / 200.0;
-    pt2ClusCut += 1.4 * (nClusCount - 29) / 200.0;
-  }
-  //*/
-
-  float pi0ptcut = 1.22 * (pt1ClusCut + pt2ClusCut);
 
   vector<float> save_pt;
   vector<float> save_eta;
