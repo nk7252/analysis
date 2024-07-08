@@ -449,7 +449,7 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
-      combinedFit->SetParameter(8, gausFit->GetParameter(0) / 3);  // Assume a smaller amplitude
+      combinedFit->SetParameter(8, gausFit->GetParameter(0) / 5);  // Assume a smaller amplitude
       combinedFit->SetParameter(9, 0.6);                          // Rough guess for eta peak mean
       combinedFit->SetParameter(10, 0.05);                         // Rough guess for eta peak sigma
     }
@@ -498,7 +498,7 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
       doubleGaussFit->SetParameter(4, combinedFit->GetParameter(9));
       doubleGaussFit->SetParameter(5, combinedFit->GetParameter(10));
     }
-    histSubtracted->Fit(doubleGaussFit, "R");
+    histSubtracted->Fit(doubleGaussFit, "RL");
 
     // Draw the fits and subtracted histograms
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
@@ -522,7 +522,8 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
 
     TCanvas *c2 = new TCanvas(Form("c2_%s", ptRange.Data()), "Subtracted Peak", 800, 600);
     histSubtracted->SetTitle(Form("Background Subtracted Peak; Inv. Mass (GeV); Counts (Background subtracted); pT: %s", ptRange.Data()));
-    histSubtracted->Draw();
+    histSubtracted->Draw("E");
+    doubleGaussFit->Draw("SAME");
     histSubtracted->SetMinimum(0.0);
     histSubtracted->GetYaxis()->SetTitleOffset(1.5);
     TLegend *leg = new TLegend(0.5, 0.8, 0.93, 0.93);
