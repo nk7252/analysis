@@ -350,7 +350,7 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
   delete dummyCanvas;
 }
 
-void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.9, bool fitEtaPeak = false, int startBin = 1, int endBin = -1)
+void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_right_limit,float gaus1_left_limit, float gaus1_right_limit,float gaus2_left_limit = 0.5, float gaus2_right_limit = 0.7,bool fitEtaPeak = false, int startBin = 1, int endBin = -1)
 {
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   SetsPhenixStyle();
@@ -361,13 +361,6 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
 
   int nBinsX = hist2D->GetNbinsX();
   if (endBin == -1) endBin = nBinsX;  // Default to the last bin if not specified
-
-  // Overall limits
-  float rightmost_limit = 0.3;  // fit range limit
-  float leftmost_limit = 0.05;  // fit range limit. normally 0.05
-  // Limits on gauss and poly
-  float leftpolylim = 0.11;
-  float rightpolylim = 0.19;
 
   // Create a PDF to save the canvases
   TCanvas *dummyCanvas = new TCanvas();
@@ -413,33 +406,33 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
     TF1 *leftRightFit;
     if (fitEtaPeak)
     {
-      leftRightFit = new TF1("leftRightFit", leftRightPolynomial, leftmost_limit, rightmost_limit, 9);
-      leftRightFit->SetParameter(5, leftpolylim);
-      leftRightFit->SetParameter(6, rightpolylim);
-      leftRightFit->SetParameter(7, 0.5);  // Rough estimate for eta peak start
-      leftRightFit->SetParameter(8, 0.7);  // Rough estimate for eta peak end
+      leftRightFit = new TF1("leftRightFit", leftRightPolynomial, poly_left_limit, poly_right_limit, 9);
+      leftRightFit->SetParameter(5, gaus1_left_limit);
+      leftRightFit->SetParameter(6, gaus1_right_limit);
+      leftRightFit->SetParameter(7, gaus2_left_limit);
+      leftRightFit->SetParameter(8, gaus2_right_limit);
     }
     else
     {
-      leftRightFit = new TF1("leftRightFit", leftRightPolynomial, leftmost_limit, rightmost_limit, 7);
-      leftRightFit->SetParameter(5, leftpolylim);
-      leftRightFit->SetParameter(6, rightpolylim);
+      leftRightFit = new TF1("leftRightFit", leftRightPolynomial, poly_left_limit, poly_right_limit, 7);
+      leftRightFit->SetParameter(5, gaus1_left_limit);
+      leftRightFit->SetParameter(6, gaus1_right_limit);
     }
     hist->Fit(leftRightFit, "R");
 
     // Fit Gaussian in the specified range
-    TF1 *gausFit = new TF1("gausFit", "gaus", leftpolylim, rightpolylim);
+    TF1 *gausFit = new TF1("gausFit", "gaus", gaus1_left_limit, gaus1_right_limit);
     hist->Fit(gausFit, "R");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
     if (fitEtaPeak)
     {
-      combinedFit = new TF1("combinedFit", combinedFunctionDoubleGauss, leftmost_limit, rightmost_limit, 11);  // 2 Gaussians + 1 polynomial = 3 + 3 + 5
+      combinedFit = new TF1("combinedFit", combinedFunctionDoubleGauss, poly_left_limit, poly_right_limit, 11);  // 2 Gaussians + 1 polynomial = 3 + 3 + 5
     }
     else
     {
-      combinedFit = new TF1("combinedFit", combinedFunction, leftmost_limit, rightmost_limit, 8);
+      combinedFit = new TF1("combinedFit", combinedFunction, poly_left_limit, poly_right_limit, 8);
     }
 
     // Set initial parameters from previous fits
@@ -449,9 +442,9 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
-      combinedFit->SetParameter(8, gausFit->GetParameter(0) / 5);  // Assume a smaller amplitude
-      combinedFit->SetParameter(9, 0.6);                          // Rough guess for eta peak mean
-      combinedFit->SetParameter(10, 0.05);                         // Rough guess for eta peak sigma
+      combinedFit->SetParameter(8, gausFit->GetParameter(0) / 3);                   // Assume a smaller amplitude
+      combinedFit->SetParameter(9, 0.6);   // Center of the eta peak range; (gaus2_left_limit + gaus2_right_limit) / 2.0
+      combinedFit->SetParameter(10, 0.05);  // Initial sigma guess ;(gaus2_right_limit - gaus2_left_limit) / 4.0
     }
 
     // Fit the combined function
@@ -475,7 +468,7 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
     }
 
     // Create a new function for just the polynomial part
-    TF1 *polyPart = new TF1("polyPart", "pol4", leftmost_limit, rightmost_limit);
+    TF1 *polyPart = new TF1("polyPart", "pol4", poly_left_limit, poly_right_limit);
     for (int j = 0; j < 5; ++j) polyPart->SetParameter(j, combinedFit->GetParameter(j + 3));
 
     // Create a new histogram to store the subtracted data
@@ -488,7 +481,7 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
     }
 
     // Fit the subtracted histogram with the double Gaussian function
-    TF1 *doubleGaussFit = new TF1("doubleGaussFit", doubleGauss, leftmost_gauslimit, rightmost_gauslimit, 6);
+    TF1 *doubleGaussFit = new TF1("doubleGaussFit", doubleGauss, gaus1_left_limit, gaus1_right_limit, 6);
     doubleGaussFit->SetParameter(0, combinedFit->GetParameter(0));
     doubleGaussFit->SetParameter(1, combinedFit->GetParameter(1));
     doubleGaussFit->SetParameter(2, combinedFit->GetParameter(2));
@@ -498,7 +491,7 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
       doubleGaussFit->SetParameter(4, combinedFit->GetParameter(9));
       doubleGaussFit->SetParameter(5, combinedFit->GetParameter(10));
     }
-    histSubtracted->Fit(doubleGaussFit, "RL");
+    histSubtracted->Fit(doubleGaussFit, "R");
 
     // Draw the fits and subtracted histograms
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
@@ -522,8 +515,7 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
 
     TCanvas *c2 = new TCanvas(Form("c2_%s", ptRange.Data()), "Subtracted Peak", 800, 600);
     histSubtracted->SetTitle(Form("Background Subtracted Peak; Inv. Mass (GeV); Counts (Background subtracted); pT: %s", ptRange.Data()));
-    histSubtracted->Draw("E");
-    doubleGaussFit->Draw("SAME");
+    histSubtracted->Draw();
     histSubtracted->SetMinimum(0.0);
     histSubtracted->GetYaxis()->SetTitleOffset(1.5);
     TLegend *leg = new TLegend(0.5, 0.8, 0.93, 0.93);
@@ -556,10 +548,10 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
     fitInfo->SetFillColor(0);
     fitInfo->AddText(Form("Data Fit for pT range: %s", ptRange.Data()));
     fitInfo->AddText("Fit Parameters:");
-    fitInfo->AddText(Form("Combined Fit Range = %f to %f", leftmost_limit, rightmost_limit));
+    fitInfo->AddText(Form("Combined Fit Range = %f to %f", poly_left_limit, poly_right_limit));
     fitInfo->AddText(Form("Peak Mean = %f +/- %f", combinedFit->GetParameter(1), combinedFit->GetParError(1)));
     fitInfo->AddText(Form("Peak Sigma = %f +/- %f", combinedFit->GetParameter(2), combinedFit->GetParError(2)));
-    fitInfo->AddText(Form("Background Subtracted Peak Fit = %f to %f", leftmost_gauslimit, rightmost_gauslimit));
+    fitInfo->AddText(Form("Background Subtracted Peak Fit = %f to %f", gaus1_left_limit, gaus1_right_limit));
     fitInfo->AddText(Form("Mean = %f +/- %f", doubleGaussFit->GetParameter(1), doubleGaussFit->GetParError(1)));
     fitInfo->AddText(Form("Sigma = %f +/- %f", doubleGaussFit->GetParameter(2), doubleGaussFit->GetParError(2)));
     fitInfo->AddText(Form("Relative Width: %f", doubleGaussFit->GetParameter(2) * 100.0f / doubleGaussFit->GetParameter(1)));
@@ -644,7 +636,7 @@ void fit_2d_histogram(double scale_factor, float leftmost_gauslimit = 0.05, floa
 
 void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
 {
-  fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true);
-  fit_2d_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true, 1, -1);  // 24 for 6?
+  //fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true);
+  fit_2d_histogram(scale_factor,leftmost_gauslimit, 0.9, leftmost_gauslimit, rightmost_gauslimit, 0.5, 0.7, true,  1,  -1);// 24 for 6?
   // return 0;
 }
