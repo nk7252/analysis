@@ -62,6 +62,8 @@ class CaloAna : public SubsysReco
   int Getpeaktime(TH1 *h);
   Fun4AllHistoManager *hm = nullptr;
   TFile *outfile = nullptr;
+  TH1F *cutCounter = nullptr;
+
   TH2F* h_emcal_mbd_correlation = nullptr;
   TH2F* h_ohcal_mbd_correlation = nullptr;
   TH2F* h_ihcal_mbd_correlation = nullptr;
