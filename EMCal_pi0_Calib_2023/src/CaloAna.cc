@@ -608,10 +608,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           if (matchmctruth && truth->get_pid() == 111)
           {
             TLorentzVector truthpi0 = TLorentzVector();
-            truthpi0.SetPtEtaPhiE(truth->get_pt(), truth->get_eta(), truth->get_phi(), truth->get_e());
+            float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+            // float pion_pz = truth->get_pz();
+            float pion_e = truth->get_e();
+            float pion_phi = atan2(truth->get_py(), truth->get_px());
+            float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
+            truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             float delR = pi0.DeltaR(truthpi0);
             h_delR_recTrth->Fill(delR);
-            if (delR1 < 0.015)
+            if (delR < 0.015)
             { 
               truth_pions.push_back(truthpi0);
               h_truthmatched_mass->Fill(pi0.M());
