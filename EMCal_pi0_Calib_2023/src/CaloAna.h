@@ -62,7 +62,7 @@ class CaloAna : public SubsysReco
   int Getpeaktime(TH1 *h);
   Fun4AllHistoManager *hm = nullptr;
   TFile *outfile = nullptr;
-  TH1F *cutCounter = nullptr;
+  TH1F *h_cutCounter = nullptr;
 
   TH2F* h_emcal_mbd_correlation = nullptr;
   TH2F* h_ohcal_mbd_correlation = nullptr;
@@ -200,6 +200,8 @@ class CaloAna : public SubsysReco
   bool m_vtxCut = false;
   bool dynMaskClus = false;
   bool getVtx = false;
+  bool matchspmctruth = false;
+  bool matchmctruth = true;//NOT spmc. check must be in secondary range
   bool debug = false;
 
   TH1F* h_pt1;
@@ -216,6 +218,7 @@ class CaloAna : public SubsysReco
   TH1F* h_truth_phi;
   TH1F* h_truth_e;
   TH1F* h_truth_pt;
+  TH1F* h_truthmatched_mass;
   TH1F* h_pion_pt;
   TH1F* h_pion_pt_weight;
   TH1F* h_truth_pid_p;

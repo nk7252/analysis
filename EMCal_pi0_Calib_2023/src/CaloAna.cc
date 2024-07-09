@@ -101,7 +101,7 @@ int CaloAna::Init(PHCompositeNode*)
 
   outfile = new TFile(outfilename.c_str(), "RECREATE");
   // cutQA
-  cutCounter = new TH1F("cutCounter", "Cut Counter", 11, 0, 11);
+  h_cutCounter = new TH1F("cutCounter", "Cut Counter", 13, 0, 13);
   // list of cuts
   //  clus1 chi2, clus1 cuts, tower eta>95,hotclus1,clus1=clus2,clus2 chi2, clus2 cuts, assym, Dr, pi0pt cut, hotclus2
 
@@ -365,10 +365,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_pt = E_vec_cluster.perp();
     // clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
-    if (clus_chisq > clus_chisq_cut && cutson) {
+    if (clus_chisq > clus_chisq_cut && cutson)
+    {
       cutCounter->Fill(1);
       continue;
-    } 
+    }
     TLorentzVector photon1;
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
 
@@ -415,14 +416,16 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       }
     }
 
-    if (lt_eta > 95) {
+    if (lt_eta > 95)
+    {
       cutCounter->Fill(3);
       continue;
     }
     cutCounter->Fill(3);
     h_pt_eta[lt_eta]->Fill(clus_pt);
 
-    if (dynMaskClus && hotClus == true && cutson){
+    if (dynMaskClus && hotClus == true && cutson)
+    {
       cutCounter->Fill(4);
       continue;
     }
@@ -433,7 +436,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         cutCounter->Fill(5);
         continue;
-
       }
       RawCluster* recoCluster2 = clusterIter2->second;
 
@@ -449,53 +451,60 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         cutCounter->Fill(6);
         continue;
-      } 
+      }
       TLorentzVector photon2;
       photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
-      TLorentzVector pi0 = photon1 + photon2;
-
       pi0smearvec[1] = SmearPhoton4vector(photon2, badcalibsmear);
-
+      TLorentzVector pi0 = photon1 + photon2;
       pi0smearvec[2] = pi0smearvec[0] + pi0smearvec[1];
+
       if (additionalsmearing)
       {
-        if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson) {
+        if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson)
+        {
           cutCounter->Fill(7);
           continue;
         }
-        if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson){
+        if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson)
+        {
           cutCounter->Fill(8);
           continue;
         }
-        if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson) {
+        if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson)
+        {
           cutCounter->Fill(9);
           continue;
-        } 
-        if (pi0smearvec[2].Pt() < pi0ptcut) {
+        }
+        if (pi0smearvec[2].Pt() < pi0ptcut)
+        {
           cutCounter->Fill(10);
           continue;
         }
       }
       else if (!additionalsmearing)
       {
-        if ((photon2.Pt() < pt2ClusCut || photon2.Pt() > ptMaxCut) && cutson){
+        if ((photon2.Pt() < pt2ClusCut || photon2.Pt() > ptMaxCut) && cutson)
+        {
           cutCounter->Fill(7);
           continue;
         }
-        if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson){
+        if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson)
+        {
           cutCounter->Fill(8);
           continue;
-        
         }
-        if (photon1.DeltaR(photon2) > maxDr && cutson){
+        if (photon1.DeltaR(photon2) > maxDr && cutson)
+        {
           cutCounter->Fill(9);
           continue;
         }
-        if (pi0.Pt() < pi0ptcut){
+        if (pi0.Pt() < pi0ptcut)
+        {
           cutCounter->Fill(10);
           continue;
         }
       }
+      
       // loop over the towers in the cluster
       RawCluster::TowerConstRange towerCR2 = recoCluster2->get_towers();
       RawCluster::TowerConstIterator toweriter2;
@@ -512,7 +521,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       }
       h_etaphi_clus->Fill(clus_eta, clus_phi);
 
-      if (dynMaskClus && hotClus2 == true && cutson){
+      if (dynMaskClus && hotClus2 == true && cutson)
+      {
         cutCounter->Fill(11);
         continue;
       }
@@ -522,6 +532,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float weight = 1;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
       vector<TLorentzVector> truth_photons;
+      vector<TLorentzVector> truth_pions;
       if (truthinfo)
       {
         PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
@@ -593,6 +604,20 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           const PHG4Particle* truth = siter->second;
           int id = truth->get_pid();
           h_truth_pid_s->Fill(id);
+
+          if (matchmctruth && truth->get_pid() == 111)
+          {
+            TLorentzVector truthpi0 = TLorentzVector();
+            truthpi0.SetPtEtaPhiE(truth->get_pt(), truth->get_eta(), truth->get_phi(), truth->get_e());
+            float delR = pi0.DeltaR(truthpi0);
+            h_delR_recTrth->Fill(delR);
+            if (delR1 < 0.015)
+            { 
+              truth_pions.push_back(truthpi0);
+              h_truthmatched_mass->Fill(pi0.M());
+            }
+          }
+
           if (truth->get_pid() == 22)
           {
             PHG4Particle* parent = truthinfo->GetParticle(truth->get_parent_id());
@@ -616,7 +641,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         for (auto tr_phot : truth_photons)
         {
           float delR = photon1.DeltaR(tr_phot);
-          h_delR_recTrth->Fill(delR);
           // if (debug) std::cout << delR << " ";
           if (delR < 0.015)
           {  // choose this value based on looking at delR distribution
