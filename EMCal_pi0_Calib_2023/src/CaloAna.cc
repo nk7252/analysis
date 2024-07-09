@@ -101,7 +101,7 @@ int CaloAna::Init(PHCompositeNode*)
 
   outfile = new TFile(outfilename.c_str(), "RECREATE");
   // cutQA
-  h_cutCounter = new TH1F("cutCounter", "Cut Counter", 13, 0, 13);
+  h_cutCounter = new TH1F("h_cutCounter", "Cut Counter", 13, 0.5, 13.5);
   // list of cuts
   //  clus1 chi2, clus1 cuts, tower eta>95,hotclus1,clus1=clus2,clus2 chi2, clus2 cuts, assym, Dr, pi0pt cut, hotclus2
 
@@ -387,7 +387,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       if ((photon1.Pt() < pt1ClusCut || photon1.Pt() > ptMaxCut) && cutson)
       {
-        h_cutCounter->Fill(3);
+        h_cutCounter->Fill(2);
         continue;
       }
     }
