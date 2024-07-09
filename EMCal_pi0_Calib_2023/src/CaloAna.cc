@@ -146,9 +146,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 200, 0, 1.0);
   h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 100, 0, 1e13);
   h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 2 * 10, 0, 10, 100, 0, 1.0);
-
-  // vector for bad calib smearing.
-
+  h_truthmatched_mass = new TH1F("h_truthmatched_mass", "Invariant Mass, truth matched", 200, 0, 1.0);
   // high mass tail diagnostic
   std::vector<std::string> HistList = {"photon1", "photon2", "all photons", "pions"};
   for (int i = 0; i < 4; i++)
@@ -252,8 +250,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float nClus_ptCut = 0.0;  // 0.5
   float pi0ptcutfactor = 0;
   float ptMaxCut = 100;    // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
-  float pt1ClusCut = 0.5//1.3;  // centrality dependence cuts 2.2 for both // 1.3
-  float pt2ClusCut = 0.5//0.7;  // // 0.7
+  float pt1ClusCut = 0.5;//1.3;  // centrality dependence cuts 2.2 for both // 1.3
+  float pt2ClusCut = 0.5;//0.7;  // // 0.7
 
   /*
   if (nClusCount > 30)
@@ -614,7 +612,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             float delR = pi0.DeltaR(truthpi0);
-            h_delR_recTrth->Fill(delR);
+            //h_delR_recTrth->Fill(delR);
             if (delR < 0.015)
             { 
               truth_pions.push_back(truthpi0);
@@ -646,6 +644,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           float delR = photon1.DeltaR(tr_phot);
           // if (debug) std::cout << delR << " ";
+          h_delR_recTrth->Fill(delR);
           if (delR < 0.015)
           {  // choose this value based on looking at delR distribution
             float res = photon1.E() / tr_phot.E();
