@@ -367,7 +367,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_chisq = recoCluster->get_chi2();
     if (clus_chisq > clus_chisq_cut && cutson)
     {
-      cutCounter->Fill(1);
+      h_cutCounter->Fill(1);
       continue;
     }
     TLorentzVector photon1;
@@ -379,7 +379,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson)
       {
-        cutCounter->Fill(2);
+        h_cutCounter->Fill(2);
         continue;
       }
     }
@@ -387,7 +387,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       if ((photon1.Pt() < pt1ClusCut || photon1.Pt() > ptMaxCut) && cutson)
       {
-        cutCounter->Fill(3);
+        h_cutCounter->Fill(3);
         continue;
       }
     }
@@ -418,15 +418,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     if (lt_eta > 95)
     {
-      cutCounter->Fill(3);
+      h_cutCounter->Fill(3);
       continue;
     }
-    cutCounter->Fill(3);
     h_pt_eta[lt_eta]->Fill(clus_pt);
 
     if (dynMaskClus && hotClus == true && cutson)
     {
-      cutCounter->Fill(4);
+      h_cutCounter->Fill(4);
       continue;
     }
 
@@ -434,7 +433,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       if (clusterIter == clusterIter2)
       {
-        cutCounter->Fill(5);
+        h_cutCounter->Fill(5);
         continue;
       }
       RawCluster* recoCluster2 = clusterIter2->second;
@@ -449,7 +448,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       if (clus2_chisq > clus_chisq_cut && cutson)
       {
-        cutCounter->Fill(6);
+        h_cutCounter->Fill(6);
         continue;
       }
       TLorentzVector photon2;
@@ -462,22 +461,22 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson)
         {
-          cutCounter->Fill(7);
+          h_cutCounter->Fill(7);
           continue;
         }
         if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson)
         {
-          cutCounter->Fill(8);
+          h_cutCounter->Fill(8);
           continue;
         }
         if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson)
         {
-          cutCounter->Fill(9);
+          h_cutCounter->Fill(9);
           continue;
         }
         if (pi0smearvec[2].Pt() < pi0ptcut)
         {
-          cutCounter->Fill(10);
+          h_cutCounter->Fill(10);
           continue;
         }
       }
@@ -485,22 +484,22 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         if ((photon2.Pt() < pt2ClusCut || photon2.Pt() > ptMaxCut) && cutson)
         {
-          cutCounter->Fill(7);
+          h_cutCounter->Fill(7);
           continue;
         }
         if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson)
         {
-          cutCounter->Fill(8);
+          h_cutCounter->Fill(8);
           continue;
         }
         if (photon1.DeltaR(photon2) > maxDr && cutson)
         {
-          cutCounter->Fill(9);
+          h_cutCounter->Fill(9);
           continue;
         }
         if (pi0.Pt() < pi0ptcut)
         {
-          cutCounter->Fill(10);
+          h_cutCounter->Fill(10);
           continue;
         }
       }
@@ -523,7 +522,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       if (dynMaskClus && hotClus2 == true && cutson)
       {
-        cutCounter->Fill(11);
+        h_cutCounter->Fill(11);
         continue;
       }
 
