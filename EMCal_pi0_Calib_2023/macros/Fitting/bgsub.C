@@ -47,13 +47,22 @@ double combinedFunctionDoubleGauss(double *x, double *par)
 double doubleGauss(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
-  double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
+  double gauss1 = 0;
+  if (x[0] >= par[6] && x[0] <= par[7])
+  {  // Check if x is in the range of the first Gaussian
+    gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
+  }
 
   // Second Gaussian part (e.g., eta peak)
-  double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
+  double gauss2 = 0;
+  if (x[0] >= par[8] && x[0] <= par[9])
+  {  // Check if x is in the range of the second Gaussian
+    gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
+  }
 
   return gauss1 + gauss2;
 }
+
 // Updated leftRightPolynomial function to optionally exclude two Gaussian regions
 double leftRightPolynomial(double *x, double *par)
 {
@@ -350,10 +359,18 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
   delete dummyCanvas;
 }
 
-void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_right_limit,float gaus1_left_limit, float gaus1_right_limit,float gaus2_left_limit = 0.5, float gaus2_right_limit = 0.7,bool fitEtaPeak = false, int startBin = 1, int endBin = -1)
+void fit_2d_histogram(double scale_factor, const std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1)
 {
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   SetsPhenixStyle();
+
+  // Ensure the limits vector has the correct size
+
+  if (limits.size() < 6 || (fitEtaPeak && limits.size() < 10))
+  {
+    std::cerr << "Insufficient limits provided. Expected 6 (or 10 if fitting eta peak) values." << std::endl;
+    return;
+  }
 
   // Open the ROOT file and get the 2D histogram
   TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/merged_file.root");
@@ -364,7 +381,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
 
   // Create a PDF to save the canvases
   TCanvas *dummyCanvas = new TCanvas();
-  dummyCanvas->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf[");
+  dummyCanvas->Print("2D_Histogram_Fits.pdf[");
 
   // Vectors to store fit results
   std::vector<double> pionPt, pionPeak, pionRes, etaPeak, etaRes;
@@ -406,33 +423,33 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
     TF1 *leftRightFit;
     if (fitEtaPeak)
     {
-      leftRightFit = new TF1("leftRightFit", leftRightPolynomial, poly_left_limit, poly_right_limit, 9);
-      leftRightFit->SetParameter(5, gaus1_left_limit);
-      leftRightFit->SetParameter(6, gaus1_right_limit);
-      leftRightFit->SetParameter(7, gaus2_left_limit);
-      leftRightFit->SetParameter(8, gaus2_right_limit);
+      leftRightFit = new TF1("leftRightFit", leftRightPolynomial, limits[0], limits[1], 9);
+      leftRightFit->SetParameter(5, limits[2]);
+      leftRightFit->SetParameter(6, limits[3]);
+      leftRightFit->SetParameter(7, limits[8]);
+      leftRightFit->SetParameter(8, limits[9]);
     }
     else
     {
-      leftRightFit = new TF1("leftRightFit", leftRightPolynomial, poly_left_limit, poly_right_limit, 7);
-      leftRightFit->SetParameter(5, gaus1_left_limit);
-      leftRightFit->SetParameter(6, gaus1_right_limit);
+      leftRightFit = new TF1("leftRightFit", leftRightPolynomial, limits[0], limits[1], 7);
+      leftRightFit->SetParameter(5, limits[2]);
+      leftRightFit->SetParameter(6, limits[3]);
     }
     hist->Fit(leftRightFit, "R");
 
     // Fit Gaussian in the specified range
-    TF1 *gausFit = new TF1("gausFit", "gaus", gaus1_left_limit, gaus1_right_limit);
+    TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
     hist->Fit(gausFit, "R");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
     if (fitEtaPeak)
     {
-      combinedFit = new TF1("combinedFit", combinedFunctionDoubleGauss, poly_left_limit, poly_right_limit, 11);  // 2 Gaussians + 1 polynomial = 3 + 3 + 5
+      combinedFit = new TF1("combinedFit", combinedFunctionDoubleGauss, limits[0], limits[1], 11);  // 2 Gaussians + 1 polynomial = 3 + 3 + 5
     }
     else
     {
-      combinedFit = new TF1("combinedFit", combinedFunction, poly_left_limit, poly_right_limit, 8);
+      combinedFit = new TF1("combinedFit", combinedFunction, limits[0], limits[1], 8);
     }
 
     // Set initial parameters from previous fits
@@ -442,9 +459,9 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
-      combinedFit->SetParameter(8, gausFit->GetParameter(0) / 3);                   // Assume a smaller amplitude
-      combinedFit->SetParameter(9, 0.6);   // Center of the eta peak range; (gaus2_left_limit + gaus2_right_limit) / 2.0
-      combinedFit->SetParameter(10, 0.05);  // Initial sigma guess ;(gaus2_right_limit - gaus2_left_limit) / 4.0
+      combinedFit->SetParameter(8, gausFit->GetParameter(0) / 3);  // Assume a smaller amplitude
+      combinedFit->SetParameter(9, 0.6);                           // Center of the eta peak range//(limits[4] + limits[5]) / 2.0
+      combinedFit->SetParameter(10, 0.05);                         // Initial sigma guess based on range width//(limits[5] - limits[4]) / 4.0
     }
 
     // Fit the combined function
@@ -468,7 +485,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
     }
 
     // Create a new function for just the polynomial part
-    TF1 *polyPart = new TF1("polyPart", "pol4", poly_left_limit, poly_right_limit);
+    TF1 *polyPart = new TF1("polyPart", "pol4", limits[0], limits[1]);
     for (int j = 0; j < 5; ++j) polyPart->SetParameter(j, combinedFit->GetParameter(j + 3));
 
     // Create a new histogram to store the subtracted data
@@ -481,15 +498,19 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
     }
 
     // Fit the subtracted histogram with the double Gaussian function
-    TF1 *doubleGaussFit = new TF1("doubleGaussFit", doubleGauss, gaus1_left_limit, gaus1_right_limit, 6);
+    TF1 *doubleGaussFit = new TF1("doubleGaussFit", doubleGauss, limits[2], limits[3], 6);
     doubleGaussFit->SetParameter(0, combinedFit->GetParameter(0));
     doubleGaussFit->SetParameter(1, combinedFit->GetParameter(1));
     doubleGaussFit->SetParameter(2, combinedFit->GetParameter(2));
+    doubleGaussFit->SetParameter(6, limits[2]);
+    doubleGaussFit->SetParameter(7, limits[3]);
     if (fitEtaPeak)
     {
       doubleGaussFit->SetParameter(3, combinedFit->GetParameter(8));
       doubleGaussFit->SetParameter(4, combinedFit->GetParameter(9));
       doubleGaussFit->SetParameter(5, combinedFit->GetParameter(10));
+      doubleGaussFit->SetParameter(8, limits[6]);
+      doubleGaussFit->SetParameter(9, limits[7]);
     }
     histSubtracted->Fit(doubleGaussFit, "R");
 
@@ -511,7 +532,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
     leg1->Draw();
     leg1->SetTextAlign(32);
     c1->Update();
-    c1->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf");
+    c1->Print("2D_Histogram_Fits.pdf");
 
     TCanvas *c2 = new TCanvas(Form("c2_%s", ptRange.Data()), "Subtracted Peak", 800, 600);
     histSubtracted->SetTitle(Form("Background Subtracted Peak; Inv. Mass (GeV); Counts (Background subtracted); pT: %s", ptRange.Data()));
@@ -539,7 +560,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
       pt2->AddText(Form("Eta Relative Width: %.2f%%", doubleGaussFit->GetParameter(5) * 100.0f / doubleGaussFit->GetParameter(4)));
     }
     pt2->Draw("SAME");
-    c2->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf");
+    c2->Print("2D_Histogram_Fits.pdf");
 
     // Create a canvas to display the fit parameters
     TCanvas *c3 = new TCanvas(Form("fitInfo_%s", ptRange.Data()), "Fit Parameters", 800, 600);
@@ -548,10 +569,10 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
     fitInfo->SetFillColor(0);
     fitInfo->AddText(Form("Data Fit for pT range: %s", ptRange.Data()));
     fitInfo->AddText("Fit Parameters:");
-    fitInfo->AddText(Form("Combined Fit Range = %f to %f", poly_left_limit, poly_right_limit));
+    fitInfo->AddText(Form("Combined Fit Range = %f to %f", limits[0], limits[1]));
     fitInfo->AddText(Form("Peak Mean = %f +/- %f", combinedFit->GetParameter(1), combinedFit->GetParError(1)));
     fitInfo->AddText(Form("Peak Sigma = %f +/- %f", combinedFit->GetParameter(2), combinedFit->GetParError(2)));
-    fitInfo->AddText(Form("Background Subtracted Peak Fit = %f to %f", gaus1_left_limit, gaus1_right_limit));
+    fitInfo->AddText(Form("Background Subtracted Peak Fit = %f to %f", limits[2], limits[3]));
     fitInfo->AddText(Form("Mean = %f +/- %f", doubleGaussFit->GetParameter(1), doubleGaussFit->GetParError(1)));
     fitInfo->AddText(Form("Sigma = %f +/- %f", doubleGaussFit->GetParameter(2), doubleGaussFit->GetParError(2)));
     fitInfo->AddText(Form("Relative Width: %f", doubleGaussFit->GetParameter(2) * 100.0f / doubleGaussFit->GetParameter(1)));
@@ -563,7 +584,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
       fitInfo->AddText(Form("Eta Relative Width: %f", doubleGaussFit->GetParameter(5) * 100.0f / doubleGaussFit->GetParameter(4)));
     }
     fitInfo->Draw();
-    c3->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf");
+    c3->Print("2D_Histogram_Fits.pdf");
 
     appendtextfile(combinedFit, Form("Combined Fit_%s", ptRange.Data()), scale_factor);
     appendtextfile(doubleGaussFit, Form("subpgaus fit_%s", ptRange.Data()), scale_factor);
@@ -623,7 +644,7 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
   }
 
   // Close the PDF file
-  dummyCanvas->Print("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/2D_Histogram_Fits.pdf]");
+  dummyCanvas->Print("2D_Histogram_Fits.pdf]");
 
   // Clean up
   delete file;
@@ -636,7 +657,28 @@ void fit_2d_histogram(double scale_factor,float poly_left_limit, float poly_righ
 
 void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
 {
-  //fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true);
-  fit_2d_histogram(scale_factor,leftmost_gauslimit, 0.9, leftmost_gauslimit, rightmost_gauslimit, 0.5, 0.7, true,  1,  -1);// 24 for 6?
+  // Scale factor for histogram errors
+  double scale_factor = 1.0;
+
+  // Fit limits for the polynomial and Gaussian fits
+  std::vector<float> limits = {
+      leftmost_gauslimit, 0.9,                  // Polynomial fit range: left and right limits
+      leftmost_gauslimit, rightmost_gauslimit,  // First Gaussian fit range: left and right limits
+      0.11, 0.19,                               // Exclusion zone for left and right polynomials: first gaussian
+      0.5, 0.60,                                // Second Gaussian fit range (if fitting eta peak): left and right limits
+      0.55, 0.65                                // Exclusion zone for left and right polynomials: second gaussian
+  };
+
+  // Flag to indicate whether to fit the eta peak
+  bool fitEtaPeak = true;
+
+  // Specify the start and end bins for the projections
+  int startBin = 1;
+  int endBin = -1;  // Use -1 to indicate the last bin
+
+  // Call the fit function
+
+  // fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true);
+  fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin);
   // return 0;
 }
