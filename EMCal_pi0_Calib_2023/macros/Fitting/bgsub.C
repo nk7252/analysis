@@ -64,7 +64,7 @@ double doubleGauss(double *x, double *par)
   return gauss1 + gauss2;
 }
 
-// Updated leftRightPolynomial function to optionally exclude two Gaussian regions
+// leftRightPolynomial function to optionally exclude two Gaussian regions
 double leftRightPolynomial(double *x, double *par)
 {
   // Define the range for the first Gaussian fit (pion peak)
@@ -97,16 +97,6 @@ void scale_histogram_errors(TH1F *hist_error_scale, double scale_factor)
     // Scale the error by the scale factor
     hist_error_scale->SetBinError(i, current_error * scale_factor);
     // std::cout << "orig bin cont: " << hist_error_scale->GetBinContent(i) << " . bin error: " << current_error << " . New bin error: " << hist_error_scale->GetBinError(i) <<std::endl;
-  }
-}
-// scale the histogram's error bars
-void replace_histogram_errors(TH1F *hist_error_replace, double error_replace)
-{
-  for (int i = 1; i <= hist_error_replace->GetNbinsX(); ++i)
-  {
-    // Scale the error by the scale factor
-    // std::cout << "orig bin cont: " << histCopy_ErrorScale->GetBinContent(i) << " . new bin cont: " << newBinContent_scaled << std::endl;
-    hist_error_replace->SetBinError(i, error_replace);
   }
 }
 
@@ -436,7 +426,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
     hist->Fit(gausFit, "RL");
-        // Fit second Gaussian in the specified range
+    // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
     hist->Fit(gausFit, "RL");
 
@@ -459,7 +449,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     {
       // Set initial guesses for the second Gaussian (eta peak)
       combinedFit->SetParameter(8, gausFit->GetParameter(0) / 3);    // Assume a smaller amplitude
-      combinedFit->SetParameter(9, 0.6);   // Center of the eta peak range, (limits[4] + limits[5]) / 2.0
+      combinedFit->SetParameter(9, 0.6);                             // Center of the eta peak range, (limits[4] + limits[5]) / 2.0
       combinedFit->SetParameter(10, (limits[8] - limits[7]) / 4.0);  // Initial sigma guess based on range width
     }
 
@@ -671,30 +661,30 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
   delete gPionRes;
 }
 
-void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
+void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool fitEtaPeak = false)
 {
   // Scale factor for histogram errors
   // double scale_factor = 1.0;
 
   // Fit limits for the polynomial and Gaussian fits
   std::vector<float> limits = {
-      leftmost_gauslimit, 0.9,  // Polynomial fit range: left and right limits
-      .11, .19,                 // First Gaussian fit range: left and right limits
-      leftmost_gauslimit, rightmost_gauslimit,               // Exclusion zone for left and right polynomials: first gaussian
-      0.56, 0.64,                 // Second Gaussian fit range (if fitting eta peak): left and right limits
-      0.5, 0.7                  // Exclusion zone for left and right polynomials: second gaussian
+      leftmost_gauslimit, 0.9,                  // Polynomial fit range: left and right limits
+      .11, .19,                                 // First Gaussian fit range: left and right limits
+      leftmost_gauslimit, rightmost_gauslimit,  // Exclusion zone for left and right polynomials: first gaussian
+      0.56, 0.64,                               // Second Gaussian fit range (if fitting eta peak): left and right limits
+      0.5, 0.7                                  // Exclusion zone for left and right polynomials: second gaussian
   };
 
   // Flag to indicate whether to fit the eta peak
-  bool fitEtaPeak = true;
+  //bool fitEtaPeak = true;
 
   // Specify the start and end bins for the projections
-  int startBin = 1;
-  int endBin = 20;//-1;  // Use -1 to indicate the last bin
+  //int startBin = 1;
+  //int endBin = 20;  //-1;  // Use -1 to indicate the last bin
 
   // Specify the number of bins for each projection and the rebin factor
-  int projectionBins = 1;  // Default to 1 bin
-  int rebinFactor = 1;     // Default to no rebinning
+  //int projectionBins = 1;  // Default to 1 bin
+  //int rebinFactor = 1;     // Default to no rebinning
 
   // fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true);
   fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor);
