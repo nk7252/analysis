@@ -352,7 +352,11 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
 
 void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1)
 {
+  // more thorough minimizer for fit
+  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
+  // Set the global fit strategy
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
+  ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
   SetsPhenixStyle();
 
   // Ensure the limits vector has the correct size
@@ -426,9 +430,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
     hist->Fit(gausFit, "RM");
-    // Fit second Gaussian in the specified range
-    TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    hist->Fit(gausFit2, "RM");
+
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -445,6 +447,9 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j, gausFit->GetParameter(j));
     for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
 
+    // Fit second Gaussian in the specified range
+    TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
+    hist->Fit(gausFit2, "RM");
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
@@ -668,7 +673,7 @@ void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float right
 
   // Fit limits for the polynomial and Gaussian fits
   std::vector<float> limits = {
-      leftmost_gauslimit, 0.9,                  // Polynomial fit range: left and right limits
+      leftmost_gauslimit, 1.0,                  // Polynomial fit range: left and right limits
       .11, .19,                                 // First Gaussian fit range: left and right limits
       leftmost_gauslimit, rightmost_gauslimit,  // Exclusion zone for left and right polynomials: first gaussian
       0.56, 0.64,                               // Second Gaussian fit range (if fitting eta peak): left and right limits
