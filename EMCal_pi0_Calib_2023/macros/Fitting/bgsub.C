@@ -384,7 +384,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     TH1D *hist = hist2D->ProjectionY(Form("proj_%d", i), i, lastBin);
 
     // Check if the projection has enough entries to perform a fit
-    if (hist->GetEntries() < 100)
+    if (hist->GetEntries() < 1000)
     {  // Adjust the threshold as needed
       delete hist;
       continue;
