@@ -567,7 +567,7 @@ void fit_2d_histogram(double scale_factor, const std::vector<float> &limits, boo
     TPaveText *fitInfo = new TPaveText(0.1, 0.1, 0.9, 0.9, "blNDC");
     fitInfo->SetTextAlign(12);
     fitInfo->SetFillColor(0);
-    fitInfo->AddText(Form("Data Fit for pT range: %s", ptRange.Data()));
+    fitInfo->AddText(Form("Fit for pT range: %s", ptRange.Data()));
     fitInfo->AddText("Fit Parameters:");
     fitInfo->AddText(Form("Combined Fit Range = %f to %f", limits[0], limits[1]));
     fitInfo->AddText(Form("Peak Mean = %f +/- %f", combinedFit->GetParameter(1), combinedFit->GetParError(1)));
@@ -665,8 +665,8 @@ void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float right
       leftmost_gauslimit, 0.9,                  // Polynomial fit range: left and right limits
       .11, .19,  // First Gaussian fit range: left and right limits
       0.11, 0.19,                               // Exclusion zone for left and right polynomials: first gaussian
-      0.55, 0.65,                                // Second Gaussian fit range (if fitting eta peak): left and right limits
-      0.55, 0.65                                // Exclusion zone for left and right polynomials: second gaussian
+      0.5, 0.7,                                // Second Gaussian fit range (if fitting eta peak): left and right limits
+      0.5, 0.7                                // Exclusion zone for left and right polynomials: second gaussian
   };
 
   // Flag to indicate whether to fit the eta peak
