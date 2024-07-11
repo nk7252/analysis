@@ -117,8 +117,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_cemc_etaphi = new TH2F("h_cemc_etaphi", "", 96, 0, 96, 256, 0, 256);
 
   // 1D distributions
-  h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 500, 0, 1.0);
-  h_InvMass_w = new TH1F("h_InvMass_w", "Invariant Mass", 500, 0, 1.0);
+  //h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 600, 0, 1.2);
+  h_InvMass_w = new TH1F("h_InvMass_w", "Invariant Mass", 600, 0, 1.2);
   h_InvMassMix = new TH1F("h_InvMassMix", "Invariant Mass", 120, 0, 1.2);
 
   // cluster QA
@@ -249,9 +249,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float clus_chisq_cut = 4;
   float nClus_ptCut = 0.0;  // 0.5
   float pi0ptcutfactor = 0;
-  float ptMaxCut = 100000;    // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
-  float pt1ClusCut = 1.5;  // centrality dependence cuts 2.2 for both // 1.3
-  float pt2ClusCut = 1.5;  // // 0.7
+  float ptMaxCut = 20;    // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
+  float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
+  float pt2ClusCut = 0.7;  // // 0.7
 
   /*
   if (nClusCount > 30)

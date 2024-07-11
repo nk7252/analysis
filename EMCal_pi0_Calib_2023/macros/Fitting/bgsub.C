@@ -508,7 +508,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     }
 
     // Fit the subtracted histogram with the double Gaussian function
-    TF1 *doubleGaussFit = new TF1("doubleGaussFit", doubleGauss, limits[2], limits[7], 10);
+    TF1 *doubleGaussFit = new TF1("doubleGaussFit", doubleGauss, limits[0], limits[1], 10);
     doubleGaussFit->SetParameter(0, combinedFit->GetParameter(0));
     doubleGaussFit->SetParameter(1, combinedFit->GetParameter(1));
     doubleGaussFit->SetParameter(2, combinedFit->GetParameter(2));
