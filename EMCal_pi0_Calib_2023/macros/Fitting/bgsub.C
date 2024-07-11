@@ -365,7 +365,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float>& limits, b
     SetsPhenixStyle();
 
     // Ensure the limits vector has the correct size
-    if (limits.size() < 8 || (fitEtaPeak && limits.size() < 12)) {
+    if (limits.size() < 6 || (fitEtaPeak && limits.size() < 10)) {
         std::cerr << "Insufficient limits provided. Expected 8 (or 12 if fitting eta peak) values." << std::endl;
         return;
     }
