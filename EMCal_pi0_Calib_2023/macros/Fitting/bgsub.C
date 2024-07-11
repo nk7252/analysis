@@ -353,7 +353,7 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
 void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1)
 {
   // more thorough minimizer for fit
-  //ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
+  // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
   // Set the global fit strategy
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(10000);
@@ -406,7 +406,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     TString ptRange = Form("pt_%.2f-%.2f_GeV", pt_min, pt_max);
 
     // Set histogram range and scale errors
-    //hist->GetXaxis()->SetRangeUser(0, 1.0);
+    // hist->GetXaxis()->SetRangeUser(0, 1.0);
     // scale_histogram_errors(hist, scale_factor);
 
     // Fit left and right regions with a polynomial, excluding Gaussian regions
@@ -431,7 +431,6 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
     hist->Fit(gausFit, "R");
 
-
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
     if (fitEtaPeak)
@@ -453,9 +452,9 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
-      combinedFit->SetParameter(8, gausFit2->GetParameter(0));    // Assume a smaller amplitude
-      combinedFit->SetParameter(9, gausFit2->GetParameter(1));    // Center of the eta peak range, (limits[4] + limits[5]) / 2.0
-      combinedFit->SetParameter(10, gausFit2->GetParameter(2));   // Initial sigma guess based on range width
+      combinedFit->SetParameter(8, gausFit2->GetParameter(0));   // Assume a smaller amplitude
+      combinedFit->SetParameter(9, gausFit2->GetParameter(1));   // Center of the eta peak range, (limits[4] + limits[5]) / 2.0
+      combinedFit->SetParameter(10, gausFit2->GetParameter(2));  // Initial sigma guess based on range width
     }
 
     // Fit the combined function
@@ -666,30 +665,30 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
   delete gPionRes;
 }
 
-void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool fitEtaPeak = false)
+void bgsub(double scale_factor = 1, float polyL =0.05, float polygauss1L =0.08, float gauss1L = 0.11, float gauss2L = 0.19, float polygauss1R =0.3, float polygauss2L =0.5, float gauss2L =0.55, float gauss2R =0.65, float polygauss2R =0.7, float polyR =1.0, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool fitEtaPeak = false)
 {
   // Scale factor for histogram errors
   // double scale_factor = 1.0;
 
   // Fit limits for the polynomial and Gaussian fits
   std::vector<float> limits = {
-      leftmost_gauslimit, 1.0,                  // Polynomial fit range: left and right limits
-      .11, .19,                                 // First Gaussian fit range: left and right limits
-      leftmost_gauslimit, rightmost_gauslimit,  // Exclusion zone for left and right polynomials: first gaussian
-      0.56, 0.64,                               // Second Gaussian fit range (if fitting eta peak): left and right limits
-      0.51, 0.69                                 // Exclusion zone for left and right polynomials: second gaussian
+      polyL, polyR,              // Polynomial fit range: left and right limits
+      gauss1L, gauss2L,          // First Gaussian fit range: left and right limits
+      polygauss1L, polygauss2L,  // Exclusion zone for left and right polynomials: first gaussian
+      gauss2L, gauss2R,          // Second Gaussian fit range (if fitting eta peak): left and right limits
+      polygauss2L, polygauss2R   // Exclusion zone for left and right polynomials: second gaussian
   };
 
   // Flag to indicate whether to fit the eta peak
-  //bool fitEtaPeak = true;
+  // bool fitEtaPeak = true;
 
   // Specify the start and end bins for the projections
-  //int startBin = 1;
-  //int endBin = 20;  //-1;  // Use -1 to indicate the last bin
+  // int startBin = 1;
+  // int endBin = 20;  //-1;  // Use -1 to indicate the last bin
 
   // Specify the number of bins for each projection and the rebin factor
-  //int projectionBins = 1;  // Default to 1 bin
-  //int rebinFactor = 1;     // Default to no rebinning
+  // int projectionBins = 1;  // Default to 1 bin
+  // int rebinFactor = 1;     // Default to no rebinning
 
   // fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true);
   fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor);
