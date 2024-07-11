@@ -431,14 +431,14 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
       leftRightFit->SetParameter(5, limits[5]);
       leftRightFit->SetParameter(6, limits[6]);
     }
-    hist->Fit(leftRightFit, "R");
+    hist->Fit(leftRightFit, "RL");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
-    hist->Fit(gausFit, "R");
+    hist->Fit(gausFit, "RL");
         // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    hist->Fit(gausFit, "R");
+    hist->Fit(gausFit, "RL");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -464,7 +464,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "RL");
+    hist->Fit(combinedFit, "RLM");
 
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
@@ -690,7 +690,7 @@ void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float right
 
   // Specify the start and end bins for the projections
   int startBin = 1;
-  int endBin = -1;  // Use -1 to indicate the last bin
+  int endBin = 20;//-1;  // Use -1 to indicate the last bin
 
   // Specify the number of bins for each projection and the rebin factor
   int projectionBins = 1;  // Default to 1 bin
