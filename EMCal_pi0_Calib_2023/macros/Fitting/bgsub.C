@@ -658,7 +658,7 @@ void fit_2d_histogram(double scale_factor, const std::vector<float> &limits, boo
 void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float rightmost_gauslimit = 0.3)
 {
   // Scale factor for histogram errors
-  double scale_factor = 1.0;
+  //double scale_factor = 1.0;
 
   // Fit limits for the polynomial and Gaussian fits
   std::vector<float> limits = {
