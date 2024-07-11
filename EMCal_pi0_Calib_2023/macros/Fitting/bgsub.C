@@ -421,14 +421,14 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
       leftRightFit->SetParameter(5, limits[5]);
       leftRightFit->SetParameter(6, limits[6]);
     }
-    hist->Fit(leftRightFit, "RL");
+    hist->Fit(leftRightFit, "RM");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
-    hist->Fit(gausFit, "RL");
+    hist->Fit(gausFit, "RM");
     // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    hist->Fit(gausFit, "RL");
+    hist->Fit(gausFit, "RM");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -518,7 +518,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
       doubleGaussFit->SetParameter(8, limits[6]);
       doubleGaussFit->SetParameter(9, limits[7]);
     }
-    histSubtracted->Fit(doubleGaussFit, "R");
+    histSubtracted->Fit(doubleGaussFit, "RM");
 
     // Draw the fits and subtracted histograms
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
@@ -672,7 +672,7 @@ void bgsub(double scale_factor = 1, float leftmost_gauslimit = 0.05, float right
       .11, .19,                                 // First Gaussian fit range: left and right limits
       leftmost_gauslimit, rightmost_gauslimit,  // Exclusion zone for left and right polynomials: first gaussian
       0.56, 0.64,                               // Second Gaussian fit range (if fitting eta peak): left and right limits
-      0.5, 0.7                                  // Exclusion zone for left and right polynomials: second gaussian
+      0.51, 0.69                                 // Exclusion zone for left and right polynomials: second gaussian
   };
 
   // Flag to indicate whether to fit the eta peak
