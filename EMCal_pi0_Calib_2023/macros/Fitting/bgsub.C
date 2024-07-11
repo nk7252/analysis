@@ -428,7 +428,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     hist->Fit(gausFit, "RM");
     // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    hist->Fit(gausFit, "RM");
+    hist->Fit(gausFit2, "RM");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -448,9 +448,9 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
-      combinedFit->SetParameter(8, gausFit->GetParameter(0) / 3);    // Assume a smaller amplitude
-      combinedFit->SetParameter(9, 0.6);                             // Center of the eta peak range, (limits[4] + limits[5]) / 2.0
-      combinedFit->SetParameter(10, (limits[8] - limits[7]) / 4.0);  // Initial sigma guess based on range width
+      combinedFit->SetParameter(8, gausFit2->GetParameter(0));    // Assume a smaller amplitude
+      combinedFit->SetParameter(9, gausFit2->GetParameter(1));    // Center of the eta peak range, (limits[4] + limits[5]) / 2.0
+      combinedFit->SetParameter(10, gausFit2->GetParameter(2));   // Initial sigma guess based on range width
     }
 
     // Fit the combined function
