@@ -665,7 +665,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
   delete gPionRes;
 }
 
-void bgsub(double scale_factor = 1, float polyL =0.05, float polygauss1L =0.08, float gauss1L = 0.11, float gauss2L = 0.19, float polygauss1R =0.3, float polygauss2L =0.5, float gauss2L =0.55, float gauss2R =0.65, float polygauss2R =0.7, float polyR =1.0, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool fitEtaPeak = false)
+void bgsub(double scale_factor = 1, float polyL =0.05, float polygauss1L =0.08, float gauss1L = 0.11, float gauss1R = 0.19, float polygauss1R =0.3, float polygauss2L =0.5, float gauss2L =0.55, float gauss2R =0.65, float polygauss2R =0.7, float polyR =1.0, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool fitEtaPeak = false)
 {
   // Scale factor for histogram errors
   // double scale_factor = 1.0;
@@ -673,7 +673,7 @@ void bgsub(double scale_factor = 1, float polyL =0.05, float polygauss1L =0.08, 
   // Fit limits for the polynomial and Gaussian fits
   std::vector<float> limits = {
       polyL, polyR,              // Polynomial fit range: left and right limits
-      gauss1L, gauss2L,          // First Gaussian fit range: left and right limits
+      gauss1L, gauss1R,          // First Gaussian fit range: left and right limits
       polygauss1L, polygauss2L,  // Exclusion zone for left and right polynomials: first gaussian
       gauss2L, gauss2R,          // Second Gaussian fit range (if fitting eta peak): left and right limits
       polygauss2L, polygauss2R   // Exclusion zone for left and right polynomials: second gaussian
