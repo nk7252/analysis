@@ -207,7 +207,7 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
   }
 
   // Fit the combined function
-  hist->Fit(combinedFit, "RL");
+  hist->Fit(combinedFit, "R");
 
   double chi2 = combinedFit->GetChisquare();
   double ndf = combinedFit->GetNDF();
@@ -353,10 +353,10 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
 void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1)
 {
   // more thorough minimizer for fit
-  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
+  //ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
   // Set the global fit strategy
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
-  ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(5000);
+  ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(10000);
   SetsPhenixStyle();
 
   // Ensure the limits vector has the correct size
@@ -406,7 +406,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     TString ptRange = Form("pt_%.2f-%.2f_GeV", pt_min, pt_max);
 
     // Set histogram range and scale errors
-    hist->GetXaxis()->SetRangeUser(0, 1.0);
+    //hist->GetXaxis()->SetRangeUser(0, 1.0);
     // scale_histogram_errors(hist, scale_factor);
 
     // Fit left and right regions with a polynomial, excluding Gaussian regions
@@ -425,11 +425,11 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
       leftRightFit->SetParameter(5, limits[5]);
       leftRightFit->SetParameter(6, limits[6]);
     }
-    hist->Fit(leftRightFit, "RM");
+    hist->Fit(leftRightFit, "R");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
-    hist->Fit(gausFit, "RM");
+    hist->Fit(gausFit, "R");
 
 
     // Combined Gaussian + Polynomial fit
@@ -449,7 +449,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
 
     // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    hist->Fit(gausFit2, "RM");
+    hist->Fit(gausFit2, "R");
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
@@ -459,7 +459,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "RLM");
+    hist->Fit(combinedFit, "R");
 
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
@@ -523,7 +523,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
       doubleGaussFit->SetParameter(8, limits[6]);
       doubleGaussFit->SetParameter(9, limits[7]);
     }
-    histSubtracted->Fit(doubleGaussFit, "RM");
+    histSubtracted->Fit(doubleGaussFit, "R");
 
     // Draw the fits and subtracted histograms
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
