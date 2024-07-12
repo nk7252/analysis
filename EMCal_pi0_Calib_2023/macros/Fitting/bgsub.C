@@ -152,11 +152,11 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
   }
 
   // Overall limits
-  float rightmost_limit = 0.9;  // fit range limit
-  float leftmost_limit = 0.05;  // fit range limit. normally 0.05
+  // float rightmost_limit = 0.9;  // fit range limit
+  // float leftmost_limit = 0.05;  // fit range limit. normally 0.05
   // Limits on gauss and poly
-  float leftpolylim = 0.11;
-  float rightpolylim = 0.19;
+  // float leftpolylim = 0.11;
+  // float rightpolylim = 0.19;
 
   hist->GetXaxis()->SetRangeUser(0, 1.0);
   scale_histogram_errors(hist, scale_factor);
@@ -350,7 +350,7 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
   delete dummyCanvas;
 }
 
-void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1)
+void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1,bool dynamic_left = false)
 {
   // more thorough minimizer for fit
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
@@ -399,6 +399,22 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
     {
       hist->Rebin(rebinFactor);
     }
+
+    // Determine the leftmost point with a value in the projection histograms
+    if (dynamic_left)
+    {
+      double leftmost_limit = 0;
+      for (int bin = 1; bin <= hist->GetNbinsX(); ++bin)
+      {
+        if (hist->GetBinContent(bin) > 0)
+        {
+          leftmost_limit = hist->GetBinLowEdge(bin);
+          limits[0]=leftmost_limit;
+          break;
+        }
+      }
+    }
+
 
     // Get the pt range for the current slice
     double pt_min = hist2D->GetXaxis()->GetBinLowEdge(i);
@@ -665,7 +681,7 @@ void fit_2d_histogram(Double_t scale_factor, const std::vector<float> &limits, b
   delete gPionRes;
 }
 
-void bgsub(double scale_factor = 1, float polyL =0.05, float polygauss1L =0.08, float gauss1L = 0.11, float gauss1R = 0.19, float polygauss1R =0.3, float polygauss2L =0.5, float gauss2L =0.55, float gauss2R =0.65, float polygauss2R =0.7, float polyR =1.0, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool fitEtaPeak = false)
+void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08, float gauss1L = 0.11, float gauss1R = 0.19, float polygauss1R = 0.3, float polygauss2L = 0.5, float gauss2L = 0.55, float gauss2R = 0.65, float polygauss2R = 0.7, float polyR = 1.0, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool fitEtaPeak = false,bool dynamic_left = true)
 {
   // Scale factor for histogram errors
   // double scale_factor = 1.0;
@@ -691,7 +707,7 @@ void bgsub(double scale_factor = 1, float polyL =0.05, float polygauss1L =0.08, 
   // int rebinFactor = 1;     // Default to no rebinning
 
   // fit_histogram(scale_factor, leftmost_gauslimit, rightmost_gauslimit, true);
-  fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor);
+  fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left);
   // return 0;
   gApplication->Terminate(0);
 }
