@@ -525,8 +525,13 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     for (int j = 1; j <= hist->GetNbinsX(); ++j)
     {
       double x = hist->GetBinCenter(j);
-      double y = hist->GetBinContent(j) - polyPart->Eval(x);
-      histSubtracted->SetBinContent(j, y);
+      if(hist->GetBinContent(j)==0){
+        histSubtracted->SetBinContent(j, 0);
+      }
+      else{
+        double y = hist->GetBinContent(j) - polyPart->Eval(x);
+        histSubtracted->SetBinContent(j, y);
+      }
     }
 
     // Fit the subtracted histogram with the double Gaussian function
@@ -662,8 +667,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   {
     TGraphErrors *gEtaPeak = new TGraphErrors(nPoints, &pionPt[0], &etaPeak[0], &pionPtErr[0], &etaPeakErr[0]);
     TGraphErrors *gEtaRes = new TGraphErrors(nPoints, &pionPt[0], &etaRes[0], &pionPtErr[0], &etaResErr[0]);
+    TGraphErrors *gPeakRatio = new TGraphErrors(nPoints, &pionPt[0], &etaPeak[0]/&pionPeak[0], &pionPtErr[0], sqrt(pow(&etaPeakErr[0]/&etaPeak[0],2)+pow(&pionPeakErr[0]/&pionPeak[0],2)));
     gEtaPeak->SetTitle("Eta Peak Position; pT (GeV/c); Eta Peak Position (GeV/c^2)");
     gEtaRes->SetTitle("Eta Relative Resolution; pT (GeV/c); Eta Relative Resolution");
+    gPeakRatio->SetTitle("Eta Relative Resolution; pT (GeV/c); Eta Relative Resolution");
     TCanvas *cEtaPeak = new TCanvas("cEtaPeak", "Eta Peak Position", 800, 600);
     gEtaPeak->Draw("ALP");
     cEtaPeak->Print("2D_Histogram_Fits.pdf");
