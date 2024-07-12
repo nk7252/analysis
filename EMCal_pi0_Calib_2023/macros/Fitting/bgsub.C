@@ -440,11 +440,11 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    hist->Fit(leftRightFit, "RL");
+    hist->Fit(leftRightFit, "R");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
-    hist->Fit(gausFit, "RL");
+    hist->Fit(gausFit, "R");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -463,7 +463,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    hist->Fit(gausFit2, "RL");
+    hist->Fit(gausFit2, "R");
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
@@ -473,7 +473,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "R");
+    hist->Fit(combinedFit, "RME");
 
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
