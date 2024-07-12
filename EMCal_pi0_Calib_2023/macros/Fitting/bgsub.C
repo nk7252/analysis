@@ -685,7 +685,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     TCanvas *cPeakRatio = new TCanvas("cPeakRatio", "Pion/Eta Mass Ratio", 800, 600);
     gPeakRatio->Draw("ALP");
-    gPeakRatio->Print("2D_Histogram_Fits.pdf");
+    cPeakRatio->Print("2D_Histogram_Fits.pdf");
 
     // Clean up for eta graphs
     delete cEtaPeak;
