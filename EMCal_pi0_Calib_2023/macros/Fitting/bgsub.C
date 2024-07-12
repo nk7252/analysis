@@ -441,7 +441,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    hist->Fit(leftRightFit, "RL");
+    hist->Fit(leftRightFit, "R");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
@@ -480,7 +480,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "RM");
+    hist->Fit(combinedFit, "RME");
 
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
@@ -536,6 +536,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     doubleGaussFit->SetParameter(2, combinedFit->GetParameter(2));
     doubleGaussFit->SetParameter(6, limits[2]);
     doubleGaussFit->SetParameter(7, limits[3]);
+    doubleGaussFit->SetParLimits(1, 0.13, 0.19);
+    doubleGaussFit->SetParLimits(2, 0.05, 0.25);
     if (fitEtaPeak)
     {
       doubleGaussFit->SetParameter(3, combinedFit->GetParameter(8));
@@ -543,6 +545,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       doubleGaussFit->SetParameter(5, combinedFit->GetParameter(10));
       doubleGaussFit->SetParameter(8, limits[6]);
       doubleGaussFit->SetParameter(9, limits[7]);
+      doubleGaussFit->SetParLimits(4, 0.5, 0.75);
+      doubleGaussFit->SetParLimits(5, 0.05, 0.25);
     }
     histSubtracted->Fit(doubleGaussFit, "R");
 
