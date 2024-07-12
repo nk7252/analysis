@@ -145,7 +145,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 200, 0, 1.0);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 200, 0, 1.0);
   h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 100, 0, 1e13);
-  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 4 * 10, 0, 10, 200, 0, 1.0);
+  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 4 * 10, 0, 10, 240, 0, 1.2);
   h_truthmatched_mass = new TH1F("h_truthmatched_mass", "Invariant Mass, truth matched", 200, 0, 1.0);
   // high mass tail diagnostic
   std::vector<std::string> HistList = {"photon1", "photon2", "all photons", "pions"};
