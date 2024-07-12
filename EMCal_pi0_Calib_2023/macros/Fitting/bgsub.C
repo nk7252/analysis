@@ -152,11 +152,11 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
   }
 
   // Overall limits
-  // float rightmost_limit = 0.9;  // fit range limit
-  // float leftmost_limit = 0.05;  // fit range limit. normally 0.05
+   float rightmost_limit = 0.9;  // fit range limit
+   float leftmost_limit = 0.05;  // fit range limit. normally 0.05
   // Limits on gauss and poly
-  // float leftpolylim = 0.11;
-  // float rightpolylim = 0.19;
+   float leftpolylim = 0.11;
+   float rightpolylim = 0.19;
 
   hist->GetXaxis()->SetRangeUser(0, 1.0);
   scale_histogram_errors(hist, scale_factor);
