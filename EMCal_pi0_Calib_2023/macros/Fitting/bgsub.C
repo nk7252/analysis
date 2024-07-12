@@ -381,6 +381,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   // Vectors to store fit results
   std::vector<double> pionPt, pionPeak, pionRes, pionPtErr, pionPeakErr, pionResErr;
   std::vector<double> etaPeak, etaRes, etaPeakErr, etaResErr;
+  std::vector<double> PeakRatio,PeakRatioErr;
 
   for (int i = startBin; i <= endBin; i += projectionBins)
   {
@@ -502,11 +503,14 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       double eta_peak_err = combinedFit->GetParError(9);
       double eta_res = combinedFit->GetParameter(10) / combinedFit->GetParameter(9);
       double eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(10) / combinedFit->GetParameter(10), 2) + pow(eta_peak_err / eta_peak, 2));
+      double peak_ratio_err = sqrt(pow(eta_peak_err/eta_peak,2)+pow(pionPeakErr/pionPeak,2));
 
       etaPeak.push_back(eta_peak);
       etaPeakErr.push_back(eta_peak_err);
       etaRes.push_back(eta_res);
       etaResErr.push_back(eta_res_err);
+      PeakRatio.push_back(pion_peak/eta_peak);
+      PeakRatioErr.push_back(peak_ratio_err);
     }
     else
     {
@@ -667,10 +671,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   {
     TGraphErrors *gEtaPeak = new TGraphErrors(nPoints, &pionPt[0], &etaPeak[0], &pionPtErr[0], &etaPeakErr[0]);
     TGraphErrors *gEtaRes = new TGraphErrors(nPoints, &pionPt[0], &etaRes[0], &pionPtErr[0], &etaResErr[0]);
-    TGraphErrors *gPeakRatio = new TGraphErrors(nPoints, &pionPt[0], &etaPeak[0]/&pionPeak[0], &pionPtErr[0], sqrt(pow(&etaPeakErr[0]/&etaPeak[0],2)+pow(&pionPeakErr[0]/&pionPeak[0],2)));
+    TGraphErrors *gPeakRatio = new TGraphErrors(nPoints, &pionPt[0], &PeakRatio[0], &pionPtErr[0], &PeakRatioErr[0]);
     gEtaPeak->SetTitle("Eta Peak Position; pT (GeV/c); Eta Peak Position (GeV/c^2)");
     gEtaRes->SetTitle("Eta Relative Resolution; pT (GeV/c); Eta Relative Resolution");
-    gPeakRatio->SetTitle("Eta Relative Resolution; pT (GeV/c); Eta Relative Resolution");
+    gPeakRatio->SetTitle("Pion/Eta Mass Ratio; pT (GeV/c); Pion/Eta Mass");
     TCanvas *cEtaPeak = new TCanvas("cEtaPeak", "Eta Peak Position", 800, 600);
     gEtaPeak->Draw("ALP");
     cEtaPeak->Print("2D_Histogram_Fits.pdf");
@@ -679,11 +683,17 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     gEtaRes->Draw("ALP");
     cEtaRes->Print("2D_Histogram_Fits.pdf");
 
+    TCanvas *cPeakRatio = new TCanvas("cPeakRatio", "Pion/Eta Mass Ratio", 800, 600);
+    gEtaRes->Draw("ALP");
+    cEtaRes->Print("2D_Histogram_Fits.pdf");
+
     // Clean up for eta graphs
     delete cEtaPeak;
     delete cEtaRes;
     delete gEtaPeak;
     delete gEtaRes;
+    delete gPeakRatio;
+    delete cPeakRatio;
   }
 
   // Close the PDF file
