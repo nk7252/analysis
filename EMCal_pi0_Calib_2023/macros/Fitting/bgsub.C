@@ -396,6 +396,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       continue;
     }
 
+    hist->Multiply(1/(hist->GetBinLowEdge(2)-hist->GetBinLowEdge(1)));//divide bin content by width
     // Rebin the projected histogram if needed
     if (rebinFactor > 1)
     {
