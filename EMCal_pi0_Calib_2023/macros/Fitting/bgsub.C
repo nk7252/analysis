@@ -441,11 +441,13 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    hist->Fit(leftRightFit, "RMEL");
+    hist->Fit(leftRightFit, "RL");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
-    hist->Fit(gausFit, "RMEL");
+    leftRightFit->SetParLimits(1, 0.13, 0.19);
+    leftRightFit->SetParLimits(2, 0.01, 0.25);
+    hist->Fit(gausFit, "R");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -469,12 +471,15 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     {
       // Set initial guesses for the second Gaussian (eta peak)
       //combinedFit->SetParameter(8, gausFit2->GetParameter(0));   // Assume a smaller amplitude
-      combinedFit->SetParameter(9, 0.6);   //gausFit2->GetParameter(1) Center of the eta peak range, (limits[4] + limits[5]) / 2.0
+      //combinedFit->SetParameter(9, 0.6);   //gausFit2->GetParameter(1) Center of the eta peak range, (limits[4] + limits[5]) / 2.0
       //combinedFit->SetParameter(10, gausFit2->GetParameter(2));  // Initial sigma guess based on range width
+      //combinedFit->SetParLimits(8, 0.5, 0.75);
+      combinedFit->SetParLimits(9, 0.5, 0.75);
+      combinedFit->SetParLimits(10, 0.05, 0.25);
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "RME");
+    hist->Fit(combinedFit, "RM");
 
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
