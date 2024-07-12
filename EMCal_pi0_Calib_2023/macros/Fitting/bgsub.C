@@ -445,8 +445,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
-    leftRightFit->SetParLimits(1, 0.13, 0.19);
-    leftRightFit->SetParLimits(2, 0.01, 0.25);
+    gausFit->SetParLimits(1, 0.13, 0.19);
+    gausFit->SetParLimits(2, 0.01, 0.25);
     hist->Fit(gausFit, "R");
 
     // Combined Gaussian + Polynomial fit
@@ -463,7 +463,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     // Set initial parameters from previous fits
     for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j, gausFit->GetParameter(j));
     for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
-
+    combinedFit->SetParLimits(1, 0.13, 0.19);
+    combinedFit->SetParLimits(2, 0.01, 0.25);
     // Fit second Gaussian in the specified range
     //TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
     //hist->Fit(gausFit2, "R");
