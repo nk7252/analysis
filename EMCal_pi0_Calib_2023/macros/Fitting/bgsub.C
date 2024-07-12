@@ -429,22 +429,22 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     if (fitEtaPeak)
     {
       leftRightFit = new TF1("leftRightFit", leftRightPolynomial, limits[0], limits[1], 9);
-      leftRightFit->SetParameter(5, limits[5]);
-      leftRightFit->SetParameter(6, limits[6]);
-      leftRightFit->SetParameter(7, limits[9]);
-      leftRightFit->SetParameter(8, limits[10]);
+      leftRightFit->SetParameter(5, limits[4]);
+      leftRightFit->SetParameter(6, limits[5]);
+      leftRightFit->SetParameter(7, limits[8]);
+      leftRightFit->SetParameter(8, limits[9]);
     }
     else
     {
       leftRightFit = new TF1("leftRightFit", leftRightPolynomial, limits[0], limits[1], 7);
-      leftRightFit->SetParameter(5, limits[5]);
-      leftRightFit->SetParameter(6, limits[6]);
+      leftRightFit->SetParameter(5, limits[4]);
+      leftRightFit->SetParameter(6, limits[5]);
     }
-    hist->Fit(leftRightFit, "R");
+    hist->Fit(leftRightFit, "RL");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
-    hist->Fit(gausFit, "R");
+    hist->Fit(gausFit, "RL");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -463,7 +463,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    hist->Fit(gausFit2, "R");
+    hist->Fit(gausFit2, "RL");
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
