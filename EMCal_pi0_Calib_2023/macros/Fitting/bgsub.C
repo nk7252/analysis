@@ -353,6 +353,7 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
 void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool dynamic_left = false)
 {
   // more thorough minimizer for fit
+  
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
   // Set the global fit strategy
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
@@ -440,11 +441,11 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    hist->Fit(leftRightFit, "R");
+    hist->Fit(leftRightFit, "RME");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
-    hist->Fit(gausFit, "R");
+    hist->Fit(gausFit, "RME");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -462,14 +463,14 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
 
     // Fit second Gaussian in the specified range
-    TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    hist->Fit(gausFit2, "R");
+    //TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
+    //hist->Fit(gausFit2, "R");
     if (fitEtaPeak)
     {
       // Set initial guesses for the second Gaussian (eta peak)
-      combinedFit->SetParameter(8, gausFit2->GetParameter(0));   // Assume a smaller amplitude
-      combinedFit->SetParameter(9, gausFit2->GetParameter(1));   // Center of the eta peak range, (limits[4] + limits[5]) / 2.0
-      combinedFit->SetParameter(10, gausFit2->GetParameter(2));  // Initial sigma guess based on range width
+      //combinedFit->SetParameter(8, gausFit2->GetParameter(0));   // Assume a smaller amplitude
+      //combinedFit->SetParameter(9, gausFit2->GetParameter(1));   // Center of the eta peak range, (limits[4] + limits[5]) / 2.0
+      //combinedFit->SetParameter(10, gausFit2->GetParameter(2));  // Initial sigma guess based on range width
     }
 
     // Fit the combined function
