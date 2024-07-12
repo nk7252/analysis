@@ -64,6 +64,25 @@ double doubleGauss(double *x, double *par)
   return gauss1 + gauss2;
 }
 
+double doublePolyBG(double *x, double *par)
+{
+  // First Gaussian part (e.g., pion peak)
+  double poly1 = 0;
+  if (x[0] >= par[4] && x[0] <= par[5])
+  {  // Check if x is in the range of the first Gaussian
+    poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
+  }
+
+  // Second Gaussian part (e.g., eta peak)
+  double poly2 = 0;
+  if (x[0] >= par[9] && x[0] <= par[10])
+  {  // Check if x is in the range of the second Gaussian
+    poly2 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
+  }
+
+  return poly1 + poly2;
+}
+
 // leftRightPolynomial function to optionally exclude two Gaussian regions
 double leftRightPolynomial(double *x, double *par)
 {
@@ -83,7 +102,7 @@ double leftRightPolynomial(double *x, double *par)
   }
 
   // Polynomial (4th degree) calculation
-  return par[0] + par[1] * x[0] + par[2] * x[0] + par[3] * x[0] * x[0] + par[4] * x[0] * x[0] * x[0] + par[5] * x[0] * x[0] * x[0] * x[0];
+  return par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0] + par[4] * x[0] * x[0] * x[0] * x[0];
 }
 
 // scale the histogram's error bars
@@ -396,12 +415,13 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       continue;
     }
 
-    hist->Scale(1/(hist->GetBinLowEdge(2)-hist->GetBinLowEdge(1)));//divide bin content by width
     // Rebin the projected histogram if needed
     if (rebinFactor > 1)
     {
       hist->Rebin(rebinFactor);
     }
+
+    hist->Scale(1/(hist->GetBinLowEdge(2)-hist->GetBinLowEdge(1)));//divide bin content by width so it becomes dN/dM
 
     // Determine the leftmost point with a value in the projection histograms
     if (dynamic_left)
