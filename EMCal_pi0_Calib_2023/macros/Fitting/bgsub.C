@@ -545,8 +545,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     doubleGaussFit->SetParameter(2, combinedFit->GetParameter(2));
     doubleGaussFit->SetParameter(6, limits[2]);
     doubleGaussFit->SetParameter(7, limits[3]);
-    doubleGaussFit->SetParLimits(1, 0.13, 0.19);
-    doubleGaussFit->SetParLimits(2, 0.05, 0.25);
+    doubleGaussFit->SetParLimits(1, 0.11, 0.19);
+    doubleGaussFit->SetParLimits(2, 0.01, 0.30);
     if (fitEtaPeak)
     {
       doubleGaussFit->SetParameter(3, combinedFit->GetParameter(8));
