@@ -503,7 +503,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       double eta_peak_err = combinedFit->GetParError(9);
       double eta_res = combinedFit->GetParameter(10) / combinedFit->GetParameter(9);
       double eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(10) / combinedFit->GetParameter(10), 2) + pow(eta_peak_err / eta_peak, 2));
-      double peak_ratio_err = sqrt(pow(eta_peak_err/eta_peak,2)+pow(pionPeakErr/pionPeak,2));
+      double peak_ratio_err = sqrt(pow(eta_peak_err/eta_peak,2)+pow(pion_peak_err/pion_peak,2));
 
       etaPeak.push_back(eta_peak);
       etaPeakErr.push_back(eta_peak_err);
