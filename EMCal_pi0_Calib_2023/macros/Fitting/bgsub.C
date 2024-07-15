@@ -320,7 +320,7 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, double scale_facto
   }
 }
 
-void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool dynamic_left = false, int background_scheme = 0, const std::vector<double>& rebinEdges = {})
+void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool dynamic_left = false, int background_scheme = 0, const std::vector<double> &rebinEdges = {})
 {
   // more thorough minimizer for fit
 
@@ -378,9 +378,9 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Rebin the projected histogram if needed
-    //if (rebinFactor > 1)
+    // if (rebinFactor > 1)
     //{
-      //hist->Rebin(rebinFactor);
+    // hist->Rebin(rebinFactor);
     //}
 
     // Normalize the histogram
@@ -946,8 +946,16 @@ void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08
       polygauss2L, polygauss2R   // 8,9 Exclusion zone for left and right polynomials: second gaussian
   };
 
-  if(variable_bins) std::vector<double> nonUniformBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0, 1.04, 1.08, 1.12, 1.16, 1.2};
-  else std::vector<double> nonUniformBins = {};
+  if (variable_bins)
+  {
+    std::vector<double> nonUniformBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0, 1.04, 1.08, 1.12, 1.16, 1.2};
+    fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
+  }
+  else
+  {
+    std::vector<double> nonUniformBins = {};
+    fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
+  }
 
   fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
   // return 0;
