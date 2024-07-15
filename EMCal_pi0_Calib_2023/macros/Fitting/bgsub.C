@@ -867,11 +867,11 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
   // Draw TGraphErrors and add them to the PDF
   TCanvas *cPionPeak = new TCanvas("cPionPeak", "Pion Peak Position", 800, 600);
-  gPionPeak->Draw("ALP");
+  gPionPeak->Draw("ALPE");
   cPionPeak->Print("2D_Histogram_Fits.pdf");
 
   TCanvas *cPionRes = new TCanvas("cPionRes", "Pion Relative Resolution", 800, 600);
-  gPionRes->Draw("ALP");
+  gPionRes->Draw("ALPE");
   cPionRes->Print("2D_Histogram_Fits.pdf");
 
   if (fitEtaPeak)
@@ -883,15 +883,15 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     gEtaRes->SetTitle("Eta Relative Resolution; pT (GeV/c); Eta Relative Resolution");
     gPeakRatio->SetTitle("Pion/Eta Mass Ratio; pT (GeV/c); Pion/Eta Mass");
     TCanvas *cEtaPeak = new TCanvas("cEtaPeak", "Eta Peak Position", 800, 600);
-    gEtaPeak->Draw("ALP");
+    gEtaPeak->Draw("ALPE");
     cEtaPeak->Print("2D_Histogram_Fits.pdf");
 
     TCanvas *cEtaRes = new TCanvas("cEtaRes", "Eta Relative Resolution", 800, 600);
-    gEtaRes->Draw("ALP");
+    gEtaRes->Draw("ALPE");
     cEtaRes->Print("2D_Histogram_Fits.pdf");
 
     TCanvas *cPeakRatio = new TCanvas("cPeakRatio", "Pion/Eta Mass Ratio", 800, 600);
-    gPeakRatio->Draw("ALP");
+    gPeakRatio->Draw("ALPE");
     cPeakRatio->Print("2D_Histogram_Fits.pdf");
 
     // Clean up for eta graphs
