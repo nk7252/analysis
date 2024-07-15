@@ -132,7 +132,7 @@ double leftRightPolynomial(double *x, double *par)
 }
 
 // scale the histogram's error bars
-void scale_histogram_errors(TH1F *hist_error_scale, double scale_factor)
+void scale_histogram_errors(TH1D *hist_error_scale, double scale_factor)
 {
   for (int i = 1; i <= hist_error_scale->GetNbinsX(); ++i)
   {
