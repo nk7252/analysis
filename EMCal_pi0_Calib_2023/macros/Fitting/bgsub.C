@@ -48,10 +48,20 @@ double combinedFunctionDoubleGauss(double *x, double *par)
 double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
-  double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
+  //double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
+  double gauss1 = 0;
+  if (x[0] >= 0.1 && x[0] <= 0.2)
+  {  // Check if x is in the range of the first Gaussian
+  double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2))
+  }
 
   // Second Gaussian part (e.g., eta peak)
+  //double gauss2 = par[7] * exp(-0.5 * pow((x[0] - par[8]) / par[9], 2));
+  double gauss2 = 0;
+  if (x[0] >= 0.5 && x[0] <= 0.65)
+  {  // Check if x is in the range of the first Gaussian
   double gauss2 = par[7] * exp(-0.5 * pow((x[0] - par[8]) / par[9], 2));
+  }
 
   // Polynomial part
   // First Gaussian part (e.g., pion peak)
