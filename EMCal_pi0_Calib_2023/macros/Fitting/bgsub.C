@@ -489,8 +489,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       {
       leftRightFit = new TF1("leftRightFit", doublePolyBG, limits[0], limits[1], 11);
       leftRightFit->SetParameter(4, limits[0]);//left poly1 lim
-      leftRightFit->SetParameter(5, 0.3);//right poly2 lim
-      leftRightFit->SetParameter(9, 0.3);//left poly2 lim
+      leftRightFit->SetParameter(5, 0.35);//right poly2 lim
+      leftRightFit->SetParameter(9, 0.35);//left poly2 lim
       leftRightFit->SetParameter(10, limits[1]);//right poly2 lim
       }
     }
@@ -624,6 +624,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         for (int j = 0; j < 4; ++j) polyPart->SetParameter(j, combinedFit->GetParameter(j + 3));//3,4,5,6
         for (int j = 0; j < 3; ++j) polyPart->SetParameter(j+4, combinedFit->GetParameter(j + 10));//10,11,12  
       }
+
     // Create a new histogram to store the subtracted data
     TH1F *histSubtracted = (TH1F *) hist->Clone(Form("histSubtracted_%d", i));
     for (int j = 1; j <= hist->GetNbinsX(); ++j)
