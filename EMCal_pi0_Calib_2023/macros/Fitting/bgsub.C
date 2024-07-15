@@ -928,7 +928,7 @@ void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08
   std::vector<float> limits = {
       polyL, polyR,              //0,1 Polynomial fit range: left and right limits
       gauss1L, gauss1R,          //2-3 First Gaussian fit range: left and right limits
-      polygauss1L, polygauss2L,  //4,5 Exclusion zone for left and right polynomials: first gaussian
+      polygauss1L, polygauss1R,  //4,5 Exclusion zone for left and right polynomials: first gaussian
       gauss2L, gauss2R,          //6,7 Second Gaussian fit range (if fitting eta peak): left and right limits
       polygauss2L, polygauss2R   //8,9 Exclusion zone for left and right polynomials: second gaussian
   };
