@@ -639,8 +639,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Create a new function for just the polynomial part
     TF1 *polyPart;
-    TF1 *gauspoly3 = new TF1("gpol3", "pol3", limits[0], 0.35);
-    TF1 *gauspoly2 = new TF1("gpol2", "pol2", 0.35, limits[1]);
+    TF1 *gauspoly3 = new TF1("gpol3", "pol3", limits[0], 0.3);
+    TF1 *gauspoly2 = new TF1("gpol2", "pol2", 0.3, limits[1]);
     if (background_scheme == 0)  // poly4
     {
       polyPart = new TF1("polyPart", "pol4", limits[0], limits[1]);
@@ -649,7 +649,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     if (background_scheme == 1)  // poly3+poly2
     {
       for (int j = 0; j < 4; ++j) gauspoly3->SetParameter(j, combinedFit->GetParameter(j + 3));       // 3,4,5,6
-      for (int j = 0; j < 3; ++j) gauspoly2->SetParameter(j + 4, combinedFit->GetParameter(j + 10));  // 10,11,12
+      for (int j = 0; j < 3; ++j) gauspoly2->SetParameter(j, combinedFit->GetParameter(j + 10));  // 10,11,12
       polyPart = new TF1("polyPart", "gpol3+gpol2", limits[0], limits[1]);
       //polyPart = new TF1("polyPart", "pol3+pol2", limits[0], limits[1]);
       //for (int j = 0; j < 4; ++j) polyPart->SetParameter(j, combinedFit->GetParameter(j + 3));       // 3,4,5,6
