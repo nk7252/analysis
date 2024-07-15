@@ -204,7 +204,7 @@ void fit_histogram(double scale_factor = 1, float leftmost_gauslimit = 0.05, flo
   float rightpolylim = 0.19;
 
   hist->GetXaxis()->SetRangeUser(0, 1.0);
-  scale_histogram_errors(hist, scale_factor);
+  //scale_histogram_errors(hist, scale_factor);
 
   // Fit left and right regions with a polynomial, excluding Gaussian regions
   TF1 *leftRightFit;
