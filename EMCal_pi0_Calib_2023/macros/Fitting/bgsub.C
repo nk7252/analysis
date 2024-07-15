@@ -409,7 +409,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 {
   // more thorough minimizer for fit
 
-  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");
+  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2","Simplex");
   // Set the global fit strategy
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(3);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(10000);
@@ -510,7 +510,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    hist->Fit(leftRightFit, "RME");
+    hist->Fit(leftRightFit, "R");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
@@ -579,7 +579,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "RME");
+    hist->Fit(combinedFit, "R");
 
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
