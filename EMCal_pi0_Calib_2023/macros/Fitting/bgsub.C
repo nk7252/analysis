@@ -120,9 +120,18 @@ double doublePolyBG(double *x, double *par)
 }
 double ONLYdoublePolyBG(double *x, double *par)
 {
-  double  poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
-  double  poly2 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
-  return poly1 + poly2;
+  //double  poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
+  //double  poly2 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
+  double poly1 = 0;
+  if (x[0] >= 0.05 && x[0] <= 0.3)
+  {  // Check if x is in the range of the first Gaussian
+    poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
+  }
+  else
+  {
+    poly1 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
+  }
+  return poly1;// + poly2;
 }
 
 // leftRightPolynomial function to optionally exclude two Gaussian regions
