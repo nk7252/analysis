@@ -370,6 +370,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TH1F *histF = (TH1F *) hist;
     if (!rebinEdges.empty())
     {
+      std::cout << "Rebinning histogram with non-uniform edges" << std::endl;
       histF = rebinHistogram(histF, rebinEdges);
     }
     else if (rebinFactor > 1)
