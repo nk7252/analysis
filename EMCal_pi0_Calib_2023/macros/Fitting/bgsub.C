@@ -790,10 +790,9 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     c1->Print("2D_Histogram_Fits.pdf");
 
     TCanvas *c2 = new TCanvas(Form("c2_%s", ptRange.Data()), "Subtracted Peak", 800, 600);
-    histSubtracted->SetTitle(Form("Background Subtracted Peak; #it{m}_{#gamma#gamma} (GeV); #frac{dN}{d#it{m}_{#gamma#gamma}}; pT: %s", ptRange.Data()));
+    histSubtracted->SetTitle(Form("Background Subtracted Peak; #it{m}_{#gamma#gamma} (GeV); dN/d#it{m}_{#gamma#gamma}; pT: %s", ptRange.Data()));
     //hist->GetYaxis()->SetTitleOffset(1.5); // Adjust this value as needed
     //hist->GetYaxis()->SetLabelOffset(0.02); // Adjust if the labels overlap
-    hist->GetYaxis()->RotateTitle(true);
     histSubtracted->Draw();
     histSubtracted->SetMinimum(0.0);
     histSubtracted->GetYaxis()->SetTitleOffset(1.5);
@@ -886,7 +885,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
   gPionPeak->SetTitle("Pion Peak Position; #it{pT}_{#gamma#gamma} (GeV); Pion Peak Position (GeV)");
   gPionRes->SetTitle("Pion Relative Resolution; #it{pT}_{#gamma#gamma} (GeV); Pion Relative Resolution");
-
+  gPionPeak->GetYaxis()->SetTitleOffset(1.5);
+  gPionRes->GetYaxis()->SetTitleOffset(1.5);
   // Draw TGraphErrors and add them to the PDF
   TCanvas *cPionPeak = new TCanvas("cPionPeak", "Pion Peak Position", 800, 600);
   gPionPeak->Draw("ALP");
@@ -904,6 +904,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     gEtaPeak->SetTitle("Eta Peak Position; #it{pT}_{#gamma#gamma} (GeV); Eta Peak Position (GeV)");
     gEtaRes->SetTitle("Eta Relative Width; #it{pT}_{#gamma#gamma} (GeV); Eta Relative Width");
     gPeakRatio->SetTitle("Pion/Eta Mass Ratio; #it{pT}_{#gamma#gamma} (GeV); Pion/Eta Mass");
+    gEtaPeak->GetYaxis()->SetTitleOffset(1.5);
+    gEtaRes->GetYaxis()->SetTitleOffset(1.5);
+    gPeakRatio->GetYaxis()->SetTitleOffset(1.5);
+
     TCanvas *cEtaPeak = new TCanvas("cEtaPeak", "Eta Peak Position", 800, 600);
     gEtaPeak->Draw("ALPE");
     cEtaPeak->Print("2D_Histogram_Fits.pdf");
