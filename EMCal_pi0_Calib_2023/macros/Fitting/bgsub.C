@@ -169,7 +169,7 @@ double ONLYdoublePolyBG(double *x, double *par)
 double LogBG(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
-  double logBg = 0;
+  //double logBg = 0;
 
   double logBg = par[0] * log(x[0]) + par[1];
 
@@ -180,7 +180,7 @@ double LogBG(double *x, double *par)
     return 0;
   }
 
-  return poly1;  // + poly2;
+  return logBg;  // + poly2;
 }
 
 // leftRightPolynomial function to optionally exclude two Gaussian regions
