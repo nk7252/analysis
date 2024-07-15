@@ -634,9 +634,9 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     pionPt.push_back(pion_pt);
     pionPeak.push_back(pion_peak);
-    pionPeakErr.push_back(200*pion_peak_err);
+    pionPeakErr.push_back(1);//pion_peak_err
     pionRes.push_back(pion_res);
-    pionResErr.push_back(200*pion_res_err);
+    pionResErr.push_back(pion_res_err);
 
     // Store eta peak position and resolution if fitting eta
     if (fitEtaPeak)
@@ -660,11 +660,11 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
 
       etaPeak.push_back(eta_peak);
-      etaPeakErr.push_back(200*eta_peak_err);
+      etaPeakErr.push_back(eta_peak_err);
       etaRes.push_back(eta_res);
-      etaResErr.push_back(200*eta_res_err);
+      etaResErr.push_back(eta_res_err);
       PeakRatio.push_back(pion_peak / eta_peak);
-      PeakRatioErr.push_back(200*peak_ratio_err);
+      PeakRatioErr.push_back(peak_ratio_err);
     }
     else
     {
