@@ -790,7 +790,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     c1->Print("2D_Histogram_Fits.pdf");
 
     TCanvas *c2 = new TCanvas(Form("c2_%s", ptRange.Data()), "Subtracted Peak", 800, 600);
-    histSubtracted->SetTitle(Form("Background Subtracted Peak; #it{m}_{#gamma#gamma} (GeV); dN/d#it{m}_{#gamma#gamma} (Background subtracted); pT: %s", ptRange.Data()));
+    histSubtracted->SetTitle(Form("Background Subtracted Peak; #it{m}_{#gamma#gamma} (GeV); dN #div d#it{m}_{#gamma#gamma} (Background subtracted); pT: %s", ptRange.Data()));
     histSubtracted->Draw();
     histSubtracted->SetMinimum(0.0);
     histSubtracted->GetYaxis()->SetTitleOffset(1.5);
