@@ -281,7 +281,7 @@ private:
     }
 };
 
-int main()
+void bgsub()
 {
     double scale_factor = 1.0;
     std::vector<float> limits = {0.05, 1.0, 0.11, 0.19, 0.11, 0.19, 0.5, 0.7};  // Example limits
@@ -295,5 +295,5 @@ int main()
     FitManager fitManager(scale_factor, limits, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme);
     fitManager.fitHistogram();
 
-    return 0;
+    //return 0;
 }
