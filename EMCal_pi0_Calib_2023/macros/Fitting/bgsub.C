@@ -493,7 +493,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       {
         leftRightFit = new TF1("leftRightFit", doublePolyBG, limits[0], limits[1], 11);
         leftRightFit->SetParameter(4, limits[0]);  // left poly1 lim
-        leftRightFit->SetParameter(5, 0.35);       // right poly2 lim
+        leftRightFit->SetParameter(5, 0.3);       // right poly2 lim
         // leftRightFit->SetParameter(9, 0.35);//left poly2 lim
         // leftRightFit->SetParameter(10, limits[1]);//right poly2 lim
       }
@@ -508,7 +508,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
-    gausFit->SetParLimits(1, 0.13, 0.19);
+    gausFit->SetParLimits(1, 0.11, 0.19);
     gausFit->SetParLimits(2, 0.01, 0.25);
     hist->Fit(gausFit, "R");
 
@@ -533,13 +533,13 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Set initial parameters from previous fits
     for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j, gausFit->GetParameter(j));
-    combinedFit->SetParLimits(1, 0.13, 0.19);
+    combinedFit->SetParLimits(1, 0.11, 0.19);
     combinedFit->SetParLimits(2, 0.01, 0.25);
     // for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
 
     // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    gausFit2->SetParLimits(1, 0.54, 0.65);
+    gausFit2->SetParLimits(1, 0.50, 0.65);
     gausFit2->SetParLimits(2, 0.01, 0.25);
     hist->Fit(gausFit2, "R");
     if (fitEtaPeak)
@@ -549,7 +549,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j+8, gausFit2->GetParameter(j));
         for (int j = 0; j < 5; ++j) combinedFit->SetParameter(j+3, leftRightFit->GetParameter(j));
         // combinedFit->SetParLimits(8, 10, gausFit->GetParameter(0) / 6);
-        combinedFit->SetParLimits(9, 0.54, 0.65);
+        combinedFit->SetParLimits(9, 0.50, 0.65);
         combinedFit->SetParLimits(10, 0.05, 0.25);
       }
       if (background_scheme == 1)  // poly3+poly2
@@ -852,11 +852,11 @@ void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08
 
   // Fit limits for the polynomial and Gaussian fits
   std::vector<float> limits = {
-      polyL, polyR,              // Polynomial fit range: left and right limits
-      gauss1L, gauss1R,          // First Gaussian fit range: left and right limits
-      polygauss1L, polygauss2L,  // Exclusion zone for left and right polynomials: first gaussian
-      gauss2L, gauss2R,          // Second Gaussian fit range (if fitting eta peak): left and right limits
-      polygauss2L, polygauss2R   // Exclusion zone for left and right polynomials: second gaussian
+      polyL, polyR,              //0,1 Polynomial fit range: left and right limits
+      gauss1L, gauss1R,          //2-3 First Gaussian fit range: left and right limits
+      polygauss1L, polygauss2L,  //4,5 Exclusion zone for left and right polynomials: first gaussian
+      gauss2L, gauss2R,          //6,7 Second Gaussian fit range (if fitting eta peak): left and right limits
+      polygauss2L, polygauss2R   //8,9 Exclusion zone for left and right polynomials: second gaussian
   };
 
   // Flag to indicate whether to fit the eta peak
