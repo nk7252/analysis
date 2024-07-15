@@ -52,7 +52,7 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
   double gauss1 = 0;
   if (x[0] >= 0.1 && x[0] <= 0.2)
   {  // Check if x is in the range of the first Gaussian
-  double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2))
+  double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
   }
 
   // Second Gaussian part (e.g., eta peak)
