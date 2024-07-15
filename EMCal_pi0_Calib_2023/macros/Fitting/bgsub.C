@@ -516,7 +516,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
     gausFit->SetParLimits(1, 0.11, 0.19);
     gausFit->SetParLimits(2, 0.01, 0.25);
-    hist->Fit(gausFit, "RME");
+    hist->Fit(gausFit, "R");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -547,7 +547,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
     gausFit2->SetParLimits(1, 0.55, 0.63);
     gausFit2->SetParLimits(2, 0.05, 0.25);
-    hist->Fit(gausFit2, "RME");
+    hist->Fit(gausFit2, "R");
     if (fitEtaPeak)
     {
       if (background_scheme == 0)  // poly4
@@ -574,7 +574,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "RME");
+    hist->Fit(combinedFit, "R");
 
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
