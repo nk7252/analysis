@@ -118,6 +118,12 @@ double doublePolyBG(double *x, double *par)
 
   return poly1;  // + poly2;
 }
+double ONLYdoublePolyBG(double *x, double *par)
+{
+  double  poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
+  double  poly2 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
+  return poly1 + poly2;
+}
 
 // leftRightPolynomial function to optionally exclude two Gaussian regions
 double leftRightPolynomial(double *x, double *par)
@@ -651,7 +657,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       //for (int j = 0; j < 4; ++j) gauspoly3->SetParameter(j, combinedFit->GetParameter(j + 3));       // 3,4,5,6
       //for (int j = 0; j < 3; ++j) gauspoly2->SetParameter(j, combinedFit->GetParameter(j + 10));  // 10,11,12
       //polyPart = new TF1("polyPart", "gpol3+gpol2", limits[0], limits[1]);
-      polyPart = new TF1("polyPart", doublePolyBG, limits[0], limits[1]);
+      polyPart = new TF1("polyPart", ONLYdoublePolyBG, limits[0], limits[1]);
       for (int j = 0; j < 4; ++j) polyPart->SetParameter(j, combinedFit->GetParameter(j + 3));       // 3,4,5,6
       for (int j = 0; j < 3; ++j) polyPart->SetParameter(j + 4, combinedFit->GetParameter(j + 10));  // 10,11,12
     }
