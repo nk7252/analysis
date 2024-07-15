@@ -14,7 +14,6 @@ void plot()
 {
   SetsPhenixStyle();
 
-  /*
   std::string file_path = "runList.txt";
 
   std::ifstream file(file_path);
@@ -42,11 +41,11 @@ void plot()
     std::cerr << "Error: No valid run numbers found in the file." << std ::endl;
     return 1;
   }
-    */
-  //int first_run = run_numbers.front();
-  //int last_run = run_numbers.back();
 
-  TFile* finpi0 = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/merged_file.root");
+  int first_run = run_numbers.front();
+  int last_run = run_numbers.back();
+
+  TFile* finpi0 = new TFile("combine_out/out_fin152.root");
 
   TH1F* h_InvMass = (TH1F*) finpi0->Get("h_InvMass");
   TH1F* h_InvMassMix = (TH1F*) finpi0->Get("h_InvMassMix");
@@ -58,7 +57,8 @@ void plot()
   /*
   int bin1 = h_InvMass->FindBin(0.7);
   int bin2 = h_InvMass->FindBin(1.19);
-  h_InvMassMix->Scale(h_InvMass->Integral(bin1,bin2)/h_InvMassMix->Integral(bin1,bin2));
+  h_InvMassMix->Scale(h_InvMass->Integral(bin1,bin2)/h_InvMassMix->Integra
+  l(bin1,bin2));
 
   TCanvas* c1 = new TCanvas("c1","c1",600,600);
   h_InvMass->Draw("ex0");
@@ -126,7 +126,7 @@ void plot()
   hrb->Scale(1. / 2, "width");
   h = hrb;
 
-  for (int ib = 1; ib < h->GetNbinsX() + 1; ib++) h->SetBinError(ib, h->GetBinError(ib) * 1.414);
+  for (int ib = 1; ib < h->GetNbinsX() + 1; ib++) h->SetBinError(ib, h->GetBinError(ib) *1.414);
 
   TH1F* h_bkg = (TH1F*) hrb->Clone("h_bkg");
   TH1F* h_sig = (TH1F*) hrb->Clone("h_sig");
@@ -240,53 +240,54 @@ void plot()
   myText(0.78, 0.88, 1, "June 7, 2024", 0.04);
   myText(0.4, 0.83 - 0.00, 1, "#it{p}+#it{p} 200 GeV", 0.06);
   myText(0.4, 0.77 - 0.00, 1, Form("%0.0fM Events", h_event->GetEntries() / 1e6), 0.06);
-  myText(0.4, 0.69 - 0.00, 1, "#it{p}_{T1,2} > 1.5 GeV, #it{A}_{#gamma#gamma}< 0.6 ", 0.06);
-  myText(0.4, 0.62 - 0.00, 1, Form("#it{#mu}_{#pi}/#it{#mu}_{#eta} = %0.3f (#it{m } _{#pi } / #it{m } _{#eta } = 0.246) ", piM / etaM), 0.06);
-  myText(0.4, 0.55 - 0.00, 1, Form("#it{#sigma}_{#pi}/#it{#mu}_{#pi} = %0.3f", piW / piM), 0.06);
-  myText(0.4, 0.47 - 0.00, 1, Form("#it{#sigma}_{#eta}/#it{#mu}_{#eta} = %0.3f ", etaW / etaM), 0.06);
+myText(0.4, 0.69-0.00, 1, "#it{p}_{T1,2} > 1.5 GeV, #it{A}_{#gamma#gamma}< 0.6 ",0.06);
+myText(0.4, 0.62 - 0.00, 1, Form("#it{#mu}_{#pi}/#it{#mu}_{#eta} = %0.3f (
+#it{m } _{#pi } / #it{m } _{#eta } = 0.246) ",piM/etaM),0.06);
+myText(0.4, 0.55 - 0.00, 1, Form("#it{#sigma}_{#pi}/#it{#mu}_{#pi} = %0.3f",piW/piM),0.06);
+myText(0.4, 0.47 - 0.00, 1, Form("#it{#sigma}_{#eta}/#it{#mu}_{#eta} = %0.3f ",etaW/etaM),0.06);
 
-  // myText(0.45, 0.69, 1, "#it{A}_{#gamma#gamma}<0.6 ",0.06);
-  // myText(0.5, 0.62, 1, "#it{p}_{T1}>1.3 GeV",0.06);
-  // myText(0.5, 0.55, 1, "#it{p}_{T2}>0.7 GeV",0.06);
-  // myText(0.45, 0.55, 1, Form("#it{#mu}_{#eta} = %0.1f #pm %0.1f MeV",etaM,etaErr),0.06);
-  // myText(0.45, 0.62, 1, Form("#it{#mu}_{#pi} = %0.1f #pm %0.1f MeV",piM,piErr),0.06);
-  // myText(0.45, 0.55, 1, Form("#it{#mu}_{#eta} = %0.1f #pm %0.1f MeV",etaM, etaErr),0.06);
+// myText(0.45, 0.69, 1, "#it{A}_{#gamma#gamma}<0.6 ",0.06);
+// myText(0.5, 0.62, 1, "#it{p}_{T1}>1.3 GeV",0.06);
+// myText(0.5, 0.55, 1, "#it{p}_{T2}>0.7 GeV",0.06);
+// myText(0.45, 0.55, 1, Form("#it{#mu}_{#eta} = %0.1f #pm %0.1f MeV",etaM,etaErr),0.06);
+// myText(0.45, 0.62, 1, Form("#it{#mu}_{#pi} = %0.1f #pm %0.1f MeV",piM,piErr),0.06);
+// myText(0.45, 0.55, 1, Form("#it{#mu}_{#eta} = %0.1f #pm %0.1f MeV",etaM, etaErr),0.06);
 
-  // h->GetYaxis()->SetRangeUser(2e4,1e6);
+// h->GetYaxis()->SetRangeUser(2e4,1e6);
 
-  gPad->SetBottomMargin(0.0);
-  gPad->SetLeftMargin(0.18);
-  gPad->SetTopMargin(0.07);
+gPad->SetBottomMargin(0.0);
+gPad->SetLeftMargin(0.18);
+gPad->SetTopMargin(0.07);
 
-  c3->SaveAs("pi0_eta_mass_log.pdf");  // figures/
+c3->SaveAs("figures/pi0_eta_mass_log.pdf");
 
-  pad[1]->cd();
+pad[1]->cd();
 
-  gPad->SetLeftMargin(0.18);
+gPad->SetLeftMargin(0.18);
 
-  gPad->SetTopMargin(0);
-  gPad->SetBottomMargin(0.3);
-  h_sig->Draw("ex0");
-  h_sig->SetXTitle("#it{m}_{#gamma#gamma} [GeV]  ");
+gPad->SetTopMargin(0);
+gPad->SetBottomMargin(0.3);
+h_sig->Draw("ex0");
+h_sig->SetXTitle("#it{m}_{#gamma#gamma} [GeV]  ");
 
-  h_sig->SetYTitle("data-bkg");
-  h_sig->GetXaxis()->SetRangeUser(0, 1.0);
+h_sig->SetYTitle("data-bkg");
+h_sig->GetXaxis()->SetRangeUser(0, 1.0);
 
-  h_sig->GetYaxis()->SetNdivisions(505, kTRUE);
-  h_sig->GetYaxis()->SetLabelSize(0.15);
-  h_sig->GetYaxis()->SetTitleSize(0.16);
-  h_sig->GetYaxis()->CenterTitle(kTRUE);
-  h_sig->GetYaxis()->SetTitleOffset(0.6);
+h_sig->GetYaxis()->SetNdivisions(505, kTRUE);
+h_sig->GetYaxis()->SetLabelSize(0.15);
+h_sig->GetYaxis()->SetTitleSize(0.16);
+h_sig->GetYaxis()->CenterTitle(kTRUE);
+h_sig->GetYaxis()->SetTitleOffset(0.6);
 
-  h_sig->GetXaxis()->SetNdivisions(510, kTRUE);
-  h_sig->GetXaxis()->SetLabelSize(0.15);
-  h_sig->GetXaxis()->SetTickLength(0.10);
-  h_sig->GetXaxis()->SetTitleSize(0.16);
-  h_sig->GetXaxis()->SetTitleOffset(0.9);
+h_sig->GetXaxis()->SetNdivisions(510, kTRUE);
+h_sig->GetXaxis()->SetLabelSize(0.15);
+h_sig->GetXaxis()->SetTickLength(0.10);
+h_sig->GetXaxis()->SetTitleSize(0.16);
+h_sig->GetXaxis()->SetTitleOffset(0.9);
 
-  line0->Draw("l");
-  f_eta->Draw("same");
-  f_eta->SetLineColor(kRed);
+line0->Draw("l");
+f_eta->Draw("same");
+f_eta->SetLineColor(kRed);
 
-  c3->SaveAs("pi0_eta_mass.pdf");  // figures/
+c3->SaveAs("figures/pi0_eta_mass.pdf");
 }
