@@ -102,6 +102,12 @@ double doublePolyBG(double *x, double *par)
   {
     poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
   }
+  // Check if x is in the range of any Gaussian fit
+  if ((x[0] >= 0.11 && x[0] <= 0.19) || (x[0] >= 0.53 && x[0] <= 0.65))
+  {
+    TF1::RejectPoint();
+    return 0;
+  }
 
   // Second Gaussian part (e.g., eta peak)
   // double poly2 = 0;
