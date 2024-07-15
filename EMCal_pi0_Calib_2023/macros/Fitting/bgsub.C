@@ -579,7 +579,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "RMEL");
+    hist->Fit(combinedFit, "RME");
 
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
