@@ -665,6 +665,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       etaResErr.push_back(eta_res_err);
       PeakRatio.push_back(pion_peak / eta_peak);
       PeakRatioErr.push_back(peak_ratio_err);
+      std::cout << "Combined Fit Error Parameters:" << std::endl;
+      for (int i = 0; i < combinedFit->GetNpar(); ++i) {
+        std::cout << "Param " << i << ": " << pion_peak_err << " , " << pion_res_err <<" , " << eta_peak_err <<" , " << eta_res_err <<" , " << peak_ratio_err <<std::endl;
+      }
     }
     else
     {
