@@ -284,13 +284,13 @@ private:
 void bgsub()
 {
     double scale_factor = 1.0;
-    std::vector<float> limits = {0.05, 1.0, 0.11, 0.19, 0.11, 0.19, 0.5, 0.7};  // Example limits
+    std::vector<float> limits = {0.05, 1.0, 0.05, 0.35, 0.11, 0.19, 0.55, 0.65};  // Example limits
     int startBin = 1;
     int endBin = -1;
     int projectionBins = 1;
     int rebinFactor = 1;
     bool dynamic_left = true;
-    int background_scheme = 2;  // Set to 2 for logarithm background
+    int background_scheme = 1;  // Set to 2 for logarithm background
 
     FitManager fitManager(scale_factor, limits, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme);
     fitManager.fitHistogram();
