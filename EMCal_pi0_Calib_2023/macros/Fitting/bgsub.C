@@ -103,7 +103,7 @@ double doublePolyBG(double *x, double *par)
     poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
   }
   // Check if x is in the range of any Gaussian fit
-  if ((x[0] >= 0.13 && x[0] <= 0.19) || (x[0] >= 0.52 && x[0] <= 0.68))
+  if ((x[0] >= 0.10 && x[0] <= 0.20) || (x[0] >= 0.5 && x[0] <= 0.7))
   {
     TF1::RejectPoint();
     return 0;
