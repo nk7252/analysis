@@ -385,18 +385,18 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     //}
 
     // Normalize the histogram
-    hist->Scale(1. / 2, "width");
-    // hist->Scale(1 / (hist->GetBinLowEdge(2) - hist->GetBinLowEdge(1)));  // divide bin content by width so it becomes dN/dM
+    histF->Scale(1. / 2, "width");
+    // histF->Scale(1 / (histF->GetBinLowEdge(2) - histF->GetBinLowEdge(1)));  // divide bin content by width so it becomes dN/dM
 
     // Determine the leftmost point with a value in the projection histograms
     if (dynamic_left)
     {
       float leftmost_limit = 0;
-      for (int bin = 1; bin <= hist->GetNbinsX(); ++bin)
+      for (int bin = 1; bin <= histF->GetNbinsX(); ++bin)
       {
-        if (hist->GetBinContent(bin) > 0)
+        if (histF->GetBinContent(bin) > 0)
         {
-          leftmost_limit = hist->GetBinLowEdge(bin);
+          leftmost_limit = histF->GetBinLowEdge(bin);
           limits[0] = leftmost_limit;
           break;
         }
@@ -409,8 +409,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TString ptRange = Form("pt_%.2f-%.2f_GeV", pt_min, pt_max);
 
     // Set histogram range and scale errors
-    // hist->GetXaxis()->SetRangeUser(0, 1.0);
-    scale_histogram_errors(hist, scale_factor);
+    // histF->GetXaxis()->SetRangeUser(0, 1.0);
+    scale_histogram_errors(histF, scale_factor);
 
     // Fit left and right regions with a polynomial, excluding Gaussian regions
     TF1 *leftRightFit;
@@ -457,13 +457,13 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    hist->Fit(leftRightFit, "R");
+    histF->Fit(leftRightFit, "R");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
     gausFit->SetParLimits(1, 0.11, 0.19);
     gausFit->SetParLimits(2, 0.05, 0.25);
-    hist->Fit(gausFit, "R");
+    histF->Fit(gausFit, "R");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -514,7 +514,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
     gausFit2->SetParLimits(1, 0.55, 0.63);
     gausFit2->SetParLimits(2, 0.05, 0.25);
-    hist->Fit(gausFit2, "R");
+    histF->Fit(gausFit2, "R");
     if (fitEtaPeak)
     {
       if (background_scheme == 0)  // poly4
@@ -589,7 +589,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "R");
+    histF->Fit(combinedFit, "R");
     // After fitting
     std::cout << "Combined Fit Parameters:" << std::endl;
     for (int i = 0; i < combinedFit->GetNpar(); ++i)
@@ -708,17 +708,17 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Create a new histogram to store the subtracted data
-    TH1F *histSubtracted = (TH1F *) hist->Clone(Form("histSubtracted_%d", i));
-    for (int j = 1; j <= hist->GetNbinsX(); ++j)
+    TH1F *histSubtracted = (TH1F *) histF->Clone(Form("histSubtracted_%d", i));
+    for (int j = 1; j <= histF->GetNbinsX(); ++j)
     {
-      double x = hist->GetBinCenter(j);
-      if (hist->GetBinContent(j) == 0)
+      double x = histF->GetBinCenter(j);
+      if (histF->GetBinContent(j) == 0)
       {
         histSubtracted->SetBinContent(j, 0);
       }
       else
       {
-        double y = hist->GetBinContent(j) - polyPart->Eval(x);
+        double y = histF->GetBinContent(j) - polyPart->Eval(x);
         histSubtracted->SetBinContent(j, y);
       }
     }
@@ -761,9 +761,9 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Draw the fits and subtracted histograms
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
-    hist->SetTitle(Form("Combined Fit; Inv. Mass (GeV); Counts; pT: %s", ptRange.Data()));
-    hist->Draw("E");
-    hist->SetMinimum(0.0);
+    histF->SetTitle(Form("Combined Fit; Inv. Mass (GeV); Counts; pT: %s", ptRange.Data()));
+    histF->Draw("E");
+    histF->SetMinimum(0.0);
     polyPart->SetLineColor(kRed);
     polyPart->Draw("SAME");
     combinedFit->SetLineColor(kBlack);
@@ -859,6 +859,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     appendtextfile(doubleGaussFit, Form("subpgaus fit_%s", ptRange.Data()), scale_factor);
 
     delete hist;
+    delete histF;
     delete leftRightFit;
     delete gausFit;
     delete combinedFit;
