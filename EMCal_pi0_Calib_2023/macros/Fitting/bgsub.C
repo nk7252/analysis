@@ -44,7 +44,23 @@ double combinedFunctionDoubleGaussLog(double* x, double* par)
   return gauss1 + gauss2 + logBg;
 }
 
-double leftRightPolynomial(double* x, double* par)
+// Background fit function with double polynomial
+double doublePolyBG(double* x, double* par)
+{
+  double poly1 = 0;
+  if (x[0] >= par[4] && x[0] <= par[5])
+  {
+    poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
+  }
+  double poly2 = 0;
+  if (x[0] >= par[9] && x[0] <= par[10])
+  {
+    poly2 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
+  }
+  return poly1 + poly2;
+}
+
+double poly4bg(double* x, double* par)
 {
   double gauss_min1 = par[5];
   double gauss_max1 = par[6];
@@ -60,7 +76,7 @@ double leftRightPolynomial(double* x, double* par)
 
 class FitManager
 {
-  public:
+public:
   FitManager(double scale_factor, std::vector<float>& limits, int startBin, int endBin, int projectionBins, int rebinFactor, bool dynamic_left, int background_scheme)
     : scale_factor(scale_factor)
     , limits(limits)
@@ -116,23 +132,23 @@ class FitManager
       double pt_max = hist2D->GetXaxis()->GetBinUpEdge(lastBin);
       TString ptRange = Form("pt_%.2f-%.2f_GeV", pt_min, pt_max);
 
-      TF1* leftRightFit;
+      TF1* Backgroundonly;
       if (background_scheme == 0)
       {
-        leftRightFit = new TF1("leftRightFit", leftRightPolynomial, limits[0], limits[1], 9);
+        Backgroundonly = new TF1("Backgroundonly", poly4bg, limits[0], limits[1], 9);
       }
       else if (background_scheme == 1)
       {
-        leftRightFit = new TF1("leftRightFit", doublePolyBG, limits[0], limits[1], 11);
+        Backgroundonly = new TF1("Backgroundonly", doublePolyBG, limits[0], limits[1], 11);
       }
       else if (background_scheme == 2)
       {
-        leftRightFit = new TF1("leftRightFit", combinedFunctionDoubleGaussLog, limits[0], limits[1], 8);
+        Backgroundonly = new TF1("Backgroundonly", "log(x)", limits[0], limits[1]);
       }
 
-      hist->Fit(leftRightFit, "RME");
+      hist->Fit(Backgroundonly, "RME");
 
-      TF1* combinedFit = createCombinedFunction(hist, leftRightFit);
+      TF1* combinedFit = createCombinedFunction(hist, Backgroundonly);
 
       hist->Fit(combinedFit, "RME");
 
@@ -140,12 +156,12 @@ class FitManager
       saveGraphs(pionPt, pionPeak, pionPeakErr, pionRes, pionResErr, etaPeak, etaPeakErr, etaRes, etaResErr, PeakRatio, PeakRatioErr);
 
       delete hist;
-      delete leftRightFit;
+      delete Backgroundonly;
       delete combinedFit;
     }
   }
 
-  private:
+private:
   double scale_factor;
   std::vector<float>& limits;
   int startBin;
@@ -167,32 +183,32 @@ class FitManager
     if (endBin == -1) endBin = nBinsX;
   }
 
-  TF1* createCombinedFunction(TH1D* hist, TF1* leftRightFit)
+  TF1* createCombinedFunction(TH1D* hist, TF1* Backgroundonly)
   {
     TF1* combinedFit;
     if (background_scheme == 0)
     {
       combinedFit = new TF1("combinedFit", combinedFunctionDoubleGauss, limits[0], limits[1], 11);
-      setInitialParameters(combinedFit, hist, leftRightFit, 3, 8);
+      setInitialParameters(combinedFit, hist, Backgroundonly, 3, 8);
     }
     else if (background_scheme == 1)
     {
       combinedFit = new TF1("combinedFit", combinedFunctionDoubleGaussDoublePoly, limits[0], limits[1], 13);
-      setInitialParameters(combinedFit, hist, leftRightFit, 3, 7);
-      setInitialParameters(combinedFit, hist, leftRightFit, 10, 3);
+      setInitialParameters(combinedFit, hist, Backgroundonly, 3, 7);
+      setInitialParameters(combinedFit, hist, Backgroundonly, 10, 3);
     }
     else if (background_scheme == 2)
     {
       combinedFit = new TF1("combinedFit", combinedFunctionDoubleGaussLog, limits[0], limits[1], 8);
-      setInitialParameters(combinedFit, hist, leftRightFit, 3, 2);
+      setInitialParameters(combinedFit, hist, Backgroundonly, 3, 2);
     }
     return combinedFit;
   }
 
-  void setInitialParameters(TF1* combinedFit, TH1D* hist, TF1* leftRightFit, int startIdx, int numParams)
+  void setInitialParameters(TF1* combinedFit, TH1D* hist, TF1* Backgroundonly, int startIdx, int numParams)
   {
     for (int i = 0; i < 3; ++i) combinedFit->SetParameter(i, hist->GetFunction("gausFit")->GetParameter(i));
-    for (int i = startIdx; i < startIdx + numParams; ++i) combinedFit->SetParameter(i, leftRightFit->GetParameter(i - startIdx));
+    for (int i = startIdx; i < startIdx + numParams; ++i) combinedFit->SetParameter(i, Backgroundonly->GetParameter(i - startIdx));
   }
 
   void saveFitResults(TH1D* hist, TF1* combinedFit, std::vector<double>& pionPt, std::vector<double>& pionPeak, std::vector<double>& pionPeakErr, std::vector<double>& pionRes, std::vector<double>& pionResErr, std::vector<double>& etaPeak, std::vector<double>& etaPeakErr, std::vector<double>& etaRes, std::vector<double>& etaResErr, std::vector<double>& PeakRatio, std::vector<double>& PeakRatioErr, TString ptRange)
