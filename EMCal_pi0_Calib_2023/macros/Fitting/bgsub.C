@@ -434,7 +434,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 {
   // more thorough minimizer for fit
 
-  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2","Fumili");//Simplex
+  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");//,"Simplex","Fumili"
   // Set the global fit strategy
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(3);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(10000);
@@ -619,7 +619,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "RE");
+    hist->Fit(combinedFit, "R");
   // After fitting
   std::cout << "Combined Fit Parameters:" << std::endl;
   for (int i = 0; i < combinedFit->GetNpar(); ++i) {
