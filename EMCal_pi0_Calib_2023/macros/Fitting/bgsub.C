@@ -751,6 +751,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
     hist->SetTitle(Form("Combined Fit; Inv. Mass (GeV); Counts; pT: %s", ptRange.Data()));
     hist->Draw("E");
+    hist->SetMinimum(0.0);
     polyPart->SetLineColor(kRed);
     polyPart->Draw("SAME");
     combinedFit->SetLineColor(kBlack);
