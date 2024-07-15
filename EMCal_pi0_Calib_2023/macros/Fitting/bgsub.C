@@ -152,8 +152,8 @@ public:
 
       hist->Fit(combinedFit, "RME");
 
-      saveFitResults(hist, combinedFit, pionPt, pionPeak, pionPeakErr, pionRes, pionResErr, etaPeak, etaPeakErr, etaRes, etaResErr, PeakRatio, PeakRatioErr, ptRange);
-      saveGraphs(pionPt, pionPeak, pionPeakErr, pionRes, pionResErr, etaPeak, etaPeakErr, etaRes, etaResErr, PeakRatio, PeakRatioErr);
+      saveFitResults(hist, combinedFit, pionPt, pionPtErr, pionPeak, pionPeakErr, pionRes, pionResErr, etaPeak, etaPeakErr, etaRes, etaResErr, PeakRatio, PeakRatioErr, ptRange);
+      saveGraphs(pionPt, pionPtErr, pionPeak, pionPeakErr, pionRes, pionResErr, etaPeak, etaPeakErr, etaRes, etaResErr, PeakRatio, PeakRatioErr);
 
       delete hist;
       delete Backgroundonly;
@@ -211,7 +211,7 @@ private:
     for (int i = startIdx; i < startIdx + numParams; ++i) combinedFit->SetParameter(i, Backgroundonly->GetParameter(i - startIdx));
   }
 
-  void saveFitResults(TH1D* hist, TF1* combinedFit, std::vector<double>& pionPt, std::vector<double>& pionPeak, std::vector<double>& pionPeakErr, std::vector<double>& pionRes, std::vector<double>& pionResErr, std::vector<double>& etaPeak, std::vector<double>& etaPeakErr, std::vector<double>& etaRes, std::vector<double>& etaResErr, std::vector<double>& PeakRatio, std::vector<double>& PeakRatioErr, TString ptRange)
+  void saveFitResults(TH1D* hist, TF1* combinedFit, std::vector<double>& pionPt, std::vector<double>& pionPtErr, std::vector<double>& pionPeak, std::vector<double>& pionPeakErr, std::vector<double>& pionRes, std::vector<double>& pionResErr, std::vector<double>& etaPeak, std::vector<double>& etaPeakErr, std::vector<double>& etaRes, std::vector<double>& etaResErr, std::vector<double>& PeakRatio, std::vector<double>& PeakRatioErr, TString ptRange)
   {
     double pion_pt = (hist->GetXaxis()->GetXmin() + hist->GetXaxis()->GetXmax()) / 2.0;
     double pion_peak = combinedFit->GetParameter(1);
@@ -220,6 +220,7 @@ private:
     double pion_res_err = pion_res * sqrt(pow(combinedFit->GetParError(2) / combinedFit->GetParameter(2), 2) + pow(pion_peak_err / pion_peak, 2));
 
     pionPt.push_back(pion_pt);
+    pionPtErr.push_back(0); // Adjust as necessary
     pionPeak.push_back(pion_peak);
     pionPeakErr.push_back(pion_peak_err);
     pionRes.push_back(pion_res);
@@ -238,7 +239,7 @@ private:
     PeakRatioErr.push_back(sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2)));
   }
 
-  void saveGraphs(std::vector<double>& pionPt, std::vector<double>& pionPeak, std::vector<double>& pionPeakErr, std::vector<double>& pionRes, std::vector<double>& pionResErr, std::vector<double>& etaPeak, std::vector<double>& etaPeakErr, std::vector<double>& etaRes, std::vector<double>& etaResErr, std::vector<double>& PeakRatio, std::vector<double>& PeakRatioErr)
+  void saveGraphs(std::vector<double>& pionPt, std::vector<double>& pionPtErr, std::vector<double>& pionPeak, std::vector<double>& pionPeakErr, std::vector<double>& pionRes, std::vector<double>& pionResErr, std::vector<double>& etaPeak, std::vector<double>& etaPeakErr, std::vector<double>& etaRes, std::vector<double>& etaResErr, std::vector<double>& PeakRatio, std::vector<double>& PeakRatioErr)
   {
     int nPoints = pionPt.size();
     TGraphErrors* gPionPeak = new TGraphErrors(nPoints, &pionPt[0], &pionPeak[0], &pionPtErr[0], &pionPeakErr[0]);
@@ -280,7 +281,7 @@ private:
   }
 };
 
-void bgsub()
+int main()
 {
   double scale_factor = 1.0;
   std::vector<float> limits = {0.05, 1.0, 0.11, 0.19, 0.11, 0.19, 0.5, 0.7};  // Example limits
@@ -294,5 +295,5 @@ void bgsub()
   FitManager fitManager(scale_factor, limits, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme);
   fitManager.fitHistogram();
 
-  //return 0;
+  return 0;
 }
