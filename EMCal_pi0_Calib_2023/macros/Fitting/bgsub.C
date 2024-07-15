@@ -742,8 +742,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       doubleGaussFit->SetParameter(8, limits[6]);
       doubleGaussFit->SetParameter(9, limits[7]);
-      doubleGaussFit->SetParLimits(4, 0.55, 0.63);
-      doubleGaussFit->SetParLimits(5, 0.05, 0.25);
+      doubleGaussFit->SetParLimits(4, 0.52, 0.68);
+      doubleGaussFit->SetParLimits(5, 0.01, 0.25);
     }
     histSubtracted->Fit(doubleGaussFit, "R");
 
