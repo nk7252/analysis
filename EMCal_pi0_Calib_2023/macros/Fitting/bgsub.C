@@ -572,7 +572,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TF1 *combinedFit;
     if (fitEtaPeak)
     {
-      else if (background_scheme == 0)  // poly4
+      if (background_scheme == 0)  // poly4
       {
         combinedFit = new TF1("combinedFit", combinedFunctionDoubleGauss, limits[0], limits[1], 11);  // 2 Gaussians + 1 polynomial = 3 + 3 + 5
       }
