@@ -471,7 +471,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Set histogram range and scale errors
     // hist->GetXaxis()->SetRangeUser(0, 1.0);
-    // scale_histogram_errors(hist, scale_factor);
+    scale_histogram_errors(hist, scale_factor);
 
     // Fit left and right regions with a polynomial, excluding Gaussian regions
     TF1 *leftRightFit;
