@@ -488,10 +488,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       if (background_scheme == 1)//poly3+poly2
       {
       leftRightFit = new TF1("leftRightFit", doublePolyBG, limits[0], limits[1], 11);
-      leftRightFit->SetParameter(4, limits[4]);
-      leftRightFit->SetParameter(5, limits[5]);
-      leftRightFit->SetParameter(9, limits[8]);
-      leftRightFit->SetParameter(10, limits[9]);
+      leftRightFit->SetParameter(4, limits[0]);//left poly1 lim
+      leftRightFit->SetParameter(5, 0.3);//right poly2 lim
+      leftRightFit->SetParameter(9, 0.3);//left poly2 lim
+      leftRightFit->SetParameter(10, limits[1]);//right poly2 lim
       }
     }
     else
