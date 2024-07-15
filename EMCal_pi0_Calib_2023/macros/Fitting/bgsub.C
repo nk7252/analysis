@@ -121,7 +121,7 @@ double doublePolyBG(double *x, double *par)
 double ONLYdoublePolyBG(double *x, double *par)
 {
   double  poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
-  double  poly2 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
+  double  poly2 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
   return poly1 + poly2;
 }
 
