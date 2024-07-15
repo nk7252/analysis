@@ -566,7 +566,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     for (int j = 0; j < 3; ++j){
       combinedFit->SetParameter(j, gausFit->GetParameter(j));
     } 
-    combinedFit->SetParLimits(0, 0, gausFit->GetParameter(0) *1.05);//gausFit->GetParameter(0) *0.5
+    combinedFit->SetParLimits(0, 0, gausFit->GetParameter(0) *1.25);//gausFit->GetParameter(0) *0.5
     combinedFit->SetParLimits(1, 0.11, 0.19);
     combinedFit->SetParLimits(2, 0.01, 0.11);
     // for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
