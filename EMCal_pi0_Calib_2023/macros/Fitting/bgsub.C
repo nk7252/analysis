@@ -762,7 +762,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Draw the fits and subtracted histograms
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
-    histF->SetTitle(Form("Combined Fit; #it{m}_{#gamma#gamma} (GeV); dN/d#it{m}; pT: %s", ptRange.Data()));
+    histF->SetTitle(Form("Combined Fit; #it{m}_{#gamma#gamma} (GeV); dN/d#it{m}_{#gamma#gamma}; pT: %s", ptRange.Data()));
     histF->Draw("E");
     histF->SetMinimum(0.0);
     polyPart->SetLineColor(kRed);
@@ -790,7 +790,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     c1->Print("2D_Histogram_Fits.pdf");
 
     TCanvas *c2 = new TCanvas(Form("c2_%s", ptRange.Data()), "Subtracted Peak", 800, 600);
-    histSubtracted->SetTitle(Form("Background Subtracted Peak; #it{m}_{#gamma#gamma} (GeV); dN/d#it{m} (Background subtracted); pT: %s", ptRange.Data()));
+    histSubtracted->SetTitle(Form("Background Subtracted Peak; #it{m}_{#gamma#gamma} (GeV); dN/d#it{m}_{#gamma#gamma} (Background subtracted); pT: %s", ptRange.Data()));
     histSubtracted->Draw();
     histSubtracted->SetMinimum(0.0);
     histSubtracted->GetYaxis()->SetTitleOffset(1.5);
@@ -881,8 +881,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   TGraphErrors *gPionPeak = new TGraphErrors(nPoints, &pionPt[0], &pionPeak[0], &pionPtErr[0], &pionPeakErr[0]);
   TGraphErrors *gPionRes = new TGraphErrors(nPoints, &pionPt[0], &pionRes[0], &pionPtErr[0], &pionResErr[0]);
 
-  gPionPeak->SetTitle("Pion Peak Position; #it{pT}_{#gamma#gamma} (GeV/c); Pion Peak Position (GeV/c^2)");
-  gPionRes->SetTitle("Pion Relative Resolution; #it{pT}_{#gamma#gamma} (GeV/c); Pion Relative Resolution");
+  gPionPeak->SetTitle("Pion Peak Position; #it{pT}_{#gamma#gamma} (GeV); Pion Peak Position (GeV)");
+  gPionRes->SetTitle("Pion Relative Resolution; #it{pT}_{#gamma#gamma} (GeV); Pion Relative Resolution");
 
   // Draw TGraphErrors and add them to the PDF
   TCanvas *cPionPeak = new TCanvas("cPionPeak", "Pion Peak Position", 800, 600);
@@ -898,9 +898,9 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TGraphErrors *gEtaPeak = new TGraphErrors(nPoints, &pionPt[0], &etaPeak[0], &pionPtErr[0], &etaPeakErr[0]);
     TGraphErrors *gEtaRes = new TGraphErrors(nPoints, &pionPt[0], &etaRes[0], &pionPtErr[0], &etaResErr[0]);
     TGraphErrors *gPeakRatio = new TGraphErrors(nPoints, &pionPt[0], &PeakRatio[0], &pionPtErr[0], &PeakRatioErr[0]);
-    gEtaPeak->SetTitle("Eta Peak Position; #it{pT}_{#gamma#gamma} (GeV/c); Eta Peak Position (GeV/c^2)");
-    gEtaRes->SetTitle("Eta Relative Width; #it{pT}_{#gamma#gamma} (GeV/c); Eta Relative Width");
-    gPeakRatio->SetTitle("Pion/Eta Mass Ratio; #it{pT}_{#gamma#gamma} (GeV/c); Pion/Eta Mass");
+    gEtaPeak->SetTitle("Eta Peak Position; #it{pT}_{#gamma#gamma} (GeV); Eta Peak Position (GeV)");
+    gEtaRes->SetTitle("Eta Relative Width; #it{pT}_{#gamma#gamma} (GeV); Eta Relative Width");
+    gPeakRatio->SetTitle("Pion/Eta Mass Ratio; #it{pT}_{#gamma#gamma} (GeV); Pion/Eta Mass");
     TCanvas *cEtaPeak = new TCanvas("cEtaPeak", "Eta Peak Position", 800, 600);
     gEtaPeak->Draw("ALPE");
     cEtaPeak->Print("2D_Histogram_Fits.pdf");
