@@ -793,7 +793,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     histSubtracted->SetTitle(Form("Background Subtracted Peak; #it{m}_{#gamma#gamma} (GeV); #frac{dN}{d#it{m}_{#gamma#gamma}}; pT: %s", ptRange.Data()));
     //hist->GetYaxis()->SetTitleOffset(1.5); // Adjust this value as needed
     //hist->GetYaxis()->SetLabelOffset(0.02); // Adjust if the labels overlap
-    hist->GetYaxis()->SetTextAngle(90);
+    hist->GetYaxis()->RotateTitle(true);
     histSubtracted->Draw();
     histSubtracted->SetMinimum(0.0);
     histSubtracted->GetYaxis()->SetTitleOffset(1.5);
