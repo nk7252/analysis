@@ -55,18 +55,18 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
 
   // Polynomial part
   // First Gaussian part (e.g., pion peak)
-  // double poly1 = 0;
-  // if (x[0] >= par[13] && x[0] <= par[14])
-  //{  // Check if x is in the range of the first Gaussian
+  double poly1 = 0;
+  if (x[0] >= par[13] && x[0] <= par[14])
+  {  // Check if x is in the range of the first Gaussian
   double poly1 = par[3] + par[4] * x[0] + par[5] * x[0] * x[0] + par[6] * x[0] * x[0] * x[0];
-  //}
+  }
 
   // Second Gaussian part (e.g., eta peak)
-  // double poly2 = 0;
-  // if (x[0] >= par[15] && x[0] <= par[16])
-  //{  // Check if x is in the range of the second Gaussian
+  double poly2 = 0;
+  if (x[0] >= par[15] && x[0] <= par[16])
+  {
   double poly2 = par[10] + par[11] * x[0] + par[12] * x[0] * x[0];
-  //}
+  }
 
   return gauss1 + gauss2 + poly1 + poly2;
 }
@@ -528,8 +528,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       if (background_scheme == 1)  // poly3+poly2
       {
-        combinedFit = new TF1("combinedFit", combinedFunctionDoubleGaussDoublePoly, limits[0], limits[1], 13);  // 2 Gaussians + 1 poly3 +1poly2 = 3 + 3 + 4 + 3
-        // if using fit limits for parts you need 4 more paramms
+        combinedFit = new TF1("combinedFit", combinedFunctionDoubleGaussDoublePoly, limits[0], limits[1], 17);  // 2 Gaussians + 1 poly3 +1poly2 = 3 + 3 + 4 + 3=13
+        // if using fit limits for parts you need 4 more paramms:13,14,15,16
       }
     }
     else
@@ -564,6 +564,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         for (int j = 0; j < 4; ++j) combinedFit->SetParameter(j + 3, leftRightFit->GetParameter(j));
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 10, leftRightFit->GetParameter(j + 6));
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j+7, gausFit2->GetParameter(j));
+        combinedFit->SetParameter(13,limits[0]);
+        combinedFit->SetParameter(14,0.3);
+        combinedFit->SetParameter(15,0.3);
+        combinedFit->SetParameter(16,limits[1]);
         combinedFit->SetParLimits(7, gausFit2->GetParameter(0) *0.95, gausFit2->GetParameter(0) *1.05);
         combinedFit->SetParLimits(8, 0.55, 0.63);
         combinedFit->SetParLimits(9, 0.05, 0.25);
