@@ -159,7 +159,7 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, double scale_facto
 {
   // Open a text file in append mode
   std::ofstream outfile;
-  outfile.open("fit_parameters.txt", std::ios_base::app);
+  outfile.open("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/Fitting/fit_parameters.txt", std::ios_base::app);
 
   // Check if the file is open (and thus valid)
   if (outfile.is_open())
