@@ -98,15 +98,18 @@ double doublePolyBG(double *x, double *par)
   {  // Check if x is in the range of the first Gaussian
     poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   }
-
-  // Second Gaussian part (e.g., eta peak)
-  double poly2 = 0;
-  if (x[0] >= par[9] && x[0] <= par[10])
-  {  // Check if x is in the range of the second Gaussian
-    poly2 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
+  else{
+    poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
   }
 
-  return poly1 + poly2;
+  // Second Gaussian part (e.g., eta peak)
+  //double poly2 = 0;
+  //if (x[0] >= par[9] && x[0] <= par[10])
+  //{  // Check if x is in the range of the second Gaussian
+  //  poly2 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
+  //}
+
+  return poly1;// + poly2;
 }
 
 // leftRightPolynomial function to optionally exclude two Gaussian regions
@@ -490,8 +493,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit = new TF1("leftRightFit", doublePolyBG, limits[0], limits[1], 11);
       leftRightFit->SetParameter(4, limits[0]);//left poly1 lim
       leftRightFit->SetParameter(5, 0.35);//right poly2 lim
-      leftRightFit->SetParameter(9, 0.35);//left poly2 lim
-      leftRightFit->SetParameter(10, limits[1]);//right poly2 lim
+      //leftRightFit->SetParameter(9, 0.35);//left poly2 lim
+      //leftRightFit->SetParameter(10, limits[1]);//right poly2 lim
       }
     }
     else
@@ -500,7 +503,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    hist->Fit(leftRightFit, "RME");
+    hist->Fit(leftRightFit, "R");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
@@ -560,7 +563,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "RME");
+    hist->Fit(combinedFit, "R");
 
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
@@ -669,10 +672,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       doubleGaussFit->SetParameter(8, limits[6]);
       doubleGaussFit->SetParameter(9, limits[7]);
-      doubleGaussFit->SetParLimits(4, 0.5, 0.75);
-      doubleGaussFit->SetParLimits(5, 0.05, 0.25);
+      doubleGaussFit->SetParLimits(4, 0.55, 0.65);
+      doubleGaussFit->SetParLimits(5, 0.01, 0.25);
     }
-    histSubtracted->Fit(doubleGaussFit, "RME");
+    histSubtracted->Fit(doubleGaussFit, "R");
 
     // Draw the fits and subtracted histograms
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
