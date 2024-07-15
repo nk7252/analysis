@@ -957,7 +957,7 @@ void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08
     fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
   }
 
-  fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
+  //fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
   // return 0;
   gApplication->Terminate(0);
 }
