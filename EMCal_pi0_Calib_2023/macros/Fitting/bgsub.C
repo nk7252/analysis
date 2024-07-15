@@ -367,7 +367,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Rebin the projected histogram if needed
-    TH1F *histF = (TH1F *) hist;
+    TH1D *histF = (TH1D *) hist;
     if (!rebinEdges.empty())
     {
       std::cout << "Rebinning histogram with non-uniform edges" << std::endl;
