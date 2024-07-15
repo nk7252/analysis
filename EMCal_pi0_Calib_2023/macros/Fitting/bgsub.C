@@ -659,7 +659,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       //polyPart = new TF1("polyPart", "gpol3+gpol2", limits[0], limits[1]);
       polyPart = new TF1("polyPart", ONLYdoublePolyBG, limits[0], limits[1], 7);
       for (int j = 0; j < 4; ++j) polyPart->SetParameter(j, combinedFit->GetParameter(j + 3));       // 3,4,5,6
-      for (int j = 0; j < 3; ++j) polyPart->SetParameter(j + 4, combinedFit->GetParameter(j + 10));  // 10,11,12
+      for (int k = 0; k < 3; ++k) polyPart->SetParameter(k + 4, combinedFit->GetParameter(k + 10));  // 10,11,12
     }
 
     // Create a new histogram to store the subtracted data
