@@ -529,9 +529,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Set initial parameters from previous fits
     for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j, gausFit->GetParameter(j));
-    for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
     combinedFit->SetParLimits(1, 0.13, 0.19);
     combinedFit->SetParLimits(2, 0.01, 0.25);
+    //for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
+
     // Fit second Gaussian in the specified range
     // TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
     // hist->Fit(gausFit2, "R");
@@ -539,20 +540,23 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     {
       if (background_scheme == 0)//poly4
       { 
-      // Set initial guesses for the second Gaussian (eta peak)
-      // combinedFit->SetParameter(8, gausFit2->GetParameter(0));   // Assume a smaller amplitude
-      // combinedFit->SetParameter(9, 0.6);   //gausFit2->GetParameter(1) Center of the eta peak range, (limits[4] + limits[5]) / 2.0
-      // combinedFit->SetParameter(10, gausFit2->GetParameter(2));  // Initial sigma guess based on range width
+      for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
       combinedFit->SetParLimits(8, 10, gausFit->GetParameter(0) / 6);
       combinedFit->SetParLimits(9, 0.5, 0.75);
       combinedFit->SetParLimits(10, 0.05, 0.25);
       }
       if (background_scheme == 1)//poly3+poly2
       {
+      for (int j = 0; j < 4; ++j) combinedFit->SetParameter(j+3, leftRightFit->GetParameter(j));
+      for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j+10, leftRightFit->GetParameter(j+6));
       combinedFit->SetParLimits(7, 10, gausFit->GetParameter(0) / 6);
       combinedFit->SetParLimits(8, 0.5, 0.75);
       combinedFit->SetParLimits(9, 0.05, 0.25);
       }
+    }
+    else
+    {
+      for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
     }
 
     // Fit the combined function
