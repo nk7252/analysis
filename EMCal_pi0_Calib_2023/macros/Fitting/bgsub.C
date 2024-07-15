@@ -66,14 +66,14 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
   // Polynomial part
   // First Gaussian part (e.g., pion peak)
   double poly1 = 0;
-  if (x[0] >= 0.05 && x[0] <= 0.4)
+  if (x[0] >= 0.05 && x[0] <= 0.3)
   {  // Check if x is in the range of the first Gaussian
     double poly1 = par[3] + par[4] * x[0] + par[5] * x[0] * x[0] + par[6] * x[0] * x[0] * x[0];
   }
 
   // Second Gaussian part (e.g., eta peak)
   double poly2 = 0;
-  if (x[0] > 0.4 && x[0] <= 1.0)
+  if (x[0] > 0.3 && x[0] <= 1.0)
   {
     double poly2 = par[10] + par[11] * x[0] + par[12] * x[0] * x[0];
   }
@@ -197,7 +197,7 @@ double ONLYdoublePolyBG(double *x, double *par)
   // double  poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   // double  poly2 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
   double poly1 = 0;
-  if (x[0] >= 0.05 && x[0] <= 0.4)
+  if (x[0] >= 0.05 && x[0] <= 0.3)
   {  // Check if x is in the range of the first Gaussian
     poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   }
@@ -428,7 +428,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       {
         leftRightFit = new TF1("leftRightFit", doublePolyBG, limits[0], limits[1], 11);
         leftRightFit->SetParameter(4, limits[0]);  // left poly1 lim
-        leftRightFit->SetParameter(5, 0.4);        // right poly2 lim
+        leftRightFit->SetParameter(5, 0.3);        // right poly2 lim
         // leftRightFit->SetParameter(9, 0.35);//left poly2 lim
         // leftRightFit->SetParameter(10, limits[1]);//right poly2 lim
       }
