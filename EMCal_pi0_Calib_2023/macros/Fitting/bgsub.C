@@ -619,7 +619,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    hist->Fit(combinedFit, "R");
+    hist->Fit(combinedFit, "RE");
   // After fitting
   std::cout << "Combined Fit Parameters:" << std::endl;
   for (int i = 0; i < combinedFit->GetNpar(); ++i) {
