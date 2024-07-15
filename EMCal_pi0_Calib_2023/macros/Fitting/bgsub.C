@@ -515,7 +515,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
     gausFit->SetParLimits(1, 0.11, 0.19);
-    gausFit->SetParLimits(2, 0.01, 0.25);
+    gausFit->SetParLimits(2, 0.05, 0.25);
     hist->Fit(gausFit, "R");
 
     // Combined Gaussian + Polynomial fit
@@ -700,6 +700,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     combinedFit->Draw("SAME");
     leftRightFit->SetLineColor(kGreen);
     leftRightFit->Draw("SAME");
+    gausFit->SetLineColor(kMagenta);
+    gausFit->Draw("SAME");
+    gausFit2->SetLineColor(kMagenta);
+    gausFit2->Draw("SAME");
 
     TLegend *leg1 = new TLegend(0.5, 0.5, 0.95, 0.95);
     leg1->SetFillStyle(0);
@@ -708,6 +712,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     leg1->AddEntry(polyPart, "Background Fit");
     leg1->AddEntry(combinedFit, "Combined Fit");
     leg1->AddEntry(leftRightFit, "originalBG");
+    leg1->AddEntry(gausFit, "originalGauss");
     leg1->Draw();
     leg1->SetTextAlign(32);
     c1->Update();
