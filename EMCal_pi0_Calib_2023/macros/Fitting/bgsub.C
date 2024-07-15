@@ -149,6 +149,7 @@ double doublePolyBG(double *x, double *par)
 
   return poly1;  // + poly2;
 }
+
 double ONLYdoublePolyBG(double *x, double *par)
 {
   // double  poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
@@ -162,6 +163,23 @@ double ONLYdoublePolyBG(double *x, double *par)
   {
     poly1 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
   }
+  return poly1;  // + poly2;
+}
+
+double LogBG(double *x, double *par)
+{
+  // First Gaussian part (e.g., pion peak)
+  double logBg = 0;
+
+  double logBg = par[0] * log(x[0]) + par[1];
+
+  // Check if x is in the range of any Gaussian fit
+  if ((x[0] >= 0.11 && x[0] <= 0.19) || (x[0] >= 0.52 && x[0] <= 0.68))
+  {
+    TF1::RejectPoint();
+    return 0;
+  }
+
   return poly1;  // + poly2;
 }
 
@@ -551,7 +569,9 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       else if (background_scheme == 2)
       {
-        leftRightFit = new TF1("leftRightFit", "log(x)", limits[0], limits[1]);
+        leftRightFit = new TF1("leftRightFit", LogBG, limits[0], limits[1],2);
+        //leftRightFit->SetParameter(2, limits[0]);  // left poly1 lim
+        //leftRightFit->SetParameter(3, 0.4);        // right poly2 lim
       }
     }
     else
