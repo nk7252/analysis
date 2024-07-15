@@ -898,9 +898,9 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TGraphErrors *gEtaPeak = new TGraphErrors(nPoints, &pionPt[0], &etaPeak[0], &pionPtErr[0], &etaPeakErr[0]);
     TGraphErrors *gEtaRes = new TGraphErrors(nPoints, &pionPt[0], &etaRes[0], &pionPtErr[0], &etaResErr[0]);
     TGraphErrors *gPeakRatio = new TGraphErrors(nPoints, &pionPt[0], &PeakRatio[0], &pionPtErr[0], &PeakRatioErr[0]);
-    gEtaPeak->SetTitle("Eta Peak Position; pT (GeV/c); Eta Peak Position (GeV/c^2)");
-    gEtaRes->SetTitle("Eta Relative Width; pT (GeV/c); Eta Relative Width");
-    gPeakRatio->SetTitle("Pion/Eta Mass Ratio; pT (GeV/c); Pion/Eta Mass");
+    gEtaPeak->SetTitle("Eta Peak Position; #it{M}_{#gamma#gamma} (GeV/c); Eta Peak Position (GeV/c^2)");
+    gEtaRes->SetTitle("Eta Relative Width; #it{M}_{#gamma#gamma} (GeV/c); Eta Relative Width");
+    gPeakRatio->SetTitle("Pion/Eta Mass Ratio; #it{M}_{#gamma#gamma} (GeV/c); Pion/Eta Mass");
     TCanvas *cEtaPeak = new TCanvas("cEtaPeak", "Eta Peak Position", 800, 600);
     gEtaPeak->Draw("ALPE");
     cEtaPeak->Print("2D_Histogram_Fits.pdf");
