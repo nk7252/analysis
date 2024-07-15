@@ -436,7 +436,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
   ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2","Fumili");//,"Simplex"
   // Set the global fit strategy
-  ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
+  ROOT::Math::MinimizerOptions::SetDefaultStrategy(3);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(10000);
   SetsPhenixStyle();
 
