@@ -280,7 +280,7 @@ private:
   }
 };
 
-voic bgsub()
+void bgsub()
 {
   double scale_factor = 1.0;
   std::vector<float> limits = {0.05, 1.0, 0.11, 0.19, 0.11, 0.19, 0.5, 0.7};  // Example limits
