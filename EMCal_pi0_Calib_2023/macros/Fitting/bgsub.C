@@ -265,7 +265,7 @@ double leftRightPolynomial(double *x, double *par)
   return par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0] + par[4] * x[0] * x[0] * x[0] * x[0];
 }
 
-TH1F *rebinHistogram(TH1F *h, const std::vector<double> &binEdges)
+TH1D *rebinHistogram(TH1D *h, const std::vector<double> &binEdges)
 {
   const int Nbins = binEdges.size() - 1;
   double bins[Nbins + 1];
@@ -273,7 +273,7 @@ TH1F *rebinHistogram(TH1F *h, const std::vector<double> &binEdges)
   {
     bins[i] = binEdges[i];
   }
-  return (TH1F *) h->Rebin(Nbins, "hrb", bins);
+  return (TH1D *) h->Rebin(Nbins, "hrb", bins);
 }
 
 // scale the histogram's error bars
