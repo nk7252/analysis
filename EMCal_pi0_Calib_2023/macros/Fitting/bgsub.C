@@ -634,7 +634,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     pionPt.push_back(pion_pt);
     pionPeak.push_back(pion_peak);
-    pionPeakErr.push_back(1);//pion_peak_err
+    pionPeakErr.push_back(pion_peak_err);//
     pionRes.push_back(pion_res);
     pionResErr.push_back(pion_res_err);
 
