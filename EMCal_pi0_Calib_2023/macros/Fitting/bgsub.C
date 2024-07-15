@@ -103,7 +103,7 @@ double doublePolyBG(double *x, double *par)
     poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
   }
   // Check if x is in the range of any Gaussian fit
-  if ((x[0] >= 0.11 && x[0] <= 0.19) || (x[0] >= 0.53 && x[0] <= 0.65))
+  if ((x[0] >= 0.13 && x[0] <= 0.19) || (x[0] >= 0.52 && x[0] <= 0.68))
   {
     TF1::RejectPoint();
     return 0;
@@ -539,15 +539,15 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Set initial parameters from previous fits
     for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j, gausFit->GetParameter(j));
-    combinedFit->SetParLimits(1, 0.11, 0.19);
-    combinedFit->SetParLimits(2, 0.01, 0.25);
+    combinedFit->SetParLimits(1, 0.13, 0.19);
+    combinedFit->SetParLimits(2, 0.05, 0.25);
     // for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
 
     // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    gausFit2->SetParLimits(1, 0.50, 0.65);
-    gausFit2->SetParLimits(2, 0.01, 0.25);
-    hist->Fit(gausFit2, "R");
+    gausFit2->SetParLimits(1, 0.55, 0.63);
+    gausFit2->SetParLimits(2, 0.05, 0.25);
+    hist->Fit(gausFit2, "RME");
     if (fitEtaPeak)
     {
       if (background_scheme == 0)  // poly4
@@ -555,7 +555,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j+8, gausFit2->GetParameter(j));
         for (int j = 0; j < 5; ++j) combinedFit->SetParameter(j+3, leftRightFit->GetParameter(j));
         // combinedFit->SetParLimits(8, 10, gausFit->GetParameter(0) / 6);
-        combinedFit->SetParLimits(9, 0.50, 0.65);
+        combinedFit->SetParLimits(9, 0.55, 0.63);
         combinedFit->SetParLimits(10, 0.05, 0.25);
       }
       if (background_scheme == 1)  // poly3+poly2
@@ -564,7 +564,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 10, leftRightFit->GetParameter(j + 6));
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j+7, gausFit2->GetParameter(j));
         // combinedFit->SetParLimits(7, 10, gausFit->GetParameter(0) / 6);
-        combinedFit->SetParLimits(8, 0.5, 0.75);
+        combinedFit->SetParLimits(8, 0.55, 0.63);
         combinedFit->SetParLimits(9, 0.05, 0.25);
       }
     }
@@ -665,8 +665,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     doubleGaussFit->SetParameter(2, combinedFit->GetParameter(2));
     doubleGaussFit->SetParameter(6, limits[2]);
     doubleGaussFit->SetParameter(7, limits[3]);
-    doubleGaussFit->SetParLimits(1, 0.11, 0.19);
-    doubleGaussFit->SetParLimits(2, 0.01, 0.30);
+    doubleGaussFit->SetParLimits(1, 0.13, 0.19);
+    doubleGaussFit->SetParLimits(2, 0.05, 0.30);
     if (fitEtaPeak)
     {
       if (background_scheme == 0)  // poly4
@@ -683,8 +683,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       doubleGaussFit->SetParameter(8, limits[6]);
       doubleGaussFit->SetParameter(9, limits[7]);
-      doubleGaussFit->SetParLimits(4, 0.55, 0.65);
-      doubleGaussFit->SetParLimits(5, 0.01, 0.25);
+      doubleGaussFit->SetParLimits(4, 0.55, 0.63);
+      doubleGaussFit->SetParLimits(5, 0.05, 0.25);
     }
     histSubtracted->Fit(doubleGaussFit, "R");
 
