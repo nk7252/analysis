@@ -63,7 +63,7 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
 
   // Second Gaussian part (e.g., eta peak)
   double poly2 = 0;
-  if (x[0] >= par[15] && x[0] <= par[16])
+  if (x[0] > par[15] && x[0] <= par[16])
   {
   double poly2 = par[10] + par[11] * x[0] + par[12] * x[0] * x[0];
   }
@@ -103,7 +103,7 @@ double doublePolyBG(double *x, double *par)
     poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
   }
   // Check if x is in the range of any Gaussian fit
-  if ((x[0] >= 0.10 && x[0] <= 0.20) || (x[0] >= 0.5 && x[0] <= 0.7))
+  if ((x[0] >= 0.11 && x[0] <= 0.19) || (x[0] >= 0.52 && x[0] <= 0.68))
   {
     TF1::RejectPoint();
     return 0;
