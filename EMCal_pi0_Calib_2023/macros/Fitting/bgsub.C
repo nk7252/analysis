@@ -563,11 +563,18 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       {
         for (int j = 0; j < 4; ++j) combinedFit->SetParameter(j + 3, leftRightFit->GetParameter(j));
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 10, leftRightFit->GetParameter(j + 6));
-        for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j+7, gausFit2->GetParameter(j));
+        combinedFit->SetParLimits(3, leftRightFit->GetParameter(0)*0.8, leftRightFit->GetParameter(0)*1.08);
+        combinedFit->SetParLimits(4, leftRightFit->GetParameter(1)*0.8, leftRightFit->GetParameter(1)*1.08);
+        combinedFit->SetParLimits(5, leftRightFit->GetParameter(2)*0.8, leftRightFit->GetParameter(2)*1.08);
+        combinedFit->SetParLimits(6, leftRightFit->GetParameter(3)*0.8, leftRightFit->GetParameter(3)*1.08);
+        combinedFit->SetParLimits(10, leftRightFit->GetParameter(6)*0.8, leftRightFit->GetParameter(6)*1.08);
+        combinedFit->SetParLimits(11, leftRightFit->GetParameter(7)*0.8, leftRightFit->GetParameter(7)*1.08);
+        combinedFit->SetParLimits(12, leftRightFit->GetParameter(8)*0.8, leftRightFit->GetParameter(8)*1.08);
         //combinedFit->SetParameter(13,limits[0]);
         //combinedFit->SetParameter(14,0.3);
         //combinedFit->SetParameter(15,0.3);
         //combinedFit->SetParameter(16,limits[1]);
+        for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j+7, gausFit2->GetParameter(j));
         combinedFit->SetParLimits(7, 0, gausFit2->GetParameter(0) *1.05);//gausFit2->GetParameter(0) *0.5
         combinedFit->SetParLimits(8, 0.55, 0.63);
         combinedFit->SetParLimits(9, 0.05, 0.25);
