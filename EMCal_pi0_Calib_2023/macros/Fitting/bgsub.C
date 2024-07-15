@@ -541,7 +541,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       if (background_scheme == 0)//poly4
       { 
       for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
-      combinedFit->SetParLimits(8, 10, gausFit->GetParameter(0) / 6);
+      //combinedFit->SetParLimits(8, 10, gausFit->GetParameter(0) / 6);
       combinedFit->SetParLimits(9, 0.5, 0.75);
       combinedFit->SetParLimits(10, 0.05, 0.25);
       }
@@ -549,7 +549,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       {
       for (int j = 0; j < 4; ++j) combinedFit->SetParameter(j+3, leftRightFit->GetParameter(j));
       for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j+10, leftRightFit->GetParameter(j+6));
-      combinedFit->SetParLimits(7, 10, gausFit->GetParameter(0) / 6);
+      //combinedFit->SetParLimits(7, 10, gausFit->GetParameter(0) / 6);
       combinedFit->SetParLimits(8, 0.5, 0.75);
       combinedFit->SetParLimits(9, 0.05, 0.25);
       }
