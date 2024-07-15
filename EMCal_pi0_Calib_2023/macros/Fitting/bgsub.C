@@ -601,7 +601,11 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit the combined function
     hist->Fit(combinedFit, "R");
-
+  // After fitting
+  std::cout << "Combined Fit Parameters:" << std::endl;
+  for (int i = 0; i < combinedFit->GetNpar(); ++i) {
+      std::cout << "Param " << i << ": " << combinedFit->GetParameter(i) << std::endl;
+  }
     // Store pion peak position and resolution
     double pion_pt = (pt_min + pt_max) / 2.0;
     double pion_peak = combinedFit->GetParameter(1);
@@ -671,6 +675,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       } 
       for (int k = 0; k < 3; k++){
         polyPart->SetParameter(k + 4, combinedFit->GetParameter(k + 10));  // 10,11,12
+      }
+      std::cout << "Polynomial Parameters:" << std::endl;
+      for (int i = 0; i < polyPart->GetNpar(); ++i) {
+        std::cout << "Param " << i << ": " << polyPart->GetParameter(i) << std::endl;
       } 
     }
 
