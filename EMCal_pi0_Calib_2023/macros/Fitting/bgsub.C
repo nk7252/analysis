@@ -510,7 +510,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    hist->Fit(leftRightFit, "R");
+    hist->Fit(leftRightFit, "RL");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
