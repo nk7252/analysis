@@ -173,7 +173,7 @@ double doublePolyBG(double *x, double *par)
   }
   else
   {
-    poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
+    poly1 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
   }
   // Check if x is in the range of any Gaussian fit
   if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.5 && x[0] <= 0.7))
