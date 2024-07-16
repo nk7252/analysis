@@ -49,18 +49,18 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
   // double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
-  //double gauss1 = 0;
-  //if (x[0] >= 0.09 && x[0] <= 0.21)
+  // double gauss1 = 0;
+  // if (x[0] >= 0.09 && x[0] <= 0.21)
   //{  // Check if x is in the range of the first Gaussian
-    double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
+  double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
   //}
 
   // Second Gaussian part (e.g., eta peak)
   // double gauss2 = par[7] * exp(-0.5 * pow((x[0] - par[8]) / par[9], 2));
-  //double gauss2 = 0;
-  //if (x[0] >= 0.5 && x[0] <= 0.7)
+  // double gauss2 = 0;
+  // if (x[0] >= 0.5 && x[0] <= 0.7)
   //{  // Check if x is in the range of the first Gaussian
-    double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
+  double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
   //}
 
   // Polynomial part
@@ -176,7 +176,7 @@ double doublePolyBG(double *x, double *par)
     poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
   }
   // Check if x is in the range of any Gaussian fit
-  if ((x[0] >= 0.11 && x[0] <= 0.19) || (x[0] >= 0.52 && x[0] <= 0.68))
+  if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.5 && x[0] <= 0.7))
   {
     TF1::RejectPoint();
     return 0;
@@ -527,11 +527,11 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       else if (background_scheme == 1)  // poly3+poly2
       {
-        for (int j = 0; j < 4; ++j)//poly3
+        for (int j = 0; j < 4; ++j)  // poly3
         {
           combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
         }
-        for (int j = 0; j < 3; ++j)//poly2
+        for (int j = 0; j < 3; ++j)  // poly2
         {
           combinedFit->SetParameter(j + 10, leftRightFit->GetParameter(j + 6));
         }
@@ -550,7 +550,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         {
           combinedFit->SetParameter(j + 7, gausFit2->GetParameter(j));
         }
-        combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) *1.05);//gausFit2->GetParameter(0) *0.5
+        combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
         combinedFit->SetParLimits(4, 0.55, 0.63);
         combinedFit->SetParLimits(5, 0.01, 0.25);
       }
@@ -581,7 +581,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
         combinedFit->SetParLimits(4, 0.55, 0.63);
         combinedFit->SetParLimits(5, 0.01, 0.25);
-        combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) *1.05);//gausFit2->GetParameter(0) *0.5
+        combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
       }
     }
     else
@@ -675,7 +675,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       polyPart = new TF1("polyPart", ONLYdoublePolyBG, limits[0], limits[1], 7);
       for (int j = 0; j < 4; ++j)
       {
-        polyPart->SetParameter(j, combinedFit->GetParameter(j + 3));  // 3,4,5,6
+        polyPart->SetParameter(j, combinedFit->GetParameter(j + 6));  // 6,7,8,9
       }
       for (int k = 0; k < 3; k++)
       {
@@ -791,8 +791,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     TCanvas *c2 = new TCanvas(Form("c2_%s", ptRange.Data()), "Subtracted Peak", 800, 600);
     histSubtracted->SetTitle(Form("Background Subtracted Peak; #it{m}_{#gamma#gamma} (GeV); dN/d#it{m}_{#gamma#gamma}; pT: %s", ptRange.Data()));
-    //hist->GetYaxis()->SetTitleOffset(1.5); // Adjust this value as needed
-    //hist->GetYaxis()->SetLabelOffset(0.02); // Adjust if the labels overlap
+    // hist->GetYaxis()->SetTitleOffset(1.5); // Adjust this value as needed
+    // hist->GetYaxis()->SetLabelOffset(0.02); // Adjust if the labels overlap
     histSubtracted->Draw();
     histSubtracted->SetMinimum(0.0);
     histSubtracted->GetYaxis()->SetTitleOffset(1.5);
@@ -958,7 +958,7 @@ void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08
 
   if (variable_bins)
   {
-    //std::vector<double> nonUniformBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0};//, 1.04, 1.08, 1.12, 1.16, 1.2
+    // std::vector<double> nonUniformBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0};//, 1.04, 1.08, 1.12, 1.16, 1.2
     std::vector<double> nonUniformBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.50, 0.52, 0.54, 0.56, 0.58, 0.60, 0.62, 0.64, 0.66, 0.68, 0.70, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0};
     fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
   }
@@ -968,7 +968,7 @@ void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08
     fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
   }
 
-  //fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
-  // return 0;
+  // fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
+  //  return 0;
   gApplication->Terminate(0);
 }
