@@ -49,19 +49,19 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
   // double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
-  double gauss1 = 0;
-  if (x[0] >= 0.09 && x[0] <= 0.21)
-  {  // Check if x is in the range of the first Gaussian
+  //double gauss1 = 0;
+  //if (x[0] >= 0.09 && x[0] <= 0.21)
+  //{  // Check if x is in the range of the first Gaussian
     double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
-  }
+  //}
 
   // Second Gaussian part (e.g., eta peak)
   // double gauss2 = par[7] * exp(-0.5 * pow((x[0] - par[8]) / par[9], 2));
-  double gauss2 = 0;
-  if (x[0] >= 0.5 && x[0] <= 0.7)
-  {  // Check if x is in the range of the first Gaussian
+  //double gauss2 = 0;
+  //if (x[0] >= 0.5 && x[0] <= 0.7)
+  //{  // Check if x is in the range of the first Gaussian
     double gauss2 = par[7] * exp(-0.5 * pow((x[0] - par[8]) / par[9], 2));
-  }
+  //}
 
   // Polynomial part
   // First Gaussian part (e.g., pion peak)
@@ -550,7 +550,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         {
           combinedFit->SetParameter(j + 7, gausFit2->GetParameter(j));
         }
-        // combinedFit->SetParLimits(7, 0, gausFit2->GetParameter(0) *1.05);//gausFit2->GetParameter(0) *0.5
+        combinedFit->SetParLimits(7, 0, gausFit2->GetParameter(0) *1.05);//gausFit2->GetParameter(0) *0.5
         combinedFit->SetParLimits(8, 0.55, 0.63);
         combinedFit->SetParLimits(9, 0.01, 0.25);
       }
