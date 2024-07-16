@@ -60,7 +60,7 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
   //double gauss2 = 0;
   //if (x[0] >= 0.5 && x[0] <= 0.7)
   //{  // Check if x is in the range of the first Gaussian
-    double gauss2 = par[7] * exp(-0.5 * pow((x[0] - par[8]) / par[9], 2));
+    double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
   //}
 
   // Polynomial part
@@ -68,7 +68,7 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
   double poly1 = 0;
   if (x[0] >= 0.05 && x[0] <= 0.3)
   {  // Check if x is in the range of the first Gaussian
-    double poly1 = par[3] + par[4] * x[0] + par[5] * x[0] * x[0] + par[6] * x[0] * x[0] * x[0];
+    double poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0];
   }
 
   // Second Gaussian part (e.g., eta peak)
@@ -167,7 +167,7 @@ double doublePolyBG(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
   double poly1 = 0;
-  if (x[0] >= par[4] && x[0] <= par[5])
+  if (x[0] >= 0.05 && x[0] <= 0.3)
   {  // Check if x is in the range of the first Gaussian
     poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   }
@@ -527,11 +527,11 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       else if (background_scheme == 1)  // poly3+poly2
       {
-        for (int j = 0; j < 4; ++j)
+        for (int j = 0; j < 4; ++j)//poly3
         {
-          combinedFit->SetParameter(j + 3, leftRightFit->GetParameter(j));
+          combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
         }
-        for (int j = 0; j < 3; ++j)
+        for (int j = 0; j < 3; ++j)//poly2
         {
           combinedFit->SetParameter(j + 10, leftRightFit->GetParameter(j + 6));
         }
