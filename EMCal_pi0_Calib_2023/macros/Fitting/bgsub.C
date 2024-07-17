@@ -552,7 +552,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         }
         combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
         combinedFit->SetParLimits(4, 0.55, 0.63);
-        combinedFit->SetParLimits(5, 0.01, 0.25);
+        combinedFit->SetParLimits(5, 0.01, 0.15);
       }
       else if (background_scheme == 2)
       {
