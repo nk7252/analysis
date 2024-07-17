@@ -799,12 +799,12 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     polyPart->Draw("SAME");
     combinedFit->SetLineColor(kBlack);
     combinedFit->Draw("SAME");
-    leftRightFit->SetLineColor(kGreen);
-    leftRightFit->Draw("SAME");
-    gausFit->SetLineColor(kMagenta);
-    gausFit->Draw("SAME");
-    gausFit2->SetLineColor(kMagenta);
-    gausFit2->Draw("SAME");
+    //leftRightFit->SetLineColor(kGreen);
+    //leftRightFit->Draw("SAME");
+    //gausFit->SetLineColor(kMagenta);
+    //gausFit->Draw("SAME");
+    //gausFit2->SetLineColor(kMagenta);
+    //gausFit2->Draw("SAME");
 
     TLegend *leg1 = new TLegend(0.5, 0.5, 0.95, 0.95);
     leg1->SetFillStyle(0);
@@ -812,8 +812,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     leg1->AddEntry("", "pythia: p+p #sqrt{s_{NN}} = 200 GeV", "");
     leg1->AddEntry(polyPart, "Background Fit");
     leg1->AddEntry(combinedFit, "Combined Fit");
-    leg1->AddEntry(leftRightFit, "originalBG");
-    leg1->AddEntry(gausFit, "originalGauss");
+    //leg1->AddEntry(leftRightFit, "originalBG");
+    //leg1->AddEntry(gausFit, "originalGauss");
     leg1->Draw();
     leg1->SetTextAlign(32);
     c1->Update();
