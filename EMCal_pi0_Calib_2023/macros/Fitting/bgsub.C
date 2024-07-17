@@ -505,7 +505,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit second Gaussian in the specified range
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
-    gausFit2->SetParLimits(1, 0.55, 0.63);
+    gausFit2->SetParLimits(1, 0.55, 0.64);
     gausFit2->SetParLimits(2, 0.05, 0.25);
     histF->Fit(gausFit2, "R");
     if (fitEtaPeak)
@@ -540,7 +540,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
           combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
         }
         combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
-        combinedFit->SetParLimits(4, 0.55, 0.63);
+        combinedFit->SetParLimits(4, 0.57, 0.65);
         combinedFit->SetParLimits(5, 0.05, 0.25);
       }
       else if (background_scheme == 2)
@@ -579,7 +579,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    histF->Fit(combinedFit, "RL");
+    histF->Fit(combinedFit, "R");
     // After fitting
     std::cout << "Combined Fit Parameters:" << std::endl;
     for (int i = 0; i < combinedFit->GetNpar(); ++i)
