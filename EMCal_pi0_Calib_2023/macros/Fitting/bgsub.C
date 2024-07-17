@@ -66,14 +66,14 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
   // Polynomial part
   // First Gaussian part (e.g., pion peak)
   double poly1 = 0;
-  if (x[0] >= 0.05 && x[0] <= 0.3)
+  if (x[0] >= 0.05 && x[0] <= 0.35)
   {  // Check if x is in the range of the first Gaussian
     double poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0];
   }
 
   // Second Gaussian part (e.g., eta peak)
   double poly2 = 0;
-  if (x[0] > 0.3 && x[0] <= 1.0)
+  if (x[0] > 0.35 && x[0] <= 1.0)
   {
     double poly2 = par[10] + par[11] * x[0] + par[12] * x[0] * x[0];
   }
@@ -167,7 +167,7 @@ double doublePolyBG(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
   double poly1 = 0;
-  if (x[0] >= 0.05 && x[0] <= 0.3)
+  if (x[0] >= 0.05 && x[0] <= 0.35)
   {  // Check if x is in the range of the first Gaussian
     poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   }
@@ -197,7 +197,7 @@ double ONLYdoublePolyBG(double *x, double *par)
   // double  poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   // double  poly2 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
   double poly1 = 0;
-  if (x[0] >= 0.05 && x[0] <= 0.3)
+  if (x[0] >= 0.05 && x[0] <= 0.35)
   {  // Check if x is in the range of the first Gaussian
     poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   }
@@ -427,16 +427,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       else if (background_scheme == 1)  // poly3+poly2
       {
         leftRightFit = new TF1("leftRightFit", doublePolyBG, limits[0], limits[1], 7);
-        //leftRightFit->SetParameter(4, limits[0]);  // left poly1 lim
-        //leftRightFit->SetParameter(5, 0.3);        // right poly2 lim
-        // leftRightFit->SetParameter(9, 0.35);//left poly2 lim
-        // leftRightFit->SetParameter(10, limits[1]);//right poly2 lim
       }
       else if (background_scheme == 2)
       {
         leftRightFit = new TF1("leftRightFit", LogBG, limits[0], limits[1], 2);
-        // leftRightFit->SetParameter(2, limits[0]);  // left poly1 lim
-        // leftRightFit->SetParameter(3, 0.4);        // right poly2 lim
       }
       else if (background_scheme == 3)
       {
@@ -542,10 +536,6 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         combinedFit->SetParLimits(10, leftRightFit->GetParameter(4) * 0.85, leftRightFit->GetParameter(4) * 1.15);
         combinedFit->SetParLimits(11, leftRightFit->GetParameter(5) * 0.85, leftRightFit->GetParameter(5) * 1.15);
         combinedFit->SetParLimits(12, leftRightFit->GetParameter(6) * 0.85, leftRightFit->GetParameter(6) * 1.15);
-        // combinedFit->SetParameter(13,limits[0]);
-        // combinedFit->SetParameter(14,0.3);
-        // combinedFit->SetParameter(15,0.3);
-        // combinedFit->SetParameter(16,limits[1]);
         for (int j = 0; j < 3; ++j)
         {
           combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
@@ -660,8 +650,6 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Create a new function for just the polynomial part
     TF1 *polyPart;
-    // TF1 *gauspoly3 = new TF1("gpol3", "pol3", limits[0], 0.3);
-    // TF1 *gauspoly2 = new TF1("gpol2", "pol2", 0.3, limits[1]);
     if (background_scheme == 0)  // poly4
     {
       polyPart = new TF1("polyPart", "pol4", limits[0], limits[1]);
