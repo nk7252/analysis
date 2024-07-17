@@ -219,6 +219,7 @@ class CaloAna : public SubsysReco
   TH1F* h_truth_e;
   TH1F* h_truth_pt;
   TH1F* h_truthmatched_mass;
+  TH1F* h_truthmatched_bgmass;
   TH1F* h_pion_pt;
   TH1F* h_pion_pt_weight;
   TH1F* h_truth_pid_p;

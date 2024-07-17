@@ -117,7 +117,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_cemc_etaphi = new TH2F("h_cemc_etaphi", "", 96, 0, 96, 256, 0, 256);
 
   // 1D distributions
-  //h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 600, 0, 1.2);
+  // h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 600, 0, 1.2);
   h_InvMass_w = new TH1F("h_InvMass_w", "Invariant Mass", 600, 0, 1.2);
   h_InvMassMix = new TH1F("h_InvMassMix", "Invariant Mass", 120, 0, 1.2);
 
@@ -142,11 +142,12 @@ int CaloAna::Init(PHCompositeNode*)
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
 
   // pT differential Inv Mass
-  h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 200, 0, 1.0);
-  h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 200, 0, 1.0);
+  h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 240, 0, 1.2);
+  h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 240, 0, 1.2);
   h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 100, 0, 1e13);
   h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 4 * 10, 0, 10, 240, 0, 1.2);
-  h_truthmatched_mass = new TH1F("h_truthmatched_mass", "Invariant Mass, truth matched", 200, 0, 1.0);
+  h_truthmatched_mass = new TH1F("h_truthmatched_mass", "Invariant Mass, truth matched", 240, 0, 1.2);
+  h_truthmatched_bgmass = new TH1F("h_truthmatched_bgmass", "Invariant Mass, removed truth digamma", 240, 0, 1.2);
   // high mass tail diagnostic
   std::vector<std::string> HistList = {"photon1", "photon2", "all photons", "pions"};
   for (int i = 0; i < 4; i++)
@@ -249,7 +250,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float clus_chisq_cut = 4;
   float nClus_ptCut = 0.0;  // 0.5
   float pi0ptcutfactor = 0;
-  float ptMaxCut = 20;    // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
+  float ptMaxCut = 20;     // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;  // // 0.7
 
@@ -501,7 +502,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           continue;
         }
       }
-      
+
       // loop over the towers in the cluster
       RawCluster::TowerConstRange towerCR2 = recoCluster2->get_towers();
       RawCluster::TowerConstIterator toweriter2;
@@ -602,7 +603,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           int id = truth->get_pid();
           h_truth_pid_s->Fill(id);
 
-          if (matchmctruth && truth->get_pid() == 111)
+          if (matchmctruth && (truth->get_pid() == 111 || truth->get_pid() == 221))
           {
             TLorentzVector truthpi0 = TLorentzVector();
             float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
@@ -612,11 +613,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             float delR = pi0.DeltaR(truthpi0);
-            //h_delR_recTrth->Fill(delR);
+            // h_delR_recTrth->Fill(delR);
             if (delR < 0.3)
-            { 
+            {
               truth_pions.push_back(truthpi0);
               h_truthmatched_mass->Fill(pi0.M());
+            }
+            else
+            {
+              h_truthmatched_bgmass->Fill(pi0.M());
             }
           }
 
