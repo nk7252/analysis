@@ -530,7 +530,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float weight = 1;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
       vector<TLorentzVector> truth_photons;
-      vector<TLorentzVector> truth_pions;
+      //vector<TLorentzVector> truth_pions;
       if (truthinfo)
       {
         PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
@@ -616,7 +616,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             // h_delR_recTrth->Fill(delR);
             if (delR < 0.3)
             {
-              truth_pions.push_back(truthpi0);
+              //truth_pions.push_back(truthpi0);
               h_truthmatched_mass->Fill(pi0.M());
             }
             else
