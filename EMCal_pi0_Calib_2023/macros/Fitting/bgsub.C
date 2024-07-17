@@ -571,44 +571,44 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
           combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
         }
         combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
-        combinedFit->SetParLimits(4, 0.5, 0.65);
+        combinedFit->SetParLimits(4, 0.5, 0.64);
         combinedFit->SetParLimits(5, 0.05, 0.25);
       }
       else if (background_scheme == 2)
       {
         for (int j = 0; j < 2; ++j) combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
-        combinedFit->SetParLimits(4, 0.55, 0.63);
-        combinedFit->SetParLimits(5, 0.01, 0.25);
+        combinedFit->SetParLimits(4, 0.55, 0.64);
+        combinedFit->SetParLimits(5, 0.05, 0.25);
       }
       else if (background_scheme == 3)
       {
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
-        combinedFit->SetParLimits(4, 0.55, 0.63);
-        combinedFit->SetParLimits(5, 0.01, 0.25);
+        combinedFit->SetParLimits(4, 0.55, 0.64);
+        combinedFit->SetParLimits(5, 0.05, 0.25);
       }
       else if (background_scheme == 4)
       {
         for (int j = 0; j < 4; ++j) combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
-        combinedFit->SetParLimits(4, 0.55, 0.63);
-        combinedFit->SetParLimits(5, 0.01, 0.25);
+        combinedFit->SetParLimits(4, 0.55, 0.64);
+        combinedFit->SetParLimits(5, 0.05, 0.25);
       }
       else if (background_scheme == 5)
       {
         for (int j = 0; j < 6; ++j) combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
-        combinedFit->SetParLimits(4, 0.55, 0.63);
-        combinedFit->SetParLimits(5, 0.01, 0.25);
+        combinedFit->SetParLimits(4, 0.55, 0.64);
+        combinedFit->SetParLimits(5, 0.05, 0.25);
         combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
       }
       else if (background_scheme == 6)
       {
         for (int j = 0; j < 7; ++j) combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
         for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
-        combinedFit->SetParLimits(4, 0.55, 0.63);
-        combinedFit->SetParLimits(5, 0.01, 0.25);
+        combinedFit->SetParLimits(4, 0.55, 0.64);
+        combinedFit->SetParLimits(5, 0.05, 0.25);
         combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
       }
     }
