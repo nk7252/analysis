@@ -351,6 +351,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(1000000);
   ROOT::Math::MinimizerOptions::SetDefaultMaxIterations(10000);
+  ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.001);
   SetsPhenixStyle();
 
   // Ensure the limits vector has the correct size
