@@ -231,7 +231,7 @@ double LogBG(double *x, double *par)
   double logBg = par[0] * log(x[0]) + par[1];
 
   // Check if x is in the range of any Gaussian fit
-  if ((x[0] >= 0.11 && x[0] <= 0.19) || (x[0] >= 0.52 && x[0] <= 0.68))
+  if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.5 && x[0] <= 0.7))
   {
     TF1::RejectPoint();
     return 0;
@@ -243,24 +243,48 @@ double LogBG(double *x, double *par)
 double poly2BG(double *x, double *par)
 {
   // 2nd degree polynomial background
+    // Check if x is in the range of any Gaussian fit
+  if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.5 && x[0] <= 0.7))
+  {
+    TF1::RejectPoint();
+    return 0;
+  }
   return par[0] + par[1] * x[0] + par[2] * x[0] * x[0];
 }
 
 double poly3BG(double *x, double *par)
 {
   // 3rd degree polynomial background
+    // Check if x is in the range of any Gaussian fit
+  if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.5 && x[0] <= 0.7))
+  {
+    TF1::RejectPoint();
+    return 0;
+  }
   return par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
 }
 
 double poly5BG(double *x, double *par)
 {
   // 5th degree polynomial background
+    // Check if x is in the range of any Gaussian fit
+  if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.5 && x[0] <= 0.7))
+  {
+    TF1::RejectPoint();
+    return 0;
+  }
   return par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0] + par[4] * x[0] * x[0] * x[0] * x[0] + par[5] * x[0] * x[0] * x[0] * x[0] * x[0];
 }
 
 double poly6BG(double *x, double *par)
 {
   // 6th degree polynomial background
+    // Check if x is in the range of any Gaussian fit
+  if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.5 && x[0] <= 0.7))
+  {
+    TF1::RejectPoint();
+    return 0;
+  }
   return par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0] + par[4] * x[0] * x[0] * x[0] * x[0] + par[5] * x[0] * x[0] * x[0] * x[0] * x[0]+ par[6] * x[0] * x[0] * x[0] * x[0] * x[0]* x[0];
 }
 
