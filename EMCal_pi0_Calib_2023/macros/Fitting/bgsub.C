@@ -123,6 +123,21 @@ double combinedFunctionDoubleGaussPoly5(double *x, double *par)
   return gauss1 + gauss2 + poly;
 }
 
+double combinedFunctionDoubleGaussPoly6(double *x, double *par)
+{
+  // First Gaussian part (e.g., pion peak)
+  double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
+
+  // Second Gaussian part (e.g., eta peak)
+  double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
+
+  // Polynomial part (5th degree)
+  double poly = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0] + par[10] * x[0] * x[0] * x[0] * x[0] + par[11] * x[0] * x[0] * x[0] * x[0] * x[0]+par[12] * x[0] * x[0] * x[0] * x[0] * x[0]* x[0];
+
+  return gauss1 + gauss2 + poly;
+}
+
+
 double combinedFunctionDoubleGaussLog(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
@@ -242,6 +257,13 @@ double poly5BG(double *x, double *par)
   // 5th degree polynomial background
   return par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0] + par[4] * x[0] * x[0] * x[0] * x[0] + par[5] * x[0] * x[0] * x[0] * x[0] * x[0];
 }
+
+double poly6BG(double *x, double *par)
+{
+  // 6th degree polynomial background
+  return par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0] + par[4] * x[0] * x[0] * x[0] * x[0] + par[5] * x[0] * x[0] * x[0] * x[0] * x[0]+ par[6] * x[0] * x[0] * x[0] * x[0] * x[0]* x[0];
+}
+
 
 // leftRightPolynomial function to optionally exclude two Gaussian regions
 double leftRightPolynomial(double *x, double *par)
@@ -444,6 +466,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       {
         leftRightFit = new TF1("leftRightFit", poly5BG, limits[0], limits[1], 6);
       }
+      else if (background_scheme == 6)
+      {
+        leftRightFit = new TF1("leftRightFit", poly6BG, limits[0], limits[1], 7);
+      }
     }
     else
     {
@@ -486,6 +512,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       else if (background_scheme == 5)
       {
         combinedFit = new TF1("combinedFit", combinedFunctionDoubleGaussPoly5, limits[0], limits[1], 12);
+      }
+      else if (background_scheme == 6)
+      {
+        combinedFit = new TF1("combinedFit", combinedFunctionDoubleGaussPoly6, limits[0], limits[1], 13);
       }
     }
     else
@@ -572,6 +602,14 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         combinedFit->SetParLimits(5, 0.01, 0.25);
         combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
       }
+      else if (background_scheme == 6)
+      {
+        for (int j = 0; j < 7; ++j) combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
+        for (int j = 0; j < 3; ++j) combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
+        combinedFit->SetParLimits(4, 0.55, 0.63);
+        combinedFit->SetParLimits(5, 0.01, 0.25);
+        combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
+      }
     }
     else
     {
@@ -619,7 +657,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(9) / combinedFit->GetParameter(9), 2) + pow(eta_peak_err / eta_peak, 2));
         peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
       }
-      else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5)
+      else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5 || background_scheme == 6)
       {
         eta_peak = combinedFit->GetParameter(4);
         eta_peak_err = combinedFit->GetParError(4);
@@ -694,6 +732,11 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       polyPart = new TF1("polyPart", "pol5", limits[0], limits[1]);
       for (int j = 0; j < 6; ++j) polyPart->SetParameter(j, combinedFit->GetParameter(j + 6));
     }
+    else if (background_scheme == 6)
+    {
+      polyPart = new TF1("polyPart", "pol6", limits[0], limits[1]);
+      for (int j = 0; j < 7; ++j) polyPart->SetParameter(j, combinedFit->GetParameter(j + 6));
+    }
 
     // Create a new histogram to store the subtracted data
     TH1F *histSubtracted = (TH1F *) histF->Clone(Form("histSubtracted_%d", i));
@@ -734,7 +777,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         doubleGaussFit->SetParameter(4, combinedFit->GetParameter(8));
         doubleGaussFit->SetParameter(5, combinedFit->GetParameter(9));
       }
-      else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5)
+      else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5 || background_scheme == 6)
       {
         doubleGaussFit->SetParameter(3, combinedFit->GetParameter(3));
         doubleGaussFit->SetParameter(4, combinedFit->GetParameter(4));
@@ -826,7 +869,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       fitInfo->AddText(Form("Eta Mean = %f +/- %f", combinedFit->GetParameter(8), combinedFit->GetParError(8)));
       fitInfo->AddText(Form("Eta Sigma = %f +/- %f", combinedFit->GetParameter(9), combinedFit->GetParError(9)));
     }
-    else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5)
+    else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5 || background_scheme == 6)
     {
       fitInfo->AddText(Form("Eta Mean = %f +/- %f", combinedFit->GetParameter(4), combinedFit->GetParError(4)));
       fitInfo->AddText(Form("Eta Sigma = %f +/- %f", combinedFit->GetParameter(5), combinedFit->GetParError(5)));
