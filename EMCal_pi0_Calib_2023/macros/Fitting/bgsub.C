@@ -533,7 +533,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         }
         for (int j = 0; j < 3; ++j)  // poly2
         {
-          combinedFit->SetParameter(j + 10, leftRightFit->GetParameter(j + 6));
+          combinedFit->SetParameter(j + 10, leftRightFit->GetParameter(j + 4));
         }
         combinedFit->SetParLimits(6, leftRightFit->GetParameter(0) * 0.95, leftRightFit->GetParameter(0) * 1.05);
         combinedFit->SetParLimits(7, leftRightFit->GetParameter(1) * 0.95, leftRightFit->GetParameter(1) * 1.05);
