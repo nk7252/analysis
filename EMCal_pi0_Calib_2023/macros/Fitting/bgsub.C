@@ -470,7 +470,6 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       else if (background_scheme == 1)  // poly3+poly2
       {
         combinedFit = new TF1("combinedFit", combinedFunctionDoubleGaussDoublePoly, limits[0], limits[1], 13);  // 2 Gaussians + 1 poly3 +1poly2 = 3 + 3 + 4 + 3=13
-        // if using fit limits for parts you need 4 more paramms:13,14,15,16
       }
       else if (background_scheme == 2)
       {
@@ -542,7 +541,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         }
         combinedFit->SetParLimits(3, 0, gausFit2->GetParameter(0) * 1.05);  // gausFit2->GetParameter(0) *0.5
         combinedFit->SetParLimits(4, 0.55, 0.63);
-        combinedFit->SetParLimits(5, 0.05, 0.10);
+        combinedFit->SetParLimits(5, 0.05, 0.25);
       }
       else if (background_scheme == 2)
       {
@@ -580,7 +579,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    histF->Fit(combinedFit, "R");
+    histF->Fit(combinedFit, "RL");
     // After fitting
     std::cout << "Combined Fit Parameters:" << std::endl;
     for (int i = 0; i < combinedFit->GetNpar(); ++i)
