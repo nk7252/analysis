@@ -613,7 +613,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             float delR = pi0.DeltaR(truthpi0);
             //h_delR_recTrth->Fill(delR);
-            if (delR < 0.015)
+            if (delR < 0.3)
             { 
               truth_pions.push_back(truthpi0);
               h_truthmatched_mass->Fill(pi0.M());
