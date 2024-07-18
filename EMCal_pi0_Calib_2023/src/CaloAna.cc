@@ -139,7 +139,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 10);
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 400, -200, 200);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 400, -200, 200);
-  h_delR_recTrth = new TH1F("h_delR_recTrth", "", 500, 0, 5);
+  h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
 
   // pT differential Inv Mass
@@ -653,7 +653,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         float delR = photon1.DeltaR(tr_phot);
         if (debug) std::cout << delR << " " << std::endl;
         h_delR_recTrth->Fill(delR);
-        if (delR < 0.015)
+        if (delR < 0.0101)
         {  // choose this value based on looking at delR distribution
           float res = photon1.E() / tr_phot.E();
           h_matched_res->Fill(res, photon1.Eta());
