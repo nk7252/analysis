@@ -637,7 +637,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               truth_photons.push_back(photon);
 
               float delR = photon1.DeltaR(photon);
-              if (delR < 0.3)
+              if (delR < 0.015)
               {
                 h_truthmatched_mass->Fill(pi0.M());
               }
