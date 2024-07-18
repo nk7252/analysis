@@ -18,8 +18,8 @@ fi
   rm $listfile2
 
   #CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 10000 DST_CALO_CLUSTER G4Hits 
-  CreateFileList.pl DST_CALO_CLUSTER G4Hits -type 3 -run 11  
-  #-n 100000 DST_GLOBAL-nopileup-nopileup
+  CreateFileList.pl DST_CALO_CLUSTER G4Hits -type 3 -run 11 -n 100000 
+  # DST_GLOBAL-nopileup-nopileup
   #number of jobs 
   j=500
 
