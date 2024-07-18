@@ -1004,7 +1004,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08, float gauss1L = 0.11, float gauss1R = 0.19, float polygauss1R = 0.3, float polygauss2L = 0.5, float gauss2L = 0.55, float gauss2R = 0.65, float polygauss2R = 0.7, float polyR = 1.0, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, int background_scheme = 0, bool fitEtaPeak = false, bool dynamic_left = true, bool variable_bins = false)
 {
   // code is run with a command like this:
-  // root bgsub.C'(1,0.07,0.1,0.11,0.19,0.20,0.48,0.48,0.72,0.72,0.99,16,-1,4,2,true)'
+  // root bgsub.C'(1.4,0.05,0.05,0.11,0.19,0.35,0.35,0.52,0.68,1.0,1.0,9,29,1,1,1,true,true,true)'
   // background scheme:0=poly4, 1= poly3 + poly2,2=log,3=poly2,4=poly3,5=poly5
 
   // Fit limits for the polynomial and Gaussian fits
