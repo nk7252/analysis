@@ -30,17 +30,17 @@ class CaloAna : public SubsysReco
   virtual ~CaloAna();
 
   //! full initialization
-  int Init(PHCompositeNode *);
+  int Init(PHCompositeNode *)override;
 
   //! event processing method
-  int process_event(PHCompositeNode *);
+  int process_event(PHCompositeNode *)override;
 
   //! end of run method
-  int End(PHCompositeNode *);
+  int End(PHCompositeNode *)override;
 
   int process_g4hits(PHCompositeNode *);
   int process_g4cells(PHCompositeNode *);
-  int process_towers(PHCompositeNode *);
+  int process_towers(PHCompositeNode *)override;
   int process_clusters(PHCompositeNode *);
 
   void Detector(const std::string &name) { detector = name; }
