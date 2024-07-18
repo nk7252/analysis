@@ -151,7 +151,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truthmatched_mass3 = new TH1F("h_truthmatched_mass3", "Invariant Mass, truth matched(delR<0.2)", 240, 0, 1.2);
   h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 4 * 10, 0, 10, 240, 0, 1.2);
   h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 4 * 10, 0, 10, 240, 0, 1.2);
-  h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.2)", 4 * 10, 0, 10, 240, 0, 1.2);
+  h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.25)", 4 * 10, 0, 10, 240, 0, 1.2);
   // high mass tail diagnostic
   std::vector<std::string> HistList = {"photon1", "photon2", "all photons", "pions"};
   for (int i = 0; i < 4; i++)
@@ -644,7 +644,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               {
                 h_truthmatched_mass->Fill(pi0.M());
               }
-              else if (matchmctruth && delR < 0.2)
+              else if (matchmctruth && delR < 0.25)
               { 
                 h_truthmatched_mass3_2d->Fill(pi0.pT(), pi0.M());
                 h_truthmatched_mass3->Fill(pi0.M());
