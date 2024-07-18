@@ -1,10 +1,11 @@
+#pragma once
+#if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
 //#ifndef FUN4ALL_YEAR1_C
 //#define FUN4ALL_YEAR1_C
-
 #include <caloreco/CaloTowerCalib.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
-//#include <caloreco/RawClusterDeadHotMask.h>
 #include <caloreco/RawClusterPositionCorrection.h>
+//#include <caloreco/RawClusterDeadHotMask.h>
 //#include <caloreco/TowerInfoDeadHotMask.h>
 
 #include <ffamodules/FlagHandler.h>
@@ -26,8 +27,9 @@
 
 #include <phool/recoConsts.h>
 
-//#include <cdbobjects/CDBTTree.h>  // for CDBTTree
+
 #include <ffamodules/CDBInterface.h>
+//#include <cdbobjects/CDBTTree.h>  // for CDBTTree
 #include <GlobalVariables.C>
 
 //#include <litecaloeval/LiteCaloEval.h>
@@ -44,16 +46,16 @@ R__LOAD_LIBRARY(libffamodules.so)
 
 #include <caloana/CaloAna.h>
 R__LOAD_LIBRARY(libcaloana.so)
-
+#endif
 //void createLocalEMCalCalibFile(const string fname, int runNumber);
 
 // void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
 void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list")
 {
-  bool enableMasking = 0;
+  //bool enableMasking = 0;
 
-  bool doFit = 0;
-  bool doHistMake = 0;
+  //bool doFit = 0;
+  //bool doHistMake = 0;
 
   Fun4AllServer *se = Fun4AllServer::instance();
   se->Verbosity(0);
@@ -78,12 +80,17 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   // // 64 bit timestamp
   rc->set_uint64Flag("TIMESTAMP", runnumber);
   cout << "tag, timestamp done" << endl;
+  //===============
+  // add input managers
+  //===============
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_TOWERS");
   Fun4AllInputManager *intruth = new Fun4AllDstInputManager("DST_TRUTH");
   cout << "add listfiles to input manager" << endl;
+
   in->AddListFile(fname);
   intruth->AddListFile(fname_truth);
   cout << "files added" << endl;
+
   se->registerInputManager(in);
   se->registerInputManager(intruth);
   cout << "input manager registered" << endl;
