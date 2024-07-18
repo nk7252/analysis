@@ -235,16 +235,16 @@ int CaloAna::Init(PHCompositeNode*)
 int CaloAna::process_event(PHCompositeNode* topNode)
 {
   _eventcounter++;
-
+  if (debug) std::cout << " " << "Process Event: Start  " << std::endl;
   process_towers(topNode);
-
+  if (debug) std::cout << " " << "Process Event: End  " << std::endl;
   return Fun4AllReturnCodes::EVENT_OK;
 }
 
 int CaloAna::process_towers(PHCompositeNode* topNode)
-{
+{ 
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
-
+  
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
   float maxDr = 1.1;
