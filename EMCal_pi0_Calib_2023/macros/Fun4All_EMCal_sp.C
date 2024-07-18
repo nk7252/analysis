@@ -3,9 +3,9 @@
 
 #include <caloreco/CaloTowerCalib.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
-#include <caloreco/RawClusterDeadHotMask.h>
+//#include <caloreco/RawClusterDeadHotMask.h>
 #include <caloreco/RawClusterPositionCorrection.h>
-#include <caloreco/TowerInfoDeadHotMask.h>
+//#include <caloreco/TowerInfoDeadHotMask.h>
 
 #include <ffamodules/FlagHandler.h>
 #include <ffamodules/HeadReco.h>
@@ -21,16 +21,16 @@
 #include <fun4all/Fun4AllUtils.h>
 #include <fun4all/SubsysReco.h>
 
-#include <globalvertex/GlobalVertexReco.h>
-#include <mbd/MbdReco.h>
+//#include <globalvertex/GlobalVertexReco.h>
+//#include <mbd/MbdReco.h>
 
 #include <phool/recoConsts.h>
 
-#include <cdbobjects/CDBTTree.h>  // for CDBTTree
+//#include <cdbobjects/CDBTTree.h>  // for CDBTTree
 #include <ffamodules/CDBInterface.h>
 #include <GlobalVariables.C>
 
-#include <litecaloeval/LiteCaloEval.h>
+//#include <litecaloeval/LiteCaloEval.h>
 
 R__LOAD_LIBRARY(libcdbobjects)
 
@@ -38,19 +38,16 @@ R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libfun4allraw.so)
 R__LOAD_LIBRARY(libcalo_reco.so)
 R__LOAD_LIBRARY(libffamodules.so)
-R__LOAD_LIBRARY(libmbd.so)
-R__LOAD_LIBRARY(libglobalvertex.so)
-R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
+//R__LOAD_LIBRARY(libmbd.so)
+//R__LOAD_LIBRARY(libglobalvertex.so)
+//R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
 
 #include <caloana/CaloAna.h>
 R__LOAD_LIBRARY(libcaloana.so)
 
-void createLocalEMCalCalibFile(const string fname, int runNumber);
+//void createLocalEMCalCalibFile(const string fname, int runNumber);
 
-
-
-
-//void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
+// void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
 void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list")
 {
   bool enableMasking = 0;
@@ -76,7 +73,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   cout << "run number = " << runnumber << endl;
 
   // global tag
-  //rc->set_StringFlag("CDB_GLOBALTAG","PROD_ana.401");//not sure if this is useful for my purposes?
+  // rc->set_StringFlag("CDB_GLOBALTAG","PROD_ana.401");//not sure if this is useful for my purposes?
   rc->set_StringFlag("CDB_GLOBALTAG", "MDC2");
   // // 64 bit timestamp
   rc->set_uint64Flag("TIMESTAMP", runnumber);
@@ -91,14 +88,14 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   se->registerInputManager(intruth);
   cout << "input manager registered" << endl;
 
-  //Fun4AllInputManager *in2 = new Fun4AllDstInputManager("DST_TOWERS2");
-  //in2->AddListFile(fnamehits);
-  //se->registerInputManager(in2);
+  // Fun4AllInputManager *in2 = new Fun4AllDstInputManager("DST_TOWERS2");
+  // in2->AddListFile(fnamehits);
+  // se->registerInputManager(in2);
 
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
-  std::string OutFile = Form("OUTHIST_iter_%s",filename.c_str());
-  //std::string OutFile = Form("OUTHIST_iter%d_%s",iter , filename.c_str());
-  
+  std::string OutFile = Form("OUTHIST_iter_%s", filename.c_str());
+  // std::string OutFile = Form("OUTHIST_iter%d_%s",iter , filename.c_str());
+
   /*
   if (iter == 0)
   {
@@ -110,7 +107,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
 
   ////////////////////
   // Calibrate towers
-  
+
   std::cout << "Calibrating EMCal" << std::endl;
   CaloTowerCalib *calibEMC = new CaloTowerCalib("CEMCCALIB");
   calibEMC->set_detector_type(CaloTowerDefs::CEMC);
@@ -131,25 +128,25 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   ClusterBuilder->setOutputClusterNodeName("CLUSTERINFO_CEMC2");
   se->registerSubsystem(ClusterBuilder);
   */
-/*
-  std::cout << "Applying Position Dependent Correction" << std::endl;
-  RawClusterPositionCorrection *clusterCorrection = new RawClusterPositionCorrection("CEMC");
-  clusterCorrection->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower  
-  se->registerSubsystem(clusterCorrection);
-*/
+  /*
+    std::cout << "Applying Position Dependent Correction" << std::endl;
+    RawClusterPositionCorrection *clusterCorrection = new RawClusterPositionCorrection("CEMC");
+    clusterCorrection->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
+    se->registerSubsystem(clusterCorrection);
+  */
 
   ///////////////////
   // analysis modules
-    /*
-    if (iter==1){
-    LiteCaloEval *eval7e = new LiteCaloEval("CEMCEVALUATOR2", "CEMC",OutFile);
-    eval7e->CaloType(LiteCaloEval::CEMC);
-    eval7e->setInputTowerNodeName("TOWERINFO_CALIB_CEMC");
-    se->registerSubsystem(eval7e);
+  /*
+  if (iter==1){
+  LiteCaloEval *eval7e = new LiteCaloEval("CEMCEVALUATOR2", "CEMC",OutFile);
+  eval7e->CaloType(LiteCaloEval::CEMC);
+  eval7e->setInputTowerNodeName("TOWERINFO_CALIB_CEMC");
+  se->registerSubsystem(eval7e);
   }
   */
 
-  //if (iter>1){
+  // if (iter>1){
   CaloAna *ca = new CaloAna("calomodulename", OutFile);
   ca->set_timing_cut_width(16);
   ca->apply_vertex_cut(false);
@@ -162,14 +159,12 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   se->PrintTimer();
   delete se;
 
-  TFile* f_done_signal = new TFile("DONE.root","recreate");
+  TFile *f_done_signal = new TFile("DONE.root", "recreate");
   std::cout << "All done!" << std::endl;
   gSystem->Exit(0);
 }
 
-
-
-
+/*
 void createLocalEMCalCalibFile(const string fname, int runNumber)
 {
   string default_time_independent_calib = "cemc_pi0_twrSlope_v1_default";
@@ -206,5 +201,6 @@ void createLocalEMCalCalibFile(const string fname, int runNumber)
 
   delete f_cdb;
 }
+//#endif
+*/
 
-#endif
