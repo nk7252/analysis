@@ -229,7 +229,8 @@ int CaloAna::Init(PHCompositeNode*)
   funkyCaloStuffcounter = 0;
   if (additionalsmearing == false) std::cout << "additional smearing is not being added" << std::endl;
   if (additionalsmearing == true) std::cout << "additional smearing is being added" << std::endl;
-  return 0;
+  //return 0;
+  return Fun4AllReturnCodes::EVENT_OK;
 }
 
 int CaloAna::process_event(PHCompositeNode* topNode)
