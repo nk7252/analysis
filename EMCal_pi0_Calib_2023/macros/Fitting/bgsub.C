@@ -81,6 +81,27 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
   return gauss1 + gauss2 + poly1 + poly2;
 }
 
+double combinedFunctionDoubleGaussLog(double *x, double *par)
+{
+  // First Gaussian part (e.g., pion peak)
+  double gauss1 = 0;
+  if (x[0] >= 0.09 && x[0] <= 0.21)
+  {  // Check if x is in the range of the first Gaussian
+    double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
+  }
+
+  // Second Gaussian part (e.g., eta peak)
+  double gauss2 = 0;
+  if (x[0] >= 0.5 && x[0] <= 0.7)
+  {  // Check if x is in the range of the first Gaussian
+    double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
+  }
+  // Logarithm background part
+  double logBg = par[6] * log(x[0]) + par[7];
+
+  return gauss1 + gauss2 + logBg;
+}
+
 double combinedFunctionDoubleGaussPoly2(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
@@ -135,28 +156,6 @@ double combinedFunctionDoubleGaussPoly6(double *x, double *par)
   double poly = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0] + par[10] * x[0] * x[0] * x[0] * x[0] + par[11] * x[0] * x[0] * x[0] * x[0] * x[0]+par[12] * x[0] * x[0] * x[0] * x[0] * x[0]* x[0];
 
   return gauss1 + gauss2 + poly;
-}
-
-
-double combinedFunctionDoubleGaussLog(double *x, double *par)
-{
-  // First Gaussian part (e.g., pion peak)
-  double gauss1 = 0;
-  if (x[0] >= 0.09 && x[0] <= 0.21)
-  {  // Check if x is in the range of the first Gaussian
-    double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
-  }
-
-  // Second Gaussian part (e.g., eta peak)
-  double gauss2 = 0;
-  if (x[0] >= 0.5 && x[0] <= 0.7)
-  {  // Check if x is in the range of the first Gaussian
-    double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
-  }
-  // Logarithm background part
-  double logBg = par[6] * log(x[0]) + par[7];
-
-  return gauss1 + gauss2 + logBg;
 }
 
 double doubleGauss(double *x, double *par)

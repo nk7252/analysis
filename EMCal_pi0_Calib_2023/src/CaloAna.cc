@@ -148,7 +148,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 100, 0, 1e13);
   h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 4 * 10, 0, 10, 240, 0, 1.2);
   h_truthmatched_mass = new TH1F("h_truthmatched_mass", "Invariant Mass, truth matched", 240, 0, 1.2);
-  h_truthmatched_bgmass = new TH1F("h_truthmatched_bgmass", "Invariant Mass, removed truth digamma", 240, 0, 1.2);
+  h_truthmatched_mass2 = new TH1F("h_truthmatched_mass2", "Invariant Mass, truth digamma, wider delR", 240, 0, 1.2);
   // high mass tail diagnostic
   std::vector<std::string> HistList = {"photon1", "photon2", "all photons", "pions"};
   for (int i = 0; i < 4; i++)
@@ -251,7 +251,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float maxDr = 1.1;
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
-  float nClus_ptCut = 0.0;  // 0.5
+  float nClus_ptCut = 0.5;  // 0.5
   float pi0ptcutfactor = 0;
   float ptMaxCut = 20;     // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
@@ -608,7 +608,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           int id = truth->get_pid();
           h_truth_pid_s->Fill(id);
 
-          if (matchmctruth)
+          /*if (matchmctruth)
           {
             TLorentzVector truthpi0 = TLorentzVector();
             float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
@@ -619,7 +619,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             // float delR = pi0.DeltaR(truthpi0);
             //  h_delR_recTrth->Fill(delR);
-          }
+          }*/
 
           if (truth->get_pid() == 22)
           {
@@ -637,10 +637,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               truth_photons.push_back(photon);
 
               float delR = photon1.DeltaR(photon);
-              if (delR < 0.015)
+              if ( matchspmctruth && delR < 0.015)// for spmc 0.015, for pythia 0.2? or maybe 0.1
               {
                 h_truthmatched_mass->Fill(pi0.M());
               }
+              else if (matchmctruth && delR < 0.1)
+              {
+                h_truthmatched_mass2->Fill(pi0.M());
+                if(delR<0.015) h_truthmatched_mass->Fill(pi0.M());
+              }            
               if (debug) std::cout << "pt=" << phot_pt << " e=" << phot_e << " phi=" << phot_phi << " eta=" << phot_eta << std::endl;
             }
           }
