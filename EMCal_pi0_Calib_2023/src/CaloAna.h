@@ -202,7 +202,7 @@ class CaloAna : public SubsysReco
   bool getVtx = false;
   bool matchspmctruth = false;
   bool matchmctruth = false;//NOT spmc. check must be in secondary range
-  bool debug = false;
+  bool debug = true;
 
   TH1F* h_pt1;
   TH1F* h_pt2;

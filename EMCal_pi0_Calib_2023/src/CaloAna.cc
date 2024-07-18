@@ -96,6 +96,7 @@ CaloAna::~CaloAna()
 
 int CaloAna::Init(PHCompositeNode*)
 {
+  if (debug) std::cout << " " << "Init Start " << std::endl;
   hm = new Fun4AllHistoManager(Name());
   // create and register your histos (all types) here
 
@@ -179,8 +180,8 @@ int CaloAna::Init(PHCompositeNode*)
 
   //////////////////////////
   // pT rewieghting
-  //frw = new TFile("/sphenix/u/bseidlitz/work/analysis/EMCal_pi0_Calib_2023/macros/rw_pt.root");
-  //for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
+  // frw = new TFile("/sphenix/u/bseidlitz/work/analysis/EMCal_pi0_Calib_2023/macros/rw_pt.root");
+  // for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
 
   rnd = new TRandom3();
 
@@ -245,6 +246,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
 
   // cuts
+  if (debug) std::cout << " " << "Cuts " << std::endl;
   float maxDr = 1.1;
   float maxAlpha = 0.6;
   float clus_chisq_cut = 4;
@@ -349,7 +351,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   vector<float> save_e;
 
   // float smear = 0.00;
-
+  if (debug) std::cout << " " << "Cluster Loop: 1 " << std::endl;
   for (clusterIter = clusterEnd.first; clusterIter != clusterEnd.second; clusterIter++)
   {
     RawCluster* recoCluster = clusterIter->second;
@@ -427,7 +429,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_cutCounter->Fill(4);
       continue;
     }
-
+    if (debug) std::cout << " " << "Cluster Loop: 2 " << std::endl;
     for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
     {
       if (clusterIter == clusterIter2)
@@ -530,7 +532,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float weight = 1;
       PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
       vector<TLorentzVector> truth_photons;
-      //vector<TLorentzVector> truth_pions;
+      // vector<TLorentzVector> truth_pions;
+      if (debug) std::cout << " " << "truth: Primary Loop " << std::endl;
       if (truthinfo)
       {
         PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
@@ -593,6 +596,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         }
 
         // truth secondary loops
+        if (debug) std::cout << " " << "truth: Secondary Loop " << std::endl;
         PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
         float m_g4 = 0;
         for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
@@ -616,7 +620,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             // h_delR_recTrth->Fill(delR);
             if (delR < 0.3)
             {
-              //truth_pions.push_back(truthpi0);
+              // truth_pions.push_back(truthpi0);
               h_truthmatched_mass->Fill(pi0.M());
             }
             else
@@ -640,7 +644,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               photon.SetPtEtaPhiE(phot_pt, phot_eta, phot_phi, phot_e);
               truth_photons.push_back(photon);
 
-              // if (debug) std::cout<< "pt=" <<  phot_pt <<   " e=" << phot_e << " phi=" << phot_phi << " eta=" << phot_eta << endl;
+              if (debug) std::cout << "pt=" << phot_pt << " e=" << phot_e << " phi=" << phot_phi << " eta=" << phot_eta << std::endl;
             }
           }
         }
@@ -648,7 +652,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         for (auto tr_phot : truth_photons)
         {
           float delR = photon1.DeltaR(tr_phot);
-          // if (debug) std::cout << delR << " ";
+          if (debug) std::cout << delR << " " << std::endl;
           h_delR_recTrth->Fill(delR);
           if (delR < 0.015)
           {  // choose this value based on looking at delR distribution
@@ -657,7 +661,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           }
         }
       }
-
+      if (debug) std::cout << " " << "truth: Loops Done " << std::endl;
       if (additionalsmearing)
       {
         h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
