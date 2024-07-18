@@ -38,10 +38,10 @@ class CaloAna : public SubsysReco
   //! end of run method
   int End(PHCompositeNode *)override;
 
-  int process_g4hits(PHCompositeNode *);
-  int process_g4cells(PHCompositeNode *);
+  int process_g4hits(PHCompositeNode *)override;
+  int process_g4cells(PHCompositeNode *)override;
   int process_towers(PHCompositeNode *)override;
-  int process_clusters(PHCompositeNode *);
+  int process_clusters(PHCompositeNode *)override;
 
   void Detector(const std::string &name) { detector = name; }
   void set_timing_cut_width(const int &t) { _range = t;}
