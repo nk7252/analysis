@@ -624,7 +624,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           if (truth->get_pid() == 22)
           {
             PHG4Particle* parent = truthinfo->GetParticle(truth->get_parent_id());
-            if (parent->get_pid() == 111 && parent->get_track_id() > 0)
+            if ((parent->get_pid() == 111 || parent->get_pid() == 221) && parent->get_track_id() > 0)
             {
               float phot_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
               // float phot_pz = truth->get_pz();
@@ -637,16 +637,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               truth_photons.push_back(photon);
 
               float delR = photon1.DeltaR(photon);
-              if (delR < 0.3 && (parent->get_pid() == 111 || parent->get_pid() == 221))
+              if (delR < 0.3)
               {
                 h_truthmatched_mass->Fill(pi0.M());
               }
               if (debug) std::cout << "pt=" << phot_pt << " e=" << phot_e << " phi=" << phot_phi << " eta=" << phot_eta << std::endl;
             }
-            float delR = photon1.DeltaR(photon);
-            if (delR < 0.3 && (parent->get_pid() == 111 || parent->get_pid() == 221)&& parent->get_track_id() > 0)
-            {
-              h_truthmatched_mass->Fill(pi0.M());
             }
           }
         }
