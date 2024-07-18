@@ -1,5 +1,5 @@
-#ifndef FUN4ALL_YEAR1_C
-#define FUN4ALL_YEAR1_C
+//#ifndef FUN4ALL_YEAR1_C
+//#define FUN4ALL_YEAR1_C
 
 #include <caloreco/CaloTowerCalib.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
@@ -194,4 +194,4 @@ void createLocalEMCalCalibFile(const string fname, int runNumber)
   delete f_cdb;
 }
 
-#endif
+//#endif

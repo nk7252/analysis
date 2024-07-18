@@ -56,7 +56,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   bool enableMasking = 0;
 
   bool doFit = 0;
-  bool doHistMake = 1;
+  bool doHistMake = 0;
 
   Fun4AllServer *se = Fun4AllServer::instance();
   se->Verbosity(0);
