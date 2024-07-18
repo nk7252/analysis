@@ -229,7 +229,7 @@ int CaloAna::Init(PHCompositeNode*)
   funkyCaloStuffcounter = 0;
   if (additionalsmearing == false) std::cout << "additional smearing is not being added" << std::endl;
   if (additionalsmearing == true) std::cout << "additional smearing is being added" << std::endl;
-  //return 0;
+  // return 0;
   return Fun4AllReturnCodes::EVENT_OK;
 }
 
@@ -243,9 +243,9 @@ int CaloAna::process_event(PHCompositeNode* topNode)
 }
 
 int CaloAna::process_towers(PHCompositeNode* topNode)
-{ 
+{
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
-  
+
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
   float maxDr = 1.1;
@@ -617,13 +617,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             float pion_phi = atan2(truth->get_py(), truth->get_px());
             float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
-            float delR = pi0.DeltaR(truthpi0);
-            h_delR_recTrth->Fill(delR);
-            if (delR < 0.3 && (truth->get_pid() == 111 || truth->get_pid() == 221))
-            {
-              // truth_pions.push_back(truthpi0);
-              h_truthmatched_mass->Fill(pi0.M());
-            }
+            //float delR = pi0.DeltaR(truthpi0);
+            // h_delR_recTrth->Fill(delR);
           }
 
           if (truth->get_pid() == 22)
@@ -641,23 +636,35 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               photon.SetPtEtaPhiE(phot_pt, phot_eta, phot_phi, phot_e);
               truth_photons.push_back(photon);
 
+              float delR = photon1.DeltaR(photon);
+              if (delR < 0.3 && (parent->get_pid() == 111 || parent->get_pid() == 221))
+              {
+                h_truthmatched_mass->Fill(pi0.M());
+              }
               if (debug) std::cout << "pt=" << phot_pt << " e=" << phot_e << " phi=" << phot_phi << " eta=" << phot_eta << std::endl;
+            }
+            float delR = photon1.DeltaR(photon);
+            if (delR < 0.3 && (parent->get_pid() == 111 || parent->get_pid() == 221)&& parent->get_track_id() > 0)
+            {
+              h_truthmatched_mass->Fill(pi0.M());
             }
           }
         }
+      }
 
-        for (auto tr_phot : truth_photons)
-        {
-          float delR = photon1.DeltaR(tr_phot);
-          if (debug) std::cout << delR << " " << std::endl;
-          //h_delR_recTrth->Fill(delR);
-          if (delR < 0.015)
-          {  // choose this value based on looking at delR distribution
-            float res = photon1.E() / tr_phot.E();
-            h_matched_res->Fill(res, photon1.Eta());
-          }
+      //*
+      for (auto tr_phot : truth_photons)
+      {
+        float delR = photon1.DeltaR(tr_phot);
+        if (debug) std::cout << delR << " " << std::endl;
+        h_delR_recTrth->Fill(delR);
+        if (delR < 0.015)
+        {  // choose this value based on looking at delR distribution
+          float res = photon1.E() / tr_phot.E();
+          h_matched_res->Fill(res, photon1.Eta());
         }
       }
+      //*/
       if (debug) std::cout << " " << "truth: Loops Done " << std::endl;
       if (additionalsmearing)
       {
