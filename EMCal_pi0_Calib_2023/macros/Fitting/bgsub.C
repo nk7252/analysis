@@ -56,14 +56,14 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
   // Polynomial part
   double poly1 = 0;
   double poly2 = 0;
-
-  if (x[0] <= 0.35)
+  double boundary = 0.35;
+  if (x[0] <= boundary)
   {
     poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0];
   }
   else
   {
-    double boundary = 0.35;
+    
     // Calculate poly1 at the boundary
     double poly1_boundary = par[6] + par[7] * boundary + par[8] * boundary * boundary + par[9] * boundary * boundary * boundary;
     // Calculate the derivative of poly1 at the boundary
@@ -476,7 +476,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       else if (background_scheme == 1)  // poly3+poly2
       {
-        leftRightFit = new TF1("leftRightFit", doublePolyBG, limits[0], limits[1], 7);
+        leftRightFit = new TF1("leftRightFit", doublePolyBG, limits[0], limits[1], 5);
       }
       else if (background_scheme == 2)
       {
@@ -523,7 +523,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       else if (background_scheme == 1)  // poly3+poly2
       {
-        combinedFit = new TF1("combinedFit", combinedFunctionDoubleGaussDoublePoly, limits[0], limits[1], 13);  // 2 Gaussians + 1 poly3 +1poly2 = 3 + 3 + 4 + 3=13
+        combinedFit = new TF1("combinedFit", combinedFunctionDoubleGaussDoublePoly, limits[0], limits[1], 11);  // 2 Gaussians + 1 poly3 +1poly2 = 3 + 3 + 4 + 3=13
       }
       else if (background_scheme == 2)
       {
@@ -578,6 +578,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       else if (background_scheme == 1)  // poly3+poly2
       {
+        /*
         for (int j = 0; j < 4; ++j)  // poly3
         {
           combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
@@ -585,14 +586,17 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         for (int j = 0; j < 3; ++j)  // poly2
         {
           combinedFit->SetParameter(j + 10, leftRightFit->GetParameter(j + 4));
-        }
+        }*/
+        for (int j = 0; j < 4; ++j) combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
+        combinedFit->SetParameter(10, leftRightFit->GetParameter(4));
+
         combinedFit->SetParLimits(6, leftRightFit->GetParameter(0) * 0.95, leftRightFit->GetParameter(0) * 1.05);
         combinedFit->SetParLimits(7, leftRightFit->GetParameter(1) * 0.95, leftRightFit->GetParameter(1) * 1.05);
         combinedFit->SetParLimits(8, leftRightFit->GetParameter(2) * 0.95, leftRightFit->GetParameter(2) * 1.05);
         combinedFit->SetParLimits(9, leftRightFit->GetParameter(3) * 0.95, leftRightFit->GetParameter(3) * 1.05);
         combinedFit->SetParLimits(10, leftRightFit->GetParameter(4) * 0.95, leftRightFit->GetParameter(4) * 1.05);
-        combinedFit->SetParLimits(11, leftRightFit->GetParameter(5) * 0.95, leftRightFit->GetParameter(5) * 1.05);
-        combinedFit->SetParLimits(12, leftRightFit->GetParameter(6) * 0.95, leftRightFit->GetParameter(6) * 1.05);
+        //combinedFit->SetParLimits(11, leftRightFit->GetParameter(5) * 0.95, leftRightFit->GetParameter(5) * 1.05);
+        //combinedFit->SetParLimits(12, leftRightFit->GetParameter(6) * 0.95, leftRightFit->GetParameter(6) * 1.05);
         for (int j = 0; j < 3; ++j)
         {
           combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
