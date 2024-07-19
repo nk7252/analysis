@@ -783,10 +783,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Store pion peak position and resolution; instead of combined fit use doubleGaussFit
     double pion_pt = (pt_min + pt_max) / 2.0;
-    double pion_peak = combinedFit->GetParameter(1);
-    double pion_peak_err = combinedFit->GetParError(1);
-    double pion_res = combinedFit->GetParameter(2) / combinedFit->GetParameter(1);
-    double pion_res_err = pion_res * sqrt(pow(combinedFit->GetParError(2) / combinedFit->GetParameter(2), 2) + pow(pion_peak_err / pion_peak, 2));
+    double pion_peak = doubleGaussFit->GetParameter(1);
+    double pion_peak_err = doubleGaussFit->GetParError(1);
+    double pion_res = doubleGaussFit->GetParameter(2) / doubleGaussFit->GetParameter(1);
+    double pion_res_err = pion_res * sqrt(pow(doubleGaussFit->GetParError(2) / doubleGaussFit->GetParameter(2), 2) + pow(pion_peak_err / pion_peak, 2));
 
     pionPt.push_back(pion_pt);
     pionPeak.push_back(pion_peak);
@@ -800,26 +800,26 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       double eta_peak, eta_peak_err, eta_res, eta_res_err, peak_ratio_err;
       if (background_scheme == 0)  // poly4
       {
-        eta_peak = combinedFit->GetParameter(9);
-        eta_peak_err = combinedFit->GetParError(9);
-        eta_res = combinedFit->GetParameter(10) / combinedFit->GetParameter(9);
-        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(10) / combinedFit->GetParameter(10), 2) + pow(eta_peak_err / eta_peak, 2));
+        eta_peak = doubleGaussFit->GetParameter(9);
+        eta_peak_err = doubleGaussFit->GetParError(9);
+        eta_res = doubleGaussFit->GetParameter(10) / doubleGaussFit->GetParameter(9);
+        eta_res_err = eta_res * sqrt(pow(doubleGaussFit->GetParError(10) / doubleGaussFit->GetParameter(10), 2) + pow(eta_peak_err / eta_peak, 2));
         peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
       }
       else if (background_scheme == 1)  // poly3+poly2
       {
-        eta_peak = combinedFit->GetParameter(4);
-        eta_peak_err = combinedFit->GetParError(4);
-        eta_res = combinedFit->GetParameter(5) / combinedFit->GetParameter(4);
-        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(5) / combinedFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
+        eta_peak = doubleGaussFit->GetParameter(4);
+        eta_peak_err = doubleGaussFit->GetParError(4);
+        eta_res = doubleGaussFit->GetParameter(5) / doubleGaussFit->GetParameter(4);
+        eta_res_err = eta_res * sqrt(pow(doubleGaussFit->GetParError(5) / doubleGaussFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
         peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
       }
       else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5 || background_scheme == 6)
       {
-        eta_peak = combinedFit->GetParameter(4);
-        eta_peak_err = combinedFit->GetParError(4);
-        eta_res = combinedFit->GetParameter(5) / combinedFit->GetParameter(4);
-        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(5) / combinedFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
+        eta_peak = doubleGaussFit->GetParameter(4);
+        eta_peak_err = doubleGaussFit->GetParError(4);
+        eta_res = doubleGaussFit->GetParameter(5) / doubleGaussFit->GetParameter(4);
+        eta_res_err = eta_res * sqrt(pow(doubleGaussFit->GetParError(5) / doubleGaussFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
         peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
       }
 
