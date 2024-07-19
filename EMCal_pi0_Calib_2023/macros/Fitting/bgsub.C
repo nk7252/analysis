@@ -923,6 +923,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       fitInfo->AddText(Form("Eta Mean = %f +/- %f", combinedFit->GetParameter(4), combinedFit->GetParError(4)));
       fitInfo->AddText(Form("Eta Sigma = %f +/- %f", combinedFit->GetParameter(5), combinedFit->GetParError(5)));
     }
+    fitInfo->AddText(Form("Combined Chi2/NDF = %f / %d = %f", combinedFit->GetChisquare(), combinedFit->GetNDF(), combinedFit->GetChisquare() / combinedFit->GetNDF()));
     fitInfo->AddText(Form("Background Subtracted Peak Fit = %f to %f", limits[2], limits[3]));
     fitInfo->AddText(Form("Pion Mean = %f +/- %f", doubleGaussFit->GetParameter(1), doubleGaussFit->GetParError(1)));
     fitInfo->AddText(Form("Pion Sigma = %f +/- %f", doubleGaussFit->GetParameter(2), doubleGaussFit->GetParError(2)));
