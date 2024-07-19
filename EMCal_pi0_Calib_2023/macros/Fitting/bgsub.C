@@ -73,7 +73,7 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
 
   // Second Gaussian part (e.g., eta peak)
   double poly2 = 0;
-  if (x[0] > 0.35 && x[0] <= 1.2)
+  if (x[0] > 0.35 && x[0] <= 1.0)
   {
     double poly2 = par[10] + par[11] * x[0] + par[12] * x[0] * x[0];
   }
