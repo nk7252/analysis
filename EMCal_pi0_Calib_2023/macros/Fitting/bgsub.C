@@ -208,13 +208,19 @@ double ONLYdoublePolyBG(double *x, double *par)
   // double  poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   // double  poly2 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
   double poly1 = 0;
+  double boundary = 0.35;
   if (x[0] >= 0.05 && x[0] <= 0.35)
   {  // Check if x is in the range of the first Gaussian
     poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   }
   else
   {
-    poly1 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
+    // Calculate poly1 at the boundary
+    double poly1_boundary = par[0] + par[1] * boundary + par[2] * boundary * boundary + par[3] * boundary * boundary * boundary;
+    // Calculate the derivative of poly1 at the boundary
+    double poly1_derivative = par[1] + 2 * par[2] * boundary + 3 * par[3] * boundary * boundary;
+
+    poly1 =poly1_boundary + poly1_derivative * (x[0] - boundary) + par[4] * (x[0] - boundary) * (x[0] - boundary); //par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
   }
   return poly1;  // + poly2;
 }
@@ -731,9 +737,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
     if (background_scheme == 1)  // poly3+poly2
     {
-      // for (int j = 0; j < 4; ++j) gauspoly3->SetParameter(j, combinedFit->GetParameter(j + 3));       // 3,4,5,6
-      // for (int j = 0; j < 3; ++j) gauspoly2->SetParameter(j, combinedFit->GetParameter(j + 10));  // 10,11,12
-      // polyPart = new TF1("polyPart", "gpol3+gpol2", limits[0], limits[1]);
+      ///////////////combined fit is not working. just use leftrightfit params for now
+      /*
       polyPart = new TF1("polyPart", ONLYdoublePolyBG, limits[0], limits[1], 7);
       for (int j = 0; j < 4; ++j)
       {
@@ -743,6 +748,16 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       {
         polyPart->SetParameter(k + 4, combinedFit->GetParameter(k + 10));  // 10,11,12
       }
+      std::cout << "Polynomial Parameters:" << std::endl;
+      for (int i = 0; i < polyPart->GetNpar(); ++i)
+      {
+        std::cout << "Param " << i << ": " << polyPart->GetParameter(i) << std::endl;
+      }
+      */
+      polyPart = new TF1("polyPart", ONLYdoublePolyBG, limits[0], limits[1], 5);
+      for (int j = 0; j < 4; ++j) polyPart->SetParameter(j, leftRightFit->GetParameter(j));  
+      polyPart->SetParameter(4, leftRightFit->GetParameter(4));
+
       std::cout << "Polynomial Parameters:" << std::endl;
       for (int i = 0; i < polyPart->GetNpar(); ++i)
       {
