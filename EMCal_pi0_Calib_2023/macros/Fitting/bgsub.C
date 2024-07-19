@@ -63,7 +63,6 @@ double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
   }
   else
   {
-    
     // Calculate poly1 at the boundary
     double poly1_boundary = par[6] + par[7] * boundary + par[8] * boundary * boundary + par[9] * boundary * boundary * boundary;
     // Calculate the derivative of poly1 at the boundary
@@ -148,7 +147,7 @@ double combinedFunctionDoubleGaussPoly6(double *x, double *par)
   double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
 
   // Polynomial part (5th degree)
-  double poly = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0] + par[10] * x[0] * x[0] * x[0] * x[0] + par[11] * x[0] * x[0] * x[0] * x[0] * x[0]+par[12] * x[0] * x[0] * x[0] * x[0] * x[0]* x[0];
+  double poly = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0] + par[10] * x[0] * x[0] * x[0] * x[0] + par[11] * x[0] * x[0] * x[0] * x[0] * x[0] + par[12] * x[0] * x[0] * x[0] * x[0] * x[0] * x[0];
 
   return gauss1 + gauss2 + poly;
 }
@@ -220,7 +219,7 @@ double ONLYdoublePolyBG(double *x, double *par)
     // Calculate the derivative of poly1 at the boundary
     double poly1_derivative = par[1] + 2 * par[2] * boundary + 3 * par[3] * boundary * boundary;
 
-    poly1 =poly1_boundary + poly1_derivative * (x[0] - boundary) + par[4] * (x[0] - boundary) * (x[0] - boundary); //par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
+    poly1 = poly1_boundary + poly1_derivative * (x[0] - boundary) + par[4] * (x[0] - boundary) * (x[0] - boundary);  // par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
   }
   return poly1;  // + poly2;
 }
@@ -245,7 +244,7 @@ double LogBG(double *x, double *par)
 double poly2BG(double *x, double *par)
 {
   // 2nd degree polynomial background
-    // Check if x is in the range of any Gaussian fit
+  // Check if x is in the range of any Gaussian fit
   if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.52 && x[0] <= 0.68))
   {
     TF1::RejectPoint();
@@ -257,7 +256,7 @@ double poly2BG(double *x, double *par)
 double poly3BG(double *x, double *par)
 {
   // 3rd degree polynomial background
-    // Check if x is in the range of any Gaussian fit
+  // Check if x is in the range of any Gaussian fit
   if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.52 && x[0] <= 0.68))
   {
     TF1::RejectPoint();
@@ -269,7 +268,7 @@ double poly3BG(double *x, double *par)
 double poly5BG(double *x, double *par)
 {
   // 5th degree polynomial background
-    // Check if x is in the range of any Gaussian fit
+  // Check if x is in the range of any Gaussian fit
   if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.52 && x[0] <= 0.68))
   {
     TF1::RejectPoint();
@@ -281,15 +280,14 @@ double poly5BG(double *x, double *par)
 double poly6BG(double *x, double *par)
 {
   // 6th degree polynomial background
-    // Check if x is in the range of any Gaussian fit
+  // Check if x is in the range of any Gaussian fit
   if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.52 && x[0] <= 0.68))
   {
     TF1::RejectPoint();
     return 0;
   }
-  return par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0] + par[4] * x[0] * x[0] * x[0] * x[0] + par[5] * x[0] * x[0] * x[0] * x[0] * x[0]+ par[6] * x[0] * x[0] * x[0] * x[0] * x[0]* x[0];
+  return par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0] + par[4] * x[0] * x[0] * x[0] * x[0] + par[5] * x[0] * x[0] * x[0] * x[0] * x[0] + par[6] * x[0] * x[0] * x[0] * x[0] * x[0] * x[0];
 }
-
 
 // leftRightPolynomial function to optionally exclude two Gaussian regions
 double leftRightPolynomial(double *x, double *par)
@@ -372,12 +370,12 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 {
   // more thorough minimizer for fit
 
-  //ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Fumili2");  //,"Simplex", "Migrad"
-  //ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
-  //ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiMin");//, "ConjugateFR"
+  // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Fumili2");  //,"Simplex", "Migrad"
+  // ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
+  // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiMin");//, "ConjugateFR"
   ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiFit", "LevenbergMarquardt");
-  //ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
-  //  Set the global fit strategy
+  // ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
+  //   Set the global fit strategy
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(1000000);
   ROOT::Math::MinimizerOptions::SetDefaultMaxIterations(10000);
@@ -393,7 +391,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   }
 
   // Open the ROOT file and get the 2D histogram
-  //TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/merged_file.root");
+  // TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/merged_file.root");
   TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/OUTHIST_iter_DST_CALO_CLUSTER_pythia8_pp_mb_3MHz_0000000011_merged.root");
   TH2F *hist2D = (TH2F *) file->Get("h_InvMass_2d");
 
@@ -596,13 +594,13 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         for (int j = 0; j < 4; ++j) combinedFit->SetParameter(j + 6, leftRightFit->GetParameter(j));
         combinedFit->SetParameter(10, leftRightFit->GetParameter(4));
 
-        //combinedFit->SetParLimits(6, leftRightFit->GetParameter(0) * 0.95, leftRightFit->GetParameter(0) * 1.05);
-        //combinedFit->SetParLimits(7, leftRightFit->GetParameter(1) * 0.99, leftRightFit->GetParameter(1) * 1.0);
-        //combinedFit->SetParLimits(8, leftRightFit->GetParameter(2) * 0.95, leftRightFit->GetParameter(2) * 1.05);
-        //combinedFit->SetParLimits(9, leftRightFit->GetParameter(3) * 0.99, leftRightFit->GetParameter(3) * 1.0);
-        //combinedFit->SetParLimits(10, leftRightFit->GetParameter(4) * 0.95, leftRightFit->GetParameter(4) * 1.05);
-        //combinedFit->SetParLimits(11, leftRightFit->GetParameter(5) * 0.95, leftRightFit->GetParameter(5) * 1.05);
-        //combinedFit->SetParLimits(12, leftRightFit->GetParameter(6) * 0.95, leftRightFit->GetParameter(6) * 1.05);
+        // combinedFit->SetParLimits(6, leftRightFit->GetParameter(0) * 0.95, leftRightFit->GetParameter(0) * 1.05);
+        // combinedFit->SetParLimits(7, leftRightFit->GetParameter(1) * 0.99, leftRightFit->GetParameter(1) * 1.0);
+        // combinedFit->SetParLimits(8, leftRightFit->GetParameter(2) * 0.95, leftRightFit->GetParameter(2) * 1.05);
+        // combinedFit->SetParLimits(9, leftRightFit->GetParameter(3) * 0.99, leftRightFit->GetParameter(3) * 1.0);
+        // combinedFit->SetParLimits(10, leftRightFit->GetParameter(4) * 0.95, leftRightFit->GetParameter(4) * 1.05);
+        // combinedFit->SetParLimits(11, leftRightFit->GetParameter(5) * 0.95, leftRightFit->GetParameter(5) * 1.05);
+        // combinedFit->SetParLimits(12, leftRightFit->GetParameter(6) * 0.95, leftRightFit->GetParameter(6) * 1.05);
         for (int j = 0; j < 3; ++j)
         {
           combinedFit->SetParameter(j + 3, gausFit2->GetParameter(j));
@@ -667,67 +665,6 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     {
       std::cout << "Param " << i << ": " << combinedFit->GetParameter(i) << std::endl;
     }
-    // Store pion peak position and resolution
-    double pion_pt = (pt_min + pt_max) / 2.0;
-    double pion_peak = combinedFit->GetParameter(1);
-    double pion_peak_err = combinedFit->GetParError(1);
-    double pion_res = combinedFit->GetParameter(2) / combinedFit->GetParameter(1);
-    double pion_res_err = pion_res * sqrt(pow(combinedFit->GetParError(2) / combinedFit->GetParameter(2), 2) + pow(pion_peak_err / pion_peak, 2));
-
-    pionPt.push_back(pion_pt);
-    pionPeak.push_back(pion_peak);
-    pionPeakErr.push_back(pion_peak_err);  //
-    pionRes.push_back(pion_res);
-    pionResErr.push_back(pion_res_err);
-
-    // Store eta peak position and resolution if fitting eta
-    if (fitEtaPeak)
-    {
-      double eta_peak, eta_peak_err, eta_res, eta_res_err, peak_ratio_err;
-      if (background_scheme == 0)  // poly4
-      {
-        eta_peak = combinedFit->GetParameter(9);
-        eta_peak_err = combinedFit->GetParError(9);
-        eta_res = combinedFit->GetParameter(10) / combinedFit->GetParameter(9);
-        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(10) / combinedFit->GetParameter(10), 2) + pow(eta_peak_err / eta_peak, 2));
-        peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
-      }
-      else if (background_scheme == 1)  // poly3+poly2
-      {
-        eta_peak = combinedFit->GetParameter(8);
-        eta_peak_err = combinedFit->GetParError(8);
-        eta_res = combinedFit->GetParameter(9) / combinedFit->GetParameter(8);
-        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(9) / combinedFit->GetParameter(9), 2) + pow(eta_peak_err / eta_peak, 2));
-        peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
-      }
-      else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5 || background_scheme == 6)
-      {
-        eta_peak = combinedFit->GetParameter(4);
-        eta_peak_err = combinedFit->GetParError(4);
-        eta_res = combinedFit->GetParameter(5) / combinedFit->GetParameter(4);
-        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(5) / combinedFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
-        peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
-      }
-
-      etaPeak.push_back(eta_peak);
-      etaPeakErr.push_back(eta_peak_err);
-      etaRes.push_back(eta_res);
-      etaResErr.push_back(eta_res_err);
-      PeakRatio.push_back(pion_peak / eta_peak);
-      PeakRatioErr.push_back(peak_ratio_err);
-      // std::cout << "Combined Fit Error Parameters:" << std::endl;
-      // for (int i = 0; i < combinedFit->GetNpar(); ++i) {
-      // std::cout << "Param " << i << ": " << pion_peak_err << " , " << pion_res_err <<" , " << eta_peak_err <<" , " << eta_res_err <<" , " << peak_ratio_err <<std::endl;
-      //}
-    }
-    else
-    {
-      etaPeak.push_back(0);
-      etaPeakErr.push_back(0);
-      etaRes.push_back(0);
-      etaResErr.push_back(0);
-    }
-
     // Create a new function for just the polynomial part
     TF1 *polyPart;
     if (background_scheme == 0)  // poly4
@@ -755,7 +692,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       }
       */
       polyPart = new TF1("polyPart", ONLYdoublePolyBG, limits[0], limits[1], 5);
-      for (int j = 0; j < 4; ++j) polyPart->SetParameter(j, leftRightFit->GetParameter(j));  
+      for (int j = 0; j < 4; ++j) polyPart->SetParameter(j, leftRightFit->GetParameter(j));
       polyPart->SetParameter(4, leftRightFit->GetParameter(4));
 
       std::cout << "Polynomial Parameters:" << std::endl;
@@ -842,6 +779,66 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
     histSubtracted->Fit(doubleGaussFit, "R");
 
+    // Store pion peak position and resolution; instead of combined fit use doubleGaussFit
+    double pion_pt = (pt_min + pt_max) / 2.0;
+    double pion_peak = combinedFit->GetParameter(1);
+    double pion_peak_err = combinedFit->GetParError(1);
+    double pion_res = combinedFit->GetParameter(2) / combinedFit->GetParameter(1);
+    double pion_res_err = pion_res * sqrt(pow(combinedFit->GetParError(2) / combinedFit->GetParameter(2), 2) + pow(pion_peak_err / pion_peak, 2));
+
+    pionPt.push_back(pion_pt);
+    pionPeak.push_back(pion_peak);
+    pionPeakErr.push_back(pion_peak_err);  //
+    pionRes.push_back(pion_res);
+    pionResErr.push_back(pion_res_err);
+
+    // Store eta peak position and resolution if fitting eta
+    if (fitEtaPeak)
+    {
+      double eta_peak, eta_peak_err, eta_res, eta_res_err, peak_ratio_err;
+      if (background_scheme == 0)  // poly4
+      {
+        eta_peak = combinedFit->GetParameter(9);
+        eta_peak_err = combinedFit->GetParError(9);
+        eta_res = combinedFit->GetParameter(10) / combinedFit->GetParameter(9);
+        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(10) / combinedFit->GetParameter(10), 2) + pow(eta_peak_err / eta_peak, 2));
+        peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
+      }
+      else if (background_scheme == 1)  // poly3+poly2
+      {
+        eta_peak = combinedFit->GetParameter(4);
+        eta_peak_err = combinedFit->GetParError(4);
+        eta_res = combinedFit->GetParameter(5) / combinedFit->GetParameter(4);
+        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(5) / combinedFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
+        peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
+      }
+      else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5 || background_scheme == 6)
+      {
+        eta_peak = combinedFit->GetParameter(4);
+        eta_peak_err = combinedFit->GetParError(4);
+        eta_res = combinedFit->GetParameter(5) / combinedFit->GetParameter(4);
+        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(5) / combinedFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
+        peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
+      }
+
+      etaPeak.push_back(eta_peak);
+      etaPeakErr.push_back(eta_peak_err);
+      etaRes.push_back(eta_res);
+      etaResErr.push_back(eta_res_err);
+      PeakRatio.push_back(pion_peak / eta_peak);
+      PeakRatioErr.push_back(peak_ratio_err);
+      // std::cout << "Combined Fit Error Parameters:" << std::endl;
+      // for (int i = 0; i < combinedFit->GetNpar(); ++i) {
+      // std::cout << "Param " << i << ": " << pion_peak_err << " , " << pion_res_err <<" , " << eta_peak_err <<" , " << eta_res_err <<" , " << peak_ratio_err <<std::endl;
+      //}
+    }
+    else
+    {
+      etaPeak.push_back(0);
+      etaPeakErr.push_back(0);
+      etaRes.push_back(0);
+      etaResErr.push_back(0);
+    }
     // Draw the fits and subtracted histograms
     TCanvas *c1 = new TCanvas(Form("c1_%s", ptRange.Data()), "Fits", 800, 600);
     histF->SetTitle(Form("Combined Fit; #it{m}_{#gamma#gamma} (GeV); dN/d#it{m}_{#gamma#gamma}; pT: %s", ptRange.Data()));
@@ -853,10 +850,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     combinedFit->Draw("SAME");
     leftRightFit->SetLineColor(kGreen);
     leftRightFit->Draw("SAME");
-    //gausFit->SetLineColor(kMagenta);
-    //gausFit->Draw("SAME");
-    //gausFit2->SetLineColor(kMagenta);
-    //gausFit2->Draw("SAME");
+    // gausFit->SetLineColor(kMagenta);
+    // gausFit->Draw("SAME");
+    // gausFit2->SetLineColor(kMagenta);
+    // gausFit2->Draw("SAME");
 
     TLegend *leg1 = new TLegend(0.5, 0.5, 0.95, 0.95);
     leg1->SetFillStyle(0);
