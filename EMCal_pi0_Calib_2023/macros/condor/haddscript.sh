@@ -7,19 +7,24 @@ set -euo pipefail
 output_dir="$PWD/output"
 mkdir -p "$output_dir"
 
-# Find all ROOT files and merge them
+# Find all ROOT files and list them
 find condorout/OutDir* -name "OUTHIST*.root" > root_files.txt
 
 # Check if root_files.txt is not empty
 if [ -s root_files.txt ]; then
-  # Extract the common part of the file names
+  # Extract the common part of the file names, ignoring directory names
   common_part=$(awk '
   {
+    # Extract the filename from the full path
+    n = split($0, arr, "/")
+    filename = arr[n]
+    
+    # Initialize the common part or compare with the next filename
     if (NR == 1) {
-      common = $0
+      common = filename
     } else {
       i = 1
-      while (substr(common, i, 1) == substr($0, i, 1)) {
+      while (substr(common, i, 1) == substr(filename, i, 1)) {
         i++
       }
       common = substr(common, 1, i - 1)
@@ -36,9 +41,10 @@ if [ -s root_files.txt ]; then
   fi
 
   # Add the word "merged" to the common part
-  common_part="${common_part}_merged"
+  common_part="${common_part}merged"
+
   # Clean up the common part to make it suitable for a filename
-  common_part=$(basename "$common_part" | sed 's/[^a-zA-Z0-9]/_/g')
+  common_part=$(echo "$common_part" | sed 's/[^a-zA-Z0-9]/_/g')
 
   # Set the output file name
   output_file="${output_dir}/${common_part}.root"
@@ -49,4 +55,3 @@ else
   echo "No ROOT files found to merge."
   exit 1
 fi
-
