@@ -915,8 +915,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
     else if (background_scheme == 1)  // poly3+poly2
     {
-      fitInfo->AddText(Form("Eta Mean = %f +/- %f", combinedFit->GetParameter(8), combinedFit->GetParError(8)));
-      fitInfo->AddText(Form("Eta Sigma = %f +/- %f", combinedFit->GetParameter(9), combinedFit->GetParError(9)));
+      fitInfo->AddText(Form("Eta Mean = %f +/- %f", combinedFit->GetParameter(4), combinedFit->GetParError(4)));
+      fitInfo->AddText(Form("Eta Sigma = %f +/- %f", combinedFit->GetParameter(5), combinedFit->GetParError(5)));
     }
     else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5 || background_scheme == 6)
     {
