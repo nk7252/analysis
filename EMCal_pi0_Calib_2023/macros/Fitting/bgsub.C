@@ -48,34 +48,29 @@ double combinedFunctionDoubleGauss(double *x, double *par)
 double combinedFunctionDoubleGaussDoublePoly(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
-  // double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
-  // double gauss1 = 0;
-  // if (x[0] >= 0.09 && x[0] <= 0.21)
-  //{  // Check if x is in the range of the first Gaussian
   double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
-  //}
 
   // Second Gaussian part (e.g., eta peak)
-  // double gauss2 = par[7] * exp(-0.5 * pow((x[0] - par[8]) / par[9], 2));
-  // double gauss2 = 0;
-  // if (x[0] >= 0.5 && x[0] <= 0.7)
-  //{  // Check if x is in the range of the first Gaussian
   double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
-  //}
 
   // Polynomial part
-  // First Gaussian part (e.g., pion peak)
   double poly1 = 0;
-  if (x[0] >= 0.05 && x[0] <= 0.35)
-  {  // Check if x is in the range of the first Gaussian
-    double poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0];
-  }
-
-  // Second Gaussian part (e.g., eta peak)
   double poly2 = 0;
-  if (x[0] > 0.35 && x[0] <= 1.0)
+
+  if (x[0] <= 0.35)
   {
-    double poly2 = par[10] + par[11] * x[0] + par[12] * x[0] * x[0];
+    poly1 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0];
+  }
+  else
+  {
+    double boundary = 0.35;
+    // Calculate poly1 at the boundary
+    double poly1_boundary = par[6] + par[7] * boundary + par[8] * boundary * boundary + par[9] * boundary * boundary * boundary;
+    // Calculate the derivative of poly1 at the boundary
+    double poly1_derivative = par[7] + 2 * par[8] * boundary + 3 * par[9] * boundary * boundary;
+
+    // Set the coefficients of poly2 to match the value and derivative at the boundary
+    poly2 = poly1_boundary + poly1_derivative * (x[0] - boundary) + par[10] * (x[0] - boundary) * (x[0] - boundary);
   }
 
   return gauss1 + gauss2 + poly1 + poly2;
@@ -179,16 +174,25 @@ double doubleGauss(double *x, double *par)
 
 double doublePolyBG(double *x, double *par)
 {
-  // First Gaussian part (e.g., pion peak)
   double poly1 = 0;
-  if (x[0] >= 0.05 && x[0] <= 0.35)
-  {  // Check if x is in the range of the first Gaussian
+  double poly2 = 0;
+  double boundary = 0.35;
+
+  if (x[0] <= boundary)
+  {
     poly1 = par[0] + par[1] * x[0] + par[2] * x[0] * x[0] + par[3] * x[0] * x[0] * x[0];
   }
   else
   {
-    poly1 = par[4] + par[5] * x[0] + par[6] * x[0] * x[0];
+    // Calculate poly1 at the boundary
+    double poly1_boundary = par[0] + par[1] * boundary + par[2] * boundary * boundary + par[3] * boundary * boundary * boundary;
+    // Calculate the derivative of poly1 at the boundary
+    double poly1_derivative = par[1] + 2 * par[2] * boundary + 3 * par[3] * boundary * boundary;
+
+    // Set the coefficients of poly2 to match the value and derivative at the boundary
+    poly2 = poly1_boundary + poly1_derivative * (x[0] - boundary) + par[4] * (x[0] - boundary) * (x[0] - boundary);
   }
+
   // Check if x is in the range of any Gaussian fit
   if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.5 && x[0] <= 0.7))
   {
@@ -196,14 +200,7 @@ double doublePolyBG(double *x, double *par)
     return 0;
   }
 
-  // Second Gaussian part (e.g., eta peak)
-  // double poly2 = 0;
-  // if (x[0] >= par[9] && x[0] <= par[10])
-  //{  // Check if x is in the range of the second Gaussian
-  //  poly2 = par[6] + par[7] * x[0] + par[8] * x[0] * x[0];
-  //}
-
-  return poly1;  // + poly2;
+  return poly1 + poly2;
 }
 
 double ONLYdoublePolyBG(double *x, double *par)
