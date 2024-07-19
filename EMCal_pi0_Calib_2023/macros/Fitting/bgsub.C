@@ -591,9 +591,9 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         combinedFit->SetParameter(10, leftRightFit->GetParameter(4));
 
         combinedFit->SetParLimits(6, leftRightFit->GetParameter(0) * 0.95, leftRightFit->GetParameter(0) * 1.05);
-        combinedFit->SetParLimits(7, leftRightFit->GetParameter(1) * 0.95, leftRightFit->GetParameter(1) * 1.05);
+        combinedFit->SetParLimits(7, leftRightFit->GetParameter(1) * 0.99, leftRightFit->GetParameter(1) * 1.0);
         combinedFit->SetParLimits(8, leftRightFit->GetParameter(2) * 0.95, leftRightFit->GetParameter(2) * 1.05);
-        combinedFit->SetParLimits(9, leftRightFit->GetParameter(3) * 0.95, leftRightFit->GetParameter(3) * 1.05);
+        combinedFit->SetParLimits(9, leftRightFit->GetParameter(3) * 0.99, leftRightFit->GetParameter(3) * 1.0);
         combinedFit->SetParLimits(10, leftRightFit->GetParameter(4) * 0.95, leftRightFit->GetParameter(4) * 1.05);
         //combinedFit->SetParLimits(11, leftRightFit->GetParameter(5) * 0.95, leftRightFit->GetParameter(5) * 1.05);
         //combinedFit->SetParLimits(12, leftRightFit->GetParameter(6) * 0.95, leftRightFit->GetParameter(6) * 1.05);
