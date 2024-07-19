@@ -12,8 +12,41 @@ find condorout/OutDir* -name "OUTHIST*.root" > root_files.txt
 
 # Check if root_files.txt is not empty
 if [ -s root_files.txt ]; then
-  hadd -f "$output_dir/merged_file.root" $(<root_files.txt)
+  # Extract the common part of the file names
+  common_part=$(awk '
+  {
+    if (NR == 1) {
+      common = $0
+    } else {
+      i = 1
+      while (substr(common, i, 1) == substr($0, i, 1)) {
+        i++
+      }
+      common = substr(common, 1, i - 1)
+    }
+  }
+  END {
+    print common
+  }' root_files.txt)
+
+  # Ensure the common part is not empty
+  if [ -z "$common_part" ]; then
+    echo "Failed to determine the common part of the ROOT file names."
+    exit 1
+  fi
+
+  # Add the word "merged" to the common part
+  common_part="${common_part}_merged"
+  # Clean up the common part to make it suitable for a filename
+  common_part=$(basename "$common_part" | sed 's/[^a-zA-Z0-9]/_/g')
+
+  # Set the output file name
+  output_file="${output_dir}/${common_part}.root"
+
+  # Merge the ROOT files
+  hadd -f "$output_file" $(<root_files.txt)
 else
   echo "No ROOT files found to merge."
   exit 1
 fi
+
