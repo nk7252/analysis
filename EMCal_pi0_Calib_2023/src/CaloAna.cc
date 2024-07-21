@@ -555,7 +555,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           int id = truth->get_pid();
           h_truth_pid_p->Fill(id);
           //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
-          if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
+
           double t = 4.5;
           double w = 0.114;
           double A = 229.6;
@@ -571,6 +571,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
           h_InvMass_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
           h_InvMass_smear_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
+          if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
           if (additionalsmearing)
           {
             for (size_t i = 0; i < 3; i++)  // break up inv mass spectrum if debugging.
