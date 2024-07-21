@@ -152,6 +152,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 4 * 10, 0, 10, 240, 0, 1.2);
   h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 4 * 10, 0, 10, 240, 0, 1.2);
   h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.25)", 4 * 10, 0, 10, 240, 0, 1.2);
+
   // high mass tail diagnostic
   std::vector<std::string> HistList = {"photon1", "photon2", "all photons", "pions"};
   for (int i = 0; i < 4; i++)
@@ -187,10 +188,13 @@ int CaloAna::Init(PHCompositeNode*)
   // for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
 
   rnd = new TRandom3();
-
+  // smearing added SPMC
   badcalibsmear = static_cast<float>(badcalibsmearint) / 1000.0f;
-  h_InvMass_badcalib_smear = new TH1F(Form("h_InvMass_badcalib_smear_%d", badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing applied: %f percent", badcalibsmearint / 10.0f), 120, 0, 0.6);
-  h_InvMass_badcalib_smear_weighted = new TH1F(Form("h_InvMass_badcalib_smear_weighted_%d", badcalibsmearint), Form("Invariant Mass with 'bad calibration' smearing+weighting applied: %f percent", badcalibsmearint / 10.0f), 120, 0, 0.6);
+  h_InvMass_smear = new TH1F(Form("h_InvMass_smear_%d", badcalibsmearint), Form("Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 120, 0, 0.6);
+  h_InvMass_smear_weighted = new TH1F(Form("h_InvMass_smear_weighted_%d", badcalibsmearint), Form("Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 120, 0, 0.6);
+  // 2d variations
+  h_InvMass_smear_weighted_2d = new TH2F(Form("h_InvMass_smear_weighted_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 4 * 10, 0, 10, 240, 0, 1.2);
+  h_InvMass_smear_2d = new TH2F(Form("h_InvMass_smear_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 4 * 10, 0, 10, 240, 0, 1.2);
 
   std::vector<std::string> RestrictEtaCuts = {"Low_Eta", "Mid_Eta", "High_Eta"};
   etaRanges = {
@@ -212,13 +216,6 @@ int CaloAna::Init(PHCompositeNode*)
         Form("h_InvMass_smear_flatpt_%d_%s", badcalibsmearint, RestrictEtaCuts[i].c_str()),
         Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
   }
-
-  // h_smear_pi0E = new TH1F(Form("h_pi0E_smear_%d",badcalibsmearint), Form("Pi0 E with smearing applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
-  // h_nosmear_pi0E= new TH1F("h_pi0E_nosmear", "Pi0 E with no add. smearing" , 120, 0, 0.6);
-  // h_smear_pi0E_weighted= new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
-  //  h_nosmear_pi0E_weighted = new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
-  // h_smear_nosmear_pi0E;
-  // h_smear_nosmear_pi0E_weighted=new TH1F(Form("h_pi0E_smear_%d_weight",badcalibsmearint), Form("Pi0 E with smearin+weighting applied: %f percent",badcalibsmearint/10.0f), 120, 0, 0.6);
 
   if (poscor == true)
   {
@@ -558,7 +555,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           int id = truth->get_pid();
           h_truth_pid_p->Fill(id);
           //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
-          //  std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
+          if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
           double t = 4.5;
           double w = 0.114;
           double A = 229.6;
@@ -569,14 +566,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           double Pt = myVector.Pt();
           double weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
           inv_yield = WeightScale * Pt * weight_function;  //
-          h_InvMass_badcalib_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
           // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
           h_inv_yield->Fill(inv_yield);
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
-
-          if (additionalsmearing)  // break up inv mass spectrum if debugging.
+          h_InvMass_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
+          h_InvMass_smear_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
+          if (additionalsmearing)
           {
-            for (size_t i = 0; i < 3; i++)
+            for (size_t i = 0; i < 3; i++)  // break up inv mass spectrum if debugging.
             {
               if (std::abs(myVector.Eta()) > etaRanges[i].first && std::abs(myVector.Eta()) < etaRanges[i].second)
               {
@@ -640,20 +637,21 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               truth_photons.push_back(photon);
 
               float delR = photon1.DeltaR(photon);
-              if ( matchspmctruth && delR < 0.015)// for spmc 0.015, for pythia 0.2? or maybe 0.1
+              if (matchspmctruth && delR < 0.015)  // for spmc 0.015, for pythia 0.2? or maybe 0.1
               {
                 h_truthmatched_mass->Fill(pi0.M());
               }
               else if (matchmctruth && delR < 0.25)
-              { 
+              {
                 h_truthmatched_mass3_2d->Fill(pi0.Pt(), pi0.M());
                 h_truthmatched_mass3->Fill(pi0.M());
-                if(delR<0.1) {
+                if (delR < 0.1)
+                {
                   h_truthmatched_mass2->Fill(pi0.M());
                   h_truthmatched_mass2_2d->Fill(pi0.Pt(), pi0.M());
                 }
-                if(delR<0.015) h_truthmatched_mass->Fill(pi0.M());
-              }            
+                if (delR < 0.015) h_truthmatched_mass->Fill(pi0.M());
+              }
               if (debug) std::cout << "pt=" << phot_pt << " e=" << phot_e << " phi=" << phot_phi << " eta=" << phot_eta << std::endl;
             }
           }
@@ -676,7 +674,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       if (debug) std::cout << " " << "truth: Loops Done " << std::endl;
       if (additionalsmearing)
       {
-        h_InvMass_badcalib_smear->Fill(pi0smearvec[2].M());
+        h_InvMass_smear->Fill(pi0smearvec[2].M());
+        h_InvMass_smear_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M());
       }
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());

@@ -77,8 +77,11 @@ class CaloAna : public SubsysReco
   TH2F* h_InvMass_2d = nullptr;
   TH2F* h_truthmatched_mass2_2d = nullptr;
   TH2F* h_truthmatched_mass3_2d = nullptr;
-  TH1F* h_InvMass_badcalib_smear;
-  TH1F* h_InvMass_badcalib_smear_weighted;
+  TH1F* h_InvMass_smear = nullptr;
+  TH2F* h_InvMass_smear_2d = nullptr;
+  TH1F* h_InvMass_smear_weighted= nullptr;
+  TH2F* h_InvMass_smear_weighted_2d= nullptr;
+  
 
   std::vector<std::pair<float, float>> etaRanges;
   TH1F* h_InvMass_smear_risingpt[3]; 
@@ -171,18 +174,13 @@ class CaloAna : public SubsysReco
   std::vector<int> m_bbc_type;
   std::vector<int> m_bbc_side;
 
-  float badcalibsmear;
-  int badcalibsmearint=0;
-  //thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   std::vector<float> pidcuts;
 
 
   int _eventcounter;
   int funkyCaloStuffcounter;
 
-  bool additionalsmearing = false;
-  bool cutson = true;
-  bool poscor = false;
+
   //bool pileup = false;
   std::string clustposcorstring;
 
@@ -202,9 +200,17 @@ class CaloAna : public SubsysReco
   bool m_vtxCut = false;
   bool dynMaskClus = false;
   bool getVtx = false;
-  bool matchspmctruth = false;
-  bool matchmctruth = true;//NOT spmc. check must be in secondary range
+  bool cutson = true;
+  bool poscor = false;
   bool debug = false;
+  //SPMC
+  bool matchspmctruth = true;//SPMC. check must be in primary range
+  bool additionalsmearing = false;//should be on for spmc in all cases. if you want 0 use 0 for smearint
+  float badcalibsmear;
+  int badcalibsmearint=125;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  //gen MC: pythia
+  bool matchmctruth = false;//NOT spmc. check must be in secondary range
+
 
   TH1F* h_pt1;
   TH1F* h_pt2;
