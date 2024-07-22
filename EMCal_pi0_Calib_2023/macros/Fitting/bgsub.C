@@ -422,7 +422,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
   // Open the ROOT file and get the 2D histogram
   // TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/merged_file.root");
-  TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/OUTHIST_iter_DST_CALO_CLUSTER_pythia8_pp_mb_3MHz_0000000011_merged.root");
+  const char *file_name = "OUTHIST_iter_DST_CALO_CLUSTER_pythia8_pp_mb_3MHz_0000000011_merged.root";
+  TFile *file = new TFile(Form("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/%s",file_name.c_str()));
   TH2F *hist2D = (TH2F *) file->Get("h_InvMass_2d");
 
   int nBinsX = hist2D->GetNbinsX();
@@ -968,6 +969,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       fitInfo->AddText(Form("Eta Peak Sigma = %f +/- %f", doubleGaussFit->GetParameter(5), doubleGaussFit->GetParError(5)));
       fitInfo->AddText(Form("Eta Relative Width: %f", doubleGaussFit->GetParameter(5) * 100.0f / doubleGaussFit->GetParameter(4)));
     }
+    fitInfo->AddText(Form("Produced with:%s",file_name.c_str()));
     fitInfo->Draw();
     c3->Print("2D_Histogram_Fits.pdf");
 
