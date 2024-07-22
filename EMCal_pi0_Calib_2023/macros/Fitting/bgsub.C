@@ -389,8 +389,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(1000000);
   ROOT::Math::MinimizerOptions::SetDefaultMaxIterations(10000);
-  ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.0001);
-  ROOT::Math::MinimizerOptions::SetDefaultPrecision(1e-8);
+  //ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.0001);
+  //ROOT::Math::MinimizerOptions::SetDefaultPrecision(1e-8);
   SetsPhenixStyle();
 
   // Ensure the limits vector has the correct size
@@ -663,7 +663,9 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
+    combinedFit->SetNpx(1000);
     histF->Fit(combinedFit, "RE");
+    
     // After fitting
     std::cout << "Background only Fit Parameters:" << std::endl;
     for (int i = 0; i < leftRightFit->GetNpar(); ++i)
