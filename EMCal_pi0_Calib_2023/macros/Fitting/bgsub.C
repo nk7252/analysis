@@ -368,7 +368,7 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, double scale_facto
   }
 }
 
-void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool dynamic_left = false, int background_scheme = 0, const std::vector<double> &rebinEdges = {})
+void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool dynamic_left = false, int background_scheme = 0, std::vector<double> &rebinEdges)
 {
   // more thorough minimizer for fit
 
