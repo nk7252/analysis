@@ -279,7 +279,7 @@ double poly5BG(double *x, double *par)
 {
   // 5th degree polynomial background
   // Check if x is in the range of any Gaussian fit
-  if ((x[0] >= 0.09 && x[0] <= 0.21) || (x[0] >= 0.48 && x[0] <= 0.76))
+  if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.52 && x[0] <= 0.68))
   {
     TF1::RejectPoint();
     return 0;
