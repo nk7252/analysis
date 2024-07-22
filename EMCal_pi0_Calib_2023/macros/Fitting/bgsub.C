@@ -1046,8 +1046,8 @@ void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08
   }
   else
   {
-    std::vector<double> nonUniformBins = {};
-    fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
+    //std::vector<double> nonUniformBins = {};
+    fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme);
   }
 
   // fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
