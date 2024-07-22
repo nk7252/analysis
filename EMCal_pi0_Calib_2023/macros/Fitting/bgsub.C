@@ -511,13 +511,13 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    histF->Fit(leftRightFit, "R");
+    histF->Fit(leftRightFit, "RE");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
     gausFit->SetParLimits(1, 0.11, 0.19);
     gausFit->SetParLimits(2, 0.05, 0.25);
-    histF->Fit(gausFit, "R");
+    histF->Fit(gausFit, "RE");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -571,7 +571,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
     gausFit2->SetParLimits(1, 0.55, 0.63);
     gausFit2->SetParLimits(2, 0.03, 0.25);
-    histF->Fit(gausFit2, "R");
+    histF->Fit(gausFit2, "RE");
     if (fitEtaPeak)
     {
       if (background_scheme == 0)  // poly4
@@ -655,7 +655,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
 
     // Fit the combined function
-    histF->Fit(combinedFit, "R");
+    histF->Fit(combinedFit, "RE");
     // After fitting
     std::cout << "Background only Fit Parameters:" << std::endl;
     for (int i = 0; i < leftRightFit->GetNpar(); ++i)
@@ -779,14 +779,14 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       doubleGaussFit->SetParLimits(4, 0.55, 0.63);
       doubleGaussFit->SetParLimits(5, 0.01, 0.25);
     }
-    histSubtracted->Fit(doubleGaussFit, "R");
+    histSubtracted->Fit(doubleGaussFit, "RE");
 
     // Store pion peak position and resolution; instead of combined fit use doubleGaussFit
     double pion_pt = (pt_min + pt_max) / 2.0;
-    double pion_peak = doubleGaussFit->GetParameter(1);
-    double pion_peak_err = doubleGaussFit->GetParError(1);
-    double pion_res = doubleGaussFit->GetParameter(2) / doubleGaussFit->GetParameter(1);
-    double pion_res_err = pion_res * sqrt(pow(doubleGaussFit->GetParError(2) / doubleGaussFit->GetParameter(2), 2) + pow(pion_peak_err / pion_peak, 2));
+    double pion_peak = combinedFit->GetParameter(1);
+    double pion_peak_err = combinedFit->GetParError(1);
+    double pion_res = combinedFit->GetParameter(2) / combinedFit->GetParameter(1);
+    double pion_res_err = pion_res * sqrt(pow(combinedFit->GetParError(2) / combinedFit->GetParameter(2), 2) + pow(pion_peak_err / pion_peak, 2));
 
     pionPt.push_back(pion_pt);
     pionPeak.push_back(pion_peak);
@@ -800,26 +800,26 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       double eta_peak, eta_peak_err, eta_res, eta_res_err, peak_ratio_err;
       if (background_scheme == 0)  // poly4
       {
-        eta_peak = doubleGaussFit->GetParameter(9);
-        eta_peak_err = doubleGaussFit->GetParError(9);
-        eta_res = doubleGaussFit->GetParameter(10) / doubleGaussFit->GetParameter(9);
-        eta_res_err = eta_res * sqrt(pow(doubleGaussFit->GetParError(10) / doubleGaussFit->GetParameter(10), 2) + pow(eta_peak_err / eta_peak, 2));
+        eta_peak = combinedFit->GetParameter(9);
+        eta_peak_err = combinedFit->GetParError(9);
+        eta_res = combinedFit->GetParameter(10) / combinedFit->GetParameter(9);
+        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(10) / combinedFit->GetParameter(10), 2) + pow(eta_peak_err / eta_peak, 2));
         peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
       }
       else if (background_scheme == 1)  // poly3+poly2
       {
-        eta_peak = doubleGaussFit->GetParameter(4);
-        eta_peak_err = doubleGaussFit->GetParError(4);
-        eta_res = doubleGaussFit->GetParameter(5) / doubleGaussFit->GetParameter(4);
-        eta_res_err = eta_res * sqrt(pow(doubleGaussFit->GetParError(5) / doubleGaussFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
+        eta_peak = combinedFit->GetParameter(4);
+        eta_peak_err = combinedFit->GetParError(4);
+        eta_res = combinedFit->GetParameter(5) / combinedFit->GetParameter(4);
+        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(5) / combinedFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
         peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
       }
       else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5 || background_scheme == 6)
       {
-        eta_peak = doubleGaussFit->GetParameter(4);
-        eta_peak_err = doubleGaussFit->GetParError(4);
-        eta_res = doubleGaussFit->GetParameter(5) / doubleGaussFit->GetParameter(4);
-        eta_res_err = eta_res * sqrt(pow(doubleGaussFit->GetParError(5) / doubleGaussFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
+        eta_peak = combinedFit->GetParameter(4);
+        eta_peak_err = combinedFit->GetParError(4);
+        eta_res = combinedFit->GetParameter(5) / combinedFit->GetParameter(4);
+        eta_res_err = eta_res * sqrt(pow(combinedFit->GetParError(5) / combinedFit->GetParameter(5), 2) + pow(eta_peak_err / eta_peak, 2));
         peak_ratio_err = sqrt(pow(eta_peak_err / eta_peak, 2) + pow(pion_peak_err / pion_peak, 2));
       }
 
@@ -905,7 +905,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TPaveText *fitInfo = new TPaveText(0.1, 0.1, 0.9, 0.9, "blNDC");
     fitInfo->SetTextAlign(12);
     fitInfo->SetFillColor(0);
-    fitInfo->AddText(Form("Data Fit for pT range: %s", ptRange.Data()));
+    fitInfo->AddText(Form("Fit for pT range: %s", ptRange.Data()));
     fitInfo->AddText("Fit Parameters:");
     fitInfo->AddText(Form("Combined Fit Range = %f to %f", limits[0], limits[1]));
     fitInfo->AddText(Form("Pion Mean = %f +/- %f", combinedFit->GetParameter(1), combinedFit->GetParError(1)));
