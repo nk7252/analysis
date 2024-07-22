@@ -279,7 +279,7 @@ double poly5BG(double *x, double *par)
 {
   // 5th degree polynomial background
   // Check if x is in the range of any Gaussian fit
-  if ((x[0] >= 0.1 && x[0] <= 0.2) || (x[0] >= 0.52 && x[0] <= 0.68))
+  if ((x[0] >= 0.09 && x[0] <= 0.21) || (x[0] >= 0.48 && x[0] <= 0.76))
   {
     TF1::RejectPoint();
     return 0;
@@ -572,7 +572,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     }
     combinedFit->SetParLimits(0, 0, gausFit->GetParameter(0) * 1.25);  // gausFit->GetParameter(0) *0.5
     combinedFit->SetParLimits(1, 0.11, 0.19);
-    combinedFit->SetParLimits(2, 0.01, 0.25);
+    combinedFit->SetParLimits(2, 0.05, 0.25);
     // for (int j = 3; j < 8; ++j) combinedFit->SetParameter(j, leftRightFit->GetParameter(j - 3));
 
     // Fit second Gaussian in the specified range
