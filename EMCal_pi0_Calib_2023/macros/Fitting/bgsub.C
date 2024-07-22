@@ -378,7 +378,27 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, double scale_facto
 
 void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool dynamic_left = false, int background_scheme = 0, bool var_bins = false)//std::vector<double> &rebinEdges
 {
-  // more thorough minimizer for fit
+  // create minimizer giving a name and a name (optionally) for the specific
+   // algorithm
+   // possible choices are:
+   //     minName                  algoName
+   // Minuit /Minuit2             Migrad, Simplex,Combined,Scan  (default is Migrad)
+   //  Minuit2                     Fumili2
+   //  Fumili
+   //  GSLMultiMin                ConjugateFR, ConjugatePR, BFGS,
+   //                              BFGS2, SteepestDescent
+   //  GSLMultiFit
+   //   GSLSimAn
+   //   Genetic
+  //const char * minName = "Minuit2";
+  //const char *algoName = "Simplex";
+  //ROOT::Math::Minimizer* minimum = ROOT::Math::Factory::CreateMinimizer(minName, algoName);
+  //minimum->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+  //minimum->SetMaxIterations(10000);  // for GSL
+  //minimum->SetTolerance(0.001);
+  //minimum->SetPrintLevel(1);
+  //ROOT::Math::Functor f(&combinedFunctionDoubleGaussPoly5,12);
+  //minimum->SetFunction(f);
 
   ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Fumili");  //,"Simplex", "Migrad", "Combined"
   // ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
@@ -386,10 +406,10 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   //ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiFit", "LevenbergMarquardt");
   //ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
   //   Set the global fit strategy
-  ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
+  //ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(1000000);
   ROOT::Math::MinimizerOptions::SetDefaultMaxIterations(10000);
-  ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.0001);
+  ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.001);
   ROOT::Math::MinimizerOptions::SetDefaultPrecision(1e-8);
   SetsPhenixStyle();
 
