@@ -1,10 +1,16 @@
+#pragma once
 // root includes
 #include <Math/MinimizerOptions.h>
+#include <Math/Minimizer.h>
+#include <Math/Functor.h>
+#include <TApplication.h>
+#include <TSystem.h>
 #include <TCanvas.h>
 #include <TF1.h>
 #include <TFile.h>
 #include <TGraph.h>
 #include <TGraphErrors.h>
+#include <TAxis.h>
 #include <TH1F.h>
 #include <TH2F.h>
 #include <TLegend.h>
@@ -945,6 +951,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     appendtextfile(combinedFit, Form("Combined Fit_%s", ptRange.Data()), scale_factor);
     appendtextfile(doubleGaussFit, Form("subpgaus fit_%s", ptRange.Data()), scale_factor);
 
+    std::cout << "Before deleting canvases" << std::endl;
     delete hist;
     delete histF;
     delete leftRightFit;
@@ -960,12 +967,14 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     delete c1;
     delete c2;
     delete c3;
+    std::cout << "After deleting canvases" << std::endl;
   }
-
+  std::cout << "Before TGraphErrors initialization" << std::endl;
   // Create TGraphErrors for the collected fit results
   int nPoints = pionPt.size();
   TGraphErrors *gPionPeak = new TGraphErrors(nPoints, &pionPt[0], &pionPeak[0], &pionPtErr[0], &pionPeakErr[0]);
   TGraphErrors *gPionRes = new TGraphErrors(nPoints, &pionPt[0], &pionRes[0], &pionPtErr[0], &pionResErr[0]);
+  std::cout << "After TGraphErrors initialization" << std::endl;
 
   gPionPeak->SetTitle("Pion Peak Position; #it{pT}_{#gamma#gamma} (GeV); Pion Peak Position (GeV)");
   gPionRes->SetTitle("Pion Relative Resolution; #it{pT}_{#gamma#gamma} (GeV); Pion Relative Resolution");
