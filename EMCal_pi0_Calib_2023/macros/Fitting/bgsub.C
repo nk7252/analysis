@@ -664,7 +664,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit the combined function
     combinedFit->SetNpx(1000);
-    histF->Fit(combinedFit, "RP");
+    histF->Fit(combinedFit, "RL");
     
     // After fitting
     std::cout << "Background only Fit Parameters:" << std::endl;
@@ -790,7 +790,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       doubleGaussFit->SetParLimits(4, 0.55, 0.63);
       doubleGaussFit->SetParLimits(5, 0.01, 0.25);
     }
-    histSubtracted->Fit(doubleGaussFit, "RE");
+    histSubtracted->Fit(doubleGaussFit, "R");
 
     // Store pion peak position and resolution; instead of combined fit use doubleGaussFit
     double pion_pt = (pt_min + pt_max) / 2.0;
