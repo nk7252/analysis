@@ -664,7 +664,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit the combined function
     combinedFit->SetNpx(1000);
-    histF->Fit(combinedFit, "RE");
+    histF->Fit(combinedFit, "REI");
     
     // After fitting
     std::cout << "Background only Fit Parameters:" << std::endl;
