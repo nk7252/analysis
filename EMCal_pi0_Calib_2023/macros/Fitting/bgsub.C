@@ -952,6 +952,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     appendtextfile(doubleGaussFit, Form("subpgaus fit_%s", ptRange.Data()), scale_factor);
 
     std::cout << "Before deleting canvases" << std::endl;
+    /*
     delete hist;
     delete histF;
     delete leftRightFit;
@@ -967,6 +968,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     delete c1;
     delete c2;
     delete c3;
+    */
     std::cout << "After deleting canvases" << std::endl;
   }
   std::cout << "Before TGraphErrors initialization" << std::endl;
