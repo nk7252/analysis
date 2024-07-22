@@ -380,7 +380,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 {
   // more thorough minimizer for fit
 
-  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2");  //,"Simplex", "Migrad", "Combined", "Fumili2"
+  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Fumili");  //,"Simplex", "Migrad", "Combined"
   // ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiMin");//, "ConjugateFR"
   //ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiFit", "LevenbergMarquardt");
