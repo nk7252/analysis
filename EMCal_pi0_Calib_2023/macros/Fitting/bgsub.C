@@ -422,7 +422,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
   // Open the ROOT file and get the 2D histogram
   // TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/merged_file.root");
-  const char *file_name = "OUTHIST_iter_DST_CALO_CLUSTER_pythia8_pp_mb_3MHz_0000000011__merged_V1.root";
+  string file_name = "OUTHIST_iter_DST_CALO_CLUSTER_pythia8_pp_mb_3MHz_0000000011__merged_V1.root";
   TFile *file = new TFile(Form("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/%s",file_name.c_str()));
   TH2F *hist2D = (TH2F *) file->Get("h_InvMass_2d");
 
