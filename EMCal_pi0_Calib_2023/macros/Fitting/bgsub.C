@@ -978,6 +978,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
         std::string dateTimeString = std::string("Run Date and Time: ") + mbstr;
         fitInfo->AddText(dateTimeString.c_str());
     }
+    fitInfo->AddText(Form("Error Bars Scaled by factor:%f ", scale_factor));
     fitInfo->Draw();
     c3->Print("2D_Histogram_Fits.pdf");
 
