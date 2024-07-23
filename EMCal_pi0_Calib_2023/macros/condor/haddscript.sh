@@ -59,7 +59,7 @@ if [ -s root_files.txt ]; then
   fi
 
   # Add the word "merged" to the common part
-  common_part="${common_part}_merged_V${global_counter}"
+  common_part="${common_part}merged_V${global_counter}"
 
   # Clean up the common part to make it suitable for a filename
   common_part=$(echo "$common_part" | sed 's/[^a-zA-Z0-9]/_/g')
