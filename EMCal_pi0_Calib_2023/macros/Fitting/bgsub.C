@@ -21,6 +21,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <ctime>
 // sphenix includes
 #include "sPhenixStyle.C"
 #include "sPhenixStyle.h"
