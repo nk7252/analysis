@@ -970,6 +970,13 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       fitInfo->AddText(Form("Eta Relative Width: %f", doubleGaussFit->GetParameter(5) * 100.0f / doubleGaussFit->GetParameter(4)));
     }
     fitInfo->AddText(Form("Produced with:%s",file_name.c_str()));
+    std::time_t t = std::time(nullptr);
+    char mbstr[100];
+    if (std::strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", std::localtime(&t))) {
+        // Add the date and time to the TPaveText
+        std::string dateTimeString = std::string("Run Date and Time: ") + mbstr;
+        fitInfo->AddText(dateTimeString.c_str());
+    }
     fitInfo->Draw();
     c3->Print("2D_Histogram_Fits.pdf");
 
