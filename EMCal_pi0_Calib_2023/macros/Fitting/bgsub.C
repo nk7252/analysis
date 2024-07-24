@@ -408,16 +408,16 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   // minimum->SetFunction(f);
 
   ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Combined");  //,"Simplex", "Migrad", "Fumili"
-  //ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
+  ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiMin");//, "ConjugateFR"
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiFit", "LevenbergMarquardt");
   // ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
   // Set the global fit strategy
   //ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
-  ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(10000000);
-  ROOT::Math::MinimizerOptions::SetDefaultMaxIterations(100000);
+  ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(1000000);
+  ROOT::Math::MinimizerOptions::SetDefaultMaxIterations(10000);
   //ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.01);
-  //ROOT::Math::MinimizerOptions::SetDefaultPrecision(1e-8);
+  ROOT::Math::MinimizerOptions::SetDefaultPrecision(1e-10);
   SetsPhenixStyle();
 
   // Ensure the limits vector has the correct size
