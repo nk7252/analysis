@@ -136,12 +136,14 @@ double combinedFunctionDoubleGaussPoly3(double *x, double *par)
 double combinedFunctionDoubleGaussPoly5(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
+  double gauss1 =0;
   if (x[0] >= 0.7 && x[0] <= 0.22){
     double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
   }
 
 
   // Second Gaussian part (e.g., eta peak)
+  double gauss2 =0;
   if (x[0] >= 0.3 && x[0] <= 0.8){
     double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
   }
