@@ -190,10 +190,14 @@ int CaloAna::Init(PHCompositeNode*)
   rnd = new TRandom3();
   // smearing added SPMC
   badcalibsmear = static_cast<float>(badcalibsmearint) / 1000.0f;
+
   h_InvMass_smear = new TH1F(Form("h_InvMass_smear_%d", badcalibsmearint), Form("Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 600, 0, 1.2);
+
   h_InvMass_smear_weighted = new TH1F(Form("h_InvMass_smear_weighted_%d", badcalibsmearint), Form("Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 600, 0, 1.2);
+
   // 2d variations
   h_InvMass_smear_weighted_2d = new TH2F(Form("h_InvMass_smear_weighted_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 4 * 10, 0, 10, 600, 0, 1.2);
+  
   h_InvMass_smear_2d = new TH2F(Form("h_InvMass_smear_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 4 * 10, 0, 10, 600, 0, 1.2);
 
   std::vector<std::string> RestrictEtaCuts = {"Low_Eta", "Mid_Eta", "High_Eta"};
