@@ -1,33 +1,33 @@
 #pragma once
 // root includes
-#include <Math/MinimizerOptions.h>
-#include <Math/Minimizer.h>
 #include <Math/Functor.h>
+#include <Math/Minimizer.h>
+#include <Math/MinimizerOptions.h>
 #include <TApplication.h>
-#include <TSystem.h>
+#include <TAxis.h>
 #include <TCanvas.h>
 #include <TF1.h>
 #include <TFile.h>
 #include <TGraph.h>
 #include <TGraphErrors.h>
-#include <TAxis.h>
 #include <TH1F.h>
 #include <TH2F.h>
 #include <TLegend.h>
 #include <TPaveText.h>
 #include <TString.h>
 #include <TStyle.h>
+#include <TSystem.h>
 // general includes
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <ctime>
 // sphenix includes
 #include "sPhenixStyle.C"
 #include "sPhenixStyle.h"
 
-//global bin var
-std::vector<double> nuBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.50, 0.52, 0.54, 0.56, 0.58, 0.60, 0.62, 0.64, 0.66, 0.68, 0.70, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0};//, 1.04, 1.08, 1.12, 1.16, 1.2
+// global bin var
+std::vector<double> nuBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.50, 0.52, 0.54, 0.56, 0.58, 0.60, 0.62, 0.64, 0.66, 0.68, 0.70, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0};  //, 1.04, 1.08, 1.12, 1.16, 1.2
 // Combined function for Gaussian + Polynomial
 double combinedFunction(double *x, double *par)
 {
@@ -170,15 +170,15 @@ double doubleGauss(double *x, double *par)
   {  // Check if x is in the range of the first Gaussian
     gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
   }
-  else if(x[0] >= par[8] && x[0] <= par[9])
+  else if (x[0] >= par[8] && x[0] <= par[9])
   {  // Check if x is in the range of the second Gaussian
     gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
   }
-  else 
+  else
   {
     TF1::RejectPoint();
     return 0;
-  } 
+  }
   return gauss1 + gauss2;
 }
 
@@ -377,37 +377,37 @@ void appendtextfile(TF1 *fitFunc, const std::string &fitName, double scale_facto
   }
 }
 
-void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool dynamic_left = false, int background_scheme = 0, bool var_bins = false)//std::vector<double> &rebinEdges
+void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fitEtaPeak = false, int startBin = 1, int endBin = -1, int projectionBins = 1, int rebinFactor = 1, bool dynamic_left = false, int background_scheme = 0, bool var_bins = false)  // std::vector<double> &rebinEdges
 {
   // create minimizer giving a name and a name (optionally) for the specific
-   // algorithm
-   // possible choices are:
-   //     minName                  algoName
-   // Minuit /Minuit2             Migrad, Simplex,Combined,Scan  (default is Migrad)
-   //  Minuit2                     Fumili2
-   //  Fumili
-   //  GSLMultiMin                ConjugateFR, ConjugatePR, BFGS,
-   //                              BFGS2, SteepestDescent
-   //  GSLMultiFit
-   //   GSLSimAn
-   //   Genetic
-  //const char * minName = "Minuit2";
-  //const char *algoName = "Simplex";
-  //ROOT::Math::Minimizer* minimum = ROOT::Math::Factory::CreateMinimizer(minName, algoName);
-  //minimum->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
-  //minimum->SetMaxIterations(10000);  // for GSL
-  //minimum->SetTolerance(0.001);
-  //minimum->SetPrintLevel(1);
-  //ROOT::Math::Functor f(&combinedFunctionDoubleGaussPoly5,12);
-  //minimum->SetFunction(f);
+  // algorithm
+  // possible choices are:
+  //     minName                  algoName
+  // Minuit /Minuit2             Migrad, Simplex,Combined,Scan  (default is Migrad)
+  //  Minuit2                     Fumili2
+  //  Fumili
+  //  GSLMultiMin                ConjugateFR, ConjugatePR, BFGS,
+  //                              BFGS2, SteepestDescent
+  //  GSLMultiFit
+  //   GSLSimAn
+  //   Genetic
+  // const char * minName = "Minuit2";
+  // const char *algoName = "Simplex";
+  // ROOT::Math::Minimizer* minimum = ROOT::Math::Factory::CreateMinimizer(minName, algoName);
+  // minimum->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+  // minimum->SetMaxIterations(10000);  // for GSL
+  // minimum->SetTolerance(0.001);
+  // minimum->SetPrintLevel(1);
+  // ROOT::Math::Functor f(&combinedFunctionDoubleGaussPoly5,12);
+  // minimum->SetFunction(f);
 
-  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Fumili");  //,"Simplex", "Migrad", "Combined"
+  ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Combined");  //,"Simplex", "Migrad", "Fumili"
   // ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiMin");//, "ConjugateFR"
-  //ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiFit", "LevenbergMarquardt");
-  //ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
+  // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiFit", "LevenbergMarquardt");
+  // ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
   //   Set the global fit strategy
-  //ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
+  // ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(1000000);
   ROOT::Math::MinimizerOptions::SetDefaultMaxIterations(10000);
   ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.001);
@@ -424,7 +424,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   // Open the ROOT file and get the 2D histogram
   // TFile *file = new TFile("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/merged_file.root");
   string file_name = "OUTHIST_iter_DST_CALO_CLUSTER_pythia8_pp_mb_3MHz_0000000011__merged_V1.root";
-  TFile *file = new TFile(Form("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/%s",file_name.c_str()));
+  TFile *file = new TFile(Form("/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/output/%s", file_name.c_str()));
   TH2F *hist2D = (TH2F *) file->Get("h_InvMass_2d");
 
   int nBinsX = hist2D->GetNbinsX();
@@ -457,7 +457,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     if (var_bins && !nuBins.empty())
     {
       std::cout << "Rebinning histogram with non-uniform edges" << std::endl;
-      histF = rebinHistogram(histF, nuBins);//nuBins
+      histF = rebinHistogram(histF, nuBins);  // nuBins
     }
     else if (rebinFactor > 1)
     {
@@ -541,13 +541,13 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       leftRightFit->SetParameter(5, limits[4]);
       leftRightFit->SetParameter(6, limits[5]);
     }
-    histF->Fit(leftRightFit, "R");
+    histF->Fit(leftRightFit, "RE");
 
     // Fit first Gaussian in the specified range
     TF1 *gausFit = new TF1("gausFit", "gaus", limits[2], limits[3]);
     gausFit->SetParLimits(1, 0.11, 0.19);
     gausFit->SetParLimits(2, 0.05, 0.25);
-    histF->Fit(gausFit, "R");
+    histF->Fit(gausFit, "RE");
 
     // Combined Gaussian + Polynomial fit
     TF1 *combinedFit;
@@ -601,7 +601,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TF1 *gausFit2 = new TF1("gausFit2", "gaus", limits[6], limits[7]);
     gausFit2->SetParLimits(1, 0.55, 0.63);
     gausFit2->SetParLimits(2, 0.03, 0.25);
-    histF->Fit(gausFit2, "R");
+    histF->Fit(gausFit2, "RE");
     if (fitEtaPeak)
     {
       if (background_scheme == 0)  // poly4
@@ -686,8 +686,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit the combined function
     combinedFit->SetNpx(1000);
-    histF->Fit(combinedFit, "R");
-    
+    histF->Fit(combinedFit, "RE");
+
     // After fitting
     std::cout << "Background only Fit Parameters:" << std::endl;
     for (int i = 0; i < leftRightFit->GetNpar(); ++i)
@@ -812,7 +812,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
       doubleGaussFit->SetParLimits(4, 0.55, 0.63);
       doubleGaussFit->SetParLimits(5, 0.01, 0.25);
     }
-    histSubtracted->Fit(doubleGaussFit, "R");
+    histSubtracted->Fit(doubleGaussFit, "RE");
 
     // Store pion peak position and resolution; instead of combined fit use doubleGaussFit
     double pion_pt = (pt_min + pt_max) / 2.0;
@@ -883,12 +883,12 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     polyPart->Draw("SAME");
     combinedFit->SetLineColor(kBlack);
     combinedFit->Draw("SAME");
-    //leftRightFit->SetLineColor(kGreen);
-    //leftRightFit->Draw("SAME");
-    //gausFit->SetLineColor(kMagenta);
-    //gausFit->Draw("SAME");
-    //gausFit2->SetLineColor(kMagenta);
-    //gausFit2->Draw("SAME");
+    // leftRightFit->SetLineColor(kGreen);
+    // leftRightFit->Draw("SAME");
+    // gausFit->SetLineColor(kMagenta);
+    // gausFit->Draw("SAME");
+    // gausFit2->SetLineColor(kMagenta);
+    // gausFit2->Draw("SAME");
 
     TLegend *leg1 = new TLegend(0.5, 0.5, 0.95, 0.95);
     leg1->SetFillStyle(0);
@@ -896,8 +896,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     leg1->AddEntry("", "pythia: p+p #sqrt{s_{NN}} = 200 GeV", "");
     leg1->AddEntry(polyPart, "Background Fit");
     leg1->AddEntry(combinedFit, "Combined Fit");
-    //leg1->AddEntry(leftRightFit, "originalBG");
-    //leg1->AddEntry(gausFit, "originalGauss");
+    // leg1->AddEntry(leftRightFit, "originalBG");
+    // leg1->AddEntry(gausFit, "originalGauss");
     leg1->Draw();
     leg1->SetTextAlign(32);
     c1->Update();
@@ -938,47 +938,52 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
     TPaveText *fitInfo = new TPaveText(0.1, 0.1, 0.9, 0.9, "blNDC");
     fitInfo->SetTextAlign(12);
     fitInfo->SetFillColor(0);
+    fitInfo->AddText(Form("Produced with:%s", file_name.c_str()));
+    std::time_t t = std::time(nullptr);
+    char mbstr[100];
+    if (std::strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", std::localtime(&t)))
+    {
+      // Add the date and time to the TPaveText
+      std::string dateTimeString = std::string("Run Date and Time: ") + mbstr;
+      fitInfo->AddText(dateTimeString.c_str());
+    }
     fitInfo->AddText(Form("Fit for pT range: %s", ptRange.Data()));
+    fitInfo->AddText(Form("Error Bars Scaled by factor:%f ", scale_factor));
     fitInfo->AddText("Fit Parameters:");
     fitInfo->AddText(Form("Combined Fit Range = %f to %f", limits[0], limits[1]));
     fitInfo->AddText(Form("Pion Mean = %f +/- %f", combinedFit->GetParameter(1), combinedFit->GetParError(1)));
     fitInfo->AddText(Form("Pion Sigma = %f +/- %f", combinedFit->GetParameter(2), combinedFit->GetParError(2)));
+    fitInfo->AddText(Form("Pion Relative Width: %f +/- %f", combinedFit->GetParameter(2) * 100.0f / combinedFit->GetParameter(1), sqrt(pow(doubleGaussFit->GetParError(2) / doubleGaussFit->GetParameter(2), 2) + pow(doubleGaussFit->GetParError(1) / doubleGaussFit->GetParameter(1), 2))));
     if (background_scheme == 0)  // poly4
     {
       fitInfo->AddText(Form("Eta Mean = %f +/- %f", combinedFit->GetParameter(9), combinedFit->GetParError(9)));
       fitInfo->AddText(Form("Eta Sigma= %f +/- %f", combinedFit->GetParameter(10), combinedFit->GetParError(10)));
+      fitInfo->AddText(Form("Eta Relative Width: %f +/- %f", combinedFit->GetParameter(10) * 100.0f / combinedFit->GetParameter(9), sqrt(pow(doubleGaussFit->GetParError(10) / doubleGaussFit->GetParameter(10), 2) + pow(doubleGaussFit->GetParError(9) / doubleGaussFit->GetParameter(9), 2))));
     }
     else if (background_scheme == 1)  // poly3+poly2
     {
       fitInfo->AddText(Form("Eta Mean = %f +/- %f", combinedFit->GetParameter(4), combinedFit->GetParError(4)));
       fitInfo->AddText(Form("Eta Sigma = %f +/- %f", combinedFit->GetParameter(5), combinedFit->GetParError(5)));
+      fitInfo->AddText(Form("Eta Relative Width: %f +/- %f", combinedFit->GetParameter(5) * 100.0f / combinedFit->GetParameter(4), sqrt(pow(doubleGaussFit->GetParError(5) / doubleGaussFit->GetParameter(5), 2) + pow(doubleGaussFit->GetParError(4) / doubleGaussFit->GetParameter(4), 2))));
     }
     else if (background_scheme == 2 || background_scheme == 3 || background_scheme == 4 || background_scheme == 5 || background_scheme == 6)
     {
       fitInfo->AddText(Form("Eta Mean = %f +/- %f", combinedFit->GetParameter(4), combinedFit->GetParError(4)));
       fitInfo->AddText(Form("Eta Sigma = %f +/- %f", combinedFit->GetParameter(5), combinedFit->GetParError(5)));
+      fitInfo->AddText(Form("Eta Relative Width: %f +/- %f", combinedFit->GetParameter(5) * 100.0f / combinedFit->GetParameter(4), sqrt(pow(doubleGaussFit->GetParError(5) / doubleGaussFit->GetParameter(5), 2) + pow(doubleGaussFit->GetParError(4) / doubleGaussFit->GetParameter(4), 2))));
     }
     fitInfo->AddText(Form("Combined Chi2/NDF = %f / %d = %f", combinedFit->GetChisquare(), combinedFit->GetNDF(), combinedFit->GetChisquare() / combinedFit->GetNDF()));
     fitInfo->AddText(Form("Background Subtracted Peak Fit = %f to %f", limits[2], limits[3]));
     fitInfo->AddText(Form("Pion Mean = %f +/- %f", doubleGaussFit->GetParameter(1), doubleGaussFit->GetParError(1)));
     fitInfo->AddText(Form("Pion Sigma = %f +/- %f", doubleGaussFit->GetParameter(2), doubleGaussFit->GetParError(2)));
-    fitInfo->AddText(Form("Relative Width: %f", doubleGaussFit->GetParameter(2) * 100.0f / doubleGaussFit->GetParameter(1)));
+    fitInfo->AddText(Form("Relative Width: %f +/- %f", doubleGaussFit->GetParameter(2) * 100.0f / doubleGaussFit->GetParameter(1), sqrt(pow(doubleGaussFit->GetParError(2) / doubleGaussFit->GetParameter(2), 2) + pow(doubleGaussFit->GetParError(1) / doubleGaussFit->GetParameter(1), 2))));
     fitInfo->AddText(Form("Chi2/NDF = %f / %d = %f", doubleGaussFit->GetChisquare(), doubleGaussFit->GetNDF(), doubleGaussFit->GetChisquare() / doubleGaussFit->GetNDF()));
     if (fitEtaPeak)
     {
       fitInfo->AddText(Form("Eta Peak Mean = %f +/- %f", doubleGaussFit->GetParameter(4), doubleGaussFit->GetParError(4)));
       fitInfo->AddText(Form("Eta Peak Sigma = %f +/- %f", doubleGaussFit->GetParameter(5), doubleGaussFit->GetParError(5)));
-      fitInfo->AddText(Form("Eta Relative Width: %f", doubleGaussFit->GetParameter(5) * 100.0f / doubleGaussFit->GetParameter(4)));
+      fitInfo->AddText(Form("Eta Relative Width: %f +/- %f", doubleGaussFit->GetParameter(5) * 100.0f / doubleGaussFit->GetParameter(4), sqrt(pow(doubleGaussFit->GetParError(5) / doubleGaussFit->GetParameter(5), 2) + pow(doubleGaussFit->GetParError(4) / doubleGaussFit->GetParameter(4), 2))));
     }
-    fitInfo->AddText(Form("Produced with:%s",file_name.c_str()));
-    std::time_t t = std::time(nullptr);
-    char mbstr[100];
-    if (std::strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", std::localtime(&t))) {
-        // Add the date and time to the TPaveText
-        std::string dateTimeString = std::string("Run Date and Time: ") + mbstr;
-        fitInfo->AddText(dateTimeString.c_str());
-    }
-    fitInfo->AddText(Form("Error Bars Scaled by factor:%f ", scale_factor));
     fitInfo->Draw();
     c3->Print("2D_Histogram_Fits.pdf");
 
@@ -1085,16 +1090,16 @@ void bgsub(double scale_factor = 1, float polyL = 0.05, float polygauss1L = 0.08
       polygauss2L, polygauss2R   // 8,9 Exclusion zone for left and right polynomials: second gaussian
   };
 
-  //if (variable_bins)
+  // if (variable_bins)
   //{
-    // std::vector<double> nonUniformBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0};//, 1.04, 1.08, 1.12, 1.16, 1.2
-    //std::vector<double> nonUniformBins=nuBins;
+  //  std::vector<double> nonUniformBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.52, 0.56, 0.60, 0.64, 0.68, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0};//, 1.04, 1.08, 1.12, 1.16, 1.2
+  // std::vector<double> nonUniformBins=nuBins;
   fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, variable_bins);
   //}
-  //else
+  // else
   //{
-    //std::vector<double> nonUniformBins;
-    //fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
+  // std::vector<double> nonUniformBins;
+  // fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
   //}
 
   // fit_2d_histogram(scale_factor, limits, fitEtaPeak, startBin, endBin, projectionBins, rebinFactor, dynamic_left, background_scheme, nonUniformBins);
