@@ -28,7 +28,7 @@
 
 // global bin var
 std::vector<double> nuBins = {0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.36, 0.40, 0.44, 0.48, 0.50, 0.52, 0.54, 0.56, 0.58, 0.60, 0.62, 0.64, 0.66, 0.68, 0.70, 0.72, 0.76, 0.8, 0.84, 0.88, 0.92, 0.96, 1.0};  //, 1.04, 1.08, 1.12, 1.16, 1.2
-// Combined function for Gaussian + Polynomial
+// Combined function for Gaussian + Poly4
 double combinedFunction(double *x, double *par)
 {
   // Gaussian part
@@ -40,7 +40,7 @@ double combinedFunction(double *x, double *par)
   return gauss + poly;
 }
 
-double combinedFunctionDoubleGauss(double *x, double *par)
+double combinedFunctionDoubleGauss(double *x, double *par)//Combined function for double Gaussian + Poly4
 {
   // First Gaussian part (e.g., pion peak)
   double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
@@ -136,17 +136,17 @@ double combinedFunctionDoubleGaussPoly3(double *x, double *par)
 double combinedFunctionDoubleGaussPoly5(double *x, double *par)
 {
   // First Gaussian part (e.g., pion peak)
-  double gauss1 =0;
-  if (x[0] >= 0.7 && x[0] <= 0.22){
+  //double gauss1 =0;
+  //if (x[0] >= 0.7 && x[0] <= 0.22){
     double gauss1 = par[0] * exp(-0.5 * pow((x[0] - par[1]) / par[2], 2));
-  }
+  //}
 
 
   // Second Gaussian part (e.g., eta peak)
-  double gauss2 =0;
-  if (x[0] >= 0.3 && x[0] <= 0.8){
+  //double gauss2 =0;
+  //if (x[0] >= 0.3 && x[0] <= 0.8){
     double gauss2 = par[3] * exp(-0.5 * pow((x[0] - par[4]) / par[5], 2));
-  }
+  //}
   // Polynomial part (5th degree)
   double poly = par[6] + par[7] * x[0] + par[8] * x[0] * x[0] + par[9] * x[0] * x[0] * x[0] + par[10] * x[0] * x[0] * x[0] * x[0] + par[11] * x[0] * x[0] * x[0] * x[0] * x[0];
 
