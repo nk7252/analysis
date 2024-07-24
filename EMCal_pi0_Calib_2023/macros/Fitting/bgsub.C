@@ -412,8 +412,8 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiMin");//, "ConjugateFR"
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiFit", "LevenbergMarquardt");
   // ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
-  //   Set the global fit strategy
-  ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
+  // Set the global fit strategy
+  //ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(10000000);
   ROOT::Math::MinimizerOptions::SetDefaultMaxIterations(100000);
   //ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.01);
