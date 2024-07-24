@@ -402,7 +402,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   // minimum->SetFunction(f);
 
   ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Combined");  //,"Simplex", "Migrad", "Fumili"
-  // ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
+  ROOT::Math::MinimizerOptions::SetDefaultStrategy(2);
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiMin");//, "ConjugateFR"
   // ROOT::Math::MinimizerOptions::SetDefaultMinimizer("GSLMultiFit", "LevenbergMarquardt");
   // ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
@@ -686,7 +686,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
 
     // Fit the combined function
     combinedFit->SetNpx(1000);
-    histF->Fit(combinedFit, "REF");
+    histF->Fit(combinedFit, "RE");
 
     // After fitting
     std::cout << "Background only Fit Parameters:" << std::endl;
