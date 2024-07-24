@@ -416,7 +416,7 @@ void fit_2d_histogram(Double_t scale_factor, std::vector<float> &limits, bool fi
   //ROOT::Math::MinimizerOptions::SetDefaultPrintLevel(3);
   ROOT::Math::MinimizerOptions::SetDefaultMaxFunctionCalls(1000000);
   ROOT::Math::MinimizerOptions::SetDefaultMaxIterations(10000);
-  //ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.01);
+  ROOT::Math::MinimizerOptions::SetDefaultTolerance(0.001);
   ROOT::Math::MinimizerOptions::SetDefaultPrecision(1e-12);
   SetsPhenixStyle();
 
