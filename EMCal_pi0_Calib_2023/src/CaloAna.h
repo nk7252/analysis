@@ -201,14 +201,14 @@ class CaloAna : public SubsysReco
   bool dynMaskClus = false;
   bool getVtx = false;
   bool cutson = true;
-  bool poscor = false;
+  bool poscor = true;
   bool debug = false;
   //SPMC
   bool matchspmctruth = true;//SPMC. check must be in primary range
   bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
   float badcalibsmear;
   //NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
-  int badcalibsmearint=65;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  int badcalibsmearint=00;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   //gen MC: pythia
   bool matchmctruth = false;//NOT spmc. check must be in secondary range
 
