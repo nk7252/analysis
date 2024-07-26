@@ -201,7 +201,7 @@ class CaloAna : public SubsysReco
   bool dynMaskClus = false;
   bool getVtx = false;
   bool cutson = true;
-  bool poscor = true;
+  bool poscor = false;
   bool debug = false;
   //SPMC
   bool matchspmctruth = true;//SPMC. check must be in primary range
