@@ -197,7 +197,7 @@ int CaloAna::Init(PHCompositeNode*)
 
   // 2d variations
   h_InvMass_smear_weighted_2d = new TH2F(Form("h_InvMass_smear_weighted_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 4 * 10, 0, 10, 600, 0, 1.2);
-  
+
   h_InvMass_smear_2d = new TH2F(Form("h_InvMass_smear_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 4 * 10, 0, 10, 600, 0, 1.2);
 
   std::vector<std::string> RestrictEtaCuts = {"Low_Eta", "Mid_Eta", "High_Eta"};
@@ -435,7 +435,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       continue;
     }
     if (debug) std::cout << " " << "Cluster Loop: 2 " << std::endl;
-    for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
+    //for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
+    for (clusterIter2 = std::next(clusterIter); clusterIter2 != clusterEnd.second; ++clusterIter2)
     {
       if (clusterIter == clusterIter2)
       {
