@@ -112,6 +112,7 @@ class CaloAna : public SubsysReco
   TH2F* h_hcalin_etaphi_wQA = nullptr;
   TH2F* h_hcalout_etaphi_wQA = nullptr;
   TH1* h_delR_recTrth = nullptr;
+  TH1* h_delR_pionrecTrth = nullptr;
   TH1* h_matched_res;
   TH1* h_totalzdc_e;
 
@@ -204,13 +205,15 @@ class CaloAna : public SubsysReco
   bool poscor = false;
   bool debug = false;
   //SPMC
-  bool matchspmctruth = true;//SPMC. check must be in primary range
-  bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
+  bool matchspmctruth = false;//SPMC. check must be in primary range
+  bool additionalsmearing = false;//should be on for spmc in all cases. if you want 0 use 0 for smearint
   float badcalibsmear;
   //NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
-  int badcalibsmearint=65;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  int badcalibsmearint=0;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   //gen MC: pythia
-  bool matchmctruth = false;//NOT spmc. check must be in secondary range
+  bool matchmctruth = true;//NOT spmc. check must be in secondary range
+  bool filltruthspectrum = true;
+  bool Fillanyways = true;
 
   TH1F* h_pt1;
   TH1F* h_pt2;
@@ -226,6 +229,8 @@ class CaloAna : public SubsysReco
   TH1F* h_truth_phi;
   TH1F* h_truth_e;
   TH1F* h_truth_pt;
+  TH1F* h_truth_spectrum1;
+  TH1F* h_truth_spectrum2;
   TH1F* h_truthmatched_mass;
   TH1F* h_truthmatched_mass2;
   TH1F* h_truthmatched_mass3;
