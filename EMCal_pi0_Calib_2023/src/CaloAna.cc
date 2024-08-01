@@ -627,12 +627,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             float delR = pi0.DeltaR(truthpi0);
-            if(delR < 0.015)
+            h_delR_pionrecTrth->Fill(delR);
+            if (delR < 0.015)
             {
-              h_delR_pionrecTrth->Fill(delR);
               h_truth_spectrum1->Fill(truthpi0.Pt());
             }
-            //  
+            //
           }
           //*/
         }
@@ -675,7 +675,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
       {
         const PHG4Particle* truth = siter->second;
-        int id = truth->get_pid();
+        //int id = truth->get_pid();
         if (truth->get_pid() == 111)
         {
           float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
@@ -685,10 +685,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           TLorentzVector truthpi0 = TLorentzVector();
           truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
           h_truth_spectrum2->Fill(truthpi0.Pt());
-          //h_truth_pion_pt->Fill(truthpi0.Pt());
-          //h_truth_pion_eta->Fill(truthpi0.Eta());
-          //h_truth_pion_e->Fill(truthpi0.E());
-          //h_truth_pion_phi->Fill(truthpi0.Phi());
+          // h_truth_pion_pt->Fill(truthpi0.Pt());
+          // h_truth_pion_eta->Fill(truthpi0.Eta());
+          // h_truth_pion_e->Fill(truthpi0.E());
+          // h_truth_pion_phi->Fill(truthpi0.Phi());
         }
       }
     }
