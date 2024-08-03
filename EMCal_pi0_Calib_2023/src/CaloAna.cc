@@ -139,7 +139,6 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 10);
   h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 10000, 0, 10);
   h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 10000, 0, 10);
-  h_truth_spectrum3 = new TH1F("h_truth_spectrum3", "", 10000, 0, 10);
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 400, -200, 200);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 400, -200, 200);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
@@ -274,53 +273,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   //*/
 
   float pi0ptcut = pi0ptcutfactor * (pt1ClusCut + pt2ClusCut);
-
-if (filltruthspectrum)
-  {
-    PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
-    if (truthinfo)
-    {
-      if (matchmctruth)
-      {
-        // secondaries
-        PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
-        for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
-        {
-          const PHG4Particle* truth = siter->second;
-          if (truth->get_pid() == 111)
-          {
-            float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
-            float pion_e = truth->get_e();
-            float pion_phi = atan2(truth->get_py(), truth->get_px());
-            float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
-            TLorentzVector truthpi0 = TLorentzVector();
-            truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
-            h_truth_spectrum3->Fill(truthpi0.Pt());
-          }
-        }
-      }
-      else if (matchspmctruth)
-      {  // primaries
-        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
-        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
-        {
-          const PHG4Particle* truth = iter->second;
-          if (!truthinfo->is_primary(truth)) continue;
-          if (truth->get_pid() == 111)
-          {
-            float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
-            float pion_e = truth->get_e();
-            float pion_phi = atan2(truth->get_py(), truth->get_px());
-            float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
-            TLorentzVector truthpi0 = TLorentzVector();
-            truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
-            h_truth_spectrum3->Fill(truthpi0.Pt());
-          }
-        }
-      }
-    }
-  }
-
 
   // int max_nClusCount = 75;
 
