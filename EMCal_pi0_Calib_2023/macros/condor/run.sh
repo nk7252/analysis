@@ -18,8 +18,11 @@ fi
   rm $listfile2
 
   #CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 10000 DST_CALO_CLUSTER G4Hits 
-  CreateFileList.pl DST_CALO_CLUSTER G4Hits -type 3 -run 11 
-  #DST_GLOBAL-nopileup-nopileup-n 10000000 DST_CALO_CLUSTER
+  #CreateFileList.pl DST_CALO_CLUSTER G4Hits -type 3 -run 11 -nopileup
+  CreateFileList.pl DST_CALO_WAVEFORM G4Hits DST_TRUTH_G4HIT -type 3 -run 15 -nopileup
+  #run 111 also works see https://wiki.sphenix.bnl.gov/index.php?title=MDC2_2022
+  
+  #DST_GLOBAL-nopileup-n 10000000 DST_CALO_CLUSTER
   #DST_CALO_WAVEFORM
   #number of jobs 
   j=500
