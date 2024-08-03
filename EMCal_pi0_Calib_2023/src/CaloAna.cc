@@ -275,29 +275,52 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   float pi0ptcut = pi0ptcutfactor * (pt1ClusCut + pt2ClusCut);
 
-  if (FullMCSpectrum && ((filltruthspectrum && !matchmctruth) || (filltruthspectrum && Fillanyways)))
+if (filltruthspectrum)
   {
     PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
     if (truthinfo)
     {
-      // secondaries
-      PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
-      for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
+      if (matchmctruth)
       {
-        const PHG4Particle* truth = siter->second;
-        if (truth->get_pid() == 111)
+        // secondaries
+        PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
         {
-          float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
-          float pion_e = truth->get_e();
-          float pion_phi = atan2(truth->get_py(), truth->get_px());
-          float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
-          TLorentzVector truthpi0 = TLorentzVector();
-          truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
-          h_truth_spectrum3->Fill(truthpi0.Pt());
+          const PHG4Particle* truth = siter->second;
+          if (truth->get_pid() == 111)
+          {
+            float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+            float pion_e = truth->get_e();
+            float pion_phi = atan2(truth->get_py(), truth->get_px());
+            float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
+            TLorentzVector truthpi0 = TLorentzVector();
+            truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
+            h_truth_spectrum3->Fill(truthpi0.Pt());
+          }
+        }
+      }
+      else if (matchspmctruth)
+      {  // primaries
+        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
+        {
+          const PHG4Particle* truth = iter->second;
+          if (!truthinfo->is_primary(truth)) continue;
+          if (truth->get_pid() == 111)
+          {
+            float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+            float pion_e = truth->get_e();
+            float pion_phi = atan2(truth->get_py(), truth->get_px());
+            float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
+            TLorentzVector truthpi0 = TLorentzVector();
+            truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
+            h_truth_spectrum3->Fill(truthpi0.Pt());
+          }
         }
       }
     }
   }
+
 
   // int max_nClusCount = 75;
 
@@ -588,8 +611,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_truth_pt->Fill(myVector.Pt(), weight);
           int id = truth->get_pid();
           h_truth_pid_p->Fill(id);
+          if (filltruthspectrum && matchspmctruth)
+          {
+            float delR = pi0.DeltaR(myVector);
+            if (id == 111 && delR < 0.015)
+            {
+              h_truth_spectrum1->Fill(myVector.Pt());
+            }
+          }
           //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
-
           double t = 4.5;
           double w = 0.114;
           double A = 229.6;
@@ -643,7 +673,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           int id = truth->get_pid();
           h_truth_pid_s->Fill(id);
 
-          ///*if (filltruthspectrum && matchmctruth))
+          if (filltruthspectrum && matchmctruth)
           {
             TLorentzVector truthpi0 = TLorentzVector();
             float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
@@ -654,11 +684,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             float delR = pi0.DeltaR(truthpi0);
             h_delR_pionrecTrth->Fill(delR);
-            if (delR < 0.015)
+            if (id==111 && delR < 0.015)
             {
               h_truth_spectrum1->Fill(truthpi0.Pt());
             }
-            //
           }
           //*/
         }
@@ -691,30 +720,47 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }  // clusterIter2
   }  // clusteriter1 loop
 
-  if ((filltruthspectrum && !matchmctruth) || (filltruthspectrum && Fillanyways))
+  if (filltruthspectrum)
   {
     PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
     if (truthinfo)
     {
-      // secondaries
-      PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
-      for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
+      if (matchmctruth)
       {
-        const PHG4Particle* truth = siter->second;
-        // int id = truth->get_pid();
-        if (truth->get_pid() == 111)
+        // secondaries
+        PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
         {
-          float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
-          float pion_e = truth->get_e();
-          float pion_phi = atan2(truth->get_py(), truth->get_px());
-          float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
-          TLorentzVector truthpi0 = TLorentzVector();
-          truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
-          h_truth_spectrum2->Fill(truthpi0.Pt());
-          // h_truth_pion_pt->Fill(truthpi0.Pt());
-          // h_truth_pion_eta->Fill(truthpi0.Eta());
-          // h_truth_pion_e->Fill(truthpi0.E());
-          // h_truth_pion_phi->Fill(truthpi0.Phi());
+          const PHG4Particle* truth = siter->second;
+          if (truth->get_pid() == 111)
+          {
+            float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+            float pion_e = truth->get_e();
+            float pion_phi = atan2(truth->get_py(), truth->get_px());
+            float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
+            TLorentzVector truthpi0 = TLorentzVector();
+            truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
+            h_truth_spectrum2->Fill(truthpi0.Pt());
+          }
+        }
+      }
+      else if (matchspmctruth)
+      {  // primaries
+        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
+        {
+          const PHG4Particle* truth = iter->second;
+          if (!truthinfo->is_primary(truth)) continue;
+          if (truth->get_pid() == 111)
+          {
+            float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+            float pion_e = truth->get_e();
+            float pion_phi = atan2(truth->get_py(), truth->get_px());
+            float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
+            TLorentzVector truthpi0 = TLorentzVector();
+            truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
+            h_truth_spectrum2->Fill(truthpi0.Pt());
+          }
         }
       }
     }
