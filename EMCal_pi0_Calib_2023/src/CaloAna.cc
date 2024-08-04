@@ -52,12 +52,12 @@
 #include <TH1.h>
 #include <TH2.h>
 #include <TNtuple.h>
-#include <TProfile
-#include "TCanvas.h"
-#include "TF1.h"
-#include "TFile.h"
-#include "TH1F.h"
-#include "TRandom3.h"
+#include <TProfile.h>
+#include <TCanvas.h>
+#include <TF1.h>
+#include <TFile.h>
+#include <TH1F.h>
+#include <TRandom3.h>
 #include <TMath.h>
 #include <TLorentzVector.h>
 
@@ -71,8 +71,6 @@
 #include <utility>
 #include <vector>
 
-
-
 /// HEPMC truth includes
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -81,7 +79,6 @@
 #pragma GCC diagnostic pop
 #include <phhepmc/PHHepMCGenEvent.h>
 #include <phhepmc/PHHepMCGenEventMap.h>
-
 
 R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
 
