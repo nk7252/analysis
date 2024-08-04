@@ -1,16 +1,29 @@
 #include "CaloAna.h"
 
-// G4Hits includes
-#include <TLorentzVector.h>
+// Global vertex includes
+#include <globalvertex/GlobalVertex.h>
+#include <globalvertex/GlobalVertexMap.h>
+
+// Fun4All includes
+#include <fun4all/Fun4AllHistoManager.h>
+#include <fun4all/Fun4AllReturnCodes.h>
+#include <g4main/PHG4TruthInfoContainer.h>
 #include <g4main/PHG4Hit.h>
 #include <g4main/PHG4HitContainer.h>
 #include <g4main/PHG4Particle.h>
+#include <Event/Event.h>
+#include <Event/packet.h>
+#include <cdbobjects/CDBTTree.h>  // for CDBTTree
+#include <ffamodules/CDBInterface.h>
+#include <phool/recoConsts.h>
+#include <phool/PHCompositeNode.h>
+#include <phool/getClass.h>
 
 // G4Cells includes
 #include <g4detectors/PHG4Cell.h>
 #include <g4detectors/PHG4CellContainer.h>
 
-// Tower includes
+// Calorimeter/Cluster includes
 #include <calobase/RawCluster.h>
 #include <calobase/RawClusterContainer.h>
 #include <calobase/RawClusterUtility.h>
@@ -19,57 +32,56 @@
 #include <calobase/RawTowerGeom.h>
 #include <calobase/RawTowerGeomContainer.h>
 #include <calobase/TowerInfo.h>
+#include <calobase/TowerInfov1.h>
+#include <calobase/TowerInfov2.h>
 #include <calobase/TowerInfoContainer.h>
+#include <calobase/TowerInfoContainerv1.h>
+#include <calobase/TowerInfoContainerv2.h>
+#include <calobase/TowerInfoContainerv3.h>
 #include <calobase/TowerInfoDefs.h>
-
-// Cluster includes
 #include <calobase/RawCluster.h>
 #include <calobase/RawClusterContainer.h>
-
-#include <fun4all/Fun4AllHistoManager.h>
-#include <fun4all/Fun4AllReturnCodes.h>
-
-#include <phool/getClass.h>
-
-#include <globalvertex/GlobalVertex.h>
-#include <globalvertex/GlobalVertexMap.h>
 
 // MBD
 #include <mbd/BbcGeom.h>
 #include <mbd/MbdPmtContainerV1.h>
 #include <mbd/MbdPmtHit.h>
 
+//ROOT includes
 #include <TFile.h>
 #include <TH1.h>
 #include <TH2.h>
 #include <TNtuple.h>
-#include <TProfile2D.h>
-#include <TTree.h>
-
-#include <Event/Event.h>
-#include <Event/packet.h>
-#include <cassert>
-#include <sstream>
-#include <string>
-
-#include <TMath.h>
-#include <cmath>
-#include <iostream>
-#include <random>
-#include <string>
-#include <utility>
-#include <vector>
+#include <TProfile
 #include "TCanvas.h"
 #include "TF1.h"
 #include "TFile.h"
 #include "TH1F.h"
 #include "TRandom3.h"
+#include <TMath.h>
+#include <TLorentzVector.h>
 
-#include <cdbobjects/CDBTTree.h>  // for CDBTTree
-#include <ffamodules/CDBInterface.h>
-#include <phool/recoConsts.h>
+//general includes
+#include <cassert>
+#include <sstream>
+#include <string>
+#include <cmath>
+#include <iostream>
+#include <random>
+#include <utility>
+#include <vector>
 
-#include <g4main/PHG4TruthInfoContainer.h>
+
+
+/// HEPMC truth includes
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#include <HepMC/GenEvent.h>
+#include <HepMC/GenVertex.h>
+#pragma GCC diagnostic pop
+#include <phhepmc/PHHepMCGenEvent.h>
+#include <phhepmc/PHHepMCGenEventMap.h>
+
 
 R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
 
@@ -344,7 +356,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_POS_COR_CEMC");
   if (!clusterContainer)
   {
-    std::cout << PHWHERE << "funkyCaloStuff::process_event - Fatal Error - CLUSTER_CEMC node is missing. " << std::endl;
+    std::cout << PHWHERE << "funkyCaloStuff::process_event - Fatal Error - RawClusterContainer node is missing. " << std::endl;
     funkyCaloStuffcounter++;
     return 0;
   }
