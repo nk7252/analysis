@@ -14,7 +14,7 @@ fi
   export listfile="dst_calo_waveform.list"
   #export listfile="dst_calo_cluster.list"
   #export listfile2="g4hits.list"
-  export listfile2="dst_truth_g4hit.list"
+  export listfile2="dst_truth.list"
   #export listfile3="dst_truth_g4hit.list"
   export listfile3="g4hits.list"
 
@@ -25,7 +25,7 @@ fi
   #CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 10000 DST_CALO_CLUSTER G4Hits 
   #pythia pp. run 11 is pythia pp min bias. run 15 is pythia pp 20 micro-s streaming
   #CreateFileList.pl DST_CALO_CLUSTER G4Hits -type 3 -run 11 -nopileup
-  CreateFileList.pl DST_CALO_WAVEFORM G4Hits DST_TRUTH_G4HIT -type 3 -run 15 -nopileup -n 10000
+  CreateFileList.pl DST_CALO_WAVEFORM G4Hits DST_TRUTH -type 3 -run 15 -nopileup -n 1000
   #run 111 also works see https://wiki.sphenix.bnl.gov/index.php?title=MDC2_2022
 
   # Check if the list files were created successfully
