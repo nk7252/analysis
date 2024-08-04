@@ -28,6 +28,15 @@ fi
   CreateFileList.pl DST_CALO_WAVEFORM G4Hits DST_TRUTH_G4HIT -type 3 -run 15 -nopileup -n 10000
   #run 111 also works see https://wiki.sphenix.bnl.gov/index.php?title=MDC2_2022
 
+  # Check if the list files were created successfully
+  if [[ ! -f $listfile || ! -f $listfile2 || ! -f $listfile3 ]]; then
+      echo "Error: One or more list files were not created successfully."
+      exit 1
+  fi
+
+  echo "All list files created successfully."
+
+
   #DST_GLOBAL-nopileup-n 10000000 DST_CALO_CLUSTER
   #DST_CALO_WAVEFORM
   #number of jobs 
