@@ -25,9 +25,9 @@ fi
   #CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 10000 DST_CALO_CLUSTER G4Hits 
   #pythia pp. run 11 is pythia pp min bias. run 15 is pythia pp 20 micro-s streaming
   #CreateFileList.pl DST_CALO_CLUSTER G4Hits -type 3 -run 11 -nopileup
-  CreateFileList.pl DST_CALO_WAVEFORM G4Hits DST_TRUTH -type 3 -run 15 -nopileup -n 1000
+  CreateFileList.pl DST_CALO_WAVEFORM G4Hits DST_TRUTH -type 3 -run 15 -nopileup 
   #run 111 also works see https://wiki.sphenix.bnl.gov/index.php?title=MDC2_2022
-
+# to test use a small set. like  -n 1000
   # Check if the list files were created successfully
   if [[ ! -f $listfile || ! -f $listfile2 || ! -f $listfile3 ]]; then
       echo "Error: One or more list files were not created successfully."
