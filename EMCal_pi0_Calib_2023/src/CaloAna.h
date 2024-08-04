@@ -183,7 +183,7 @@ class CaloAna : public SubsysReco
 
 
   //bool pileup = false;
-  std::string clustposcorstring;
+  std::string clustcontainerstring;
   std::string calotowerinfostring;
 
   //cuts
@@ -203,7 +203,7 @@ class CaloAna : public SubsysReco
   bool dynMaskClus = false;
   bool getVtx = false;
   bool cutson = true;
-  bool clust_waveform = true;// if on will use  WAVEFORM_CEMC for clusterContainer, superseeds CLUSTER_POS_COR_CEMC
+  bool clust_waveform = true;// if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
   bool poscor = false; //if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
   bool debug = false;
   bool FullMCSpectrum = true;

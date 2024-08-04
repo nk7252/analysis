@@ -259,17 +259,8 @@ int CaloAna::Init(PHCompositeNode*)
   //towers node selection
   calotowerinfostring = (clust_waveform == true) ? "WAVEFORM_CEMC" : "TOWERINFO_CALIB_CEMC";
   //clustercontainer node selection
-  if (poscor == true)
-  {
-    clustposcorstring = "CLUSTER_POS_COR_CEMC";
-  }
-  else
-  {
-    clustposcorstring = (clust_waveform == true) ? "CLUSTERINFO_CEMC" : "CLUSTER_CEMC";
-  }
-  //clustposcorstring = (poscor == true) ? "CLUSTER_POS_COR_CEMC" : ((clust_waveform == true) ? "CLUSTERINFO_CEMC" : "CLUSTER_CEMC");
+  clustcontainerstring = (poscor == true) ? "CLUSTER_POS_COR_CEMC" : ((clust_waveform == true) ? "CLUSTERINFO_CEMC" : "CLUSTER_CEMC");
 
-  
   funkyCaloStuffcounter = 0;
   if (additionalsmearing == false) std::cout << "additional smearing is not being added" << std::endl;
   if (additionalsmearing == true) std::cout << "additional smearing is being added" << std::endl;
@@ -345,7 +336,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   TowerInfoContainer* towers = findNode::getClass<TowerInfoContainer>(topNode, Form("%s", calotowerinfostring.c_str()));
   "TOWERINFO_CALIB_CEMC"
 
-      RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s", clustposcorstring.c_str()));
+      RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s", clustcontainerstring.c_str()));
   // changed from CLUSTERINFO_CEMC2
   // Blair using "CLUSTER_POS_COR_CEMC" now. change from CLUSTER_CEMC
   // RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_POS_COR_CEMC");
