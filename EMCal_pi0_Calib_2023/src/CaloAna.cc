@@ -5,19 +5,19 @@
 #include <globalvertex/GlobalVertexMap.h>
 
 // Fun4All includes
-#include <fun4all/Fun4AllHistoManager.h>
-#include <fun4all/Fun4AllReturnCodes.h>
-#include <g4main/PHG4TruthInfoContainer.h>
-#include <g4main/PHG4Hit.h>
-#include <g4main/PHG4HitContainer.h>
-#include <g4main/PHG4Particle.h>
 #include <Event/Event.h>
 #include <Event/packet.h>
 #include <cdbobjects/CDBTTree.h>  // for CDBTTree
 #include <ffamodules/CDBInterface.h>
-#include <phool/recoConsts.h>
+#include <fun4all/Fun4AllHistoManager.h>
+#include <fun4all/Fun4AllReturnCodes.h>
+#include <g4main/PHG4Hit.h>
+#include <g4main/PHG4HitContainer.h>
+#include <g4main/PHG4Particle.h>
+#include <g4main/PHG4TruthInfoContainer.h>
 #include <phool/PHCompositeNode.h>
 #include <phool/getClass.h>
+#include <phool/recoConsts.h>
 
 // G4Cells includes
 #include <g4detectors/PHG4Cell.h>
@@ -32,42 +32,40 @@
 #include <calobase/RawTowerGeom.h>
 #include <calobase/RawTowerGeomContainer.h>
 #include <calobase/TowerInfo.h>
-#include <calobase/TowerInfov1.h>
-#include <calobase/TowerInfov2.h>
 #include <calobase/TowerInfoContainer.h>
 #include <calobase/TowerInfoContainerv1.h>
 #include <calobase/TowerInfoContainerv2.h>
 #include <calobase/TowerInfoContainerv3.h>
 #include <calobase/TowerInfoDefs.h>
-#include <calobase/RawCluster.h>
-#include <calobase/RawClusterContainer.h>
+#include <calobase/TowerInfov1.h>
+#include <calobase/TowerInfov2.h>
 
 // MBD
 #include <mbd/BbcGeom.h>
 #include <mbd/MbdPmtContainerV1.h>
 #include <mbd/MbdPmtHit.h>
 
-//ROOT includes
-#include <TFile.h>
-#include <TH1.h>
-#include <TH2.h>
-#include <TNtuple.h>
-#include <TProfile.h>
+// ROOT includes
 #include <TCanvas.h>
 #include <TF1.h>
 #include <TFile.h>
+#include <TH1.h>
 #include <TH1F.h>
-#include <TRandom3.h>
-#include <TMath.h>
+#include <TH2.h>
 #include <TLorentzVector.h>
+#include <TMath.h>
+#include <TNtuple.h>
+#include <TProfile.h>
+#include <TRandom3.h>
+#include <TTree.h>
 
-//general includes
+// general includes
 #include <cassert>
-#include <sstream>
-#include <string>
 #include <cmath>
 #include <iostream>
 #include <random>
+#include <sstream>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -232,47 +230,46 @@ int CaloAna::Init(PHCompositeNode*)
         Form("h_InvMass_smear_flatpt_%d_%s", badcalibsmearint, RestrictEtaCuts[i].c_str()),
         Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
   }
-
-  if (clust_waveform == true)
+  //nodes when using dst_calo_waveform, dst_truth
+  /*
+      available nodes in dst_calo_waveform et al
+      DST (PHCompositeNode)/
+        HCALOUT (PHCompositeNode)/
+          WAVEFORM_HCALOUT (IO,TowerInfoContainerv3)
+          TOWERS_HCALOUT (IO,TowerInfoContainerv2)
+          TOWERINFO_CALIB_HCALOUT (IO,TowerInfoContainerv2)
+        HCALIN (PHCompositeNode)/
+          WAVEFORM_HCALIN (IO,TowerInfoContainerv3)
+          TOWERS_HCALIN (IO,TowerInfoContainerv2)
+          TOWERINFO_CALIB_HCALIN (IO,TowerInfoContainerv2)
+        CEMC (PHCompositeNode)/
+          WAVEFORM_CEMC (IO,TowerInfoContainerv3)
+          TOWERINFO_CALIB_CEMC (IO,TowerInfoContainerv2)
+          TOWERS_CEMC (IO,TowerInfoContainerv2)
+          CLUSTERINFO_CEMC (IO,RawClusterContainer)
+        Sync (IO,SyncObjectv1)
+        EventHeader (IO,EventHeaderv1)
+        PHHepMCGenEventMap (IO,PHHepMCGenEventMap)
+        G4HIT_BH_1 (IO,PHG4HitContainer)
+        G4TruthInfo (IO,PHG4TruthInfoContainer)
+        TRKR (PHCompositeNode)/
+          TRKR_HITTRUTHASSOC (IO,TrkrHitTruthAssocv1)
+      */
+  
+  //towers node selection
+  calotowerinfostring = (clust_waveform == true) ? "WAVEFORM_CEMC" : "TOWERINFO_CALIB_CEMC";
+  //clustercontainer node selection
+  if (poscor == true)
   {
-    clustposcorstring = "WAVEFORM_CEMC";
-    /* 
-    available nodes in dst_calo_waveform et al
-    DST (PHCompositeNode)/
-      HCALOUT (PHCompositeNode)/
-         WAVEFORM_HCALOUT (IO,TowerInfoContainerv3)
-         TOWERS_HCALOUT (IO,TowerInfoContainerv2)
-         TOWERINFO_CALIB_HCALOUT (IO,TowerInfoContainerv2)
-      HCALIN (PHCompositeNode)/
-         WAVEFORM_HCALIN (IO,TowerInfoContainerv3)
-         TOWERS_HCALIN (IO,TowerInfoContainerv2)
-         TOWERINFO_CALIB_HCALIN (IO,TowerInfoContainerv2)
-      CEMC (PHCompositeNode)/
-         WAVEFORM_CEMC (IO,TowerInfoContainerv3)
-         TOWERINFO_CALIB_CEMC (IO,TowerInfoContainerv2)
-         TOWERS_CEMC (IO,TowerInfoContainerv2)
-         CLUSTERINFO_CEMC (IO,RawClusterContainer)
-      Sync (IO,SyncObjectv1)
-      EventHeader (IO,EventHeaderv1)
-      PHHepMCGenEventMap (IO,PHHepMCGenEventMap)
-      G4HIT_BH_1 (IO,PHG4HitContainer)
-      G4TruthInfo (IO,PHG4TruthInfoContainer)
-      TRKR (PHCompositeNode)/
-         TRKR_HITTRUTHASSOC (IO,TrkrHitTruthAssocv1)
-    */
+    clustposcorstring = "CLUSTER_POS_COR_CEMC";
   }
   else
   {
-    if (poscor == true)
-    {
-      clustposcorstring = "CLUSTER_POS_COR_CEMC";
-    }
-    else
-    {
-      clustposcorstring = "CLUSTER_CEMC";
-    }
+    clustposcorstring = (clust_waveform == true) ? "CLUSTERINFO_CEMC" : "CLUSTER_CEMC";
   }
+  //clustposcorstring = (poscor == true) ? "CLUSTER_POS_COR_CEMC" : ((clust_waveform == true) ? "CLUSTERINFO_CEMC" : "CLUSTER_CEMC");
 
+  
   funkyCaloStuffcounter = 0;
   if (additionalsmearing == false) std::cout << "additional smearing is not being added" << std::endl;
   if (additionalsmearing == true) std::cout << "additional smearing is being added" << std::endl;
@@ -345,9 +342,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   // if (!m_vtxCut || abs(vtx_z) > _vz)  return Fun4AllReturnCodes::EVENT_OK;
 
-  TowerInfoContainer* towers = findNode::getClass<TowerInfoContainer>(topNode, "TOWERINFO_CALIB_CEMC");
+  TowerInfoContainer* towers = findNode::getClass<TowerInfoContainer>(topNode, Form("%s", calotowerinfostring.c_str()));
+  "TOWERINFO_CALIB_CEMC"
 
-  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s", clustposcorstring.c_str()));
+      RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s", clustposcorstring.c_str()));
   // changed from CLUSTERINFO_CEMC2
   // Blair using "CLUSTER_POS_COR_CEMC" now. change from CLUSTER_CEMC
   // RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_POS_COR_CEMC");

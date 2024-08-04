@@ -184,6 +184,7 @@ class CaloAna : public SubsysReco
 
   //bool pileup = false;
   std::string clustposcorstring;
+  std::string calotowerinfostring;
 
   //cuts
   //float maxDr = 1.1;
