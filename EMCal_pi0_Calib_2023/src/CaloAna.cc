@@ -334,9 +334,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // if (!m_vtxCut || abs(vtx_z) > _vz)  return Fun4AllReturnCodes::EVENT_OK;
 
   TowerInfoContainer* towers = findNode::getClass<TowerInfoContainer>(topNode, Form("%s", calotowerinfostring.c_str()));
-  "TOWERINFO_CALIB_CEMC"
 
-      RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s", clustcontainerstring.c_str()));
+  RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, Form("%s", clustcontainerstring.c_str()));
   // changed from CLUSTERINFO_CEMC2
   // Blair using "CLUSTER_POS_COR_CEMC" now. change from CLUSTER_CEMC
   // RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_POS_COR_CEMC");
