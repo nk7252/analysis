@@ -224,7 +224,7 @@ int CaloAna::Init(PHCompositeNode*)
         Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
   }
 
-  if (clust_waveform = true)
+  if (clust_waveform == true)
   {
     clustposcorstring = "WAVEFORM_CEMC";
     /* 
