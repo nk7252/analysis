@@ -224,13 +224,44 @@ int CaloAna::Init(PHCompositeNode*)
         Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
   }
 
-  if (poscor == true)
+  if (clust_waveform = true)
   {
-    clustposcorstring = "CLUSTER_POS_COR_CEMC";
+    clustposcorstring = "WAVEFORM_CEMC";
+    /* 
+    available nodes in dst_calo_waveform et al
+    DST (PHCompositeNode)/
+      HCALOUT (PHCompositeNode)/
+         WAVEFORM_HCALOUT (IO,TowerInfoContainerv3)
+         TOWERS_HCALOUT (IO,TowerInfoContainerv2)
+         TOWERINFO_CALIB_HCALOUT (IO,TowerInfoContainerv2)
+      HCALIN (PHCompositeNode)/
+         WAVEFORM_HCALIN (IO,TowerInfoContainerv3)
+         TOWERS_HCALIN (IO,TowerInfoContainerv2)
+         TOWERINFO_CALIB_HCALIN (IO,TowerInfoContainerv2)
+      CEMC (PHCompositeNode)/
+         WAVEFORM_CEMC (IO,TowerInfoContainerv3)
+         TOWERINFO_CALIB_CEMC (IO,TowerInfoContainerv2)
+         TOWERS_CEMC (IO,TowerInfoContainerv2)
+         CLUSTERINFO_CEMC (IO,RawClusterContainer)
+      Sync (IO,SyncObjectv1)
+      EventHeader (IO,EventHeaderv1)
+      PHHepMCGenEventMap (IO,PHHepMCGenEventMap)
+      G4HIT_BH_1 (IO,PHG4HitContainer)
+      G4TruthInfo (IO,PHG4TruthInfoContainer)
+      TRKR (PHCompositeNode)/
+         TRKR_HITTRUTHASSOC (IO,TrkrHitTruthAssocv1)
+    */
   }
   else
   {
-    clustposcorstring = "CLUSTER_CEMC";
+    if (poscor == true)
+    {
+      clustposcorstring = "CLUSTER_POS_COR_CEMC";
+    }
+    else
+    {
+      clustposcorstring = "CLUSTER_CEMC";
+    }
   }
 
   funkyCaloStuffcounter = 0;
@@ -636,7 +667,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             float delR = pi0.DeltaR(truthpi0);
             h_delR_pionrecTrth->Fill(delR);
-            if (id==111 && delR < 0.015)
+            if (id == 111 && delR < 0.015)
             {
               h_truth_spectrum1->Fill(truthpi0.Pt());
             }

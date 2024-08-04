@@ -202,7 +202,8 @@ class CaloAna : public SubsysReco
   bool dynMaskClus = false;
   bool getVtx = false;
   bool cutson = true;
-  bool poscor = false;
+  bool clust_waveform = true;// if on will use  WAVEFORM_CEMC for clusterContainer, superseeds CLUSTER_POS_COR_CEMC
+  bool poscor = false; //if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
   bool debug = false;
   bool FullMCSpectrum = true;
   //SPMC
