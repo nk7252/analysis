@@ -16,11 +16,11 @@ fi
   #export listfile2="g4hits.list"
   export listfile2="dst_truth.list"
   #export listfile3="dst_truth_g4hit.list"
-  export listfile3="g4hits.list"
+  #export listfile3="g4hits.list"
 
   rm $listfile
   rm $listfile2
-  rm $listfile3
+  #rm $listfile3
   #single particle pion
   #CreateFileList.pl -type 14  -run 13 -particle pi0 -pmin 200 -pmax 10000 DST_CALO_CLUSTER G4Hits 
   #pythia pp. run 11 is pythia pp min bias. run 15 is pythia pp 20 micro-s streaming
