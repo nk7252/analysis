@@ -209,11 +209,11 @@ class CaloAna : public SubsysReco
   bool FullMCSpectrum = true;
   //SPMC
   bool matchspmctruth = false;//SPMC. check must be in primary range
-  bool additionalsmearing = false;//should be on for spmc in all cases. if you want 0 use 0 for smearint
+  bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
   float badcalibsmear;
   //NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
-  int badcalibsmearint=0;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
-  //gen MC: pythia
+  int badcalibsmearint=80;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  //gen MC: pythia, *should remove smeared/weighted histograms.*
   bool matchmctruth = true;//NOT spmc. check must be in secondary range
   bool filltruthspectrum = true;
 
