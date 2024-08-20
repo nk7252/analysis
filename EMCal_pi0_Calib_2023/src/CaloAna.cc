@@ -373,9 +373,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     float clus_pt = E_vec_cluster.perp();
     float clus_chisq = recoCluster->get_chi2();
+    float prob = recoCluster->get_prob();
 
     if (clus_pt < nClus_ptCut && cutson) continue;
-    if (clusterprobcut && E_vec_cluster->get_prob() < clusterprob && cutson) continue;
+    if (clusterprobcut && prob < clusterprob && cutson) continue;
     else if (clus_chisq > clus_chisq_cut && cutson) continue;
 
     nClusCount++;
@@ -404,7 +405,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_eta = E_vec_cluster.pseudoRapidity();
     float clus_phi = E_vec_cluster.phi();
     float clus_pt = E_vec_cluster.perp();
-    float prob = E_vec_cluster->get_prob();
+    float prob = recoCluster->get_prob();
     // clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
     if (clusterprobcut && prob < clusterprob && cutson)
@@ -423,7 +424,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   
     if (additionalsmearing)
     {
-      if(eTCutbool && pi0smearvec[0].e() < etcut && cutson)
+      if(eTCutbool && pi0smearvec[0].E() < etcut && cutson)
       {
         h_cutCounter->Fill(2);
         continue;
@@ -436,7 +437,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
     else if (!additionalsmearing)
     {
-      if(eTCutbool && photon1.e() < etcut && cutson)
+      if(eTCutbool && photon1.E() < etcut && cutson)
       {
         h_cutCounter->Fill(2);
         continue;
@@ -502,7 +503,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float clus2_phi = E_vec_cluster2.phi();
       float clus2_pt = E_vec_cluster2.perp();
       float clus2_chisq = recoCluster2->get_chi2();
-      float prob2 = E_vec_cluster2->get_prob();
+      float prob2 = recoCluster2->get_prob();
       if (clusterprobcut && prob2 < clusterprob && cutson)
       {
         h_cutCounter->Fill(6);
@@ -523,7 +524,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       if (additionalsmearing)
       {
 
-        if(eTCutbool && pi0smearvec[1].e() < etcut && cutson)
+        if(eTCutbool && pi0smearvec[1].E() < etcut && cutson)
         {
           h_cutCounter->Fill(7);
           continue;
@@ -552,7 +553,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       }
       else if (!additionalsmearing)
       {
-        if(eTCutbool && photon2.e() < etcut && cutson)
+        if(eTCutbool && photon2.E() < etcut && cutson)
         {
           h_cutCounter->Fill(7);
           continue;
