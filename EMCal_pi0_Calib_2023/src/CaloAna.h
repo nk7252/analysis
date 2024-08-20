@@ -209,6 +209,7 @@ class CaloAna : public SubsysReco
   bool FullMCSpectrum = true;
   bool eTCutbool = true;//replace pt1 and pt2 cuts with et cuts
   bool clusterprobcut = true; // if true use cluster prob cut, if false use chisq cut
+  bool zvtxcut_bool = true;
   //SPMC
   bool matchspmctruth = false;//SPMC. check must be in primary range
   bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint

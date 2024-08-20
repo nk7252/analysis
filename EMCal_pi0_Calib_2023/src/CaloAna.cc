@@ -291,8 +291,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float pi0ptcutfactor = 0; // seto to 0 to effectively disable it
   float ptMaxCut = 100;     // no cut in data, as far as I know. so I set it to a value it is unlikely to reach
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
-  float pt2ClusCut = 0.7;  // // 0.7
-  float etcut = 0.5;
+  float pt2ClusCut = 0.7;  // 0.7
+  float etcut = 1;
+  float zvtx_cut_val = 30;
 
   /*
   if (nClusCount > 30)
@@ -326,6 +327,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         vtx_z = vtx->get_z();
       }
     }
+  }
+  if(zvtxcut_bool && abs(vtx_z) > zvtx_cut_val) 
+  {
+    h_cutCounter->Fill(12);
+    return Fun4AllReturnCodes::EVENT_OK;
   }
 
   //////////////////////////////////////////////
