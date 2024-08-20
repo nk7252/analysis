@@ -284,13 +284,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
   float maxDr = 1.1;
-  float maxAlpha = 0.6;
-  float clus_chisq_cut = 4;
-  float nClus_ptCut = 0.5;  // 0.5
-  float pi0ptcutfactor = 0;
-  float ptMaxCut = 20;     // 7 in data? ** keep this in mind. 3 may make more sense, but 7 is
+  float maxAlpha = 0.5;
+  float clus_chisq_cut = 4;// normally 4
+  float clusterprob = 0.1; // replacing chisqr cut
+  float nClus_ptCut = 0.0;  // 0.5 normally
+  float pi0ptcutfactor = 0; // seto to 0 to effectively disable it
+  float ptMaxCut = 100;     // no cut in data, as far as I know. so I set it to a value it is unlikely to reach
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;  // // 0.7
+  float etcut = 0.5;
 
   /*
   if (nClusCount > 30)
@@ -373,7 +375,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_chisq = recoCluster->get_chi2();
 
     if (clus_pt < nClus_ptCut && cutson) continue;
-    if (clus_chisq > clus_chisq_cut && cutson) continue;
+    if (clusterprobcut && E_vec_cluster->get_prob() < clusterprob && cutson) continue;
+    else if (clus_chisq > clus_chisq_cut && cutson) continue;
 
     nClusCount++;
   }
@@ -401,21 +404,31 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float clus_eta = E_vec_cluster.pseudoRapidity();
     float clus_phi = E_vec_cluster.phi();
     float clus_pt = E_vec_cluster.perp();
+    float prob = E_vec_cluster->get_prob();
     // clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
-    if (clus_chisq > clus_chisq_cut && cutson)
+    if (clusterprobcut && prob < clusterprob && cutson)
+    {
+      h_cutCounter->Fill(1);
+      continue;
+    }
+    else if (clus_chisq > clus_chisq_cut && cutson)
     {
       h_cutCounter->Fill(1);
       continue;
     }
     TLorentzVector photon1;
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
-
     pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
-
+  
     if (additionalsmearing)
     {
-      if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson)
+      if(eTCutbool && pi0smearvec[0].e() < etcut && cutson)
+      {
+        h_cutCounter->Fill(2);
+        continue;
+      }
+      else if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson)
       {
         h_cutCounter->Fill(2);
         continue;
@@ -423,7 +436,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
     else if (!additionalsmearing)
     {
-      if ((photon1.Pt() < pt1ClusCut || photon1.Pt() > ptMaxCut) && cutson)
+      if(eTCutbool)
+      {
+        if (photon1.e() < etcut && cutson){
+          h_cutCounter->Fill(2);
+          continue;
+        }
+      }
+      else if ((photon1.Pt() < pt1ClusCut || photon1.Pt() > ptMaxCut) && cutson)
       {
         h_cutCounter->Fill(2);
         continue;
@@ -484,7 +504,13 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float clus2_phi = E_vec_cluster2.phi();
       float clus2_pt = E_vec_cluster2.perp();
       float clus2_chisq = recoCluster2->get_chi2();
-
+      float prob2 = E_vec_cluster2->get_prob();
+      if (clusterprobcut && prob2 < clusterprob && cutson)
+      {
+        h_cutCounter->Fill(6);
+        continue;
+      }
+      else
       if (clus2_chisq > clus_chisq_cut && cutson)
       {
         h_cutCounter->Fill(6);
@@ -498,11 +524,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       if (additionalsmearing)
       {
-        if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson)
+
+        if(eTCutbool && pi0smearvec[1].e() < etcut && cutson)
         {
           h_cutCounter->Fill(7);
           continue;
         }
+        else if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson)
+        {
+          h_cutCounter->Fill(7);
+          continue;
+        }
+
         if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson)
         {
           h_cutCounter->Fill(8);
@@ -521,11 +554,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       }
       else if (!additionalsmearing)
       {
-        if ((photon2.Pt() < pt2ClusCut || photon2.Pt() > ptMaxCut) && cutson)
+        if(eTCutbool && photon2.e() < etcut && cutson)
         {
           h_cutCounter->Fill(7);
           continue;
         }
+        else if ((photon2.Pt() < pt2ClusCut || photon2.Pt() > ptMaxCut) && cutson)
+        {
+          h_cutCounter->Fill(7);
+          continue;
+        }
+
         if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson)
         {
           h_cutCounter->Fill(8);
