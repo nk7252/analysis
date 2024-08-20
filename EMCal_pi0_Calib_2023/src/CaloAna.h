@@ -207,7 +207,8 @@ class CaloAna : public SubsysReco
   bool poscor = false; //if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
   bool debug = false;
   bool FullMCSpectrum = true;
-  bool eTCut = true;//replace pt1 and pt2 cuts with et cuts
+  bool eTCutbool = true;//replace pt1 and pt2 cuts with et cuts
+  bool clusterprobcut = true; // if true use cluster prob cut, if false use chisq cut
   //SPMC
   bool matchspmctruth = false;//SPMC. check must be in primary range
   bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
