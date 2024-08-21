@@ -570,6 +570,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(10);
           continue;
         }
+        if(abs(pi0smearvec[2].Eta()) > 0.6)
+        {
+          h_cutCounter->Fill(13);
+          continue;
+        }
       }
       else if (!additionalsmearing)
       {
@@ -600,6 +605,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         if (pi0.Pt() < pi0ptcut)
         {
           h_cutCounter->Fill(10);
+          continue;
+        }
+        if(abs(pi0.Eta()) > 0.6)
+        {
+          h_cutCounter->Fill(13);
           continue;
         }
       }
