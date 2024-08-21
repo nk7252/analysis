@@ -293,6 +293,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;  // 0.7
   float etcut = 1;
+  float etacutval = 0.6;
   float zvtx_cut_val = 30;
 
   /*
@@ -570,7 +571,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(10);
           continue;
         }
-        if(abs(pi0smearvec[2].Eta()) > 0.6)
+        if(etaCutbool && abs(pi0smearvec[2].Eta()) > etacutval)
         {
           h_cutCounter->Fill(13);
           continue;
@@ -607,7 +608,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(10);
           continue;
         }
-        if(abs(pi0.Eta()) > 0.6)
+        if(etaCutbool&&abs(pi0.Eta()) > etacutval)
         {
           h_cutCounter->Fill(13);
           continue;

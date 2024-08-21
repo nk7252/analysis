@@ -208,14 +208,15 @@ class CaloAna : public SubsysReco
   bool debug = false;
   bool FullMCSpectrum = true;
   bool eTCutbool = true;//replace pt1 and pt2 cuts with et cuts
+  bool etaCutbool = true;//do an eta cut or not
   bool clusterprobcut = true; // if true use cluster prob cut, if false use chisq cut
   bool zvtxcut_bool = true;
   //SPMC
   bool matchspmctruth = false;//SPMC. check must be in primary range
-  bool additionalsmearing = false;//should be on for spmc in all cases. if you want 0 use 0 for smearint
+  bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
   float badcalibsmear;
   //NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
-  int badcalibsmearint=0;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  int badcalibsmearint=100;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   //gen MC: pythia, *should remove smeared/weighted histograms.*
   bool matchmctruth = true;//NOT spmc. check must be in secondary range
   bool filltruthspectrum = true;
