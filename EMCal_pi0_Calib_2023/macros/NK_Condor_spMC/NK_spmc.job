@@ -12,7 +12,7 @@ request_cpus   = 1
 request_memory = 2.0GB
 ##request_disk   = 10240k
 
-Initialdir     = /sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros
+Initialdir     = /sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros
 Executable     = $(Initialdir)/NK_Condor_spMC/NK_spmc.sh
 Output         = $(Initialdir)/NK_Condor_spMC/NK_spmc_Output.out
 Error          = $(Initialdir)/NK_Condor_spMC/NK_spmc_Error.err
