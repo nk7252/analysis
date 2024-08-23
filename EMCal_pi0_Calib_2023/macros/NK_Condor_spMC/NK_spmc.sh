@@ -20,8 +20,8 @@ inputdata_sp="$2"
 sp_truth_list="$3"
 
 #create absolute path for input files
-input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${inputdata_sp}"
-input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${sp_truth_list}"
+input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/NK_Condor_spMC/${inputdata_sp}"
+input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/NK_Condor_spMC/${sp_truth_list}"
 
 
 #important setup for path if you are running on condor
