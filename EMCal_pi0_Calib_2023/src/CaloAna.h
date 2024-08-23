@@ -219,7 +219,7 @@ class CaloAna : public SubsysReco
   //NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   int badcalibsmearint=0;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   //gen MC: pythia, *should remove smeared/weighted histograms.*
-  bool matchmctruth = true;//NOT spmc. check must be in secondary range
+  bool matchmctruth = true;//NOT spmc. redundant with matchspmctruth
   bool filltruthspectrum = true;
 
   TH1F* h_pt1;
