@@ -407,11 +407,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     CLHEP::Hep3Vector E_vec_cluster;
     if(pp_rawcluster)
     {
-      CLHEP::Hep3Vector E_vec_cluster = RawClusterUtility::GetEVec(*recoCluster);
+      E_vec_cluster = RawClusterUtility::GetEVec(*recoCluster);
     }
     else if(!pp_rawcluster)//i.e if AuAu
     {  
-      CLHEP::Hep3Vector E_vec_cluster = RawClusterUtility::GetECoreVec(*recoCluster, vertex);
+      E_vec_cluster = RawClusterUtility::GetECoreVec(*recoCluster, vertex);
     }
     //GetEVec? look at rawclusterv1 maybe?
     std::vector<TLorentzVector> pi0smearvec(3);
