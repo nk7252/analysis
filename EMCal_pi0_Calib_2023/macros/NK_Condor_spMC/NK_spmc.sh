@@ -6,7 +6,7 @@
 #which runs it as 
 # root -l -q "Fun4All_EMCal_sp.C(100,inputdata_sp.txt, g4hits.list)"
 
-#or try
+#or try : ./NK_spmc.sh  100 dst_calo_waveform.list g4hits.list
 #root -l -q "Fun4All_EMCal_sp.C(100,dst_calo_waveform.list, dst_truth.list)"
 
 if [ "$#" -ne 3 ]; then
@@ -20,15 +20,15 @@ inputdata_sp="$2"
 sp_truth_list="$3"
 
 #create absolute path for input files
-input_file1="/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${inputdata_sp}"
-input_file2="/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${sp_truth_list}"
+input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${inputdata_sp}"
+input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${sp_truth_list}"
 
 
 #important setup for path if you are running on condor
 export USER="nkumar -u -n"
 export LOGNAME=${USER}
 export HOME=/sphenix/u/${LOGNAME}
-baseDir=/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros
+baseDir=/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros
 
 #always run this setup anyway
 source /opt/sphenix/core/bin/sphenix_setup.sh -n new
