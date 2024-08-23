@@ -205,6 +205,7 @@ class CaloAna : public SubsysReco
   bool cutson = true;
   bool clust_waveform = true;// if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
   bool poscor = false; //if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
+  bool pp_rawcluster = true; //if on will use GetEVec, superseeds GetECoreVec. ECore is for AuAu
   bool debug = false;
   bool FullMCSpectrum = true;
   bool eTCutbool = true;//replace pt1 and pt2 cuts with et cuts
