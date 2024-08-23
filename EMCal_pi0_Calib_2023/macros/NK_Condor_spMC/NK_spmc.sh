@@ -6,7 +6,7 @@
 #which runs it as 
 # root -l -q "Fun4All_EMCal_sp.C(100,inputdata_sp.txt, g4hits.list)"
 
-#or try : ./NK_spmc.sh  100 dst_calo_waveform.list g4hits.list
+#or try : ./NK_spmc.sh  100 dst_calo_waveform.list dst_truth.list
 #root -l -q "Fun4All_EMCal_sp.C(100,dst_calo_waveform.list, dst_truth.list)"
 
 if [ "$#" -ne 3 ]; then
