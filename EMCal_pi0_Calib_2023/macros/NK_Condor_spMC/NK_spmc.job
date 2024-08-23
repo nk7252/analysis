@@ -18,7 +18,7 @@ Output         = $(Initialdir)/NK_Condor_spMC/NK_spmc_Output.out
 Error          = $(Initialdir)/NK_Condor_spMC/NK_spmc_Error.err
 Log            = $(Initialdir)/NK_Condor_spMC/NK_spmc_Log.log
 
-Arguments      = 10000 dst_calo_waveform.list g4hits.list
+Arguments      = 10000 dst_calo_waveform.list dst_truth.list
 #inputdata_sp.txt g4hits.list
 
 Queue
