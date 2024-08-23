@@ -407,7 +407,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     CLHEP::Hep3Vector E_vec_cluster;
     if(pp_rawcluster)
     {
-      E_vec_cluster = RawClusterUtility::GetEVec(*recoCluster);
+      E_vec_cluster = RawClusterUtility::GetEVec(*recoCluster, vertex);
     }
     else if(!pp_rawcluster)//i.e if AuAu
     {  
