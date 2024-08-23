@@ -6,6 +6,9 @@
 #which runs it as 
 # root -l -q "Fun4All_EMCal_sp.C(100,inputdata_sp.txt, g4hits.list)"
 
+#or try
+#root -l -q "Fun4All_EMCal_sp.C(100,dst_calo_waveform.list, dst_truth.list)"
+
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0  <n_events> <inputdata_sp> <sp_truth_list>"
     echo "Default Usage is: $0  10000 inputdata_sp.txt g4hits.list"
@@ -17,8 +20,8 @@ inputdata_sp="$2"
 sp_truth_list="$3"
 
 #create absolute path for input files
-input_file1="/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/${inputdata_sp}"
-input_file2="/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/${sp_truth_list}"
+input_file1="/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${inputdata_sp}"
+input_file2="/sphenix/u/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${sp_truth_list}"
 
 
 #important setup for path if you are running on condor
