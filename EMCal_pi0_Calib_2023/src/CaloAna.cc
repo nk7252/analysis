@@ -672,7 +672,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_truth_pt->Fill(myVector.Pt(), weight);
           int id = truth->get_pid();
           h_truth_pid_p->Fill(id);
-          if (filltruthspectrum && (matchspmctruth||matchmctruth))
+          if (filltruthspectrum && (matchmctruth))
           {
             float delR = pi0.DeltaR(myVector);
             if (id == 111 && delR < 0.015)
@@ -769,7 +769,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
     if (truthinfo)
     {
-      if (matchspmctruth||matchmctruth)
+      if (matchmctruth)
       {  // primaries
         PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
         for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)

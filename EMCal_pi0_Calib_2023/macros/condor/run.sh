@@ -13,8 +13,9 @@ fi
 
   export listfile="dst_calo_waveform.list"
   #export listfile="dst_calo_cluster.list"
-  #export listfile2="g4hits.list"
-  export listfile2="dst_truth.list"
+  export listfile2="g4hits.list"
+  #export listfile2="dst_truth.list"
+
   #export listfile3="dst_truth_g4hit.list"
   #export listfile3="g4hits.list"
 
@@ -29,6 +30,7 @@ fi
   #CreateFileList.pl DST_CALO_CLUSTER G4Hits -type 3 -run 11 -nopileup
 
   #CreateFileList.pl DST_CALO_WAVEFORM DST_TRUTH -type 3 -run 15 -nopileup -n 1000000000
+  
   #
   #CreateFileList.pl -run 15 -type 3 -nop DST_CALO_WAVEFORM DST_TRUTH -n 100000
   #G4Hits || ! -f $listfile3 
@@ -46,7 +48,7 @@ fi
   #DST_GLOBAL-nopileup-n 10000000 DST_CALO_CLUSTER
   #DST_CALO_WAVEFORM
   #number of jobs 
-  j=10000
+  j=1000
 
 
   # Count the number of lines in dst_calo_cluster.list
