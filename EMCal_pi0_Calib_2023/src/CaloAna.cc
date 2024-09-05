@@ -52,6 +52,8 @@
 #include <TH1.h>
 #include <TH1F.h>
 #include <TH2.h>
+#include <TH3.h>
+#include <TH3F.h>
 #include <TLorentzVector.h>
 #include <TMath.h>
 #include <TNtuple.h>
