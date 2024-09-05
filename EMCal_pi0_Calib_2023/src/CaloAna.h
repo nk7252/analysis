@@ -81,8 +81,7 @@ class CaloAna : public SubsysReco
   TH2F* h_InvMass_smear_2d = nullptr;
   TH1F* h_InvMass_smear_weighted= nullptr;
   TH2F* h_InvMass_smear_weighted_2d= nullptr;
-  TH3F* h_InvMass_smear_weighted_asymmetry_3d = nullptr;
-  TH3F* h_InvMass_photonE_smear_weighted_3d = nullptr;
+
 
   // should add truth histos too? 
   //h_etaphidist_InvMass_over200M->Draw("LEGO")
@@ -235,6 +234,8 @@ class CaloAna : public SubsysReco
   TH1F* h_nosmear_pi0E_weighted;
   TH1F* h_smear_nosmear_pi0E;
   TH1F* h_smear_nosmear_pi0E_weighted;
+  TH3* h_InvMass_smear_weighted_asymmetry_3d = nullptr;
+  TH3* h_InvMass_photonE_smear_weighted_3d = nullptr;
 
   float target_pi0_mass = 0.145;
   double truth_pt;
