@@ -621,7 +621,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           const PHG4Particle* truth = iter->second;
           if (!truthinfo->is_primary(truth)) continue;
           TLorentzVector myVector;
-          myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+          if(!eta_weight){
+            myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+          } 
+          else if(eta_weight){
+            myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.54786);
+          }
           float energy = myVector.E();
           weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
           h_truth_e->Fill(energy, weight);
@@ -633,7 +638,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           if (filltruthspectrum && (matchmctruth))
           {
             float delR = pi0.DeltaR(myVector);
-            if (id == 111 && delR < 0.015)
+            if ((id == 111||(eta_weight && id == 221)) && delR < 0.015)
             {
               h_truth_spectrum1->Fill(myVector.Pt());
             }
@@ -652,12 +657,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
           if(eta_weight)
           {
-            inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);;
+            inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);;//mT scaling
           }
           h_inv_yield->Fill(inv_yield);
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
           h_InvMass_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
           h_InvMass_smear_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
+          h_InvMass_photonE_smear_weighted_3d->Fill(pi0smearvec[0].Pt(), pi0smearvec[1].Pt(), pi0smearvec[2].M(), inv_yield);
+          h_InvMass_smear_weighted_asymmetry_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()), inv_yield);
           if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
           if (debug) std::cout << "M=" << myVector.M() << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
         }
@@ -716,7 +723,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           const PHG4Particle* truth = iter->second;
           if (!truthinfo->is_primary(truth)) continue;
-          if (truth->get_pid() == 111)
+          if (truth->get_pid() == 111||(eta_weight && truth->get_pid() == 221))
           {
             float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
             float pion_e = truth->get_e();
