@@ -127,7 +127,7 @@ int CaloAna::Init(PHCompositeNode*)
   // 1D distributions
   // h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 600, 0, 1.2);
   h_InvMass_w = new TH1F("h_InvMass_w", "Invariant Mass", 600, 0, 1.2);
-  h_InvMassMix = new TH1F("h_InvMassMix", "Invariant Mass", 120, 0, 1.2);
+  h_InvMassMix = new TH1F("h_InvMassMix", "Invariant Mass", 600, 0, 1.2);
 
   // cluster QA
   h_etaphi_clus = new TH2F("h_etaphi_clus", "", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
@@ -159,9 +159,9 @@ int CaloAna::Init(PHCompositeNode*)
   h_truthmatched_mass = new TH1F("h_truthmatched_mass", "Invariant Mass, truth matched(delR<0.015)", 600, 0, 1.2);
   h_truthmatched_mass2 = new TH1F("h_truthmatched_mass2", "Invariant Mass, truth matched(delR<0.1)", 600, 0, 1.2);
   h_truthmatched_mass3 = new TH1F("h_truthmatched_mass3", "Invariant Mass, truth matched(delR<0.2)", 600, 0, 1.2);
-  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 4 * 10, 0, 10, 600, 0, 1.2);
-  h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 4 * 10, 0, 10, 600, 0, 1.2);
-  h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.25)", 4 * 10, 0, 10, 600, 0, 1.2);
+  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.25)", 8 * 10, 0, 20, 600, 0, 1.2);
 
   // high mass tail diagnostic
   std::vector<std::string> HistList = {"photon1", "photon2", "all photons", "pions"};
@@ -206,9 +206,9 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_smear_weighted = new TH1F(Form("h_InvMass_smear_weighted_%d", badcalibsmearint), Form("Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 600, 0, 1.2);
 
   // 2d variations
-  h_InvMass_smear_weighted_2d = new TH2F(Form("h_InvMass_smear_weighted_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 4 * 10, 0, 10, 600, 0, 1.2);
+  h_InvMass_smear_weighted_2d = new TH2F(Form("h_InvMass_smear_weighted_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 600, 0, 1.2);
 
-  h_InvMass_smear_2d = new TH2F(Form("h_InvMass_smear_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 4 * 10, 0, 10, 600, 0, 1.2);
+  h_InvMass_smear_2d = new TH2F(Form("h_InvMass_smear_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 600, 0, 1.2);
 
   std::vector<std::string> RestrictEtaCuts = {"Low_Eta", "Mid_Eta", "High_Eta"};
   etaRanges = {
