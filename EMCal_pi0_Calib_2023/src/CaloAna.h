@@ -81,25 +81,9 @@ class CaloAna : public SubsysReco
   TH2F* h_InvMass_smear_2d = nullptr;
   TH1F* h_InvMass_smear_weighted= nullptr;
   TH2F* h_InvMass_smear_weighted_2d= nullptr;
-  
+  TH3F* h_InvMass_smear_weighted_asymmetry_3d = nullptr;
+  TH3F* h_InvMass_photonE_smear_weighted_3d = nullptr;
 
-  std::vector<std::pair<float, float>> etaRanges;
-  TH1F* h_InvMass_smear_risingpt[3]; 
-  TH1F* h_InvMass_smear_fallingpt[3];
-  TH1F* h_InvMass_smear_flatpt[3];
-
-  TH1F* h_Dphidist_InvMass_under200M = nullptr;
-  TH1F* h_Dphidist_InvMass_over200M = nullptr;
-  TH1F* h_Detadist_InvMass_under200M = nullptr;
-  TH1F* h_Detadist_InvMass_over200M = nullptr;
-
-  TH1F* h_phidist_InvMass_under200M[4];
-  TH1F* h_etadist_InvMass_under200M[4];  
-  TH2F* h_etaphidist_InvMass_under200M[4];
-
-  TH1F* h_phidist_InvMass_over200M[4];
-  TH1F* h_etadist_InvMass_over200M[4];
-  TH2F* h_etaphidist_InvMass_over200M[4];
   // should add truth histos too? 
   //h_etaphidist_InvMass_over200M->Draw("LEGO")
   // h_etaphidist_InvMass_under200M->Draw("LEGO")
@@ -175,7 +159,6 @@ class CaloAna : public SubsysReco
   std::vector<int> m_bbc_type;
   std::vector<int> m_bbc_side;
 
-  std::vector<float> pidcuts;
 
 
   int _eventcounter;
@@ -245,7 +228,6 @@ class CaloAna : public SubsysReco
   TH1F* h_pion_pt_weight;
   TH1F* h_truth_pid_p;
   TH1F* h_truth_pid_s;
-  TH1F* h_truth_pid_cuts[6];
   TH1F* h_inv_yield;
   TH1F* h_smear_pi0E;
   TH1F* h_nosmear_pi0E;

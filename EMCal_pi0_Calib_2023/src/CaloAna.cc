@@ -163,34 +163,10 @@ int CaloAna::Init(PHCompositeNode*)
   h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 8 * 10, 0, 20, 600, 0, 1.2);
   h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.25)", 8 * 10, 0, 20, 600, 0, 1.2);
 
-  // high mass tail diagnostic
-  std::vector<std::string> HistList = {"photon1", "photon2", "all photons", "pions"};
-  for (int i = 0; i < 4; i++)
-  {
-    // eta and phi distributions
-    h_phidist_InvMass_under200M[i] = new TH1F(Form("h_phidist_%s_InvMass_under200M", HistList[i].c_str()), Form("Phi dist for Inv mass under 200 MeV:%s", HistList[i].c_str()), 140, -7 / 8 * TMath::Pi(), 7 / 8 * TMath::Pi());
-    h_phidist_InvMass_over200M[i] = new TH1F(Form("h_phidist_%s_InvMass_over200M", HistList[i].c_str()), Form("Phi dist for Inv mass over 200 MeV:%s", HistList[i].c_str()), 140, -7 / 8 * TMath::Pi(), 7 / 8 * TMath::Pi());
-
-    h_etadist_InvMass_under200M[i] = new TH1F(Form("h_etadist_%s_InvMass_under200M", HistList[i].c_str()), Form("Eta dist for Inv mass under 200 MeV:%s", HistList[i].c_str()), 140, -1.2, 1.2);
-    h_etadist_InvMass_over200M[i] = new TH1F(Form("h_etadist_%s_InvMass_over200M", HistList[i].c_str()), Form("Eta dist for Inv mass over 200 MeV:%s", HistList[i].c_str()), 140, -1.2, 1.2);
-
-    // eta-phi distributions
-    h_etaphidist_InvMass_under200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_under200M", HistList[i].c_str()), Form("Eta-Phi dist for Inv mass under 200 MeV:%s", HistList[i].c_str()), 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-    h_etaphidist_InvMass_over200M[i] = new TH2F(Form("h_etaphidist_%s_InvMass_over200M", HistList[i].c_str()), Form("Eta-Phi dist for Inv mass over 200 MeV:%s", HistList[i].c_str()), 24, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());  // eta used to be 140
-  }
-
-  // dist of deta or dphi
-  h_Dphidist_InvMass_under200M = new TH1F("h_Dphidist_InvMass_under200M", "Delta Phi dist for Inv mass under 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
-  h_Dphidist_InvMass_over200M = new TH1F("h_Dphidist_InvMass_over200M", "Delta Phi dist for Inv mass over 200 MeV", 90, -1 * TMath::Pi() / 4, 1 * TMath::Pi() / 4);
-  h_Detadist_InvMass_under200M = new TH1F("h_Detadist_InvMass_under200M", "Delta Eta dist for Inv mass under 200 MeV", 140, -1.2, 1.2);
-  h_Detadist_InvMass_over200M = new TH1F("h_Detadist_InvMass_over200M", "Delta Eta dist for Inv mass over 200 MeV", 140, -1.2, 1.2);
-
-  pidcuts = {0.001, 0.005, 0.01, 0.05, 0.1, 1};  // GeV? pretty sure that is the case
-
-  for (int i = 0; i < 6; i++)
-  {
-    h_truth_pid_cuts[i] = new TH1F(Form("h_truth_pid_cut_%f", pidcuts[i]), Form("truth pid cut at %f MeV", pidcuts[i]), 150, -30, 120);
-  }
+  // 3d histogram to check for corelation between photon/cluster energies and invariant mass.
+  h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear_weighted_photonE_3d",badcalibsmearint / 10.0f), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 100, 0, 20, 100, 0, 20, 60, 0, 1.2);
+  // 3d histogram to check for for corelation between pt invariant mass and asymmetry
+  h_InvMass_smear_weighted_asymmetry_3d = new TH3F(Form("h_InvMass_smear%f_weighted_asymmetry_3d", badcalibsmearint / 10.0f),Form("pT vs Invariant Mass vs asymmetry + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 10, 0, 1);
 
   //////////////////////////
   // pT rewieghting
@@ -203,33 +179,13 @@ int CaloAna::Init(PHCompositeNode*)
 
   h_InvMass_smear = new TH1F(Form("h_InvMass_smear_%d", badcalibsmearint), Form("Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 600, 0, 1.2);
 
+  h_InvMass_smear_2d = new TH2F(Form("h_InvMass_smear_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 600, 0, 1.2);
+  
+  // weighted variants
   h_InvMass_smear_weighted = new TH1F(Form("h_InvMass_smear_weighted_%d", badcalibsmearint), Form("Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 600, 0, 1.2);
 
-  // 2d variations
   h_InvMass_smear_weighted_2d = new TH2F(Form("h_InvMass_smear_weighted_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 600, 0, 1.2);
 
-  h_InvMass_smear_2d = new TH2F(Form("h_InvMass_smear_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 600, 0, 1.2);
-
-  std::vector<std::string> RestrictEtaCuts = {"Low_Eta", "Mid_Eta", "High_Eta"};
-  etaRanges = {
-      {0.0, 0.2},  // pair1
-      {0.2, 0.4},  // pair2
-      {0.4, 1.1}   // pair3
-  };
-  for (int i = 0; i < 3; i++)
-  {
-    h_InvMass_smear_risingpt[i] = new TH1F(
-        Form("h_InvMass_smear_risingpt_%d_%s", badcalibsmearint, RestrictEtaCuts[i].c_str()),
-        Form("Invariant Mass, rising_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
-
-    h_InvMass_smear_fallingpt[i] = new TH1F(
-        Form("h_InvMass_smear_fallingpt_%d_%s", badcalibsmearint, RestrictEtaCuts[i].c_str()),
-        Form("Invariant Mass, falling_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
-
-    h_InvMass_smear_flatpt[i] = new TH1F(
-        Form("h_InvMass_smear_flatpt_%d_%s", badcalibsmearint, RestrictEtaCuts[i].c_str()),
-        Form("Invariant Mass, flat_pt+%s+smearing: %f percent", RestrictEtaCuts[i].c_str(), badcalibsmearint / 10.0f), 120, 0, 0.6);
-  }
   //nodes when using dst_calo_waveform, dst_truth
   /*
       available nodes in dst_calo_waveform et al
@@ -284,7 +240,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
   float maxDr = 1.1;
-  float maxAlpha = 0.5;
+  float maxAlpha = 0.7;//asymmetry cut
   float clus_chisq_cut = 4;// normally 4
   float clusterprob = 0.1; // replacing chisqr cut
   float nClus_ptCut = 0.0;  // 0.5 normally
@@ -292,9 +248,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float ptMaxCut = 100;     // no cut in data, as far as I know. so I set it to a value it is unlikely to reach
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;  // 0.7
-  float etcut = 1;
-  float etacutval = 0.6;
-  float zvtx_cut_val = 30;
+  float etcut = 0.5; // cluster ET cut
+  float etacutval = 0.6; // cluster pseudo-rapidity cut
+  float zvtx_cut_val = 30; // z vertex cut value
 
   /*
   if (nClusCount > 30)
@@ -692,33 +648,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           double weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
           inv_yield = WeightScale * Pt * weight_function;  //
           // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
+          if(eta_weight)
+          {
+            inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);;
+          }
           h_inv_yield->Fill(inv_yield);
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
           h_InvMass_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
           h_InvMass_smear_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
           if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
-          if (additionalsmearing)
-          {
-            for (size_t i = 0; i < 3; i++)  // break up inv mass spectrum if debugging.
-            {
-              if (std::abs(myVector.Eta()) > etaRanges[i].first && std::abs(myVector.Eta()) < etaRanges[i].second)
-              {
-                if (Pt < 4.75)
-                {
-                  h_InvMass_smear_risingpt[i]->Fill(pi0smearvec[2].M());
-                }
-                else if (4.75 < Pt && Pt < 5.25)
-                {
-                  h_InvMass_smear_flatpt[i]->Fill(pi0smearvec[2].M());
-                }
-                else
-                {
-                  h_InvMass_smear_fallingpt[i]->Fill(pi0smearvec[2].M());
-                }
-              }
-            }
-          }
-
           if (debug) std::cout << "M=" << myVector.M() << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
         }
 
