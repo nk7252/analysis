@@ -131,21 +131,21 @@ int CaloAna::Init(PHCompositeNode*)
 
   // cluster QA
   h_etaphi_clus = new TH2F("h_etaphi_clus", "", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-  h_clusE = new TH1F("h_clusE", "", 100, 0, 10);
+  h_clusE = new TH1F("h_clusE", "", 100, 0, 20);
   h_emcal_e_eta = new TH1F("h_emcal_e_eta", "", 96, 0, 96);
 
-  h_pt1 = new TH1F("h_pt1", "", 100, 0, 5);
-  h_pt2 = new TH1F("h_pt2", "", 100, 0, 5);
-  h_pion_pt = new TH1F("h_pion_pt", "", 100, 0, 10);
-  h_pion_pt_weight = new TH1F("h_pion_pt_weight", "", 100, 0, 10);
+  h_pt1 = new TH1F("h_pt1", "", 100, 0, 20);
+  h_pt2 = new TH1F("h_pt2", "", 100, 0, 20);
+  h_pion_pt = new TH1F("h_pion_pt", "", 100, 0, 20);
+  h_pion_pt_weight = new TH1F("h_pion_pt_weight", "", 100, 0, 20);
 
   h_nclusters = new TH1F("h_nclusters", "", 1000, 0, 1000);
   // Truth histos
   h_truth_eta = new TH1F("h_truth_eta", "", 100, -1.2, 1.2);
-  h_truth_e = new TH1F("h_truth_e", "", 100, 0, 10);
-  h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 10);
-  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 10000, 0, 10);
-  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 10000, 0, 10);
+  h_truth_e = new TH1F("h_truth_e", "", 100, 0, 20);
+  h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 20);
+  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 10000, 0, 20);
+  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 10000, 0, 20);
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 400, -200, 200);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 400, -200, 200);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);

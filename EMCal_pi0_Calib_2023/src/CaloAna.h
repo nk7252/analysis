@@ -215,6 +215,7 @@ class CaloAna : public SubsysReco
   //SPMC
   bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
   float badcalibsmear;
+  bool eta_weight = false;
   //NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   int badcalibsmearint=125;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   //gen MC: pythia, *should remove smeared/weighted histograms.*
