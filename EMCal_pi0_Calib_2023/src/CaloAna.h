@@ -10,6 +10,7 @@ class PHCompositeNode;
 class TFile;
 class TNtuple;
 class TTree;
+class TH3F;
 class TH2F;
 class TH1F;
 class TH1;
