@@ -234,8 +234,8 @@ class CaloAna : public SubsysReco
   TH1F* h_nosmear_pi0E_weighted;
   TH1F* h_smear_nosmear_pi0E;
   TH1F* h_smear_nosmear_pi0E_weighted;
-  TH3F* h_InvMass_smear_weighted_asymmetry_3d;
-  TH3F* h_InvMass_photonE_smear_weighted_3d;
+  TH3F* h_InvMass_smear_weighted_asymmetry_3d= nullptr;
+  TH3F* h_InvMass_photonE_smear_weighted_3d= nullptr;
 
   float target_pi0_mass = 0.145;
   double truth_pt;
