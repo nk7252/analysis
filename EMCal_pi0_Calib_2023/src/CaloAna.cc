@@ -166,7 +166,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.25)", 8 * 10, 0, 20, 600, 0, 1.2);
 
   // 3d histogram to check for corelation between photon/cluster energies and invariant mass.
-  h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear_weighted_photonE_3d",badcalibsmearint / 10.0f), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 100, 0, 20, 100, 0, 20, 60, 0, 1.2);
+  h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%f_weighted_photonE_3d",badcalibsmearint / 10.0f), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 100, 0, 20, 100, 0, 20, 60, 0, 1.2);
   // 3d histogram to check for for corelation between pt invariant mass and asymmetry
   h_InvMass_smear_weighted_asymmetry_3d = new TH3F(Form("h_InvMass_smear%f_weighted_asymmetry_3d", badcalibsmearint / 10.0f),Form("pT vs Invariant Mass vs asymmetry + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 10, 0, 1);
 
