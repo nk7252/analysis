@@ -159,8 +159,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 8 * 10, 0, 20, 600, 0, 1.2);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 600, 0, 1.2);
 
-  h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 8 * 10, 0, 20, 100, 0, 1e13);
-  h_yield = new TH2F("h_yield", "Yield distribution", 8 * 10, 0, 20, 10000, 0, 1e13);
+  h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 8 * 10, 0, 20, 100, 0, 1e6);
+  h_yield = new TH2F("h_yield", "Yield distribution", 8 * 10, 0, 20, 10000, 0, 1e6);
   h_truthmatched_mass1 = new TH1F("h_truthmatched_mass1", "Invariant Mass, truth matched(delR<0.015)", 600, 0, 1.2);
   h_truthmatched_mass2 = new TH1F("h_truthmatched_mass2", "Invariant Mass, truth matched(delR<0.1)", 600, 0, 1.2);
   h_truthmatched_mass3 = new TH1F("h_truthmatched_mass3", "Invariant Mass, truth matched(delR<0.2)", 600, 0, 1.2);
