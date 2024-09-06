@@ -645,7 +645,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.54786);
           }
           float energy = myVector.E();
-          weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
+          //weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
 
           int id = truth->get_pid();
           h_truth_pid_p->Fill(id);
