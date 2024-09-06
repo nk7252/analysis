@@ -146,8 +146,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_eta = new TH1F("h_truth_eta", "", 100, -1.2, 1.2);
   h_truth_e = new TH1F("h_truth_e", "", 100, 0, 20);
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 20);
-  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 10000, 0, 20);
-  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 10000, 0, 20);
+  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 200, 0, 20);
+  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 200, 0, 20);
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 400, -200, 200);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 400, -200, 200);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
@@ -158,13 +158,19 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 600, 0, 1.2);
   h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 8 * 10, 0, 20, 600, 0, 1.2);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 600, 0, 1.2);
-  h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 100, 0, 1e13);
+
+  h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 8 * 10, 0, 20, 100, 0, 1e13);
+  h_yield = new TH2F("h_yield", "Yield distribution", 8 * 10, 0, 20, 10000, 0, 1e13);
   h_truthmatched_mass1 = new TH1F("h_truthmatched_mass1", "Invariant Mass, truth matched(delR<0.015)", 600, 0, 1.2);
   h_truthmatched_mass2 = new TH1F("h_truthmatched_mass2", "Invariant Mass, truth matched(delR<0.1)", 600, 0, 1.2);
   h_truthmatched_mass3 = new TH1F("h_truthmatched_mass3", "Invariant Mass, truth matched(delR<0.2)", 600, 0, 1.2);
   h_truthmatched_mass1_2d = new TH2F("h_truthmatched_mass1_2d", "pT vs Invariant Mass, truth matched(delR<0.015)", 8 * 10, 0, 20, 600, 0, 1.2);
   h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 8 * 10, 0, 20, 600, 0, 1.2);
   h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.2)", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_FullTruth_eta = new TH1F("h_FullTruth_eta", "Full Truth eta", 100, -1.2, 1.2);
+  h_FullTruth_e = new TH1F("h_FullTruth_e", "Full Truth e", 100, 0, 20);
+  h_FullTruth_pt = new TH1F("h_FullTruth_pt", "Full Truth pt", 100, 0, 20);
+  h_FullTruth_p = new TH1F("h_FullTruth_p", "Full Truth p", 100, 0, 20);
 
   // 3d histogram to check for corelation between photon/cluster energies and invariant mass.
   h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%f_weighted_photonE_3d",badcalibsmearint / 10.0f), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 100, 0, 20, 100, 0, 20, 60, 0, 1.2);
@@ -640,10 +646,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           }
           float energy = myVector.E();
           weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
-          h_truth_e->Fill(energy, weight);
-          h_truth_eta->Fill(myVector.Eta(), weight);
-          // h_truth_pt->Fill(myVector.Pt());
-          h_truth_pt->Fill(myVector.Pt(), weight);
+
           int id = truth->get_pid();
           h_truth_pid_p->Fill(id);
 
@@ -661,14 +664,19 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
           if(eta_weight)
           {
-            inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);;//mT scaling
+            inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);//mT scaling
+            weight_function *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);
           }
-          h_inv_yield->Fill(inv_yield);
+          h_inv_yield->Fill(Pt, inv_yield);
+          h_yield->Fill(Pt, weight_function);
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
           h_InvMass_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
           h_InvMass_smear_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
           h_InvMass_photonE_smear_weighted_3d->Fill(pi0smearvec[0].Pt(), pi0smearvec[1].Pt(), pi0smearvec[2].M(), inv_yield);
           h_InvMass_smear_weighted_asymmetry_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()), inv_yield);
+          h_truth_e->Fill(energy, inv_yield);
+          h_truth_eta->Fill(myVector.Eta(), inv_yield);
+          h_truth_pt->Fill(myVector.Pt(), inv_yield);
           if (filltruthspectrum && (matchmctruth))
           {
             float delR = pi0.DeltaR(myVector);
@@ -750,12 +758,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           if (truth->get_pid() == 111||(eta_weight && truth->get_pid() == 221))
           {
             float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+            float pion_p = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz());
             float pion_e = truth->get_e();
             float pion_phi = atan2(truth->get_py(), truth->get_px());
             float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
             TLorentzVector truthpi0 = TLorentzVector();
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             h_truth_spectrum2->Fill(truthpi0.Pt());
+            h_FullTruth_e->Fill(pion_e);
+            h_FullTruth_eta->Fill(pion_eta);
+            h_FullTruth_pt->Fill(pion_pt);
+            h_FullTruth_p->Fill(pion_p);
           }
         }
       }
