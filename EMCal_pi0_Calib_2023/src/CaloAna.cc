@@ -507,7 +507,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       TLorentzVector pi0;
       //TLorentzVector pi0 = photon1 + photon2;
       pi0smearvec[2] = pi0smearvec[0] + pi0smearvec[1];
-      
+
       if(additionalsmearing)
       {
         pi0 = pi0smearvec[2];
@@ -675,18 +675,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             if ((id == 111||(eta_weight && id == 221)) && delR < 0.015)
             {
               h_truth_spectrum1->Fill(myVector.Pt());
-              h_truthmatched_mass1_2d->Fill(pi0.Pt(), pi0.M(), h_inv_yield);
-              h_truthmatched_mass1->Fill(pi0.M(), h_inv_yield);
+              h_truthmatched_mass1_2d->Fill(pi0.Pt(), pi0.M(), inv_yield);
+              h_truthmatched_mass1->Fill(pi0.M(), inv_yield);
             }
             else if((id == 111||(eta_weight && id == 221)) && delR < 0.1)
             {
-              h_truthmatched_mass2_2d->Fill(pi0.Pt(), pi0.M(), h_inv_yield);
-              h_truthmatched_mass2->Fill(pi0.M(), h_inv_yield);
+              h_truthmatched_mass2_2d->Fill(pi0.Pt(), pi0.M(), inv_yield);
+              h_truthmatched_mass2->Fill(pi0.M(), inv_yield);
             }
             else if((id == 111||(eta_weight && id == 221)) && delR < 0.2)
             {
-              h_truthmatched_mass3_2d->Fill(pi0.Pt(), pi0.M(), h_inv_yield);
-              h_truthmatched_mass3->Fill(pi0.M(), h_inv_yield);
+              h_truthmatched_mass3_2d->Fill(pi0.Pt(), pi0.M(), inv_yield);
+              h_truthmatched_mass3->Fill(pi0.M(), inv_yield);
             }
           }
           if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
