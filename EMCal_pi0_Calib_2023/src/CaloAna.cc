@@ -156,14 +156,15 @@ int CaloAna::Init(PHCompositeNode*)
 
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 600, 0, 1.2);
+  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 8 * 10, 0, 20, 600, 0, 1.2);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 600, 0, 1.2);
   h_inv_yield = new TH1F("h_inv_yield", "Invariant Yield distribution", 100, 0, 1e13);
-  h_truthmatched_mass = new TH1F("h_truthmatched_mass", "Invariant Mass, truth matched(delR<0.015)", 600, 0, 1.2);
+  h_truthmatched_mass1 = new TH1F("h_truthmatched_mass1", "Invariant Mass, truth matched(delR<0.015)", 600, 0, 1.2);
   h_truthmatched_mass2 = new TH1F("h_truthmatched_mass2", "Invariant Mass, truth matched(delR<0.1)", 600, 0, 1.2);
   h_truthmatched_mass3 = new TH1F("h_truthmatched_mass3", "Invariant Mass, truth matched(delR<0.2)", 600, 0, 1.2);
-  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_truthmatched_mass1_2d = new TH2F("h_truthmatched_mass1_2d", "pT vs Invariant Mass, truth matched(delR<0.015)", 8 * 10, 0, 20, 600, 0, 1.2);
   h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 8 * 10, 0, 20, 600, 0, 1.2);
-  h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.25)", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.2)", 8 * 10, 0, 20, 600, 0, 1.2);
 
   // 3d histogram to check for corelation between photon/cluster energies and invariant mass.
   h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%f_weighted_photonE_3d",badcalibsmearint / 10.0f), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 100, 0, 20, 100, 0, 20, 60, 0, 1.2);
@@ -503,8 +504,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       TLorentzVector photon2;
       photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
       pi0smearvec[1] = SmearPhoton4vector(photon2, badcalibsmear);
-      TLorentzVector pi0 = photon1 + photon2;
+      TLorentzVector pi0;
+      //TLorentzVector pi0 = photon1 + photon2;
       pi0smearvec[2] = pi0smearvec[0] + pi0smearvec[1];
+      
+      if(additionalsmearing)
+      {
+        pi0 = pi0smearvec[2];
+      }
+      else if(!additionalsmearing)
+      {
+        pi0 = photon1 + photon2;
+      }
 
       if (additionalsmearing)
       {
@@ -635,14 +646,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_truth_pt->Fill(myVector.Pt(), weight);
           int id = truth->get_pid();
           h_truth_pid_p->Fill(id);
-          if (filltruthspectrum && (matchmctruth))
-          {
-            float delR = pi0.DeltaR(myVector);
-            if ((id == 111||(eta_weight && id == 221)) && delR < 0.015)
-            {
-              h_truth_spectrum1->Fill(myVector.Pt());
-            }
-          }
+
           //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
           double t = 4.5;
           double w = 0.114;
@@ -665,6 +669,26 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_InvMass_smear_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
           h_InvMass_photonE_smear_weighted_3d->Fill(pi0smearvec[0].Pt(), pi0smearvec[1].Pt(), pi0smearvec[2].M(), inv_yield);
           h_InvMass_smear_weighted_asymmetry_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()), inv_yield);
+          if (filltruthspectrum && (matchmctruth))
+          {
+            float delR = pi0.DeltaR(myVector);
+            if ((id == 111||(eta_weight && id == 221)) && delR < 0.015)
+            {
+              h_truth_spectrum1->Fill(myVector.Pt());
+              h_truthmatched_mass1_2d->Fill(pi0.Pt(), pi0.M(), h_inv_yield);
+              h_truthmatched_mass1->Fill(pi0.M(), h_inv_yield);
+            }
+            else if((id == 111||(eta_weight && id == 221)) && delR < 0.1)
+            {
+              h_truthmatched_mass2_2d->Fill(pi0.Pt(), pi0.M(), h_inv_yield);
+              h_truthmatched_mass2->Fill(pi0.M(), h_inv_yield);
+            }
+            else if((id == 111||(eta_weight && id == 221)) && delR < 0.2)
+            {
+              h_truthmatched_mass3_2d->Fill(pi0.Pt(), pi0.M(), h_inv_yield);
+              h_truthmatched_mass3->Fill(pi0.M(), h_inv_yield);
+            }
+          }
           if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
           if (debug) std::cout << "M=" << myVector.M() << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
         }

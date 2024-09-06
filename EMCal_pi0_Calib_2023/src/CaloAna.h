@@ -76,6 +76,7 @@ class CaloAna : public SubsysReco
   TH1F* h_InvMass_w = nullptr;
   TH1F* h_InvMassMix = nullptr;
   TH2F* h_InvMass_2d = nullptr;
+  TH2F* h_truthmatched_mass1_2d = nullptr;
   TH2F* h_truthmatched_mass2_2d = nullptr;
   TH2F* h_truthmatched_mass3_2d = nullptr;
   TH1F* h_InvMass_smear = nullptr;
@@ -198,7 +199,7 @@ class CaloAna : public SubsysReco
   //SPMC
   bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
   float badcalibsmear;
-  bool eta_weight = true;
+  bool eta_weight = false;
   //NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   int badcalibsmearint=125;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   //gen MC: pythia, *should remove smeared/weighted histograms.*
@@ -221,7 +222,7 @@ class CaloAna : public SubsysReco
   TH1F* h_truth_pt;
   TH1F* h_truth_spectrum1;
   TH1F* h_truth_spectrum2;
-  TH1F* h_truthmatched_mass;
+  TH1F* h_truthmatched_mass1;
   TH1F* h_truthmatched_mass2;
   TH1F* h_truthmatched_mass3;
   TH1F* h_pion_pt;
