@@ -177,8 +177,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 8 * 10, 0, 20, 600, 0, 1.2);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 600, 0, 1.2);
 
-  h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 8 * 10, 0, 20, 100, 0, 1e6);
-  h_yield = new TH2F("h_yield", "Yield distribution", 8 * 10, 0, 20, 10000, 0, 1e6);
+  h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 8 * 10, 0, 20, 10000, 0, 10);
+  h_yield = new TH2F("h_yield", "Yield distribution", 8 * 10, 0, 20, 10000, 0, 10);
   h_truthmatched_mass1 = new TH1F("h_truthmatched_mass1", "Invariant Mass, truth matched(delR<0.015)", 600, 0, 1.2);
   h_truthmatched_mass2 = new TH1F("h_truthmatched_mass2", "Invariant Mass, truth matched(delR<0.1)", 600, 0, 1.2);
   h_truthmatched_mass3 = new TH1F("h_truthmatched_mass3", "Invariant Mass, truth matched(delR<0.2)", 600, 0, 1.2);
@@ -191,9 +191,9 @@ int CaloAna::Init(PHCompositeNode*)
   h_FullTruth_p = new TH1F("h_FullTruth_p", "Full Truth p", 100, 0, 20);
 
   // 3d histogram to check for corelation between photon/cluster energies and invariant mass.
-  h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%f_weighted_photonE_3d",badcalibsmearint / 10.0f), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 100, 0, 20, 100, 0, 20, 60, 0, 1.2);
+  h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%f_weighted_photonE_3d",badcalibsmearint / 10.0f), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 40, 0, 20, 40, 0, 20, 60, 0, 1.2);
   // 3d histogram to check for for corelation between pt invariant mass and asymmetry
-  h_InvMass_smear_weighted_asymmetry_3d = new TH3F(Form("h_InvMass_smear%f_weighted_asymmetry_3d", badcalibsmearint / 10.0f),Form("pT vs Invariant Mass vs asymmetry + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 10, 0, 1);
+  h_InvMass_smear_weighted_asymmetry_3d = new TH3F(Form("h_InvMass_smear%f_weighted_asymmetry_3d", badcalibsmearint / 10.0f),Form("pT vs Invariant Mass vs asymmetry + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 20, 0, 20, 60, 0, 1.2, 10, 0, 1);
 
   //////////////////////////
   // pT rewieghting
@@ -717,53 +717,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               h_truthmatched_mass3->Fill(pi0.M(), inv_yield);
             }
             //photon truthmatching
-            if (id == 22)
-            {            
-              //float delRP1 = photon1.DeltaR(myVector);
-              //float delRP2 = photon2.DeltaR(myVector);
-              TLorentzVector myPhotonVector;
-              float photonE = truth->get_e();
-              myPhotonVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), photonE);
-              if(additionalsmearing)
-              {
-                float delRP1 = pi0smearvec[0].DeltaR(myPhotonVector);
-                float delRP2 = pi0smearvec[1].DeltaR(myPhotonVector);
-                h_truthmatched_Photon_delR->Fill(delRP1);
-                h_truthmatched_Photon_delR->Fill(delRP2);
-                if(pi0smearvec[0].DeltaR(myPhotonVector) < 0.015)
-                {
-                  h_truthmatched_photon1E->Fill(photonE);
-                  h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
-                }
-                if(pi0smearvec[1].DeltaR(myPhotonVector) < 0.015)
-                {
-                  h_truthmatched_photon2E->Fill(photonE);
-                  h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
-                }
-              }
-              else if(!additionalsmearing)
-              {
-                float delRP1 = photon1.DeltaR(myPhotonVector);
-                float delRP2 = photon2.DeltaR(myPhotonVector);
-                h_truthmatched_Photon_delR->Fill(delRP1);
-                h_truthmatched_Photon_delR->Fill(delRP2);
-                if(photon1.DeltaR(myPhotonVector) < 0.015)
-                {
-                  h_truthmatched_photon1E->Fill(photonE);
-                  h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
-                }
-                if(photon2.DeltaR(myPhotonVector) < 0.015)
-                {
-                  h_truthmatched_photon2E->Fill(photonE);
-                  h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
-                }
-              }
-              //h_truthmatched_photon1E->Fill(energy);
-              //h_truthmatched_photon2E->Fill(energy);
-              //h_truthmatched_AllphotonE->Fill(energy);
-              //h_truthmatched_photon1E_weighted->Fill(energy, inv_yield);
-              //h_truthmatched_photon2E_weighted->Fill(energy, inv_yield);
-            }
+
           }
           
           if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
@@ -781,8 +735,61 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           const PHG4Particle* truth = siter->second;
           int id = truth->get_pid();
           h_truth_pid_s->Fill(id);
+          if (filltruthspectrum && (matchmctruth))
+          {
+            if (id == 22)
+            {
+              TLorentzVector myPhotonVector;
+              float photonE = truth->get_e();
+              myPhotonVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), photonE);
+              if(additionalsmearing)
+              {
+                float delRP1 = pi0smearvec[0].DeltaR(myPhotonVector);
+                float delRP2 = pi0smearvec[1].DeltaR(myPhotonVector);
+                h_truthmatched_Photon_delR->Fill(delRP1);
+                h_truthmatched_Photon_delR->Fill(delRP2);
+                if(pi0smearvec[0].DeltaR(myPhotonVector) < 0.015)
+                {
+                  h_truthmatched_photon1E->Fill(photonE);
+                  h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE->Fill(photonE);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                }
+                if(pi0smearvec[1].DeltaR(myPhotonVector) < 0.015)
+                {
+                  h_truthmatched_photon2E->Fill(photonE);
+                  h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE->Fill(photonE);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                }
+              }
+              else if(!additionalsmearing)
+              {
+                float delRP1 = photon1.DeltaR(myPhotonVector);
+                float delRP2 = photon2.DeltaR(myPhotonVector);
+                h_truthmatched_Photon_delR->Fill(delRP1);
+                h_truthmatched_Photon_delR->Fill(delRP2);
+                if(photon1.DeltaR(myPhotonVector) < 0.015)
+                {
+                  h_truthmatched_photon1E->Fill(photonE);
+                  h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE->Fill(photonE);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                }
+                if(photon2.DeltaR(myPhotonVector) < 0.015)
+                {
+                  h_truthmatched_photon2E->Fill(photonE);
+                  h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE->Fill(photonE);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                }
+              }
+            }
+          }
+          
           //*/
         }
+      
       }
 
       //*
@@ -847,17 +854,37 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           if (truth->get_pid() == 22)
           {
             float photon_e = truth->get_e();
-            /*
-            float photon_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
-            float photon_p = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz());
-            float photon_phi = atan2(truth->get_py(), truth->get_px());
-            float photon_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
-            TLorentzVector truthphoton = TLorentzVector();
-            truthphoton.SetPtEtaPhiE(photon_pt, photon_eta, photon_phi, photon_e);
-            */
             h_truth_ALLphotonE->Fill(photon_e);
             //what should the photon weight be?
             //h_truth_ALLphotonE_weighted->Fill(photon_e, inv_yield);
+          }
+        
+        }
+
+        for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
+        {
+          if (m_g4 >= 19999) break;
+          // Get photons from pi0 decays
+          const PHG4Particle* truth = siter->second;
+          int id = truth->get_pid();
+          h_truth_pid_s->Fill(id);
+          if (filltruthspectrum && (matchmctruth))
+          {
+            if (id == 22)
+            {
+              float photon_e = truth->get_e();
+              /*
+              float photon_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+              float photon_p = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz());
+              float photon_phi = atan2(truth->get_py(), truth->get_px());
+              float photon_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
+              TLorentzVector truthphoton = TLorentzVector();
+              truthphoton.SetPtEtaPhiE(photon_pt, photon_eta, photon_phi, photon_e);
+              */
+              h_truth_ALLphotonE->Fill(photon_e);
+              //what should the photon weight be?
+              //h_truth_ALLphotonE_weighted->Fill(photon_e, inv_yield);            
+            }
           }
         }
       }
