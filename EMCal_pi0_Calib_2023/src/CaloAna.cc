@@ -865,8 +865,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
         for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
         {
-          if (m_g4 >= 19999) break;
-          // Get photons from pi0 decays
           const PHG4Particle* truth = siter->second;
           int id = truth->get_pid();
           h_truth_pid_s->Fill(id);
