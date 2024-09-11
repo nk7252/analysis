@@ -246,9 +246,11 @@ class CaloAna : public SubsysReco
 
   TH1F* h_truthmatched_photon1E;
   TH1F* h_truthmatched_photon2E;
+  TH1F* h_truthmatched_AllphotonE;
   TH1F* h_truth_ALLphotonE;
   TH1F* h_truthmatched_photon1E_weighted;
   TH1F* h_truthmatched_photon2E_weighted;
+  TH1F* h_truthmatched_AllphotonE_weighted;
   TH1F* h_truth_ALLphotonE_weighted;
   TH1F* h_reco_photon1E;
   TH1F* h_reco_photon2E;

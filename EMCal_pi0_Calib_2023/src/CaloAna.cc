@@ -156,9 +156,11 @@ int CaloAna::Init(PHCompositeNode*)
   //histograms to extract MC photon resolution
   h_truthmatched_photon1E = new TH1F("h_truthmatched_photon1E", "matched Photon 1 Energy", 200, 0, 20);
   h_truthmatched_photon2E = new TH1F("h_truthmatched_photon2E", "matchedPhoton 2 Energy", 200, 0, 20);
+  h_truthmatched_AllphotonE = new TH1F("h_truthmatched_AllphotonE", "All Photon Energy", 200, 0, 20);
   h_truth_ALLphotonE = new TH1F("h_truth_ALLphotonE", "All Photon Energy", 200, 0, 20);
   h_truthmatched_photon1E_weighted = new TH1F("h_truthmatched_photon1E_weighted", "matched Photon 1 Energy, weighted", 200, 0, 20);
   h_truthmatched_photon2E_weighted = new TH1F("h_truthmatched_photon2E_weighted", "matchedPhoton 2 Energy, weighted", 200, 0, 20);
+  h_truthmatched_AllphotonE_weighted = new TH1F("h_truthmatched_AllphotonE_weighted", "All Photon Energy, weighted", 200, 0, 20);
   //h_truth_ALLphotonE_weighted = new TH1F("h_truth_ALLphotonE_weighted", "All Photon Energy, weighted", 200, 0, 20);
   //reco photons
   h_reco_photon1E = new TH1F("h_reco_photon1E", "Reco Photon 1 Energy", 200, 0, 20);
@@ -760,7 +762,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                   h_truthmatched_photon2E->Fill(photonE);
                   h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
                   h_truthmatched_AllphotonE->Fill(photonE);
-                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                  //h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
                 }
               }
               else if(!additionalsmearing)
@@ -774,14 +776,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                   h_truthmatched_photon1E->Fill(photonE);
                   h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
                   h_truthmatched_AllphotonE->Fill(photonE);
-                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                  //h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
                 }
                 if(photon2.DeltaR(myPhotonVector) < 0.015)
                 {
                   h_truthmatched_photon2E->Fill(photonE);
                   h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
                   h_truthmatched_AllphotonE->Fill(photonE);
-                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                  //h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
                 }
               }
             }
