@@ -191,17 +191,17 @@ class CaloAna : public SubsysReco
   bool poscor = false; //if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
   bool pp_rawcluster = true; //if on will use GetEVec, superseeds GetECoreVec. ECore is for AuAu
   bool debug = false;
-  bool FullMCSpectrum = true;
   bool eTCutbool = true;//replace pt1 and pt2 cuts with et cuts
   bool etaCutbool = true;//do an eta cut or not
   bool clusterprobcut = true; // if true use cluster prob cut, if false use chisq cut
   bool zvtxcut_bool = true;
   //SPMC
-  bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
+
   float badcalibsmear;
   bool eta_weight = false;
   //NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
-  int badcalibsmearint=125;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
+  int badcalibsmearint=100;//thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   //gen MC: pythia, *should remove smeared/weighted histograms.*
   bool matchmctruth = true;//
   bool filltruthspectrum = true;
