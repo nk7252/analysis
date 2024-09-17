@@ -201,6 +201,9 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%f_weighted_photonE_3d",badcalibsmearint / 10.0f), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 40, 0, 20, 40, 0, 20, 60, 0, 1.2);
   // 3d histogram to check for for corelation between pt invariant mass and asymmetry
   h_InvMass_smear_weighted_asymmetry_3d = new TH3F(Form("h_InvMass_smear%f_weighted_asymmetry_3d", badcalibsmearint / 10.0f),Form("pT vs Invariant Mass vs asymmetry + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 20, 0, 20, 60, 0, 1.2, 10, 0, 1);
+  // 3d histogram to check for corelation between eta, pt and invariant mass
+  h_InvMass_smear_eta_3d = new TH3F(Form("h_InvMass_smear%f_eta_3d", badcalibsmearint / 10.0f), Form("pT vs Invariant Mass vs eta + smear: %f percent", badcalibsmearint / 10.0f), 8 * 20, 0, 20, 60, 0, 1.2, 100, -1.2, 1.2);
+  h_InvMass_smear_weighted_eta_3d = new TH3F(Form("h_InvMass_smear%f_weighted_eta_3d", badcalibsmearint / 10.0f), Form("pT vs Invariant Mass vs eta + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 20, 0, 20, 60, 0, 1.2, 100, -1.2, 1.2);
 
   //////////////////////////
   // pT rewieghting
@@ -709,6 +712,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             weight_function *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);
           }
           
+          if(SPMC_bool&& inv_yield!=0) inv_yield = getSPMCpTspectrum(static_cast<float>(Pt))/inv_yield;
+          
           h_inv_yield->Fill(Pt, inv_yield);
           h_yield->Fill(Pt, weight_function);
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
@@ -723,6 +728,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_reco_photon2E_weighted->Fill(photon2.E(), inv_yield);
           h_reco_ALLphotonE_weighted->Fill(photon1.E(), inv_yield);
           h_reco_ALLphotonE_weighted->Fill(photon2.E(), inv_yield);
+          h_InvMass_smear_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
           
           if (filltruthspectrum && (matchmctruth))
           {
@@ -837,6 +843,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         h_InvMass_smear->Fill(pi0smearvec[2].M());
         h_InvMass_smear_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M());
+        h_InvMass_smear_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta());
       }
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
