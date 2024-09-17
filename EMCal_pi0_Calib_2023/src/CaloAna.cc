@@ -212,12 +212,12 @@ int CaloAna::Init(PHCompositeNode*)
     if(eta_weight)
     {
       frw = new TFile("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root");
-      h_sp_pt_rw = (TH1F*) frw->Get(seta_pt_spectrum);
+      h_sp_pt_rw = (TH1F*) frw->Get("seta_pt_spectrum");
     }
     else
     {
       frw = new TFile("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root");
-      h_sp_pt_rw = (TH1F*) frw->Get(spi0_pt_spectrum);
+      h_sp_pt_rw = (TH1F*) frw->Get("spi0_pt_spectrum");
     }
 
     if (h_sp_pt_rw == nullptr) {
