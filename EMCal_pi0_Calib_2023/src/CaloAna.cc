@@ -55,6 +55,7 @@
 #include <TH3.h>
 #include <TH3F.h>
 #include <TLorentzVector.h>
+#include <Math/Vector4D.h> // for ROOT::Math::PtEtaPhiMVector
 #include <TMath.h>
 #include <TNtuple.h>
 #include <TProfile.h>
@@ -183,8 +184,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 8 * 10, 0, 20, 600, 0, 1.2);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 600, 0, 1.2);
 
-  h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 8 * 10, 0, 20, 10000, 0, 10);
-  h_yield = new TH2F("h_yield", "Yield distribution", 8 * 10, 0, 20, 10000, 0, 10);
+  h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 8 * 10, 0, 20, 1000, 0, 40);
+  h_yield = new TH2F("h_yield", "Yield distribution", 8 * 10, 0, 20, 1000, 0, 40);
   h_truthmatched_mass1 = new TH1F("h_truthmatched_mass1", "Invariant Mass, truth matched(delR<0.015)", 600, 0, 1.2);
   h_truthmatched_mass2 = new TH1F("h_truthmatched_mass2", "Invariant Mass, truth matched(delR<0.1)", 600, 0, 1.2);
   h_truthmatched_mass3 = new TH1F("h_truthmatched_mass3", "Invariant Mass, truth matched(delR<0.2)", 600, 0, 1.2);
@@ -675,11 +676,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           const PHG4Particle* truth = iter->second;
           if (!truthinfo->is_primary(truth)) continue;
           TLorentzVector myVector;
+          //LorentzVector<ROOT::Math::PtEtaPhiM4D<double>> myVector;
           if(!eta_weight){
             myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+            //myVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), truth->get_e());
           } 
           else if(eta_weight){
             myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.54786);
+            //myVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), truth->get_e());
           }
           float energy = myVector.E();
           //weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
@@ -715,6 +719,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_truth_e->Fill(energy, inv_yield);
           h_truth_eta->Fill(myVector.Eta(), inv_yield);
           h_truth_pt->Fill(myVector.Pt(), inv_yield);
+          h_reco_photon1E_weighted->Fill(photon1.E(), inv_yield);
+          h_reco_photon2E_weighted->Fill(photon2.E(), inv_yield);
+          h_reco_ALLphotonE_weighted->Fill(photon1.E(), inv_yield);
+          h_reco_ALLphotonE_weighted->Fill(photon2.E(), inv_yield);
           
           if (filltruthspectrum && (matchmctruth))
           {
@@ -779,7 +787,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                   h_truthmatched_photon2E->Fill(photonE);
                   h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
                   h_truthmatched_AllphotonE->Fill(photonE);
-                  //h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
                 }
               }
               else if(!additionalsmearing)
@@ -793,14 +801,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                   h_truthmatched_photon1E->Fill(photonE);
                   h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
                   h_truthmatched_AllphotonE->Fill(photonE);
-                  //h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
                 }
                 if(photon2.DeltaR(myPhotonVector) < 0.015)
                 {
                   h_truthmatched_photon2E->Fill(photonE);
                   h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
                   h_truthmatched_AllphotonE->Fill(photonE);
-                  //h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
                 }
               }
             }
@@ -839,6 +847,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_reco_photon1E_2d->Fill(photon1.Pt(), photon1.E());
       h_reco_photon2E->Fill(photon2.E());
       h_reco_photon2E_2d->Fill(photon2.Pt(), photon2.E());
+      h_reco_ALLphotonE->Fill(photon1.E());
+      h_reco_ALLphotonE->Fill(photon2.E());
+      h_reco_ALLphotonE_2d->Fill(photon1.Pt(), photon1.E());
+      h_reco_ALLphotonE_2d->Fill(photon2.Pt(), photon2.E());
+
     }  // clusterIter2
   }  // clusteriter1 loop
 
