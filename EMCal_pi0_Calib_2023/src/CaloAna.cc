@@ -198,12 +198,13 @@ int CaloAna::Init(PHCompositeNode*)
   h_FullTruth_p = new TH1F("h_FullTruth_p", "Full Truth p", 100, 0, 20);
 
   // 3d histogram to check for corelation between photon/cluster energies and invariant mass.
-  h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%f_weighted_photonE_3d",badcalibsmearint / 10.0f), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 40, 0, 20, 40, 0, 20, 60, 0, 1.2);
+  //h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%d_weighted_photonE_3d",badcalibsmearint ), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 40, 0, 20, 40, 0, 20, 60, 0, 1.2);
   // 3d histogram to check for for corelation between pt invariant mass and asymmetry
-  h_InvMass_smear_weighted_asymmetry_3d = new TH3F(Form("h_InvMass_smear%f_weighted_asymmetry_3d", badcalibsmearint / 10.0f),Form("pT vs Invariant Mass vs asymmetry + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 20, 0, 20, 60, 0, 1.2, 10, 0, 1);
+  //h_InvMass_smear_weighted_asymmetry_3d = new TH3F(Form("h_InvMass_smear%d_weighted_asymmetry_3d", badcalibsmearint ),Form("pT vs Invariant Mass vs asymmetry + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 10, 0, 1);
+  
   // 3d histogram to check for corelation between eta, pt and invariant mass
-  h_InvMass_smear_eta_3d = new TH3F(Form("h_InvMass_smear%f_eta_3d", badcalibsmearint / 10.0f), Form("pT vs Invariant Mass vs eta + smear: %f percent", badcalibsmearint / 10.0f), 8 * 20, 0, 20, 60, 0, 1.2, 100, -1.2, 1.2);
-  h_InvMass_smear_weighted_eta_3d = new TH3F(Form("h_InvMass_smear%f_weighted_eta_3d", badcalibsmearint / 10.0f), Form("pT vs Invariant Mass vs eta + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 20, 0, 20, 60, 0, 1.2, 100, -1.2, 1.2);
+  h_InvMass_smear_eta_3d = new TH3F(Form("h_InvMass_smear%d_eta_3d", badcalibsmearint ), Form("pT vs Invariant Mass vs eta + smear: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 100, 20, 1.2);
+  h_InvMass_smear_weighted_eta_3d = new TH3F(Form("h_InvMass_smear%d_weighted_eta_3d", badcalibsmearint ), Form("pT vs Invariant Mass vs eta + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 20, -1.2, 1.2);
 
   //////////////////////////
   // pT rewieghting
@@ -730,8 +731,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
           h_InvMass_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
           h_InvMass_smear_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
-          h_InvMass_photonE_smear_weighted_3d->Fill(pi0smearvec[0].Pt(), pi0smearvec[1].Pt(), pi0smearvec[2].M(), inv_yield);
-          h_InvMass_smear_weighted_asymmetry_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()), inv_yield);
+          //h_InvMass_photonE_smear_weighted_3d->Fill(pi0smearvec[0].Pt(), pi0smearvec[1].Pt(), pi0smearvec[2].M(), inv_yield);
+          //h_InvMass_smear_weighted_asymmetry_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()), inv_yield);
           h_truth_e->Fill(energy, inv_yield);
           h_truth_eta->Fill(myVector.Eta(), inv_yield);
           h_truth_pt->Fill(myVector.Pt(), inv_yield);
