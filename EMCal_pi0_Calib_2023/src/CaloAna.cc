@@ -897,7 +897,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             h_truth_spectrum2->Fill(truthpi0.Pt());
             h_FullTruth_e->Fill(pion_e);
             h_FullTruth_eta->Fill(pion_eta);
-            h_FullTruth_pt->Fill(pion_pt);                                           bg
+            h_FullTruth_pt->Fill(pion_pt);
             h_FullTruth_p->Fill(pion_p);
           }
           //photon loop
