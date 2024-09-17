@@ -146,33 +146,37 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_eta = new TH1F("h_truth_eta", "", 100, -1.2, 1.2);
   h_truth_e = new TH1F("h_truth_e", "", 100, 0, 20);
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 20);
-  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 200, 0, 20);
-  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 200, 0, 20);
-  h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 400, -200, 200);
-  h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 400, -200, 200);
+  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 8 * 10, 0, 20);
+  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 8 * 10, 0, 20);
+  h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 1000, -500, 500);
+  h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 1000, -500, 500);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
   h_delR_pionrecTrth = new TH1F("h_delR_recTrth", "", 5000, 0, 5);
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
   //histograms to extract MC photon resolution
-  h_truthmatched_photon1E = new TH1F("h_truthmatched_photon1E", "matched Photon 1 Energy", 200, 0, 20);
-  h_truthmatched_photon2E = new TH1F("h_truthmatched_photon2E", "matchedPhoton 2 Energy", 200, 0, 20);
-  h_truthmatched_AllphotonE = new TH1F("h_truthmatched_AllphotonE", "All Photon Energy", 200, 0, 20);
-  h_truth_ALLphotonE = new TH1F("h_truth_ALLphotonE", "All Photon Energy", 200, 0, 20);
-  h_truthmatched_photon1E_weighted = new TH1F("h_truthmatched_photon1E_weighted", "matched Photon 1 Energy, weighted", 200, 0, 20);
-  h_truthmatched_photon2E_weighted = new TH1F("h_truthmatched_photon2E_weighted", "matchedPhoton 2 Energy, weighted", 200, 0, 20);
-  h_truthmatched_AllphotonE_weighted = new TH1F("h_truthmatched_AllphotonE_weighted", "All Photon Energy, weighted", 200, 0, 20);
-  //h_truth_ALLphotonE_weighted = new TH1F("h_truth_ALLphotonE_weighted", "All Photon Energy, weighted", 200, 0, 20);
+  h_truthmatched_photon1E = new TH1F("h_truthmatched_photon1E", "matched Photon 1 Energy", 8 * 10, 0, 20);
+  h_truthmatched_photon2E = new TH1F("h_truthmatched_photon2E", "matchedPhoton 2 Energy", 8 * 10, 0, 20);
+  h_truthmatched_AllphotonE = new TH1F("h_truthmatched_AllphotonE", "All Photon Energy", 8 * 10, 0, 20);
+  h_truth_ALLphotonE = new TH1F("h_truth_ALLphotonE", "All Photon Energy", 8 * 10, 0, 20);
+  h_truthmatched_photon1E_weighted = new TH1F("h_truthmatched_photon1E_weighted", "matched Photon 1 Energy, weighted", 8 * 10, 0, 20);
+  h_truthmatched_photon2E_weighted = new TH1F("h_truthmatched_photon2E_weighted", "matchedPhoton 2 Energy, weighted", 8 * 10, 0, 20);
+  h_truthmatched_AllphotonE_weighted = new TH1F("h_truthmatched_AllphotonE_weighted", "All Photon Energy, weighted", 8 * 10, 0, 20);
+    h_truthmatched_Photon_delR = new TH1F("h_truthmatched_Photon_delR", "Photon delR", 10000, 0, 5);
+  //h_truth_ALLphotonE_weighted = new TH1F("h_truth_ALLphotonE_weighted", "All Photon Energy, weighted", 8 * 10, 0, 20);
   //reco photons
-  h_reco_photon1E = new TH1F("h_reco_photon1E", "Reco Photon 1 Energy", 200, 0, 20);
-  h_reco_photon2E = new TH1F("h_reco_photon2E", "Reco Photon 2 Energy", 200, 0, 20);
-  h_reco_photon1E_2d = new TH2F("h_reco_photon1E_2d", "pT vs Reco Photon 1 Energy", 8 * 10, 0, 20, 200, 0, 20);
-  h_reco_photon2E_2d = new TH2F("h_reco_photon2E_2d", "pT vs Reco Photon 2 Energy", 8 * 10, 0, 20, 200, 0, 20);
-  h_reco_ALLphotonE_2d = new TH2F("h_reco_ALLphotonE_2d", "pT vs All Reco Photon Energy", 8 * 10, 0, 20, 200, 0, 20);
-  h_reco_ALLphotonE = new TH1F("h_reco_ALLphotonE", "All Reco Photon Energy", 200, 0, 20);
-  h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 200, 0, 20);
-  h_reco_photon2E_weighted = new TH1F("h_reco_photon2E_weighted", "Reco Photon 2 Energy, weighted", 200, 0, 20);
-  h_reco_ALLphotonE_weighted = new TH1F("h_reco_ALLphotonE_weighted", "All Reco Photon Energy, weighted", 200, 0, 20);
-  h_truthmatched_Photon_delR = new TH1F("h_truthmatched_Photon_delR", "Photon delR", 10000, 0, 5);
+  h_reco_photon1E = new TH1F("h_reco_photon1E", "Reco Photon 1 Energy", 8 * 10, 0, 20);
+  h_reco_photon2E = new TH1F("h_reco_photon2E", "Reco Photon 2 Energy", 8 * 10, 0, 20);
+  h_reco_photon1E_2d = new TH2F("h_reco_photon1E_2d", "pT vs Reco Photon 1 Energy", 8 * 10, 0, 20, 8 * 10, 0, 20);
+  h_reco_photon2E_2d = new TH2F("h_reco_photon2E_2d", "pT vs Reco Photon 2 Energy", 8 * 10, 0, 20, 8 * 10, 0, 20);
+  h_reco_ALLphotonE_2d = new TH2F("h_reco_ALLphotonE_2d", "pT vs All Reco Photon Energy", 8 * 10, 0, 20, 8 * 10, 0, 20);
+  h_reco_ALLphotonE = new TH1F("h_reco_ALLphotonE", "All Reco Photon Energy", 8 * 10, 0, 20);
+  //All truth photons(secondaries)
+  h_truth_ALLphotonpt = new TH1F("h_truth_ALLphotonpt", "All Photon pt", 100, 0, 20);
+  h_truth_ALLphotonp = new TH1F("h_truth_ALLphotonp", "All Photon p", 100, 0, 20);
+
+  h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 8 * 10, 0, 20);
+  h_reco_photon2E_weighted = new TH1F("h_reco_photon2E_weighted", "Reco Photon 2 Energy, weighted", 8 * 10, 0, 20);
+  h_reco_ALLphotonE_weighted = new TH1F("h_reco_ALLphotonE_weighted", "All Reco Photon Energy, weighted", 8 * 10, 0, 20);
 
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 600, 0, 1.2);
@@ -199,7 +203,20 @@ int CaloAna::Init(PHCompositeNode*)
 
   //////////////////////////
   // pT rewieghting
-  // frw = new TFile("/sphenix/u/bseidlitz/work/analysis/EMCal_pi0_Calib_2023/macros/rw_pt.root");
+  if(SPMC_bool)
+  {
+    if(eta_weight)
+    {
+      frw = new TFile("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root");
+      h_sp_pt_rw = (TH1F*) frw->Get(seta_pt_spectrum);
+    }
+    else if(!eta_weight)
+    {
+        frw = new TFile("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root");
+        h_sp_pt_rw = (TH1F*) frw->Get(spi0_pt_spectrum);
+    }
+  }
+
   // for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
 
   rnd = new TRandom3();
@@ -849,7 +866,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             h_truth_spectrum2->Fill(truthpi0.Pt());
             h_FullTruth_e->Fill(pion_e);
             h_FullTruth_eta->Fill(pion_eta);
-            h_FullTruth_pt->Fill(pion_pt);
+            h_FullTruth_pt->Fill(pion_pt);v                                           bg
             h_FullTruth_p->Fill(pion_p);
           }
           //photon loop
@@ -875,15 +892,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             if (id == 22)
             {
               float photon_e = truth->get_e();
-              /*
               float photon_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
-              float photon_p = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz());
+              float photon_p = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz());/*
+
               float photon_phi = atan2(truth->get_py(), truth->get_px());
               float photon_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
               TLorentzVector truthphoton = TLorentzVector();
               truthphoton.SetPtEtaPhiE(photon_pt, photon_eta, photon_phi, photon_e);
               */
               h_truth_ALLphotonE->Fill(photon_e);
+              h_truth_ALLphotonpt->Fill(photon_pt);
+              h_truth_ALLphotonp->Fill(photon_p);
               //what should the photon weight be?
               //h_truth_ALLphotonE_weighted->Fill(photon_e, inv_yield);            
             }
@@ -915,6 +934,13 @@ float CaloAna::getWeight(int ieta, float pt)
   float val = h_pt_rw[ieta]->GetBinContent(h_pt_rw[ieta]->FindBin(pt));
   if (val == 0) return 0;
   return 1 / val;
+}
+
+float CaloAna::getSPMCpTspectrum(float pt)
+{
+  float val = h_sp_pt_rw->GetBinContent(h_sp_pt_rw->FindBin(pt));
+  if (val == 0) return 0;
+  return val;
 }
 
 TF1* CaloAna::fitHistogram(TH1* h)

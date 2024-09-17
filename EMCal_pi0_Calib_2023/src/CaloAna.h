@@ -197,6 +197,7 @@ class CaloAna : public SubsysReco
   bool clusterprobcut = true; // if true use cluster prob cut, if false use chisq cut
   bool zvtxcut_bool = true;
   //SPMC
+  bool SPMC_bool = false;
   bool additionalsmearing = true;//should be on for spmc in all cases. if you want 0 use 0 for smearint
   float badcalibsmear;
   bool eta_weight = false;
@@ -215,6 +216,7 @@ class CaloAna : public SubsysReco
   TH1F* h_pt_eta_rw[96];
   TH1F* h_pt_rw[96];
   TFile* frw;
+  TH1F* h_sp_pt_rw;
   TH1F* h_emcal_e_eta;
   TH1F* h_truth_eta;
   TH1F* h_truth_phi;
@@ -248,10 +250,13 @@ class CaloAna : public SubsysReco
   TH1F* h_truthmatched_photon2E;
   TH1F* h_truthmatched_AllphotonE;
   TH1F* h_truth_ALLphotonE;
+  TH1F* h_truth_ALLphotonE_weighted;
+  TH1F* h_truth_ALLphotonpt;
+  TH1F* h_truth_ALLphotonp;
   TH1F* h_truthmatched_photon1E_weighted;
   TH1F* h_truthmatched_photon2E_weighted;
   TH1F* h_truthmatched_AllphotonE_weighted;
-  TH1F* h_truth_ALLphotonE_weighted;
+
   TH1F* h_reco_photon1E;
   TH1F* h_reco_photon2E;
   TH2F* h_reco_photon1E_2d;
