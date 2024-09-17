@@ -214,11 +214,22 @@ int CaloAna::Init(PHCompositeNode*)
       frw = new TFile("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root");
       h_sp_pt_rw = (TH1F*) frw->Get(seta_pt_spectrum);
     }
-    else if(!eta_weight)
+    else
     {
-        frw = new TFile("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root");
-        h_sp_pt_rw = (TH1F*) frw->Get(spi0_pt_spectrum);
+      frw = new TFile("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root");
+      h_sp_pt_rw = (TH1F*) frw->Get(spi0_pt_spectrum);
     }
+
+    if (h_sp_pt_rw == nullptr) {
+      std::cerr << "Error: Histogram not found!" << std::endl;
+    }
+    else
+    {
+      h_sp_pt_rw->SetDirectory(0); // Detach the histogram from the file
+    }
+    // Close the file after retrieving the histogram
+    frw->Close();
+    delete frw;
   }
 
   // for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
@@ -711,7 +722,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);//mT scaling
             weight_function *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);
           }
-          
+
           if(SPMC_bool&& inv_yield!=0) inv_yield = getSPMCpTspectrum(static_cast<float>(Pt))/inv_yield;
           
           h_inv_yield->Fill(Pt, inv_yield);
@@ -886,7 +897,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             h_truth_spectrum2->Fill(truthpi0.Pt());
             h_FullTruth_e->Fill(pion_e);
             h_FullTruth_eta->Fill(pion_eta);
-            h_FullTruth_pt->Fill(pion_pt);v                                           bg
+            h_FullTruth_pt->Fill(pion_pt);                                           bg
             h_FullTruth_p->Fill(pion_p);
           }
           //photon loop

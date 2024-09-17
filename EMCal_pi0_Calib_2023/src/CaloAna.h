@@ -193,7 +193,6 @@ class CaloAna : public SubsysReco
   bool zvtxcut_bool = true;
   // SPMC
   bool SPMC_bool = false;
-  bool additionalsmearing = true;  // should be on for spmc in all cases. if you want 0 use 0 for smearint
   float badcalibsmear;
   bool eta_weight = false;
   // NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
