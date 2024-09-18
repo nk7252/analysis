@@ -205,7 +205,8 @@ int CaloAna::Init(PHCompositeNode*)
   // 3d histogram to check for corelation between eta, pt and invariant mass
   h_InvMass_smear_eta_3d = new TH3F(Form("h_InvMass_smear%d_eta_3d", badcalibsmearint ), Form("pT vs Invariant Mass vs eta + smear: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 24, -1.2, 1.2);
   h_InvMass_smear_weighted_eta_3d = new TH3F(Form("h_InvMass_smear%d_weighted_eta_3d", badcalibsmearint ), Form("pT vs Invariant Mass vs eta + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 24, -1.2, 1.2);
-
+  // 2d histogram to check for corelation between eta, and invariant mass
+  h_InvMass_smear_eta_2d = new TH2F(Form("h_InvMass_smear%d_eta_2d", badcalibsmearint ), Form("eta vs Invariant Mass+ smear: %f percent", badcalibsmearint / 10.0f), 24, -1.2, 1.2, 120, 0, 1.2);
   //////////////////////////
   // pT rewieghting
   if(SPMC_bool)
@@ -856,6 +857,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_InvMass_smear->Fill(pi0smearvec[2].M());
         h_InvMass_smear_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M());
         h_InvMass_smear_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta());
+        h_InvMass_smear_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M());
       }
       h_pt1->Fill(photon1.Pt());
       h_pt2->Fill(photon2.Pt());
