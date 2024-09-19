@@ -202,6 +202,7 @@ class CaloAna : public SubsysReco
   bool matchmctruth = true;  //
   bool filltruthspectrum = true;
 
+  TH2F* h_reco_etaphi;
   TH1F* h_pt1;
   TH1F* h_pt2;
   TH1F* h_nclusters;

@@ -113,6 +113,7 @@ int CaloAna::Init(PHCompositeNode*)
   outfile = new TFile(outfilename.c_str(), "RECREATE");
   // cutQA
   h_cutCounter = new TH1F("h_cutCounter", "Cut Counter", 13, 0.5, 13.5);
+  h_reco_etaphi = new TH1F("h_reco_eta", "Reco eta", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
   // list of cuts
   //  clus1 chi2, clus1 cuts, tower eta>95,hotclus1,clus1=clus2,clus2 chi2, clus2 cuts, assym, Dr, pi0pt cut, hotclus2
 
@@ -136,7 +137,6 @@ int CaloAna::Init(PHCompositeNode*)
   h_etaphi_clus = new TH2F("h_etaphi_clus", "", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
   h_clusE = new TH1F("h_clusE", "", 100, 0, 20);
   h_emcal_e_eta = new TH1F("h_emcal_e_eta", "", 96, 0, 96);
-
   h_pt1 = new TH1F("h_pt1", "", 100, 0, 20);
   h_pt2 = new TH1F("h_pt2", "", 100, 0, 20);
   h_pion_pt = new TH1F("h_pion_pt", "", 100, 0, 20);
@@ -539,8 +539,16 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         continue;
       }
       RawCluster* recoCluster2 = clusterIter2->second;
-
-      CLHEP::Hep3Vector E_vec_cluster2 = RawClusterUtility::GetECoreVec(*recoCluster2, vertex);
+      
+      CLHEP::Hep3Vector E_vec_cluster2;
+      if(pp_rawcluster)
+      {
+        E_vec_cluster2 = RawClusterUtility::GetEVec(*recoCluster2, vertex);
+      }
+      else if(!pp_rawcluster)//i.e if AuAu
+      {  
+        E_vec_cluster2 = RawClusterUtility::GetECoreVec(*recoCluster2, vertex);
+      }
 
       float clus2E = E_vec_cluster2.mag();
       float clus2_eta = E_vec_cluster2.pseudoRapidity();
@@ -593,7 +601,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(7);
           continue;
         }
-
         if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson)
         {
           h_cutCounter->Fill(8);
@@ -630,7 +637,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(7);
           continue;
         }
-
         if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson)
         {
           h_cutCounter->Fill(8);
@@ -646,7 +652,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(10);
           continue;
         }
-        if(etaCutbool&&abs(pi0.Eta()) > etacutval)
+        if(etaCutbool && abs(pi0.Eta()) > etacutval)
         {
           h_cutCounter->Fill(13);
           continue;
@@ -674,6 +680,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(11);
         continue;
       }
+      h_reco_etaphi->Fill(pi0.Eta(), pi0.Phi());//pi0 is the same as the smeared version if adding smearing
 
       /////////////////////////////////////////////////
       //// Truth info
