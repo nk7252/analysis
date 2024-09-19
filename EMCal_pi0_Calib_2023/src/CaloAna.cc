@@ -303,7 +303,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
   float maxDr = 1.1;
-  float maxAlpha = 0.7;//asymmetry cut
+  float maxAlpha = 0.5;//asymmetry cut
   float clus_chisq_cut = 4;// normally 4
   float clusterprob = 0.1; // replacing chisqr cut
   float nClus_ptCut = 0.0;  // 0.5 normally
@@ -311,7 +311,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float ptMaxCut = 100;     // no cut in data, as far as I know. so I set it to a value it is unlikely to reach
   float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;  // 0.7
-  float etcut = 0.5; // cluster ET cut
+  float etcut = 1.0; // cluster ET cut
   float etacutval = 0.6; // cluster pseudo-rapidity cut
   float zvtx_cut_val = 30; // z vertex cut value
 
