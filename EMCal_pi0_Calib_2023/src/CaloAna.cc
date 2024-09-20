@@ -112,8 +112,15 @@ int CaloAna::Init(PHCompositeNode*)
 
   outfile = new TFile(outfilename.c_str(), "RECREATE");
   // cutQA
-  h_cutCounter = new TH1F("h_cutCounter", "Cut Counter", 13, 0.5, 13.5);
   h_reco_etaphi = new TH2F("h_reco_eta", "Reco eta", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+  h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
+  for(int i = 0; i < 13; i++)
+  {
+    h_reco_etaphi_cuts[i] = new TH2F(Form("h_reco_etaphi_cuts%d", i), "", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+    h_cluster_etaphi_cuts[i] = new TH2F(Form("h_cluster_etaphi_cuts%d", i), "", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+  }
+  
+  h_cutCounter = new TH1F("h_cutCounter", "Cut Counter", 13, 0.5, 13.5);
   // list of cuts
   //  clus1 chi2, clus1 cuts, tower eta>95,hotclus1,clus1=clus2,clus2 chi2, clus2 cuts, assym, Dr, pi0pt cut, hotclus2
 
@@ -281,6 +288,7 @@ int CaloAna::Init(PHCompositeNode*)
   clustcontainerstring = (poscor == true) ? "CLUSTER_POS_COR_CEMC" : ((clust_waveform == true) ? "CLUSTERINFO_CEMC" : "CLUSTER_CEMC");
 
   funkyCaloStuffcounter = 0;
+  VertexMapFailcounter = 0;
   if (additionalsmearing == false) std::cout << "additional smearing is not being added" << std::endl;
   if (additionalsmearing == true) std::cout << "additional smearing is being added" << std::endl;
   // return 0;
@@ -337,6 +345,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       // std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
       std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
+      h_vtxmap_fail->Fill(1);
+      VertexMapFailcounter++;
+      return 0;
       // return Fun4AllReturnCodes::ABORTRUN;
     }
     if (vertexmap && !vertexmap->empty())
@@ -442,6 +453,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float prob = recoCluster->get_prob();
     // clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
+    h_cluster_etaphi_cuts[1]->Fill(clus_eta, clus_phi);
     if (clusterprobcut)
     {
       if(prob < clusterprob && cutson)
@@ -455,12 +467,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_cutCounter->Fill(1);
       continue;
     }
+    h_cluster_etaphi_cuts[2]->Fill(clus_eta, clus_phi);
     TLorentzVector photon1;
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
     pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
   
     if (additionalsmearing)
     {
+      h_cluster_etaphi_cuts[3]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
       if(eTCutbool)
       {
         if(pi0smearvec[0].E() < etcut && cutson)
@@ -468,16 +482,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(2);
           continue;
         }
-
       }
       else if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson)
       {
         h_cutCounter->Fill(2);
         continue;
-      }
+      }   
+      h_cluster_etaphi_cuts[4]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
     }
     else if (!additionalsmearing)
     {
+      h_cluster_etaphi_cuts[3]->Fill(clus_eta, clus_phi);
       if(eTCutbool)
       {
         if(photon1.E() < etcut && cutson)
@@ -491,8 +506,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(2);
         continue;
       }
+      h_cluster_etaphi_cuts[4]->Fill(clus_eta, clus_phi);
     }
-
     h_clusE->Fill(clusE);
     // if (clusE < 0.2) continue;
     //  std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
@@ -522,6 +537,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_cutCounter->Fill(3);
       continue;
     }
+    if(additionalsmearing) h_cluster_etaphi_cuts[5]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+    else if(!additionalsmearing) h_cluster_etaphi_cuts[5]->Fill(clus_eta, clus_phi);
     h_pt_eta[lt_eta]->Fill(clus_pt);
 
     if (dynMaskClus && hotClus == true && cutson)
@@ -529,6 +546,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_cutCounter->Fill(4);
       continue;
     }
+    if(additionalsmearing) h_cluster_etaphi_cuts[6]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+    else if(!additionalsmearing) h_cluster_etaphi_cuts[6]->Fill(clus_eta, clus_phi);
     if (debug) std::cout << " " << "Cluster Loop: 2 " << std::endl;
     // for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
     for (clusterIter2 = std::next(clusterIter); clusterIter2 != clusterEnd.second; ++clusterIter2)
@@ -538,6 +557,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(5);
         continue;
       }
+      if(additionalsmearing) h_cluster_etaphi_cuts[7]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+      else if(!additionalsmearing) h_cluster_etaphi_cuts[7]->Fill(clus_eta, clus_phi);
+
       RawCluster* recoCluster2 = clusterIter2->second;
       
       CLHEP::Hep3Vector E_vec_cluster2;
@@ -569,13 +591,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(6);
         continue;
       }
+      if(additionalsmearing) h_cluster_etaphi_cuts[8]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+      else if(!additionalsmearing) h_cluster_etaphi_cuts[8]->Fill(clus_eta, clus_phi);
+
+      
       TLorentzVector photon2;
       photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
       pi0smearvec[1] = SmearPhoton4vector(photon2, badcalibsmear);
       TLorentzVector pi0;
       //TLorentzVector pi0 = photon1 + photon2;
       pi0smearvec[2] = pi0smearvec[0] + pi0smearvec[1];
-
+      
+      //set pi0 to the smeared version if additional smearing is added
       if(additionalsmearing)
       {
         pi0 = pi0smearvec[2];
@@ -584,10 +611,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         pi0 = photon1 + photon2;
       }
-
+      
+      h_reco_etaphi_cuts[1]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+      
       if (additionalsmearing)
       {
-
         if(eTCutbool)
         {
           if(pi0smearvec[1].E() < etcut && cutson)
@@ -601,26 +629,36 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(7);
           continue;
         }
+        h_reco_etaphi_cuts[2]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+        h_cluster_etaphi_cuts[9]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
         if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson)
         {
           h_cutCounter->Fill(8);
           continue;
         }
+        h_reco_etaphi_cuts[3]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+        h_cluster_etaphi_cuts[10]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
         if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson)
         {
           h_cutCounter->Fill(9);
           continue;
         }
+        h_reco_etaphi_cuts[4]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+        h_cluster_etaphi_cuts[11]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
         if (pi0smearvec[2].Pt() < pi0ptcut)
         {
           h_cutCounter->Fill(10);
           continue;
         }
+        h_reco_etaphi_cuts[5]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+        h_cluster_etaphi_cuts[12]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
         if(etaCutbool && abs(pi0smearvec[2].Eta()) > etacutval)
         {
           h_cutCounter->Fill(13);
           continue;
         }
+        h_reco_etaphi_cuts[6]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+        h_cluster_etaphi_cuts[13]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
       }
       else if (!additionalsmearing)
       {
@@ -637,26 +675,36 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(7);
           continue;
         }
+        h_reco_etaphi_cuts[2]->Fill(pi0.Eta(), pi0.Phi());
+        h_cluster_etaphi_cuts[9]->Fill(clus_eta, clus_phi);
         if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson)
         {
           h_cutCounter->Fill(8);
           continue;
         }
+        h_reco_etaphi_cuts[3]->Fill(pi0.Eta(), pi0.Phi());
+        h_cluster_etaphi_cuts[10]->Fill(clus_eta, clus_phi);
         if (photon1.DeltaR(photon2) > maxDr && cutson)
         {
           h_cutCounter->Fill(9);
           continue;
         }
+        h_reco_etaphi_cuts[4]->Fill(pi0.Eta(), pi0.Phi());
+        h_cluster_etaphi_cuts[11]->Fill(clus_eta, clus_phi);
         if (pi0.Pt() < pi0ptcut)
         {
           h_cutCounter->Fill(10);
           continue;
         }
+        h_reco_etaphi_cuts[5]->Fill(pi0.Eta(), pi0.Phi());
+        h_cluster_etaphi_cuts[12]->Fill(clus_eta, clus_phi);
         if(etaCutbool && abs(pi0.Eta()) > etacutval)
         {
           h_cutCounter->Fill(13);
           continue;
         }
+        h_reco_etaphi_cuts[6]->Fill(pi0.Eta(), pi0.Phi());
+        h_cluster_etaphi_cuts[13]->Fill(clus_eta, clus_phi);
       }
 
       // loop over the towers in the cluster
@@ -680,6 +728,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(11);
         continue;
       }
+      if(additionalsmearing) h_reco_etaphi_cuts[7]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+      else if(!additionalsmearing) h_reco_etaphi_cuts[7]->Fill(pi0.Eta(), pi0.Phi());
+      
       h_reco_etaphi->Fill(pi0.Eta(), pi0.Phi());//pi0 is the same as the smeared version if adding smearing
 
       /////////////////////////////////////////////////
@@ -965,7 +1016,8 @@ int CaloAna::End(PHCompositeNode* /*topNode*/)
   outfile->Close();
   delete outfile;
   hm->dumpHistos(outfilename, "UPDATE");
-  std::cout << "funkycounter: " << funkyCaloStuffcounter << std::endl;
+  std::cout << "funkycounter: " << funkyCaloStuffcounter << ", VertexMap Failure" << VertexMapFailcounter << std::endl;
+
   return 0;
 }
 

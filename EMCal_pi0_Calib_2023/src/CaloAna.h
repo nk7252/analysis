@@ -161,6 +161,7 @@ class CaloAna : public SubsysReco
 
   int _eventcounter;
   int funkyCaloStuffcounter;
+  int VertexMapFailcounter;
 
   // bool pileup = false;
   std::string clustcontainerstring;
@@ -211,6 +212,9 @@ class CaloAna : public SubsysReco
   TH1F* h_mass_eta_lt_rw[96];
   TH1F* h_pt_eta_rw[96];
   TH1F* h_pt_rw[96];
+  TH2F* h_reco_etaphi_cuts[13];
+  TH2F* h_cluster_etaphi_cuts[13];
+  TH1F* h_vtxmap_fail;
   TFile* frw;
   TH1F* h_sp_pt_rw;
   TH1F* h_emcal_e_eta;
