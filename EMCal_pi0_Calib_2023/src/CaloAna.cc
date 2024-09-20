@@ -114,6 +114,7 @@ int CaloAna::Init(PHCompositeNode*)
   // cutQA
   h_reco_etaphi = new TH2F("h_reco_eta", "Reco eta", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
+  h_zvtx = new TH1F("h_zvtx", "Zvtx", 300, -150, 150);
   for(int i = 0; i < 13; i++)
   {
     h_reco_etaphi_cuts[i] = new TH2F(Form("h_reco_etaphi_cuts%d", i), "", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
@@ -356,6 +357,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       if (vtx)
       {
         vtx_z = vtx->get_z();
+        h_zvtx->Fill(vtx_z);
       }
     }
   }
@@ -730,7 +732,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       }
       if(additionalsmearing) h_reco_etaphi_cuts[7]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
       else if(!additionalsmearing) h_reco_etaphi_cuts[7]->Fill(pi0.Eta(), pi0.Phi());
-      
+
       h_reco_etaphi->Fill(pi0.Eta(), pi0.Phi());//pi0 is the same as the smeared version if adding smearing
 
       /////////////////////////////////////////////////
