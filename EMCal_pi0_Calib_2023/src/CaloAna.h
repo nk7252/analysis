@@ -212,8 +212,8 @@ class CaloAna : public SubsysReco
   TH1F* h_mass_eta_lt_rw[96];
   TH1F* h_pt_eta_rw[96];
   TH1F* h_pt_rw[96];
-  TH2F* h_reco_etaphi_cuts[13];
-  TH2F* h_cluster_etaphi_cuts[15];
+  TH2F* h_reco_etaphi_cuts[14];
+  TH2F* h_cluster_etaphi_cuts[14];
   TH1F* h_vtxmap_fail;
   TH1F* h_zvtx;
   TFile* frw;
