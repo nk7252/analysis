@@ -159,12 +159,14 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   ca->apply_vertex_cut(false);
   ca->set_vertex_cut(20.);
   se->registerSubsystem(ca);
+  std::cout << "Subsystems registered" << std::endl;
   //}
 
   se->run(nevents);
   se->End();
   se->PrintTimer();
   delete se;
+  std::cout << "All done!" << std::endl;
 
   TFile *f_done_signal = new TFile("DONE.root", "recreate");
   std::cout << "All done!" << std::endl;
