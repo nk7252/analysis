@@ -11,8 +11,8 @@ else
   mkdir ${TargetDir}
 fi
 
-  export listfile="dst_calo_waveform.list"
-  #export listfile="dst_calo_cluster.list"
+  #export listfile="dst_calo_waveform.list"
+  export listfile="dst_calo_cluster.list"
   #export listfile2="g4hits.list"
   export listfile2="dst_truth.list"
 
@@ -32,7 +32,7 @@ fi
   #CreateFileList.pl DST_CALO_WAVEFORM DST_TRUTH -type 3 -run 15 -nopileup -n 1000000000
   
   #
-  #CreateFileList.pl -run 15 -type 3 -nop DST_CALO_WAVEFORM DST_TRUTH -n 100000
+  #CreateFileList.pl -run 15 -type 3 -nop DST_CALO_CLUSTER DST_TRUTH -n 100000
   #G4Hits || ! -f $listfile3 
   #run 111 also works see https://wiki.sphenix.bnl.gov/index.php?title=MDC2_2022
 # to test use a small set. like  -n 1000
