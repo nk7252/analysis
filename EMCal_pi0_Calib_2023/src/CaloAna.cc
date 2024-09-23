@@ -358,7 +358,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         vtx_z = vtx->get_z();
         h_zvtx->Fill(vtx_z);
+        std::cout << "vtx_z: " << vtx_z << std::endl;
       }
+    }
+    else
+    {
+      std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;
+      h_vtxmap_fail->Fill(0);
+      VertexMapFailcounter++;
     }
   }
   if(zvtxcut_bool && abs(vtx_z) > zvtx_cut_val) 
