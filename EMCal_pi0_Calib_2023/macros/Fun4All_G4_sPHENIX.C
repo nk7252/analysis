@@ -535,7 +535,7 @@ int Fun4All_G4_sPHENIX(
 
     if (Enable::CEMC_TOWER) CEMC_Towers();
     if (Enable::CEMC_CLUSTER) CEMC_Clusters();
-    ///* calo waveform simulation
+    /* calo waveform simulation
     CaloWaveformSim* caloWaveformSim = new CaloWaveformSim();
     caloWaveformSim->set_detector_type(CaloTowerDefs::CEMC);
     caloWaveformSim->set_detector("CEMC");
@@ -546,12 +546,8 @@ int Fun4All_G4_sPHENIX(
     caloWaveformSim->set_calibName("cemc_pi0_twrSlope_v1_default");
 
     //caloWaveformSim->set_noise_type(CaloWaveformSim::NOISE_NONE);
-    /* //Emma recomended commenting this out. It seems to work regardless of that.
-    caloWaveformSim->get_light_collection_model().load_data_file(
-    string(getenv("CALIBRATIONROOT")) +
-    string("/CEMC/LightCollection/Prototype3Module.xml"),
-    "data_grid_light_guide_efficiency", "data_grid_fiber_trans");
-    */
+    //Emma recomended commenting this out. It seems to work regardless of that.
+    //caloWaveformSim->get_light_collection_model().load_data_file(string(getenv("CALIBRATIONROOT")) + string("/CEMC/LightCollection/Prototype3Module.xml"),"data_grid_light_guide_efficiency", "data_grid_fiber_trans");
     caloWaveformSim->Verbosity(2);
     se->registerSubsystem(caloWaveformSim);
 
