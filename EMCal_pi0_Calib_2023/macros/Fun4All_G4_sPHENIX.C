@@ -551,9 +551,10 @@ int Fun4All_G4_sPHENIX(
     string(getenv("CALIBRATIONROOT")) +
     string("/CEMC/LightCollection/Prototype3Module.xml"),
     "data_grid_light_guide_efficiency", "data_grid_fiber_trans");
+    */
     caloWaveformSim->Verbosity(2);
     se->registerSubsystem(caloWaveformSim);
-    */
+
   
     CaloTowerBuilder* ca2 = new CaloTowerBuilder();
     ca2->set_detector_type(CaloTowerDefs::CEMC);
