@@ -379,6 +379,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     h_cutCounter->Fill(12);
     return Fun4AllReturnCodes::EVENT_OK;
   }
+  
 
   //////////////////////////////////////////////
   //         towers
@@ -449,6 +450,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     RawCluster* recoCluster = clusterIter->second;
 
     CLHEP::Hep3Vector vertex(0, 0, vtx_z);
+    h_zvtx->Fill(vertex.z());
+    std::cout << "vtx_z: " << vertex.z() << std::endl;
     CLHEP::Hep3Vector E_vec_cluster;
     if(pp_rawcluster)
     {
