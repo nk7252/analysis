@@ -361,7 +361,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         vtx_z = vtx->get_z();
         h_zvtx->Fill(vtx_z);
-        std::cout << "vtx_z: " << vtx_z << std::endl;
+        //std::cout << "vtx_z: " << vtx_z << std::endl;
       }
       else
       {
