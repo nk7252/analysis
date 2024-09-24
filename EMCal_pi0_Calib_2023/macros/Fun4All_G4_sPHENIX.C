@@ -1,4 +1,4 @@
-#ifndef MACRO_FUN4ALLG4SPHENIX_C
+#ifndef MACRO_FUN4ALLG4SPHENIX_Cpos
 #define MACRO_FUN4ALLG4SPHENIX_C
 
 #include <GlobalVariables.C>
@@ -51,7 +51,7 @@
 
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libffamodules.so)
-R__LOAD_LIBRARY(libCaloAna24.so)
+//R__LOAD_LIBRARY(libCaloAna24.so)
 R__LOAD_LIBRARY(libg4centrality.so)
 R__LOAD_LIBRARY(libCaloWaveformSim.so)
 R__LOAD_LIBRARY(libcalo_reco.so)
