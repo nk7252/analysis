@@ -811,6 +811,7 @@ int Fun4All_G4_sPHENIX(
     Production_MoveOutput();
   }
 
+  //TFile *f_done_signal = new TFile("DONE.root", "recreate");
   gSystem->Exit(0);
   return 0;
 }
