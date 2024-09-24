@@ -1,4 +1,4 @@
-#ifndef MACRO_FUN4ALLG4SPHENIX_Cpos
+#ifndef MACRO_FUN4ALLG4SPHENIX_C
 #define MACRO_FUN4ALLG4SPHENIX_C
 
 #include <GlobalVariables.C>
