@@ -67,14 +67,14 @@ fi
     echo "start file: $start_file   end file: $end_file"
 
     sed -n $start_file\,${end_file}p ${listfile} > tmp.txt
-    
+
     mv tmp.txt ${WorkDir}/inputdatahits.txt
     
     pushd ${WorkDir}
 
     
     cp -v "$PWD"/../../CondorRun.sh CondorRunJob$li.sh
-    cp "$PWD"/../../../Fun4All_G4_sPHENIX.C
+    cp "$PWD"/../../../Fun4All_G4_sPHENIX.C .
     cp "$PWD"/../../../G4Setup_sPHENIX.C .
 
     chmod +x CondorRunJob$li.sh
