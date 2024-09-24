@@ -50,12 +50,17 @@
 #include <phool/recoConsts.h>
 
 R__LOAD_LIBRARY(libfun4all.so)
+R__LOAD_LIBRARY(libfun4allraw.so)
 R__LOAD_LIBRARY(libffamodules.so)
 //R__LOAD_LIBRARY(libCaloAna24.so)
 R__LOAD_LIBRARY(libg4centrality.so)
 R__LOAD_LIBRARY(libCaloWaveformSim.so)
 R__LOAD_LIBRARY(libcalo_reco.so)
 R__LOAD_LIBRARY(libfun4allutils.so)
+R__LOAD_LIBRARY(libcdbobjects)
+
+#include <caloana/CaloAna.h>
+R__LOAD_LIBRARY(libcaloana.so)
 
 // For HepMC Hijing
 // try inputFile = /sphenix/sim/sim01/sphnxpro/sHijing_HepMC/sHijing_0-12fm.dat
@@ -71,6 +76,7 @@ int Fun4All_G4_sPHENIX(
     const string &outdir = ".")
 {
   Fun4AllServer *se = Fun4AllServer::instance();
+
   se->Verbosity(0);
 
   //Opt to print all random seed used for debugging reproducibility. Comment out to reduce stdout prints.
@@ -78,6 +84,10 @@ int Fun4All_G4_sPHENIX(
 
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
+
+  ifstream file(inputFile0);
+  string first_file;
+  getline(file, first_file);
   // By default every random number generator uses
   // PHRandomSeed() which reads /dev/urandom to get its seed
   // if the RANDOMSEED flag is set its value is taken as seed
@@ -103,6 +113,8 @@ int Fun4All_G4_sPHENIX(
   //INPUTREADHITS::filename[0] = inputFile;
   // if you use a filelist
   INPUTREADHITS::listfile[0] = inputFile0;
+  std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
+  std::string OutFile = Form("OUTHIST_iter_%s", filename.c_str());
   //INPUTREADHITS::listfile[1] = inputFile1;
   // Or:
   // Use particle generator
@@ -447,7 +459,6 @@ int Fun4All_G4_sPHENIX(
   Enable::PARTICLEFLOW = Enable::TOPOCLUSTER && false;
   // centrality reconstruction
   Enable::CENTRALITY = false;
-
   // new settings using Enable namespace in GlobalVariables.C
   Enable::BLACKHOLE = false;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
@@ -460,8 +471,11 @@ int Fun4All_G4_sPHENIX(
   //===============
   // conditions DB flags
   //===============
+  pair<int, int> runseg = Fun4AllUtils::GetRunSegment(first_file);
+  int runnumber = runseg.first;
+  cout << "run number = " << runnumber << endl;
   Enable::CDB = true;
-  // global tag
+  // global tag 
   rc->set_StringFlag("CDB_GLOBALTAG",CDB::global_tag);
   // 64 bit timestamp
   rc->set_uint64Flag("TIMESTAMP",CDB::timestamp);
