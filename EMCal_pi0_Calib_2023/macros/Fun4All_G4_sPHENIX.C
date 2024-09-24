@@ -755,6 +755,11 @@ int Fun4All_G4_sPHENIX(
   //--------------
 
   InputManagers();
+  // add this pedestal file for waveform simulation
+  //Fun4AllInputManager *hitsin = new Fun4AllNoSyncDstInputManager("DST2");
+  //hitsin->AddFile("pedestal-00046796.root");
+  //hitsin->Repeat();
+  //se->registerInputManager(hitsin);
 
   if (Enable::PRODUCTION)
   {
