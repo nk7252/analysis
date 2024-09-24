@@ -516,7 +516,7 @@ int Fun4All_G4_sPHENIX(
 
     if (Enable::CEMC_TOWER) CEMC_Towers();
     if (Enable::CEMC_CLUSTER) CEMC_Clusters();
-    Enable::CEMC_WAVEFORM = true;
+    //Enable::CEMC_WAVEFORM = true;
     CaloWaveformSim* caloWaveformSim;
     //if(Enable::CEMC_WAVEFORM)
     //{
@@ -680,7 +680,7 @@ int Fun4All_G4_sPHENIX(
   //----------------------
   string outputroot = outputFile;
   string remove_this = ".root";
-  //size_t pos = outputroot.find(remove_this);
+  size_t pos = outputroot.find(remove_this);
   if (pos != string::npos)
   {
     outputroot.erase(pos, remove_this.length());
