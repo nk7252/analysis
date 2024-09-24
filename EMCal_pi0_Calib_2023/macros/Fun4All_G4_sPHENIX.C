@@ -51,6 +51,11 @@
 
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libffamodules.so)
+R__LOAD_LIBRARY(libCaloAna24.so)
+R__LOAD_LIBRARY(libg4centrality.so)
+R__LOAD_LIBRARY(libCaloWaveformSim.so)
+R__LOAD_LIBRARY(libcalo_reco.so)
+R__LOAD_LIBRARY(libfun4allutils.so)
 
 // For HepMC Hijing
 // try inputFile = /sphenix/sim/sim01/sphnxpro/sHijing_HepMC/sHijing_0-12fm.dat
@@ -516,12 +521,13 @@ int Fun4All_G4_sPHENIX(
 
     if (Enable::CEMC_TOWER) CEMC_Towers();
     if (Enable::CEMC_CLUSTER) CEMC_Clusters();
+    ///* calo waveform simulation
     //Enable::CEMC_WAVEFORM = true;
-    CaloWaveformSim* caloWaveformSim;
+    //CaloWaveformSim* caloWaveformSim;
     //if(Enable::CEMC_WAVEFORM)
     //{
-    caloWaveformSim= new CaloWaveformSim();
-    //CaloWaveformSim* caloWaveformSim = new CaloWaveformSim();
+    //caloWaveformSim= new CaloWaveformSim();
+    CaloWaveformSim* caloWaveformSim = new CaloWaveformSim();
     caloWaveformSim->set_detector_type(CaloTowerDefs::CEMC);
     caloWaveformSim->set_detector("CEMC");
     caloWaveformSim->set_nsamples(12);
@@ -570,6 +576,7 @@ int Fun4All_G4_sPHENIX(
     ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
     se->registerSubsystem(ClusterBuilder);
     //}
+    //*/
     
 
   //--------------
