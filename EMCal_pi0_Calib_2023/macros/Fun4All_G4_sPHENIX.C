@@ -330,10 +330,10 @@ int Fun4All_G4_sPHENIX(
   //  Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
-  Enable::MBD = true;
+  //Enable::MBD = true;
   // Enable::MBD_SUPPORT = true; // save hist in MBD/BBC support structure
-  Enable::MBDRECO = Enable::MBD && true;
-  // Enable::MBDFAKE = true;  // Smeared vtx and t0, use if you don't want real MBD/BBC in simulation
+  //Enable::MBDRECO = Enable::MBD && true;
+  Enable::MBDFAKE = true;  // Smeared vtx and t0, use if you don't want real MBD/BBC in simulation
 
   Enable::PIPE = false;
   Enable::PIPE_ABSORBER = false;
@@ -546,7 +546,7 @@ int Fun4All_G4_sPHENIX(
     caloWaveformSim->set_calibName("cemc_pi0_twrSlope_v1_default");
 
     //caloWaveformSim->set_noise_type(CaloWaveformSim::NOISE_NONE);
-    /*
+    /* //Emma recomended commenting this out. It seems to work regardless of that.
     caloWaveformSim->get_light_collection_model().load_data_file(
     string(getenv("CALIBRATIONROOT")) +
     string("/CEMC/LightCollection/Prototype3Module.xml"),
