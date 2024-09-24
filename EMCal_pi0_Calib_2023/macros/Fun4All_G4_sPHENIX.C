@@ -38,6 +38,14 @@
 #include <fun4all/Fun4AllOutputManager.h>
 #include <fun4all/Fun4AllServer.h>
 
+#include <caloreco/CaloGeomMapping.h>
+#include <caloreco/CaloTowerBuilder.h>
+#include <caloreco/CaloTowerCalib.h>
+#include <caloreco/CaloWaveformProcessing.h>
+#include <caloreco/CaloTowerStatus.h>
+
+#include <calowaveformsim/CaloWaveformSim.h>
+
 #include <phool/PHRandomSeed.h>
 #include <phool/recoConsts.h>
 
@@ -48,12 +56,15 @@ R__LOAD_LIBRARY(libffamodules.so)
 // try inputFile = /sphenix/sim/sim01/sphnxpro/sHijing_HepMC/sHijing_0-12fm.dat
 
 int Fun4All_G4_sPHENIX(
-    const int nEvents = 1,
-    const string &inputFile = "https://www.phenix.bnl.gov/WWW/publish/phnxbld/sPHENIX/files/sPHENIX_G4Hits_sHijing_9-11fm_00000_00010.root",
-    const string &outputFile = "G4sPHENIX.root",
-    const string &embed_input_file = "https://www.phenix.bnl.gov/WWW/publish/phnxbld/sPHENIX/files/sPHENIX_G4Hits_sHijing_9-11fm_00000_00010.root",
-    const int skip = 0,
-    const string &outdir = ".")
+    const int nEvents = 100,
+    const string &inputFile0 = "g4hits.list",
+    //const string &inputFile1 = "dst_calo_cluster_12.list",
+    //const string &inputFile2 = "/sphenix/user/shuhangli/noisetree/macro/condor31/OutDir0/pedestalhg.root",
+    //const string &inputFile2 = "pedestal.root",
+    //const string &outputFile = "Done.root",
+    //const int skip = 0,
+    //const string &outdir = ".
+    )
 {
   Fun4AllServer *se = Fun4AllServer::instance();
   se->Verbosity(0);
@@ -87,7 +98,8 @@ int Fun4All_G4_sPHENIX(
   Input::READHITS = true;
   //INPUTREADHITS::filename[0] = inputFile;
   // if you use a filelist
-  INPUTREADHITS::listfile[0] = inputFile;
+  INPUTREADHITS::listfile[0] = inputFile0;
+  //INPUTREADHITS::listfile[1] = inputFile1;
   // Or:
   // Use particle generator
   // And
@@ -152,7 +164,7 @@ int Fun4All_G4_sPHENIX(
   // Initialize the selected Input/Event generation
   //-----------------
   // This creates the input generator(s)
-  //InputInit();
+  InputInit();
 
   //--------------
   // Set generator specific options
@@ -281,8 +293,8 @@ int Fun4All_G4_sPHENIX(
 
   //Enable::DSTOUT = true;
   Enable::DSTOUT_COMPRESS = false;
-  DstOut::OutputDir = outdir;
-  DstOut::OutputFile = outputFile;
+  //DstOut::OutputDir = outdir;
+  //DstOut::OutputFile = outputFile;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   //  Enable::DSTREADER = true;
@@ -302,10 +314,10 @@ int Fun4All_G4_sPHENIX(
   //  Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
-  // Enable::MBD = true;
+  Enable::MBD = true;
   // Enable::MBD_SUPPORT = true; // save hist in MBD/BBC support structure
-  // Enable::MBDRECO = Enable::MBD && true;
-  Enable::MBDFAKE = true;  // Smeared vtx and t0, use if you don't want real MBD/BBC in simulation
+  Enable::MBDRECO = Enable::MBD && true;
+  // Enable::MBDFAKE = true;  // Smeared vtx and t0, use if you don't want real MBD/BBC in simulation
 
   Enable::PIPE = true;
   Enable::PIPE_ABSORBER = true;
@@ -503,8 +515,63 @@ int Fun4All_G4_sPHENIX(
   // CEMC towering and clustering
   //-----------------------------
 
-  if (Enable::CEMC_TOWER) CEMC_Towers();
-  if (Enable::CEMC_CLUSTER) CEMC_Clusters();
+    if (Enable::CEMC_TOWER) CEMC_Towers();
+    if (Enable::CEMC_CLUSTER) CEMC_Clusters();
+    Enable::CEMC_WAVEFORM = true;
+    CaloWaveformSim* caloWaveformSim;
+    //if(Enable::CEMC_WAVEFORM)
+    //{
+    caloWaveformSim= new CaloWaveformSim();
+    //CaloWaveformSim* caloWaveformSim = new CaloWaveformSim();
+    caloWaveformSim->set_detector_type(CaloTowerDefs::CEMC);
+    caloWaveformSim->set_detector("CEMC");
+    caloWaveformSim->set_nsamples(12);
+    caloWaveformSim->set_pedestalsamples(12);
+    caloWaveformSim->set_timewidth(0.2);
+    caloWaveformSim->set_peakpos(6);
+    caloWaveformSim->set_calibName("cemc_pi0_twrSlope_v1_default");
+
+    //caloWaveformSim->set_noise_type(CaloWaveformSim::NOISE_NONE);
+
+    caloWaveformSim->get_light_collection_model().load_data_file(
+    string(getenv("CALIBRATIONROOT")) +
+    string("/CEMC/LightCollection/Prototype3Module.xml"),
+    "data_grid_light_guide_efficiency", "data_grid_fiber_trans");
+    caloWaveformSim->Verbosity(2);
+    se->registerSubsystem(caloWaveformSim);
+
+    CaloTowerBuilder* ca2 = new CaloTowerBuilder();
+    ca2->set_detector_type(CaloTowerDefs::CEMC);
+    ca2->set_nsamples(12);
+    ca2->set_dataflag(false);
+    ca2->set_processing_type(CaloWaveformProcessing::TEMPLATE);
+    ca2->set_builder_type(CaloTowerDefs::kWaveformTowerv2);
+    //match our current ZS threshold ~14ADC for emcal
+    ca2->set_softwarezerosuppression(true, 14);
+    se->registerSubsystem(ca2);
+
+    CaloTowerStatus *statusEMC = new CaloTowerStatus("CEMCSTATUS");
+    statusEMC->set_detector_type(CaloTowerDefs::CEMC);
+    statusEMC->set_time_cut(1);
+    se->registerSubsystem(statusEMC);
+
+    std::cout << "Calibrating EMCal" << std::endl;
+    CaloTowerCalib *calibEMC = new CaloTowerCalib("CEMCCALIB");
+    calibEMC->set_detector_type(CaloTowerDefs::CEMC);
+    calibEMC->set_outputNodePrefix("TOWERINFO_CALIB_");
+    se->registerSubsystem(calibEMC);
+
+    std::cout << "Building clusters" << std::endl;
+    RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
+    ClusterBuilder->Detector("CEMC");
+    ClusterBuilder->set_threshold_energy(0.030);  // for when using basic calibration
+    std::string emc_prof = getenv("CALIBRATIONROOT");
+    emc_prof += "/EmcProfile/CEMCprof_Thresh30MeV.root";
+    ClusterBuilder->LoadProfile(emc_prof);
+    ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
+    se->registerSubsystem(ClusterBuilder);
+    //}
+    
 
   //--------------
   // EPD tile reconstruction
@@ -612,9 +679,9 @@ int Fun4All_G4_sPHENIX(
   //----------------------
   // Simulation evaluation
   //----------------------
-  string outputroot = outputFile;
-  string remove_this = ".root";
-  size_t pos = outputroot.find(remove_this);
+  //string outputroot = outputFile;
+  //string remove_this = ".root";
+  //size_t pos = outputroot.find(remove_this);
   if (pos != string::npos)
   {
     outputroot.erase(pos, remove_this.length());
@@ -722,7 +789,7 @@ int Fun4All_G4_sPHENIX(
     return 0;
   }
 
-  se->skip(skip);
+  //se->skip(skip);
   se->run(nEvents);
   se->PrintTimer();
 
