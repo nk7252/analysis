@@ -182,7 +182,7 @@ class CaloAna : public SubsysReco
   float _vz = 0.;
   bool m_vtxCut = false;
   bool dynMaskClus = false;
-  bool getVtx = false;
+  bool getVtx = true;
   bool cutson = true;
   bool clust_waveform = true;  // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
   bool poscor = false;         // if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
