@@ -38,27 +38,11 @@
 #include <fun4all/Fun4AllOutputManager.h>
 #include <fun4all/Fun4AllServer.h>
 
-#include <caloreco/CaloGeomMapping.h>
-#include <caloreco/CaloTowerBuilder.h>
-#include <caloreco/CaloTowerCalib.h>
-#include <caloreco/CaloWaveformProcessing.h>
-#include <caloreco/CaloTowerStatus.h>
-
-#include <calowaveformsim/CaloWaveformSim.h>
-
 #include <phool/PHRandomSeed.h>
 #include <phool/recoConsts.h>
 
-#include </sphenix/user/shuhangli/FunWithML/TreeMaker/singleparticleml/CaloAna24.h>
-
-
-R__LOAD_LIBRARY(libCaloAna24.so)
 R__LOAD_LIBRARY(libfun4all.so)
-R__LOAD_LIBRARY(libg4centrality.so)
-R__LOAD_LIBRARY(libCaloWaveformSim.so)
-R__LOAD_LIBRARY(libcalo_reco.so)
 R__LOAD_LIBRARY(libffamodules.so)
-R__LOAD_LIBRARY(libfun4allutils.so)
 
 // For HepMC Hijing
 // try inputFile = /sphenix/sim/sim01/sphnxpro/sHijing_HepMC/sHijing_0-12fm.dat
@@ -72,7 +56,7 @@ int Fun4All_G4_sPHENIX(
     const string &outdir = ".")
 {
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(2);
+  se->Verbosity(0);
 
   //Opt to print all random seed used for debugging reproducibility. Comment out to reduce stdout prints.
   PHRandomSeed::Verbosity(1);
@@ -100,10 +84,10 @@ int Fun4All_G4_sPHENIX(
   // read previously generated g4-hits files, in this case it opens a DST and skips
   // the simulations step completely. The G4Setup macro is only loaded to get information
   // about the number of layers used for the cell reco code
-  //  Input::READHITS = true;
-  INPUTREADHITS::filename[0] = inputFile;
+  Input::READHITS = true;
+  //INPUTREADHITS::filename[0] = inputFile;
   // if you use a filelist
-  // INPUTREADHITS::listfile[0] = inputFile;
+  INPUTREADHITS::listfile[0] = inputFile;
   // Or:
   // Use particle generator
   // And
@@ -111,11 +95,11 @@ int Fun4All_G4_sPHENIX(
   // In case embedding into a production output, please double check your G4Setup_sPHENIX.C and G4_*.C consistent with those in the production macro folder
   // E.g. /sphenix/sim//sim01/production/2016-07-21/single_particle/spacal2d/
   //  Input::EMBED = true;
-  INPUTEMBED::filename[0] = embed_input_file;
+  //INPUTEMBED::filename[0] = embed_input_file;
   // if you use a filelist
   //INPUTEMBED::listfile[0] = embed_input_file;
 
-  Input::SIMPLE = true;
+  //Input::SIMPLE = false;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -144,7 +128,7 @@ int Fun4All_G4_sPHENIX(
   //Input::UPSILON_VERBOSITY = 0;
 
   //  Input::HEPMC = true;
-  INPUTHEPMC::filename = inputFile;
+  //INPUTHEPMC::filename = inputFile;
   //-----------------
   // Hijing options (symmetrize hijing, add flow, add fermi motion)
   //-----------------
@@ -168,7 +152,7 @@ int Fun4All_G4_sPHENIX(
   // Initialize the selected Input/Event generation
   //-----------------
   // This creates the input generator(s)
-  InputInit();
+  //InputInit();
 
   //--------------
   // Set generator specific options
@@ -180,7 +164,7 @@ int Fun4All_G4_sPHENIX(
   // add the settings for other with [1], next with [2]...
   if (Input::SIMPLE)
   {
-    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles(111, 1);
+    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi-", 5);
     if (Input::HEPMC || Input::EMBED)
     {
       INPUTGENERATOR::SimpleEventGenerator[0]->set_reuse_existing_vertex(true);
@@ -194,9 +178,9 @@ int Fun4All_G4_sPHENIX(
       INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_mean(0., 0., 0.);
       INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_width(0.01, 0.01, 5.);
     }
-    INPUTGENERATOR::SimpleEventGenerator[0]->set_eta_range(-0.9, 0.9);
+    INPUTGENERATOR::SimpleEventGenerator[0]->set_eta_range(-1, 1);
     INPUTGENERATOR::SimpleEventGenerator[0]->set_phi_range(-M_PI, M_PI);
-    INPUTGENERATOR::SimpleEventGenerator[0]->set_pt_range(10, 30.);
+    INPUTGENERATOR::SimpleEventGenerator[0]->set_pt_range(0.1, 20.);
   }
   // Upsilons
   // if you run more than one of these Input::UPSILON_NUMBER > 1
@@ -324,33 +308,33 @@ int Fun4All_G4_sPHENIX(
   Enable::MBDFAKE = true;  // Smeared vtx and t0, use if you don't want real MBD/BBC in simulation
 
   Enable::PIPE = true;
-  Enable::PIPE_ABSORBER = false;
+  Enable::PIPE_ABSORBER = true;
 
   // central tracking
-  Enable::MVTX = true;
-  Enable::MVTX_CELL = Enable::MVTX && false;
+  Enable::MVTX = false;
+  Enable::MVTX_CELL = Enable::MVTX && true;
   Enable::MVTX_CLUSTER = Enable::MVTX_CELL && true;
   Enable::MVTX_QA = Enable::MVTX_CLUSTER && Enable::QA && true;
 
-  Enable::INTT = true;
+  Enable::INTT = false;
 //  Enable::INTT_ABSORBER = true; // enables layerwise support structure readout
 //  Enable::INTT_SUPPORT = true; // enable global support structure readout
-  Enable::INTT_CELL = Enable::INTT && false;
+  Enable::INTT_CELL = Enable::INTT && true;
   Enable::INTT_CLUSTER = Enable::INTT_CELL && true;
   Enable::INTT_QA = Enable::INTT_CLUSTER && Enable::QA && true;
 
-  Enable::TPC = true;
-  Enable::TPC_ABSORBER = false;
-  Enable::TPC_CELL = Enable::TPC && false;
+  Enable::TPC = false;
+  Enable::TPC_ABSORBER = true;
+  Enable::TPC_CELL = Enable::TPC && true;
   Enable::TPC_CLUSTER = Enable::TPC_CELL && true;
   Enable::TPC_QA = Enable::TPC_CLUSTER && Enable::QA && true;
 
-  Enable::MICROMEGAS = true;
-//  Enable::MICROMEGAS_CELL = Enable::MICROMEGAS && true;
+  Enable::MICROMEGAS = false;
+  Enable::MICROMEGAS_CELL = Enable::MICROMEGAS && true;
   Enable::MICROMEGAS_CLUSTER = Enable::MICROMEGAS_CELL && true;
   Enable::MICROMEGAS_QA = Enable::MICROMEGAS_CLUSTER && Enable::QA && true;
 
-  //Enable::TRACKING_TRACK = (Enable::MICROMEGAS_CLUSTER && Enable::TPC_CLUSTER && Enable::INTT_CLUSTER && Enable::MVTX_CLUSTER) && true;
+  Enable::TRACKING_TRACK = (Enable::MICROMEGAS_CLUSTER && Enable::TPC_CLUSTER && Enable::INTT_CLUSTER && Enable::MVTX_CLUSTER) && false;
   Enable::GLOBAL_RECO = (Enable::MBDFAKE || Enable::MBDRECO || Enable::TRACKING_TRACK) && true;
   Enable::TRACKING_EVAL = Enable::TRACKING_TRACK && Enable::GLOBAL_RECO && true;
   Enable::TRACKING_QA = Enable::TRACKING_TRACK && Enable::QA && true;
@@ -360,56 +344,67 @@ int Fun4All_G4_sPHENIX(
   Enable::TRACK_MATCHING_TREE = Enable::TRACK_MATCHING && false;
   Enable::TRACK_MATCHING_TREE_CLUSTERS = Enable::TRACK_MATCHING_TREE && false;
 
-  //Additional tracking tools 
+  //Additional tracking tools
   //Enable::TRACKING_DIAGNOSTICS = Enable::TRACKING_TRACK && true;
   //G4TRACKING::filter_conversion_electrons = true;
+  // G4TRACKING::use_alignment = true;
 
+  // enable pp mode and set extended readout time
+  // TRACKING::pp_mode = true;
+  // TRACKING::pp_extended_readout_time = 20000;
+
+  // set flags to simulate and correct TPC distortions, specify distortion and correction files
+  //G4TPC::ENABLE_STATIC_DISTORTIONS = true;
+  //G4TPC::static_distortion_filename = std::string("/sphenix/user/rcorliss/distortion_maps/2023.02/Summary_hist_mdc2_UseFieldMaps_AA_event_0_bX180961051_0.distortion_map.hist.root");
+  //G4TPC::ENABLE_STATIC_CORRECTIONS = true;
+  //G4TPC::static_correction_filename = std::string("/sphenix/user/rcorliss/distortion_maps/2023.02/Summary_hist_mdc2_UseFieldMaps_AA_smoothed_average.correction_map.hist.root");
+  //G4TPC::ENABLE_AVERAGE_CORRECTIONS = false;
 
   //  cemc electronics + thin layer of W-epoxy to get albedo from cemc
   //  into the tracking, cannot run together with CEMC
   //  Enable::CEMCALBEDO = true;
 
   Enable::CEMC = true;
-  //Enable::CEMC_ABSORBER = true;
+  Enable::CEMC_ABSORBER = true;
   Enable::CEMC_CELL = Enable::CEMC && true;
   Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
-  //Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
-  //Enable::CEMC_EVAL = Enable::CEMC_G4Hit && Enable::CEMC_CLUSTER && true;
+  Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
+  Enable::CEMC_EVAL = Enable::CEMC_G4Hit && Enable::CEMC_CLUSTER && true;
   Enable::CEMC_QA = Enable::CEMC_CLUSTER && Enable::QA && true;
 
-  //Enable::HCALIN = true;
-  //Enable::HCALIN_ABSORBER = true;
+  Enable::HCALIN = false;
+  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
-  //Enable::HCALIN_EVAL = Enable::HCALIN_G4Hit && Enable::HCALIN_CLUSTER && true;
+  Enable::HCALIN_EVAL = Enable::HCALIN_G4Hit && Enable::HCALIN_CLUSTER && true;
   Enable::HCALIN_QA = Enable::HCALIN_CLUSTER && Enable::QA && true;
 
-  //Enable::MAGNET = true;
-  //Enable::MAGNET_ABSORBER = true;
+  Enable::MAGNET = false;
+  Enable::MAGNET_ABSORBER = true;
 
-  //Enable::HCALOUT = true;
-  //Enable::HCALOUT_ABSORBER = true;
+  Enable::HCALOUT = false;
+  Enable::HCALOUT_ABSORBER = true;
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
   Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
-  //Enable::HCALOUT_EVAL = Enable::HCALOUT_G4Hit && Enable::HCALOUT_CLUSTER && true;
+  Enable::HCALOUT_EVAL = Enable::HCALOUT_G4Hit && Enable::HCALOUT_CLUSTER && true;
   Enable::HCALOUT_QA = Enable::HCALOUT_CLUSTER && Enable::QA && true;
 
-  Enable::EPD = true;
-  //Enable::EPD_TILE = Enable::EPD && true;
+  Enable::EPD = false;
+  Enable::EPD_TILE = Enable::EPD && true;
 
-  //Enable::BEAMLINE = true;
-//  Enable::BEAMLINE_ABSORBER = true;  // makes the beam line magnets sensitive volumes
-//  Enable::BEAMLINE_BLACKHOLE = true; // turns the beamline magnets into black holes
-  //Enable::ZDC = true;
-//  Enable::ZDC_ABSORBER = true;
-//  Enable::ZDC_SUPPORT = true;
+  Enable::BEAMLINE = true;
+  //  Enable::BEAMLINE_ABSORBER = true;  // makes the beam line magnets sensitive volumes
+  //  Enable::BEAMLINE_BLACKHOLE = true; // turns the beamline magnets into black holes
+  Enable::ZDC = false;
+  //  Enable::ZDC_ABSORBER = true;
+  //  Enable::ZDC_SUPPORT = true;
   Enable::ZDC_TOWER = Enable::ZDC && true;
   Enable::ZDC_EVAL = Enable::ZDC_TOWER && true;
 
   //! forward flux return plug door. Out of acceptance and off by default.
-  Enable::PLUGDOOR = true;
+  //Enable::PLUGDOOR = true;
   Enable::PLUGDOOR_ABSORBER = true;
 
  //Enable::GLOBAL_FASTSIM = true;
@@ -421,7 +416,7 @@ int Fun4All_G4_sPHENIX(
 
   Enable::CALOTRIGGER = Enable::CEMC_TOWER && Enable::HCALIN_TOWER && Enable::HCALOUT_TOWER && false;
 
-  //Enable::JETS = (Enable::GLOBAL_RECO || Enable::GLOBAL_FASTSIM) && true;
+  Enable::JETS = (Enable::GLOBAL_RECO || Enable::GLOBAL_FASTSIM) && false;
   Enable::JETS_EVAL = Enable::JETS && true;
   Enable::JETS_QA = Enable::JETS && Enable::QA && true;
 
@@ -433,12 +428,12 @@ int Fun4All_G4_sPHENIX(
   // 3-D topoCluster reconstruction, potentially in all calorimeter layers
   Enable::TOPOCLUSTER = Enable::CEMC_TOWER && Enable::HCALIN_TOWER && Enable::HCALOUT_TOWER && false;
   // particle flow jet reconstruction - needs topoClusters!
-  Enable::PARTICLEFLOW = Enable::TOPOCLUSTER && true;
+  Enable::PARTICLEFLOW = Enable::TOPOCLUSTER && false;
   // centrality reconstruction
-  Enable::CENTRALITY = true;
+  Enable::CENTRALITY = false;
 
   // new settings using Enable namespace in GlobalVariables.C
-  Enable::BLACKHOLE = true;
+  Enable::BLACKHOLE = false;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //Enable::BLACKHOLE_FORWARD_SAVEHITS = false; // disable forward/backward hits
   //BlackHoleGeometry::visible = true;
@@ -453,8 +448,7 @@ int Fun4All_G4_sPHENIX(
   // global tag
   rc->set_StringFlag("CDB_GLOBALTAG",CDB::global_tag);
   // 64 bit timestamp
-  rc->set_uint64Flag("TIMESTAMP",6);
-  CDBInterface::instance()->Verbosity(1);
+  rc->set_uint64Flag("TIMESTAMP",CDB::timestamp);
   //---------------
   // World Settings
   //---------------
@@ -512,55 +506,6 @@ int Fun4All_G4_sPHENIX(
   if (Enable::CEMC_TOWER) CEMC_Towers();
   if (Enable::CEMC_CLUSTER) CEMC_Clusters();
 
-  CaloWaveformSim* caloWaveformSim = new CaloWaveformSim();
-  caloWaveformSim->set_detector_type(CaloTowerDefs::CEMC);
-  caloWaveformSim->set_detector("CEMC");
-  caloWaveformSim->set_nsamples(12);
-  caloWaveformSim->set_pedestalsamples(12);
-  caloWaveformSim->set_timewidth(0.2);
-  caloWaveformSim->set_peakpos(6);
-  caloWaveformSim->set_calibName("cemc_pi0_twrSlope_v1_default");
-  
-  //caloWaveformSim->set_noise_type(CaloWaveformSim::NOISE_NONE);
-  
-  caloWaveformSim->get_light_collection_model().load_data_file(
-  string(getenv("CALIBRATIONROOT")) +
-  string("/CEMC/LightCollection/Prototype3Module.xml"),
-  "data_grid_light_guide_efficiency", "data_grid_fiber_trans");
-  caloWaveformSim->Verbosity(2); 
-  se->registerSubsystem(caloWaveformSim);
-
-  CaloTowerBuilder* ca2 = new CaloTowerBuilder();
-  ca2->set_detector_type(CaloTowerDefs::CEMC);
-  ca2->set_nsamples(12);
-  ca2->set_dataflag(false);
-  ca2->set_processing_type(CaloWaveformProcessing::TEMPLATE);
-  ca2->set_builder_type(CaloTowerDefs::kWaveformTowerv2);
-  //match our current ZS threshold ~14ADC for emcal
-  ca2->set_softwarezerosuppression(true, 14);
-  se->registerSubsystem(ca2);
-
-  CaloTowerStatus *statusEMC = new CaloTowerStatus("CEMCSTATUS");
-  statusEMC->set_detector_type(CaloTowerDefs::CEMC);
-  statusEMC->set_time_cut(1);
-  se->registerSubsystem(statusEMC);
-
-  std::cout << "Calibrating EMCal" << std::endl;
-  CaloTowerCalib *calibEMC = new CaloTowerCalib("CEMCCALIB");
-  calibEMC->set_detector_type(CaloTowerDefs::CEMC);
-  calibEMC->set_outputNodePrefix("TOWERINFO_CALIB_");
-  se->registerSubsystem(calibEMC);
-
-  std::cout << "Building clusters" << std::endl;
-  RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
-  ClusterBuilder->Detector("CEMC");
-  ClusterBuilder->set_threshold_energy(0.030);  // for when using basic calibration
-  std::string emc_prof = getenv("CALIBRATIONROOT");
-  emc_prof += "/EmcProfile/CEMCprof_Thresh30MeV.root";
-  ClusterBuilder->LoadProfile(emc_prof);
-  ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
-  se->registerSubsystem(ClusterBuilder);
-
   //--------------
   // EPD tile reconstruction
   //--------------
@@ -607,13 +552,13 @@ int Fun4All_G4_sPHENIX(
     Tracking_Reco();
   }
 
-  
+
 
   if(Enable::TRACKING_DIAGNOSTICS)
     {
       const std::string kshortFile = "./kshort_" + outputFile;
       const std::string residualsFile = "./residuals_" + outputFile;
- 
+
       G4KshortReconstruction(kshortFile);
       seedResiduals(residualsFile);
     }
@@ -702,10 +647,6 @@ int Fun4All_G4_sPHENIX(
   if (Enable::KFPARTICLE && Input::UPSILON) KFParticle_Upsilon_Reco();
   if (Enable::KFPARTICLE && Input::DZERO) KFParticle_D0_Reco();
 
-  CaloAna24 *caloana24 = new CaloAna24();
-  se->registerSubsystem(caloana24);
-
-
   //----------------------
   // Standard QAs
   //----------------------
@@ -731,11 +672,6 @@ int Fun4All_G4_sPHENIX(
   //--------------
 
   InputManagers();
-
-  Fun4AllInputManager *hitsin = new Fun4AllNoSyncDstInputManager("DST2");
-  hitsin->AddFile("pedestal-00046796.root");
-  hitsin->Repeat();
-  se->registerInputManager(hitsin);
 
   if (Enable::PRODUCTION)
   {
@@ -788,6 +724,7 @@ int Fun4All_G4_sPHENIX(
 
   se->skip(skip);
   se->run(nEvents);
+  se->PrintTimer();
 
   //-----
   // QA output

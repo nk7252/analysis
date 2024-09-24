@@ -48,7 +48,7 @@ fi
   #DST_GLOBAL-nopileup-n 10000000 DST_CALO_CLUSTER
   #DST_CALO_WAVEFORM
   #number of jobs 
-  j=5000
+  j=1000
 
 
   # Count the number of lines in dst_calo_cluster.list
