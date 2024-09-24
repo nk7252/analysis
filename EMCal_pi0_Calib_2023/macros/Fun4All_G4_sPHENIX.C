@@ -315,8 +315,8 @@ int Fun4All_G4_sPHENIX(
 
   Enable::DSTOUT = true;
   Enable::DSTOUT_COMPRESS = false;
-  DstOut::OutputDir = OutFile;
-  DstOut::OutputFile = outputFile;
+  //DstOut::OutputDir = OutFile;
+  DstOut::OutputFile = OutFile;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   //  Enable::DSTREADER = true;
@@ -762,8 +762,8 @@ int Fun4All_G4_sPHENIX(
   }
 
   if (Enable::DSTOUT)
-  {
-    string FullOutFile = DstOut::OutputDir + "/" + DstOut::OutputFile;
+  {//DstOut::OutputDir + "/" + 
+    string FullOutFile = DstOut::OutputFile;
     Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", FullOutFile);
     if (Enable::DSTOUT_COMPRESS)
     {
