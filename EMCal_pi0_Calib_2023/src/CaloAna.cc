@@ -18,6 +18,9 @@
 #include <phool/PHCompositeNode.h>
 #include <phool/getClass.h>
 #include <phool/recoConsts.h>
+#include <ffamodules/FlagHandler.h>
+#include <ffamodules/HeadReco.h>
+#include <ffamodules/SyncReco.h>
 
 // G4Cells includes
 #include <g4detectors/PHG4Cell.h>

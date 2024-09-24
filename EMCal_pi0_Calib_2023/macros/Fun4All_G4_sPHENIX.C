@@ -313,10 +313,10 @@ int Fun4All_G4_sPHENIX(
   // Write the DST
   //======================
 
-  Enable::DSTOUT = true;
+  //Enable::DSTOUT = true;
   Enable::DSTOUT_COMPRESS = false;
-  //DstOut::OutputDir = OutFile;
-  DstOut::OutputFile = OutFile;
+  DstOut::OutputDir = outdir;
+  DstOut::OutputFile = outputFile;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   //  Enable::DSTREADER = true;
@@ -804,6 +804,13 @@ int Fun4All_G4_sPHENIX(
     cout << "it will run forever, so I just return without running anything" << endl;
     return 0;
   }
+
+  CaloAna *ca = new CaloAna("calomodulename", OutFile);
+  ca->set_timing_cut_width(16);
+  ca->apply_vertex_cut(false);
+  ca->set_vertex_cut(30.);
+  se->registerSubsystem(ca);
+  std::cout << "Subsystems registered" << std::endl;
 
   //se->skip(skip);
   se->run(nEvents);
