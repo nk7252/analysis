@@ -335,8 +335,8 @@ int Fun4All_G4_sPHENIX(
   Enable::MBDRECO = Enable::MBD && true;
   // Enable::MBDFAKE = true;  // Smeared vtx and t0, use if you don't want real MBD/BBC in simulation
 
-  Enable::PIPE = true;
-  Enable::PIPE_ABSORBER = true;
+  Enable::PIPE = false;
+  Enable::PIPE_ABSORBER = false;
 
   // central tracking
   Enable::MVTX = false;
@@ -352,7 +352,7 @@ int Fun4All_G4_sPHENIX(
   Enable::INTT_QA = Enable::INTT_CLUSTER && Enable::QA && true;
 
   Enable::TPC = false;
-  Enable::TPC_ABSORBER = true;
+  Enable::TPC_ABSORBER = false;
   Enable::TPC_CELL = Enable::TPC && true;
   Enable::TPC_CLUSTER = Enable::TPC_CELL && true;
   Enable::TPC_QA = Enable::TPC_CLUSTER && Enable::QA && true;
@@ -401,7 +401,7 @@ int Fun4All_G4_sPHENIX(
   Enable::CEMC_QA = Enable::CEMC_CLUSTER && Enable::QA && true;
 
   Enable::HCALIN = false;
-  Enable::HCALIN_ABSORBER = true;
+  Enable::HCALIN_ABSORBER = false;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
@@ -409,10 +409,10 @@ int Fun4All_G4_sPHENIX(
   Enable::HCALIN_QA = Enable::HCALIN_CLUSTER && Enable::QA && true;
 
   Enable::MAGNET = false;
-  Enable::MAGNET_ABSORBER = true;
+  Enable::MAGNET_ABSORBER = false;
 
   Enable::HCALOUT = false;
-  Enable::HCALOUT_ABSORBER = true;
+  Enable::HCALOUT_ABSORBER = false;
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
   Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
@@ -422,7 +422,7 @@ int Fun4All_G4_sPHENIX(
   Enable::EPD = false;
   Enable::EPD_TILE = Enable::EPD && true;
 
-  Enable::BEAMLINE = true;
+  Enable::BEAMLINE = false;
   //  Enable::BEAMLINE_ABSORBER = true;  // makes the beam line magnets sensitive volumes
   //  Enable::BEAMLINE_BLACKHOLE = true; // turns the beamline magnets into black holes
   Enable::ZDC = false;
@@ -433,7 +433,7 @@ int Fun4All_G4_sPHENIX(
 
   //! forward flux return plug door. Out of acceptance and off by default.
   //Enable::PLUGDOOR = true;
-  Enable::PLUGDOOR_ABSORBER = true;
+  Enable::PLUGDOOR_ABSORBER = false;
 
  //Enable::GLOBAL_FASTSIM = true;
 
@@ -536,11 +536,6 @@ int Fun4All_G4_sPHENIX(
     if (Enable::CEMC_TOWER) CEMC_Towers();
     if (Enable::CEMC_CLUSTER) CEMC_Clusters();
     ///* calo waveform simulation
-    //Enable::CEMC_WAVEFORM = true;
-    //CaloWaveformSim* caloWaveformSim;
-    //if(Enable::CEMC_WAVEFORM)
-    //{
-    //caloWaveformSim= new CaloWaveformSim();
     CaloWaveformSim* caloWaveformSim = new CaloWaveformSim();
     caloWaveformSim->set_detector_type(CaloTowerDefs::CEMC);
     caloWaveformSim->set_detector("CEMC");
@@ -551,14 +546,15 @@ int Fun4All_G4_sPHENIX(
     caloWaveformSim->set_calibName("cemc_pi0_twrSlope_v1_default");
 
     //caloWaveformSim->set_noise_type(CaloWaveformSim::NOISE_NONE);
-
+    /*
     caloWaveformSim->get_light_collection_model().load_data_file(
     string(getenv("CALIBRATIONROOT")) +
     string("/CEMC/LightCollection/Prototype3Module.xml"),
     "data_grid_light_guide_efficiency", "data_grid_fiber_trans");
     caloWaveformSim->Verbosity(2);
     se->registerSubsystem(caloWaveformSim);
-
+    */
+  
     CaloTowerBuilder* ca2 = new CaloTowerBuilder();
     ca2->set_detector_type(CaloTowerDefs::CEMC);
     ca2->set_nsamples(12);
@@ -589,7 +585,6 @@ int Fun4All_G4_sPHENIX(
     ClusterBuilder->LoadProfile(emc_prof);
     ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
     se->registerSubsystem(ClusterBuilder);
-    //}
     //*/
     
 
