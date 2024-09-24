@@ -43,6 +43,8 @@
 #include <caloreco/CaloTowerCalib.h>
 #include <caloreco/CaloWaveformProcessing.h>
 #include <caloreco/CaloTowerStatus.h>
+#include <caloreco/RawClusterBuilderTemplate.h>
+#include <caloreco/RawClusterPositionCorrection.h>
 
 #include <calowaveformsim/CaloWaveformSim.h>
 
@@ -307,9 +309,9 @@ int Fun4All_G4_sPHENIX(
   // Write the DST
   //======================
 
-  //Enable::DSTOUT = true;
+  Enable::DSTOUT = true;
   Enable::DSTOUT_COMPRESS = false;
-  DstOut::OutputDir = outdir;
+  DstOut::OutputDir = OutFile;
   DstOut::OutputFile = outputFile;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
@@ -471,9 +473,9 @@ int Fun4All_G4_sPHENIX(
   //===============
   // conditions DB flags
   //===============
-  //pair<int, int> runseg = Fun4AllUtils::GetRunSegment(first_file);
-  //int runnumber = runseg.first;
-  //cout << "run number = " << runnumber << endl;
+  pair<int, int> runseg = Fun4AllUtils::GetRunSegment(first_file);
+  int runnumber = runseg.first;
+  cout << "run number = " << runnumber << endl;
   Enable::CDB = true;
   // global tag 
   rc->set_StringFlag("CDB_GLOBALTAG",CDB::global_tag);
@@ -710,8 +712,6 @@ int Fun4All_G4_sPHENIX(
   if (Enable::JETS_EVAL) Jet_Eval(outputroot + "_g4jet_eval.root");
 
   if (Enable::DSTREADER) G4DSTreader(outputroot + "_DSTReader.root");
-
-
 
   if (Enable::USER) UserAnalysisInit();
 
