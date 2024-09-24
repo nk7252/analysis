@@ -360,11 +360,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_zvtx->Fill(vtx_z);
         std::cout << "vtx_z: " << vtx_z << std::endl;
       }
+      else
+      {
+        std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
+        h_vtxmap_fail->Fill(1);
+        VertexMapFailcounter++;
+      }
     }
     else
     {
       std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;
-      h_vtxmap_fail->Fill(0);
+      h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
     }
   }
