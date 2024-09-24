@@ -15,7 +15,7 @@ n_events="$1"
 g4_hits_list="$2"
 
 #create absolute path for input files
-input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/NK_Condor_spMC/${g4_hits_list}"
+input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/fullreco/${g4_hits_list}"
 
 
 #important setup for path if you are running on condor
