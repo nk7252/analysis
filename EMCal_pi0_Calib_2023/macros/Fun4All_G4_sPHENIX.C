@@ -61,10 +61,9 @@ int Fun4All_G4_sPHENIX(
     //const string &inputFile1 = "dst_calo_cluster_12.list",
     //const string &inputFile2 = "/sphenix/user/shuhangli/noisetree/macro/condor31/OutDir0/pedestalhg.root",
     //const string &inputFile2 = "pedestal.root",
-    //const string &outputFile = "Done.root",
+    const string &outputFile = "Done.root",
     //const int skip = 0,
-    //const string &outdir = ".
-    )
+    const string &outdir = ".")
 {
   Fun4AllServer *se = Fun4AllServer::instance();
   se->Verbosity(0);
@@ -293,8 +292,8 @@ int Fun4All_G4_sPHENIX(
 
   //Enable::DSTOUT = true;
   Enable::DSTOUT_COMPRESS = false;
-  //DstOut::OutputDir = outdir;
-  //DstOut::OutputFile = outputFile;
+  DstOut::OutputDir = outdir;
+  DstOut::OutputFile = outputFile;
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
   //  Enable::DSTREADER = true;
@@ -679,8 +678,8 @@ int Fun4All_G4_sPHENIX(
   //----------------------
   // Simulation evaluation
   //----------------------
-  //string outputroot = outputFile;
-  //string remove_this = ".root";
+  string outputroot = outputFile;
+  string remove_this = ".root";
   //size_t pos = outputroot.find(remove_this);
   if (pos != string::npos)
   {
