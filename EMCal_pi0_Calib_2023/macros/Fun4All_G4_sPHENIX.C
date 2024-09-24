@@ -127,7 +127,7 @@ int Fun4All_G4_sPHENIX(
   // if you use a filelist
   //INPUTEMBED::listfile[0] = embed_input_file;
 
-  //Input::SIMPLE = false;
+  // Input::SIMPLE = false;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -471,9 +471,9 @@ int Fun4All_G4_sPHENIX(
   //===============
   // conditions DB flags
   //===============
-  pair<int, int> runseg = Fun4AllUtils::GetRunSegment(first_file);
-  int runnumber = runseg.first;
-  cout << "run number = " << runnumber << endl;
+  //pair<int, int> runseg = Fun4AllUtils::GetRunSegment(first_file);
+  //int runnumber = runseg.first;
+  //cout << "run number = " << runnumber << endl;
   Enable::CDB = true;
   // global tag 
   rc->set_StringFlag("CDB_GLOBALTAG",CDB::global_tag);
