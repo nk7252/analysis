@@ -345,10 +345,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     if (!vertexmap)
     {
       // std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
-      std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
+      //std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
-      return 0;
+      //return 0;
       // return Fun4AllReturnCodes::ABORTRUN;
     }
     if (vertexmap && !vertexmap->empty())
