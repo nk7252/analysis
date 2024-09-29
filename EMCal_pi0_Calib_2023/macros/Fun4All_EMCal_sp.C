@@ -17,6 +17,7 @@
 #include <fun4all/Fun4AllDstInputManager.h>
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllInputManager.h>
+#include <fun4all/InputFileHandler.h>
 #include <fun4all/Fun4AllRunNodeInputManager.h>
 #include <fun4all/Fun4AllServer.h>
 #include <fun4all/Fun4AllUtils.h>
@@ -88,9 +89,10 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   Fun4AllInputManager *inglobal = new Fun4AllDstInputManager("DST_GLOBAL");
   cout << "add listfiles to input manager" << endl;
 
-  in->AddListFile(fname);
-  intruth->AddListFile(fname_truth);
-  inglobal->AddListFile(fnameglobal);
+  in->AddListFile(fname,1);
+  intruth->AddListFile(fname_truth,1);
+  inglobal->AddListFile(fnameglobal,1);
+  
   cout << "files added" << endl;
 
   se->registerInputManager(in);
