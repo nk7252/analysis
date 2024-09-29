@@ -13,8 +13,8 @@ fi
 
   export listfile="dst_calo_waveform.list"
   #export listfile="dst_calo_cluster.list"
-  export listfile2="g4hits.list"
-  #export listfile2="dst_truth.list"
+  #export listfile2="g4hits.list"
+  export listfile2="dst_truth.list"
   export listfile3="dst_global.list"
   #export listfile3="dst_truth_g4hit.list"
   #export listfile3="g4hits.list"
@@ -37,7 +37,7 @@ fi
   #run 111 also works see https://wiki.sphenix.bnl.gov/index.php?title=MDC2_2022
 # to test use a small set. like  -n 1000
   # Check if the list files were created successfully
-  if [[ ! -f $listfile || ! -f $listfile2 ]]; then
+  if [[ ! -f $listfile || ! -f $listfile2 || ! -f $listfile3 ]]; then
       echo "Error: One or more list files were not created successfully."
       exit 1
   fi
