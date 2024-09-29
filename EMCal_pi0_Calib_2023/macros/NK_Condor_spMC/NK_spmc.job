@@ -20,7 +20,7 @@ Log                             = $(Initialdir)/NK_Condor_spMC/NK_spmc_Log.log
 PeriodicHold                    = (NumJobStarts>=1 && JobStatus == 1)
 concurrency_limits              = CONCURRENCY_LIMIT_DEFAULT:100
 
-Arguments      = 10000 dst_calo_waveform.list dst_truth.list
+Arguments      = 10000 dst_calo_waveform.list dst_truth.list dst_global.list
 #inputdata_sp.txt g4hits.list
 
 Queue

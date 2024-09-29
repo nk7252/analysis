@@ -184,7 +184,7 @@ class CaloAna : public SubsysReco
   bool dynMaskClus = false;
   bool getVtx = true;
   bool cutson = true;
-  bool clust_waveform = false;  // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
+  bool clust_waveform = true;  // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
   bool poscor = false;         // if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
   bool pp_rawcluster = true;   // if on will use GetEVec, superseeds GetECoreVec. ECore is for AuAu
   bool debug = false;
@@ -193,12 +193,12 @@ class CaloAna : public SubsysReco
   bool clusterprobcut = true;  // if true use cluster prob cut, if false use chisq cut
   bool zvtxcut_bool = true;
   // SPMC
-  bool SPMC_bool = true;
+  bool SPMC_bool = false;
   float badcalibsmear;
   bool eta_weight = false;
   // NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   bool additionalsmearing = true;  // should be on for spmc in all cases. if you want 0 use 0 for smearint
-  int badcalibsmearint = 125;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  int badcalibsmearint = 100;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   // gen MC: pythia, *should remove smeared/weighted histograms.*
   bool matchmctruth = true;  //
   bool filltruthspectrum = true;

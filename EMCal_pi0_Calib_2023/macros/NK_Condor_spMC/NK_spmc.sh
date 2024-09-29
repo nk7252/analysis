@@ -8,6 +8,7 @@
 
 #or try : ./NK_spmc.sh  100 dst_calo_waveform.list dst_truth.list
 #root -l -q "Fun4All_EMCal_sp.C(100,dst_calo_waveform.list, dst_truth.list)"
+#or try : ./NK_spmc.sh  100 dst_calo_waveform.list dst_truth.list dst_global.list
 
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0  <n_events> <inputdata_sp> <sp_truth_list>"
@@ -18,11 +19,12 @@ fi
 n_events="$1"
 inputdata_sp="$2"
 sp_truth_list="$3"
+input_global="$4"
 
 #create absolute path for input files
-input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/NK_Condor_spMC/${inputdata_sp}"
-input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/NK_Condor_spMC/${sp_truth_list}"
-
+input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${inputdata_sp}"
+input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${sp_truth_list}"
+input_file3="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${input_global}"
 
 #important setup for path if you are running on condor
 export USER="nkumar -u -n"
@@ -45,5 +47,5 @@ cd $baseDir
 
 
 # Execute the custom ROOT script with arguments
-root -l -q "Fun4All_EMCal_sp.C($n_events,\"$input_file1\",\"$input_file2\")"
+root -l -q "Fun4All_EMCal_sp.C($n_events,\"$input_file1\",\"$input_file2\",\"$input_file3\")"
 
