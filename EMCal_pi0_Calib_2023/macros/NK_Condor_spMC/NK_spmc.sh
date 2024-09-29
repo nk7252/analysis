@@ -10,9 +10,9 @@
 #root -l -q "Fun4All_EMCal_sp.C(100,dst_calo_waveform.list, dst_truth.list)"
 #or try : ./NK_spmc.sh  100 dst_calo_waveform.list dst_truth.list dst_global.list
 
-if [ "$#" -ne 3 ]; then
-    echo "Usage: $0  <n_events> <inputdata_sp> <sp_truth_list>"
-    echo "Default Usage is: $0  10000 inputdata_sp.txt g4hits.list"
+if [ "$#" -ne 4 ]; then
+    echo "Usage: $0  <n_events> <inputdata_sp> <sp_truth_list> <input_global>"
+    echo "Default Usage is: $0  10000 inputdata_sp.txt g4hits.list dst_global.txt"
     exit 1
 fi
 
