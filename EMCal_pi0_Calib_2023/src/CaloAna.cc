@@ -347,8 +347,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
     if (!vertexmap)
     {
-      // std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
-      std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
+      //if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
+      if (debug) std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
       //return 0;
@@ -361,18 +361,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         vtx_z = vtx->get_z();
         h_zvtx->Fill(vtx_z);
-        std::cout << "vtx_z: " << vtx_z << std::endl;
+        if (debug) std::cout << "vtx_z: " << vtx_z << std::endl;
       }
       else
       {
-        std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
+        if (debug) std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
         h_vtxmap_fail->Fill(1);
         VertexMapFailcounter++;
       }
     }
     else
     {
-      std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;
+      if (debug) std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
     }
@@ -399,7 +399,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // RawClusterContainer* clusterContainer = findNode::getClass<RawClusterContainer>(topNode, "CLUSTER_POS_COR_CEMC");
   if (!clusterContainer)
   {
-    std::cout << PHWHERE << "funkyCaloStuff::process_event - Fatal Error - RawClusterContainer node is missing. " << std::endl;
+    if (debug) std::cout << PHWHERE << "funkyCaloStuff::process_event - Fatal Error - RawClusterContainer node is missing. " << std::endl;
     funkyCaloStuffcounter++;
     return 0;
   }
@@ -1052,7 +1052,7 @@ float CaloAna::getWeight(int ieta, float pt)
 float CaloAna::getSPMCpTspectrum(float pt)
 {
   float val = h_sp_pt_rw->GetBinContent(h_sp_pt_rw->FindBin(pt));
-  std::cout << val << std::endl;
+  if (debug) std::cout << val << std::endl;
   if (val == 0) return 0;
   return val;
 }
