@@ -12,7 +12,7 @@ root '' > notes.log
 
 
 
-root -b "Fun4All_EMCal_sp.C(0,\"inputdata.txt\",\"inputdatahits.txt\")"
+root -b "Fun4All_EMCal_sp.C(0,\"inputdata.txt\",\"inputdatahits.txt\",\"inputdataglobal.txt\")"
 #root -b "Fun4All_EMCal_sp.C(0,\"inputdata.txt\",\"inputdatahits.txt\")"
 
 echo "JOB COMPLETE!"

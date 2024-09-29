@@ -15,7 +15,7 @@ fi
   #export listfile="dst_calo_cluster.list"
   export listfile2="g4hits.list"
   #export listfile2="dst_truth.list"
-
+  export listfile3="dst_global.list"
   #export listfile3="dst_truth_g4hit.list"
   #export listfile3="g4hits.list"
 
@@ -48,7 +48,7 @@ fi
   #DST_GLOBAL-nopileup-n 10000000 DST_CALO_CLUSTER
   #DST_CALO_WAVEFORM
   #number of jobs 
-  j=1000
+  j=5000
 
 
   # Count the number of lines in dst_calo_cluster.list
@@ -92,10 +92,10 @@ fi
 
     sed -n $start_file\,${end_file}p ${listfile} > tmp.txt
     sed -n $start_file\,${end_file}p ${listfile2} > tmp2.txt
-    #sed -n $start_file\,${end_file}p ${listfile3} > tmp3.txt
+    sed -n $start_file\,${end_file}p ${listfile3} > tmp3.txt
     mv tmp.txt ${WorkDir}/inputdata.txt
     mv tmp2.txt ${WorkDir}/inputdatahits.txt
-    #mv tmp3.txt ${WorkDir}/inputdatatrthhits.txt,${WorkDir}/inputdatatrthhits.txt
+    mv tmp3.txt ${WorkDir}/inputdataglobal.txt
     
     pushd ${WorkDir}
 
@@ -108,7 +108,7 @@ fi
     
     cat >>ff.sub<< EOF
 +JobFlavour                   = "workday"
-transfer_input_files          = ${WorkDir}/CondorRunJob$li.sh, ${WorkDir}/inputdata.txt,${WorkDir}/Fun4All_EMCal_sp.C,${WorkDir}/inputdatahits.txt
+transfer_input_files          = ${WorkDir}/CondorRunJob$li.sh , ${WorkDir}/Fun4All_EMCal_sp.C , ${WorkDir}/inputdata.txt , ${WorkDir}/inputdatahits.txt , ${WorkDir}/inputdataglobal.txt
 Executable                    = CondorRunJob$li.sh
 request_memory                = 10GB
 Universe                      = vanilla

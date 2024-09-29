@@ -50,7 +50,7 @@ R__LOAD_LIBRARY(libcaloana.so)
 //void createLocalEMCalCalibFile(const string fname, int runNumber);
 
 // void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
-void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list")
+void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list")
 {
   //bool enableMasking = 0;
 
@@ -85,14 +85,17 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   //===============
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_TOWERS");
   Fun4AllInputManager *intruth = new Fun4AllDstInputManager("DST_TRUTH");
+  Fun4AllInputManager *inglobal = new Fun4AllDstInputManager("DST_GLOBAL");
   cout << "add listfiles to input manager" << endl;
 
   in->AddListFile(fname);
   intruth->AddListFile(fname_truth);
+  inglobal->AddListFile(fnameglobal);
   cout << "files added" << endl;
 
   se->registerInputManager(in);
   se->registerInputManager(intruth);
+  se->registerInputManager(inglobal);
   cout << "input manager registered" << endl;
 
   // Fun4AllInputManager *in2 = new Fun4AllDstInputManager("DST_TOWERS2");
@@ -155,6 +158,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
 
   // if (iter>1){
   CaloAna *ca = new CaloAna("calomodulename", OutFile);
+  
   ca->set_timing_cut_width(16);
   ca->apply_vertex_cut(false);
   ca->set_vertex_cut(20.);

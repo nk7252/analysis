@@ -794,15 +794,16 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           double p0 = 1.466;
           double Pt = myVector.Pt();
           double weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
-          inv_yield = WeightScale * Pt * weight_function;  //
-          // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
           if(eta_weight)
           {
-            inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);//mT scaling
+            //inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);//mT scaling
             weight_function *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);
           }
+          inv_yield = WeightScale * Pt * weight_function;  //
+          // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
 
-          if(SPMC_bool&& inv_yield!=0) inv_yield = getSPMCpTspectrum(static_cast<float>(Pt))/inv_yield;
+
+          if(SPMC_bool && inv_yield!=0) inv_yield = getSPMCpTspectrum(static_cast<float>(Pt))/inv_yield;
           
           h_inv_yield->Fill(Pt, inv_yield);
           h_yield->Fill(Pt, weight_function);
