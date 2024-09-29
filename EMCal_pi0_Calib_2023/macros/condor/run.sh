@@ -11,8 +11,8 @@ else
   mkdir ${TargetDir}
 fi
 
-  export listfile="dst_calo_waveform.list"
-  #export listfile="dst_calo_cluster.list"
+  #export listfile="dst_calo_waveform.list"
+  export listfile="dst_calo_cluster.list"
   #export listfile2="g4hits.list"
   export listfile2="dst_truth.list"
   export listfile3="dst_global.list"
