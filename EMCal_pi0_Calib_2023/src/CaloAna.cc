@@ -160,6 +160,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 20);
   h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 8 * 10, 0, 20);
   h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 8 * 10, 0, 20);
+  h_truth_etaspectrum = new TH1F("h_truth_etaspectrum", "", 100, -1.2, 1.2);
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 1000, -500, 500);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 1000, -500, 500);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
@@ -1009,6 +1010,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             h_FullTruth_eta->Fill(pion_eta);
             h_FullTruth_pt->Fill(pion_pt);
             h_FullTruth_p->Fill(pion_p);
+          }
+          if(truth->get_pid() == 221)
+          {
+            h_truth_etaspectrum->Fill(sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py()));
           }
           // photon loop
           if (truth->get_pid() == 22)
