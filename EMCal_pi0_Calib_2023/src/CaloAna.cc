@@ -797,21 +797,39 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           int id = truth->get_pid();
           h_truth_pid_p->Fill(id);
 
-          //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
-          double t = 4.5;
-          double w = 0.114;
-          double A = 229.6;
-          double B = 14.43;
-          double n = 8.1028;
-          double m_param = 10.654;
-          double p0 = 1.466;
           double Pt = myVector.Pt();
-          double weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
-          if (eta_weight)
+          double weight_function;
+          if(Pythia_weight)
           {
-            inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);  // mT scaling
-            weight_function *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);
+            double t = 4.5229;
+            double w = 0.0912;
+            double A = 528.197;
+            double B = 141.505;
+            double n = 9.86803;
+            double m_param = 7.48221;
+            double p0 = 0.592415;
+            //"((1 / (1 + exp((x - [0]) / [1]))) * [2] / pow(1 + x / [3], [4]) + (1 - (1 / (1 + exp((x - [0]) / [1])))) * [5] / (pow(x, [6])))"
+            weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)))
           }
+          else
+          {
+            //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
+            double t = 4.5;
+            double w = 0.114;
+            double A = 229.6;
+            double B = 14.43;
+            double n = 8.1028;
+            double m_param = 10.654;
+            double p0 = 1.466;
+            weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
+
+            if (eta_weight)
+            {
+              inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);  // mT scaling
+              weight_function *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);
+            }
+          }
+
           inv_yield = WeightScale * Pt * weight_function;  //
           // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
 
