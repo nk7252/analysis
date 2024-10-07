@@ -348,13 +348,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
     if (!vertexmap)
     {
-<<<<<<< Updated upstream
       //if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
       if (debug) std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
-=======
-      // std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
-      // std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
->>>>>>> Stashed changes
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
       // return 0;
@@ -367,11 +362,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         vtx_z = vtx->get_z();
         h_zvtx->Fill(vtx_z);
-<<<<<<< Updated upstream
         if (debug) std::cout << "vtx_z: " << vtx_z << std::endl;
-=======
-        // std::cout << "vtx_z: " << vtx_z << std::endl;
->>>>>>> Stashed changes
       }
       else
       {
@@ -816,30 +807,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           double p0 = 1.466;
           double Pt = myVector.Pt();
           double weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
-<<<<<<< Updated upstream
-          if(eta_weight)
-          {
-            //inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);//mT scaling
-=======
-          inv_yield = WeightScale * Pt * weight_function;  //
-          // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
           if (eta_weight)
           {
             inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);  // mT scaling
->>>>>>> Stashed changes
             weight_function *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);
           }
           inv_yield = WeightScale * Pt * weight_function;  //
           // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
 
-<<<<<<< Updated upstream
 
           if(SPMC_bool && inv_yield!=0) inv_yield = getSPMCpTspectrum(static_cast<float>(Pt))/inv_yield;
           
-=======
-          if (SPMC_bool && inv_yield != 0) inv_yield = getSPMCpTspectrum(static_cast<float>(Pt)) / inv_yield;
-
->>>>>>> Stashed changes
           h_inv_yield->Fill(Pt, inv_yield);
           h_yield->Fill(Pt, weight_function);
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
