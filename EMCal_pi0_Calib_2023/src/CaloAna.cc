@@ -112,8 +112,47 @@ int CaloAna::Init(PHCompositeNode*)
   if (debug) std::cout << " " << "Init Start " << std::endl;
   hm = new Fun4AllHistoManager(Name());
   // create and register your histos (all types) here
+  //////////////////////////
+  // pT rewieghting
+  if (SPMC_bool)
+  {
+    TH1F* h_original = nullptr;
+
+    if (eta_weight)
+    {
+      frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root", "READ");
+      h_original = (TH1F*) frw->Get("seta_pt_spectrum");
+    }
+    else
+    {
+      frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root", "READ");
+      h_original = (TH1F*) frw->Get("spi0_pt_spectrum");
+    }
+
+    if (h_original == nullptr)
+    {
+      std::cerr << "Error: Original histogram not found!" << std::endl;
+    }
+    else
+    {
+      h_sp_pt_rw = (TH1F*) h_original->Clone("h_sp_pt_rw_clone");
+      if (h_sp_pt_rw == nullptr)
+      {
+        std::cerr << "Error: Cloning of histogram failed!" << std::endl;
+      }
+      else
+      {
+        h_sp_pt_rw->SetDirectory(0);
+      }
+    }
+
+    // Close the file and clean up
+    frw->Close();
+    delete frw;
+  }
 
   outfile = new TFile(outfilename.c_str(), "RECREATE");
+  if(SPMC_bool) h_sp_pt_rw->SetDirectory(outfile); // Attach pt weight to outfile
   // cutQA
   h_reco_etaphi = new TH2F("h_reco_eta", "Reco eta", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
@@ -219,47 +258,9 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_smear_weighted_eta_3d = new TH3F(Form("h_InvMass_smear%d_weighted_eta_3d", badcalibsmearint), Form("pT vs Invariant Mass vs eta + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 24, -1.2, 1.2);
   // 2d histogram to check for corelation between eta, and invariant mass
   h_InvMass_smear_eta_2d = new TH2F(Form("h_InvMass_smear%d_eta_2d", badcalibsmearint), Form("eta vs Invariant Mass+ smear: %f percent", badcalibsmearint / 10.0f), 24, -1.2, 1.2, 120, 0, 1.2);
-  //////////////////////////
-  // pT rewieghting
-  if (SPMC_bool)
-  {
-    TH1F* h_original = nullptr;
-
-    if (eta_weight)
-    {
-      frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root", "READ");
-      h_original = (TH1F*) frw->Get("seta_pt_spectrum");
-    }
-    else
-    {
-      frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root", "READ");
-      h_original = (TH1F*) frw->Get("spi0_pt_spectrum");
-    }
-
-    if (h_original == nullptr)
-    {
-      std::cerr << "Error: Original histogram not found!" << std::endl;
-    }
-    else
-    {
-      h_sp_pt_rw = (TH1F*) h_original->Clone("h_sp_pt_rw_clone");
-      if (h_sp_pt_rw == nullptr)
-      {
-        std::cerr << "Error: Cloning of histogram failed!" << std::endl;
-      }
-      else
-      {
-        h_sp_pt_rw->SetDirectory(0);
-      }
-    }
-
-    // Close the file and clean up
-    frw->Close();
-    delete frw;
-  }
 
   // for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
-
+  //these histograms below were not working when using SPMC bool
   rnd = new TRandom3();
   // smearing added SPMC
   badcalibsmear = static_cast<float>(badcalibsmearint) / 1000.0f;
@@ -272,32 +273,6 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_smear_weighted = new TH1F(Form("h_InvMass_smear_weighted_%d", badcalibsmearint), Form("Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 600, 0, 1.2);
 
   h_InvMass_smear_weighted_2d = new TH2F(Form("h_InvMass_smear_weighted_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 600, 0, 1.2);
-
-  // nodes when using dst_calo_waveform, dst_truth
-  /*
-      available nodes in dst_calo_waveform et al
-      DST (PHCompositeNode)/
-        HCALOUT (PHCompositeNode)/
-          WAVEFORM_HCALOUT (IO,TowerInfoContainerv3)
-          TOWERS_HCALOUT (IO,TowerInfoContainerv2)
-          TOWERINFO_CALIB_HCALOUT (IO,TowerInfoContainerv2)
-        HCALIN (PHCompositeNode)/
-          WAVEFORM_HCALIN (IO,TowerInfoContainerv3)
-          TOWERS_HCALIN (IO,TowerInfoContainerv2)
-          TOWERINFO_CALIB_HCALIN (IO,TowerInfoContainerv2)
-        CEMC (PHCompositeNode)/
-          WAVEFORM_CEMC (IO,TowerInfoContainerv3)
-          TOWERINFO_CALIB_CEMC (IO,TowerInfoContainerv2)
-          TOWERS_CEMC (IO,TowerInfoContainerv2)
-          CLUSTERINFO_CEMC (IO,RawClusterContainer)
-        Sync (IO,SyncObjectv1)
-        EventHeader (IO,EventHeaderv1)
-        PHHepMCGenEventMap (IO,PHHepMCGenEventMap)
-        G4HIT_BH_1 (IO,PHG4HitContainer)
-        G4TruthInfo (IO,PHG4TruthInfoContainer)
-        TRKR (PHCompositeNode)/
-          TRKR_HITTRUTHASSOC (IO,TrkrHitTruthAssocv1)
-      */
 
   // towers node selection
   calotowerinfostring = (clust_waveform == true) ? "WAVEFORM_CEMC" : "TOWERINFO_CALIB_CEMC";
