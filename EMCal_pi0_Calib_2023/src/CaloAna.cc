@@ -221,31 +221,38 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_smear_eta_2d = new TH2F(Form("h_InvMass_smear%d_eta_2d", badcalibsmearint), Form("eta vs Invariant Mass+ smear: %f percent", badcalibsmearint / 10.0f), 24, -1.2, 1.2, 120, 0, 1.2);
   //////////////////////////
   // pT rewieghting
-  if (SPMC_bool)
-  {
+if (SPMC_bool)
+{
+    TH1F* h_original = nullptr;
+
     if (eta_weight)
     {
-      frw = new TFile("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root");
-      h_sp_pt_rw = (TH1F*) frw->Get("seta_pt_spectrum");
+        frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root", "READ");
+        h_original = (TH1F*) frw->Get("seta_pt_spectrum");
     }
     else
     {
-      frw = new TFile("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root");
-      h_sp_pt_rw = (TH1F*) frw->Get("spi0_pt_spectrum");
+        frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root", "READ");
+        h_original = (TH1F*) frw->Get("spi0_pt_spectrum");
     }
 
-    if (h_sp_pt_rw == nullptr)
+    if (h_original == nullptr)
     {
-      std::cerr << "Error: Histogram not found!" << std::endl;
+        std::cerr << "Error: Histogram not found!" << std::endl;
     }
     else
     {
-      h_sp_pt_rw->SetDirectory(0);  // Detach the histogram from the file
+        // Clone the original histogram and assign it to h_sp_pt_rw
+        h_sp_pt_rw = (TH1F*) h_original->Clone("h_sp_pt_rw_clone");
+
+        // Detach the cloned histogram from any file directory
+        h_sp_pt_rw->SetDirectory(0);
     }
-    // Close the file after retrieving the histogram
+
+    // Close the file and clean up
     frw->Close();
     delete frw;
-  }
+}
 
   // for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
 
