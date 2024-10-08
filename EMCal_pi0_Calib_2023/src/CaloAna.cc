@@ -160,7 +160,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 20);
   h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 8 * 10, 0, 20);
   h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 8 * 10, 0, 20);
-  h_truth_etaspectrum = new TH1F("h_truth_etaspectrum", "", 100, -1.2, 1.2);
+  h_truth_etaspectrum = new TH1F("h_truth_etaspectrum", "", 8 * 10, 0, 20);
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 1000, -500, 500);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 1000, -500, 500);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
@@ -858,6 +858,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               inv_yield = 0;
             }
           }
+
           h_inv_yield->Fill(Pt, inv_yield);
           h_yield->Fill(Pt, weight_function);
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
