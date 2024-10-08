@@ -64,6 +64,7 @@ class CaloAna : public SubsysReco
   int Getpeaktime(TH1* h);
   Fun4AllHistoManager* hm = nullptr;
   TFile* outfile = nullptr;
+  TFile* frw= nullptr;
   TH1F* h_cutCounter = nullptr;
 
   TH2F* h_emcal_mbd_correlation = nullptr;
@@ -217,7 +218,6 @@ class CaloAna : public SubsysReco
   TH2F* h_cluster_etaphi_cuts[14];
   TH1F* h_vtxmap_fail;
   TH1F* h_zvtx;
-  TFile* frw;
   TH1F* h_sp_pt_rw;
   TH1F* h_emcal_e_eta;
   TH1F* h_truth_eta;

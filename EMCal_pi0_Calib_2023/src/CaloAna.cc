@@ -221,38 +221,42 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_smear_eta_2d = new TH2F(Form("h_InvMass_smear%d_eta_2d", badcalibsmearint), Form("eta vs Invariant Mass+ smear: %f percent", badcalibsmearint / 10.0f), 24, -1.2, 1.2, 120, 0, 1.2);
   //////////////////////////
   // pT rewieghting
-if (SPMC_bool)
-{
+  if (SPMC_bool)
+  {
     TH1F* h_original = nullptr;
 
     if (eta_weight)
     {
-        frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root", "READ");
-        h_original = (TH1F*) frw->Get("seta_pt_spectrum");
+      frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root", "READ");
+      h_original = (TH1F*) frw->Get("seta_pt_spectrum");
     }
     else
     {
-        frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root", "READ");
-        h_original = (TH1F*) frw->Get("spi0_pt_spectrum");
+      frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root", "READ");
+      h_original = (TH1F*) frw->Get("spi0_pt_spectrum");
     }
 
     if (h_original == nullptr)
     {
-        std::cerr << "Error: Histogram not found!" << std::endl;
+      std::cerr << "Error: Original histogram not found!" << std::endl;
     }
     else
     {
-        // Clone the original histogram and assign it to h_sp_pt_rw
-        h_sp_pt_rw = (TH1F*) h_original->Clone("h_sp_pt_rw_clone");
-
-        // Detach the cloned histogram from any file directory
+      h_sp_pt_rw = (TH1F*) h_original->Clone("h_sp_pt_rw_clone");
+      if (h_sp_pt_rw == nullptr)
+      {
+        std::cerr << "Error: Cloning of histogram failed!" << std::endl;
+      }
+      else
+      {
         h_sp_pt_rw->SetDirectory(0);
+      }
     }
 
     // Close the file and clean up
     frw->Close();
     delete frw;
-}
+  }
 
   // for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
 
@@ -356,7 +360,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
     if (!vertexmap)
     {
-      //if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
+      // if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
       if (debug) std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
@@ -807,7 +811,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
           double Pt = myVector.Pt();
           double weight_function;
-          if(Pythia_weight)
+          if (Pythia_weight)
           {
             double t = 4.5229;
             double w = 0.0912;
@@ -841,9 +845,19 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           inv_yield = WeightScale * Pt * weight_function;  //
           // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
 
-
-          if(SPMC_bool && inv_yield!=0) inv_yield = getSPMCpTspectrum(static_cast<float>(Pt))/inv_yield;
-          
+          if (SPMC_bool && inv_yield != 0)
+          {
+            float spectrum_value = getSPMCpTspectrum(static_cast<float>(Pt));
+            if (spectrum_value != 0)
+            {
+              inv_yield = spectrum_value / inv_yield;
+            }
+            else
+            {
+              std::cerr << "Warning: Spectrum value is zero at Pt = " << Pt << std::endl;
+              inv_yield = 0;
+            }
+          }
           h_inv_yield->Fill(Pt, inv_yield);
           h_yield->Fill(Pt, weight_function);
           h_InvMass_weighted->Fill(pi0.M(), inv_yield);
@@ -1018,7 +1032,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             h_FullTruth_pt->Fill(pion_pt);
             h_FullTruth_p->Fill(pion_p);
           }
-          if(truth->get_pid() == 221)
+          if (truth->get_pid() == 221)
           {
             h_truth_etaspectrum->Fill(sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py()));
           }
@@ -1091,9 +1105,15 @@ float CaloAna::getWeight(int ieta, float pt)
 
 float CaloAna::getSPMCpTspectrum(float pt)
 {
-  float val = h_sp_pt_rw->GetBinContent(h_sp_pt_rw->FindBin(pt));
-  if (debug) std::cout << val << std::endl;
-  if (val == 0) return 0;
+  if (h_sp_pt_rw == nullptr)
+  {
+    std::cerr << "Error: h_sp_pt_rw is nullptr in getSPMCpTspectrum!" << std::endl;
+    return 0.0f;
+  }
+
+  int bin = h_sp_pt_rw->FindBin(pt);
+  float val = h_sp_pt_rw->GetBinContent(bin);
+  if (debug) std::cout << "Histogram value at pt=" << pt << " is " << val << std::endl;
   return val;
 }
 
