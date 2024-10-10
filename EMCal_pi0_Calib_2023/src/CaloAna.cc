@@ -70,6 +70,7 @@
 #include <cmath>
 #include <iostream>
 #include <random>
+#include <set>
 #include <sstream>
 #include <string>
 #include <unordered_set>
@@ -158,6 +159,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_reco_etaphi = new TH2F("h_reco_eta", "Reco eta", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
   h_zvtx = new TH1F("h_zvtx", "Zvtx", 1000, -500, 500);
+
   if (Cluster_Debug)
   {
     for (int i = 0; i < 14; i++)
@@ -306,21 +308,23 @@ int CaloAna::process_event(PHCompositeNode* topNode)
 int CaloAna::process_towers(PHCompositeNode* topNode)
 {
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
-
   // Declare tracking sets for each cut level
-  std::unordered_set<RawCluster*> filledClustersAfterCut1;
-  std::unordered_set<RawCluster*> filledClustersAfterCut2;
-  std::unordered_set<RawCluster*> filledClustersAfterCut3;
-  std::unordered_set<RawCluster*> filledClustersAfterCut4;
-  std::unordered_set<RawCluster*> filledClustersAfterCut5;
-  std::unordered_set<RawCluster*> filledClustersAfterCut6;
-  std::unordered_set<RawCluster*> filledClustersAfterCut7;
-  std::unordered_set<RawCluster*> filledClustersAfterCut8;
-  std::unordered_set<RawCluster*> filledClustersAfterCut9;
-  std::unordered_set<RawCluster*> filledClustersAfterCut10;
-  std::unordered_set<RawCluster*> filledClustersAfterCut11;
-  std::unordered_set<RawCluster*> filledClustersAfterCut12;
-  std::unordered_set<RawCluster*> filledClustersAfterCut13;
+  if (Cluster_Debug)
+  {
+    std::unordered_set<RawCluster*> filledClustersAfterCut1;
+    std::unordered_set<RawCluster*> filledClustersAfterCut2;
+    std::unordered_set<RawCluster*> filledClustersAfterCut3;
+    std::unordered_set<RawCluster*> filledClustersAfterCut4;
+    std::unordered_set<RawCluster*> filledClustersAfterCut5;
+    std::unordered_set<RawCluster*> filledClustersAfterCut6;
+    std::unordered_set<RawCluster*> filledClustersAfterCut7;
+    std::unordered_set<RawCluster*> filledClustersAfterCut8;
+    std::unordered_set<RawCluster*> filledClustersAfterCut9;
+    std::unordered_set<RawCluster*> filledClustersAfterCut10;
+    std::unordered_set<RawCluster*> filledClustersAfterCut11;
+    std::unordered_set<RawCluster*> filledClustersAfterCut12;
+    std::unordered_set<RawCluster*> filledClustersAfterCut13;
+  }
 
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
