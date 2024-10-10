@@ -190,7 +190,7 @@ class CaloAna : public SubsysReco
   bool pp_rawcluster = true;   // if on will use GetEVec, superseeds GetECoreVec. ECore is for AuAu
   bool debug = false;
   bool Cluster_Debug = true; // cluster etaphi histograms
-  bool etabyeta = true; // mass and pt eta histograms, 96 for each histogram(4)
+  bool etabyeta = false; // mass and pt eta histograms, 96 for each histogram(4)
   bool eTCutbool = true;       // replace pt1 and pt2 cuts with et cuts
   bool etaCutbool = true;      // do an eta cut or not
   bool clusterprobcut = true;  // if true use cluster prob cut, if false use chisq cut
