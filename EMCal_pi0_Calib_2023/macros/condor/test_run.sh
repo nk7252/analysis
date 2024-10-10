@@ -6,15 +6,15 @@
 
 
 if [ "$#" -ne 4 ]; then
-    echo "Usage: $0  <n_events> <dst_calo_cluster_list> <dst_truth_list> <dst_global_list>"
+    echo "Usage: $0  <n_events> <cluster_list> <truth_list> <global_list>"
     echo "Default Usage is: $0  100 dst_calo_cluster.list dst_truth.list dst_global.list"
     exit 1
 fi
 
 n_events="$1"
-cluster_list = "$2"
-truth_list = "$3"
-global_list = "$4"
+cluster_list="$2"
+truth_list="$3"
+global_list="$4"
 
 #create absolute path for input files
 input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${cluster_list}"
