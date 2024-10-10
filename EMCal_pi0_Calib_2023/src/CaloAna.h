@@ -189,6 +189,8 @@ class CaloAna : public SubsysReco
   bool poscor = false;         // if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
   bool pp_rawcluster = true;   // if on will use GetEVec, superseeds GetECoreVec. ECore is for AuAu
   bool debug = false;
+  bool Cluster_Debug = false;
+  bool etabyeta = false;
   bool eTCutbool = true;       // replace pt1 and pt2 cuts with et cuts
   bool etaCutbool = true;      // do an eta cut or not
   bool clusterprobcut = true;  // if true use cluster prob cut, if false use chisq cut

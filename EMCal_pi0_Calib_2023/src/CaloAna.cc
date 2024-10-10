@@ -72,6 +72,7 @@
 #include <random>
 #include <sstream>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -152,15 +153,18 @@ int CaloAna::Init(PHCompositeNode*)
   }
 
   outfile = new TFile(outfilename.c_str(), "RECREATE");
-  if(SPMC_bool) h_sp_pt_rw->SetDirectory(outfile); // Attach pt weight to outfile
+  if (SPMC_bool) h_sp_pt_rw->SetDirectory(outfile);  // Attach pt weight to outfile
   // cutQA
   h_reco_etaphi = new TH2F("h_reco_eta", "Reco eta", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
   h_zvtx = new TH1F("h_zvtx", "Zvtx", 1000, -500, 500);
-  for (int i = 0; i < 14; i++)
+  if (Cluster_Debug)
   {
-    h_reco_etaphi_cuts[i] = new TH2F(Form("h_reco_etaphi_cuts%d", i), Form("h_reco_etaphi_cuts%d", i), 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-    h_cluster_etaphi_cuts[i] = new TH2F(Form("h_cluster_etaphi_cuts%d", i), Form("h_cluster_etaphi_cuts%d", i), 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+    for (int i = 0; i < 14; i++)
+    {
+      h_reco_etaphi_cuts[i] = new TH2F(Form("h_reco_etaphi_cuts%d", i), Form("h_reco_etaphi_cuts%d", i), 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+      h_cluster_etaphi_cuts[i] = new TH2F(Form("h_cluster_etaphi_cuts%d", i), Form("h_cluster_etaphi_cuts%d", i), 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+    }
   }
 
   h_cutCounter = new TH1F("h_cutCounter", "Cut Counter", 13, 0.5, 13.5);
@@ -168,12 +172,15 @@ int CaloAna::Init(PHCompositeNode*)
   //  clus1 chi2, clus1 cuts, tower eta>95,hotclus1,clus1=clus2,clus2 chi2, clus2 cuts, assym, Dr, pi0pt cut, hotclus2
 
   // correlation plots
-  for (int i = 0; i < 96; i++)
+  if (etabyeta)
   {
-    h_mass_eta_lt[i] = new TH1F(Form("h_mass_eta_lt%d", i), "", 50, 0, 0.5);
-    h_mass_eta_lt_rw[i] = new TH1F(Form("h_mass_eta_lt_rw%d", i), "", 50, 0, 0.5);
-    h_pt_eta[i] = new TH1F(Form("h_pt_eta%d", i), "", 100, 0, 10);
-    h_pt_eta_rw[i] = new TH1F(Form("h_pt_eta_rw%d", i), "", 100, 0, 10);
+    for (int i = 0; i < 96; i++)
+    {
+      h_mass_eta_lt[i] = new TH1F(Form("h_mass_eta_lt%d", i), "", 50, 0, 0.5);
+      h_mass_eta_lt_rw[i] = new TH1F(Form("h_mass_eta_lt_rw%d", i), "", 50, 0, 0.5);
+      h_pt_eta[i] = new TH1F(Form("h_pt_eta%d", i), "", 100, 0, 10);
+      h_pt_eta_rw[i] = new TH1F(Form("h_pt_eta_rw%d", i), "", 100, 0, 10);
+    }
   }
 
   h_cemc_etaphi = new TH2F("h_cemc_etaphi", "", 96, 0, 96, 256, 0, 256);
@@ -184,7 +191,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMassMix = new TH1F("h_InvMassMix", "Invariant Mass", 600, 0, 1.2);
 
   // cluster QA
-  h_etaphi_clus = new TH2F("h_etaphi_clus", "", 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+  h_etaphi_clus = new TH2F("h_etaphi_clus", "", 64, -1 * TMath::Pi(), TMath::Pi(), 140, -1.2, 1.2);
   h_clusE = new TH1F("h_clusE", "", 100, 0, 20);
   h_emcal_e_eta = new TH1F("h_emcal_e_eta", "", 96, 0, 96);
   h_pt1 = new TH1F("h_pt1", "", 100, 0, 20);
@@ -260,7 +267,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_smear_eta_2d = new TH2F(Form("h_InvMass_smear%d_eta_2d", badcalibsmearint), Form("eta vs Invariant Mass+ smear: %f percent", badcalibsmearint / 10.0f), 24, -1.2, 1.2, 120, 0, 1.2);
 
   // for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
-  //these histograms below were not working when using SPMC bool
+  // these histograms below were not working when using SPMC bool
   rnd = new TRandom3();
   // smearing added SPMC
   badcalibsmear = static_cast<float>(badcalibsmearint) / 1000.0f;
@@ -299,6 +306,21 @@ int CaloAna::process_event(PHCompositeNode* topNode)
 int CaloAna::process_towers(PHCompositeNode* topNode)
 {
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
+
+  // Declare tracking sets for each cut level
+  std::unordered_set<RawCluster*> filledClustersAfterCut1;
+  std::unordered_set<RawCluster*> filledClustersAfterCut2;
+  std::unordered_set<RawCluster*> filledClustersAfterCut3;
+  std::unordered_set<RawCluster*> filledClustersAfterCut4;
+  std::unordered_set<RawCluster*> filledClustersAfterCut5;
+  std::unordered_set<RawCluster*> filledClustersAfterCut6;
+  std::unordered_set<RawCluster*> filledClustersAfterCut7;
+  std::unordered_set<RawCluster*> filledClustersAfterCut8;
+  std::unordered_set<RawCluster*> filledClustersAfterCut9;
+  std::unordered_set<RawCluster*> filledClustersAfterCut10;
+  std::unordered_set<RawCluster*> filledClustersAfterCut11;
+  std::unordered_set<RawCluster*> filledClustersAfterCut12;
+  std::unordered_set<RawCluster*> filledClustersAfterCut13;
 
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
@@ -475,14 +497,20 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_cutCounter->Fill(1);
       continue;
     }
-    h_cluster_etaphi_cuts[2]->Fill(clus_eta, clus_phi);
+    if (Cluster_Debug)
+    {
+      if (filledClustersAfterCut1.insert(recoCluster).second)
+      {
+        h_cluster_etaphi_cuts[2]->Fill(clus_eta, clus_phi);
+      }
+    }
     TLorentzVector photon1;
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
     pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
 
     if (additionalsmearing)
     {
-      h_cluster_etaphi_cuts[3]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+      if (Cluster_Debug) h_cluster_etaphi_cuts[3]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
       if (eTCutbool)
       {
         if (pi0smearvec[0].E() < etcut && cutson)
@@ -496,11 +524,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(2);
         continue;
       }
-      h_cluster_etaphi_cuts[4]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+      if (Cluster_Debug)
+      {
+        if (filledClustersAfterCut2.insert(recoCluster).second)
+        {
+          h_cluster_etaphi_cuts[4]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        }
+      }
     }
     else if (!additionalsmearing)
     {
-      h_cluster_etaphi_cuts[3]->Fill(clus_eta, clus_phi);
+      if (Cluster_Debug) h_cluster_etaphi_cuts[3]->Fill(clus_eta, clus_phi);
       if (eTCutbool)
       {
         if (photon1.E() < etcut && cutson)
@@ -514,7 +548,13 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(2);
         continue;
       }
-      h_cluster_etaphi_cuts[4]->Fill(clus_eta, clus_phi);
+      if (Cluster_Debug)
+      {
+        if (filledClustersAfterCut2.insert(recoCluster).second)
+        {
+          h_cluster_etaphi_cuts[4]->Fill(clus_eta, clus_phi);
+        }
+      }
     }
     h_clusE->Fill(clusE);
     // if (clusE < 0.2) continue;
@@ -545,21 +585,28 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_cutCounter->Fill(3);
       continue;
     }
-    if (additionalsmearing)
-      h_cluster_etaphi_cuts[5]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-    else if (!additionalsmearing)
-      h_cluster_etaphi_cuts[5]->Fill(clus_eta, clus_phi);
-    h_pt_eta[lt_eta]->Fill(clus_pt);
+    if (Cluster_Debug && filledClustersAfterCut3.insert(recoCluster).second)
+    {
+      if (additionalsmearing)
+        h_cluster_etaphi_cuts[5]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+      else if (!additionalsmearing)
+        h_cluster_etaphi_cuts[5]->Fill(clus_eta, clus_phi);
+    }
+
+    if (etabyeta) h_pt_eta[lt_eta]->Fill(clus_pt);
 
     if (dynMaskClus && hotClus == true && cutson)
     {
       h_cutCounter->Fill(4);
       continue;
     }
-    if (additionalsmearing)
-      h_cluster_etaphi_cuts[6]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-    else if (!additionalsmearing)
-      h_cluster_etaphi_cuts[6]->Fill(clus_eta, clus_phi);
+    if (Cluster_Debug && filledClustersAfterCut4.insert(recoCluster).second)
+    {
+      if (additionalsmearing)
+        h_cluster_etaphi_cuts[6]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+      else if (!additionalsmearing)
+        h_cluster_etaphi_cuts[6]->Fill(clus_eta, clus_phi);
+    }
     if (debug) std::cout << " " << "Cluster Loop: 2 " << std::endl;
     // for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
     for (clusterIter2 = std::next(clusterIter); clusterIter2 != clusterEnd.second; ++clusterIter2)
@@ -569,10 +616,13 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(5);
         continue;
       }
-      if (additionalsmearing)
-        h_cluster_etaphi_cuts[7]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-      else if (!additionalsmearing)
-        h_cluster_etaphi_cuts[7]->Fill(clus_eta, clus_phi);
+      if (Cluster_Debug && filledClustersAfterCut5.insert(recoCluster).second)
+      {
+        if (additionalsmearing)
+          h_cluster_etaphi_cuts[7]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        else if (!additionalsmearing)
+          h_cluster_etaphi_cuts[7]->Fill(clus_eta, clus_phi);
+      }
 
       RawCluster* recoCluster2 = clusterIter2->second;
 
@@ -605,11 +655,13 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(6);
         continue;
       }
-      if (additionalsmearing)
-        h_cluster_etaphi_cuts[8]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-      else if (!additionalsmearing)
-        h_cluster_etaphi_cuts[8]->Fill(clus_eta, clus_phi);
-
+      if (Cluster_Debug && filledClustersAfterCut5.insert(recoCluster).second)
+      {
+        if (additionalsmearing)
+          h_cluster_etaphi_cuts[8]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        else if (!additionalsmearing)
+          h_cluster_etaphi_cuts[8]->Fill(clus_eta, clus_phi);
+      }
       TLorentzVector photon2;
       photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
       pi0smearvec[1] = SmearPhoton4vector(photon2, badcalibsmear);
@@ -644,36 +696,60 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(7);
           continue;
         }
-        h_reco_etaphi_cuts[2]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[9]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+
+        if (Cluster_Debug && filledClustersAfterCut6.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[2]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[9]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        }
+
         if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson)
         {
           h_cutCounter->Fill(8);
           continue;
         }
-        h_reco_etaphi_cuts[3]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[10]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+
+        if (Cluster_Debug && filledClustersAfterCut7.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[3]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[10]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        }
+
         if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson)
         {
           h_cutCounter->Fill(9);
           continue;
         }
-        h_reco_etaphi_cuts[4]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[11]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+
+        if (Cluster_Debug && filledClustersAfterCut8.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[4]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[11]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        }
+
         if (pi0smearvec[2].Pt() < pi0ptcut)
         {
           h_cutCounter->Fill(10);
           continue;
         }
-        h_reco_etaphi_cuts[5]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[12]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+
+        if (Cluster_Debug && filledClustersAfterCut9.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[5]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[12]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        }
+
         if (etaCutbool && abs(pi0smearvec[2].Eta()) > etacutval)
         {
           h_cutCounter->Fill(13);
           continue;
         }
-        h_reco_etaphi_cuts[6]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[13]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+
+        if (Cluster_Debug && filledClustersAfterCut10.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[6]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[13]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        }
       }
       else if (!additionalsmearing)
       {
@@ -690,36 +766,59 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(7);
           continue;
         }
-        h_reco_etaphi_cuts[2]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[9]->Fill(clus_eta, clus_phi);
+
+        if (Cluster_Debug && filledClustersAfterCut6.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[2]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[9]->Fill(clus_eta, clus_phi);
+        }
+
         if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson)
         {
           h_cutCounter->Fill(8);
           continue;
         }
-        h_reco_etaphi_cuts[3]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[10]->Fill(clus_eta, clus_phi);
+
+        if (Cluster_Debug && filledClustersAfterCut7.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[3]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[10]->Fill(clus_eta, clus_phi);
+        }
+
         if (photon1.DeltaR(photon2) > maxDr && cutson)
         {
           h_cutCounter->Fill(9);
           continue;
         }
-        h_reco_etaphi_cuts[4]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[11]->Fill(clus_eta, clus_phi);
+
+        if (Cluster_Debug && filledClustersAfterCut8.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[4]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[11]->Fill(clus_eta, clus_phi);
+        }
+
         if (pi0.Pt() < pi0ptcut)
         {
           h_cutCounter->Fill(10);
           continue;
         }
-        h_reco_etaphi_cuts[5]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[12]->Fill(clus_eta, clus_phi);
+
+        if (Cluster_Debug && filledClustersAfterCut9.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[5]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[12]->Fill(clus_eta, clus_phi);
+        }
         if (etaCutbool && abs(pi0.Eta()) > etacutval)
         {
           h_cutCounter->Fill(13);
           continue;
         }
-        h_reco_etaphi_cuts[6]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[13]->Fill(clus_eta, clus_phi);
+
+        if (Cluster_Debug && filledClustersAfterCut10.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[6]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[13]->Fill(clus_eta, clus_phi);
+        }
       }
 
       // loop over the towers in the cluster
@@ -736,17 +835,21 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           if (towerphi == ht_phi[i] && towereta == ht_phi[i]) hotClus2 = true;
         }
       }
-      h_etaphi_clus->Fill(clus_eta, clus_phi);
+      h_etaphi_clus->Fill(clus_phi, clus_eta);
 
       if (dynMaskClus && hotClus2 == true && cutson)
       {
         h_cutCounter->Fill(11);
         continue;
       }
-      if (additionalsmearing)
-        h_reco_etaphi_cuts[7]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-      else if (!additionalsmearing)
-        h_reco_etaphi_cuts[7]->Fill(pi0.Eta(), pi0.Phi());
+
+      if (Cluster_Debug && filledClustersAfterCut11.insert(recoCluster).second)
+      {
+        if (additionalsmearing)
+          h_reco_etaphi_cuts[7]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+        else if (!additionalsmearing)
+          h_reco_etaphi_cuts[7]->Fill(pi0.Eta(), pi0.Phi());
+      }
 
       h_reco_etaphi->Fill(pi0.Eta(), pi0.Phi());  // pi0 is the same as the smeared version if adding smearing
 
@@ -1138,10 +1241,14 @@ void CaloAna::fitEtaSlices(const std::string& infile, const std::string& fitOutF
     exit(1);
   }
   TH1F* h_M_eta[96];
-  for (int i = 0; i < 96; i++)
+
+  if (etabyeta)
   {
-    h_M_eta[i] = (TH1F*) fin->Get(Form("h_mass_eta_lt_rw%d", i));
-    h_M_eta[i]->Scale(1. / h_M_eta[i]->Integral(), "width");
+    for (int i = 0; i < 96; i++)
+    {
+      h_M_eta[i] = (TH1F*) fin->Get(Form("h_mass_eta_lt_rw%d", i));
+      h_M_eta[i]->Scale(1. / h_M_eta[i]->Integral(), "width");
+    }
   }
 
   TF1* fitFunOut[96];
