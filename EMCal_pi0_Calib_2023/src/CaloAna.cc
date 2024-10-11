@@ -702,6 +702,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           h_reco_etaphi_cuts[2]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
           h_cluster_etaphi_cuts[9]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if (filledClustersAfterCut7.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[9]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
         }
 
         if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson)
@@ -714,6 +715,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           h_reco_etaphi_cuts[3]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
           h_cluster_etaphi_cuts[10]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if(filledClustersAfterCut8.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[10]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
         }
 
         if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson)
@@ -726,6 +728,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           h_reco_etaphi_cuts[4]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
           h_cluster_etaphi_cuts[11]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if(filledClustersAfterCut9.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[11]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
         }
 
         if (pi0smearvec[2].Pt() < pi0ptcut)
@@ -734,10 +737,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           continue;
         }
 
-        if (Cluster_Debug && filledClustersAfterCut10.insert(recoCluster).second)
+        if (Cluster_Debug && filledClustersAfterCut10.insert(recoCluster).second )
         {
           h_reco_etaphi_cuts[5]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
           h_cluster_etaphi_cuts[12]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if(filledClustersAfterCut10.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[12]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
         }
 
         if (etaCutbool && abs(pi0smearvec[2].Eta()) > etacutval)
@@ -750,6 +754,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           h_reco_etaphi_cuts[6]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
           h_cluster_etaphi_cuts[13]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if(filledClustersAfterCut11.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[13]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
         }
       }
       else if (!additionalsmearing)
@@ -772,6 +777,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           h_reco_etaphi_cuts[2]->Fill(pi0.Eta(), pi0.Phi());
           h_cluster_etaphi_cuts[9]->Fill(clus_eta, clus_phi);
+          if(filledClustersAfterCut7.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[9]->Fill(clus2_eta, clus2_phi);
         }
 
         if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson)
@@ -784,6 +790,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           h_reco_etaphi_cuts[3]->Fill(pi0.Eta(), pi0.Phi());
           h_cluster_etaphi_cuts[10]->Fill(clus_eta, clus_phi);
+          if(filledClustersAfterCut8.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[10]->Fill(clus2_eta, clus2_phi);
         }
 
         if (photon1.DeltaR(photon2) > maxDr && cutson)
@@ -796,6 +803,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           h_reco_etaphi_cuts[4]->Fill(pi0.Eta(), pi0.Phi());
           h_cluster_etaphi_cuts[11]->Fill(clus_eta, clus_phi);
+          if(filledClustersAfterCut9.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[11]->Fill(clus2_eta, clus2_phi);
         }
 
         if (pi0.Pt() < pi0ptcut)
@@ -808,6 +816,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           h_reco_etaphi_cuts[5]->Fill(pi0.Eta(), pi0.Phi());
           h_cluster_etaphi_cuts[12]->Fill(clus_eta, clus_phi);
+          if(filledClustersAfterCut10.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[12]->Fill(clus2_eta, clus2_phi);
         }
         if (etaCutbool && abs(pi0.Eta()) > etacutval)
         {
@@ -819,6 +828,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           h_reco_etaphi_cuts[6]->Fill(pi0.Eta(), pi0.Phi());
           h_cluster_etaphi_cuts[13]->Fill(clus_eta, clus_phi);
+          if(filledClustersAfterCut11.insert(recoCluster2).second || 2ndCluster_Debug) h_cluster_etaphi_cuts[13]->Fill(clus2_eta, clus2_phi);
         }
       }
 
@@ -929,7 +939,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             float spectrum_value = getSPMCpTspectrum(static_cast<float>(Pt));
             if (spectrum_value != 0)
             {
-              inv_yield = spectrum_value / inv_yield;
+              inv_yield = inv_yield/spectrum_value ;
             }
             else
             {
