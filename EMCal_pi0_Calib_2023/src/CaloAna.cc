@@ -156,7 +156,7 @@ int CaloAna::Init(PHCompositeNode*)
   outfile = new TFile(outfilename.c_str(), "RECREATE");
   //if (SPMC_bool) h_sp_pt_rw->SetDirectory(outfile);  // Attach pt weight to outfile
   // cutQA
-  h_reco_etaphi = new TH2F("h_reco_etaphi", "Reco etaphi clusters", 64, -1 * TMath::Pi(), TMath::Pi(), 140, -1.2, 1.2 );
+  h_reco_etaphi = new TH2F("h_reco_etaphi", "Reco etaphi clusters", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2 );
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
   h_zvtx = new TH1F("h_zvtx", "Zvtx", 1000, -500, 500);
   
@@ -164,8 +164,8 @@ int CaloAna::Init(PHCompositeNode*)
   {
     for (int i = 0; i < 14; i++)
     {
-      h_reco_etaphi_cuts[i] = new TH2F(Form("h_reco_etaphi_cuts%d", i), Form("h_reco_etaphi_cuts%d", i), 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
-      h_cluster_etaphi_cuts[i] = new TH2F(Form("h_cluster_etaphi_cuts%d", i), Form("h_cluster_etaphi_cuts%d", i), 140, -1.2, 1.2, 64, -1 * TMath::Pi(), TMath::Pi());
+      h_reco_etaphi_cuts[i] = new TH2F(Form("h_reco_etaphi_cuts%d", i), Form("h_reco_etaphi_cuts%d", i), 96, -1.2, 1.2, 256, -1 * TMath::Pi(), TMath::Pi());
+      h_cluster_etaphi_cuts[i] = new TH2F(Form("h_cluster_etaphi_cuts%d", i), Form("h_cluster_etaphi_cuts%d", i), 96, -1.2, 1.2, 256, -1 * TMath::Pi(), TMath::Pi());
     }
   }
 
@@ -193,7 +193,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMassMix = new TH1F("h_InvMassMix", "Invariant Mass", 600, 0, 1.2);
 
   // cluster QA
-  h_etaphi_clus = new TH2F("h_etaphi_clus", "", 64, -1 * TMath::Pi(), TMath::Pi(), 140, -1.2, 1.2);
+  h_etaphi_clus = new TH2F("h_etaphi_clus", "", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2);
   h_clusE = new TH1F("h_clusE", "", 100, 0, 20);
   h_emcal_e_eta = new TH1F("h_emcal_e_eta", "", 96, 0, 96);
   h_pt1 = new TH1F("h_pt1", "", 100, 0, 20);
@@ -862,7 +862,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_reco_etaphi_cuts[7]->Fill(pi0.Eta(), pi0.Phi());
       }
 
-      h_reco_etaphi->Fill(pi0.Eta(), pi0.Phi());  // pi0 is the same as the smeared version if adding smearing
+      h_reco_etaphi->Fill(pi0.Phi(), pi0.Eta());  // pi0 is the same as the smeared version if adding smearing
 
       /////////////////////////////////////////////////
       //// Truth info
