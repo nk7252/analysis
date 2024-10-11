@@ -541,7 +541,7 @@ int Fun4All_G4_sPHENIX(
 
     if (Enable::CEMC_TOWER) CEMC_Towers();
     if (Enable::CEMC_CLUSTER) CEMC_Clusters();
-    /* calo waveform simulation
+    //* calo waveform simulation
     CaloWaveformSim* caloWaveformSim = new CaloWaveformSim();
     caloWaveformSim->set_detector_type(CaloTowerDefs::CEMC);
     caloWaveformSim->set_detector("CEMC");
@@ -756,10 +756,10 @@ int Fun4All_G4_sPHENIX(
 
   InputManagers();
   // add this pedestal file for waveform simulation
-  //Fun4AllInputManager *hitsin = new Fun4AllNoSyncDstInputManager("DST2");
-  //hitsin->AddFile("pedestal-00046796.root");
-  //hitsin->Repeat();
-  //se->registerInputManager(hitsin);
+  Fun4AllInputManager *hitsin = new Fun4AllNoSyncDstInputManager("DST2");
+  hitsin->AddFile("pedestal-00046796.root");
+  hitsin->Repeat();
+  se->registerInputManager(hitsin);
 
   if (Enable::PRODUCTION)
   {
