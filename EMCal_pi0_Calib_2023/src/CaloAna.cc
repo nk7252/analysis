@@ -154,7 +154,7 @@ int CaloAna::Init(PHCompositeNode*)
   }
 
   outfile = new TFile(outfilename.c_str(), "RECREATE");
-  if (SPMC_bool) h_sp_pt_rw->SetDirectory(outfile);  // Attach pt weight to outfile
+  //if (SPMC_bool) h_sp_pt_rw->SetDirectory(outfile);  // Attach pt weight to outfile
   // cutQA
   h_reco_etaphi = new TH2F("h_reco_etaphi", "Reco etaphi clusters", 64, -1 * TMath::Pi(), TMath::Pi(), 140, -1.2, 1.2 );
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
