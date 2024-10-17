@@ -160,14 +160,14 @@ int CaloAna::Init(PHCompositeNode*)
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
   h_zvtx = new TH1F("h_zvtx", "Zvtx", 1000, -500, 500);
   
-  if (Cluster_Debug)
-  {
+  //if (Cluster_Debug)
+  //{
     for (int i = 0; i < 14; i++)
     {
       h_reco_etaphi_cuts[i] = new TH2F(Form("h_reco_etaphi_cuts%d", i), Form("h_reco_etaphi_cuts%d", i), 96, -1.2, 1.2, 256, -1 * TMath::Pi(), TMath::Pi());
       h_cluster_etaphi_cuts[i] = new TH2F(Form("h_cluster_etaphi_cuts%d", i), Form("h_cluster_etaphi_cuts%d", i), 96, -1.2, 1.2, 256, -1 * TMath::Pi(), TMath::Pi());
     }
-  }
+  //}
 
   h_cutCounter = new TH1F("h_cutCounter", "Cut Counter", 13, 0.5, 13.5);
   // list of cuts
@@ -309,7 +309,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 {
   if ((_eventcounter % 1000) == 0) std::cout << _eventcounter << std::endl;
   
-  // Declare tracking sets for each cut level
+  // Declare tracking sets for each cut
   std::unordered_set<RawCluster*> filledClustersAfterCut1;
   std::unordered_set<RawCluster*> filledClustersAfterCut2;
   std::unordered_set<RawCluster*> filledClustersAfterCut3;
