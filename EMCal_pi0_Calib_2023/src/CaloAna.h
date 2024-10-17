@@ -198,13 +198,13 @@ class CaloAna : public SubsysReco
   bool clusterprobcut = true;  // if true use cluster prob cut, if false use chisq cut
   bool zvtxcut_bool = true;
   // SPMC
-  bool SPMC_bool = false;
+  bool SPMC_bool = true;
   float badcalibsmear;
   bool Pythia_weight = true;
   bool eta_weight = false;
   // NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   bool additionalsmearing = true;  // should be on for spmc in all cases. if you want 0 use 0 for smearint
-  int badcalibsmearint = 115;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  int badcalibsmearint = 125;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   // gen MC: pythia, *should remove smeared/weighted histograms.*
   bool matchmctruth = true;  //
   bool filltruthspectrum = true;
