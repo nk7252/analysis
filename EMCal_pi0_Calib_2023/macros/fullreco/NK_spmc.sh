@@ -2,7 +2,7 @@
 
 #./NK_spmc.sh  100 g4hits.list
 #which runs it as 
-# root -l -q "Fun4All_EMCal_sp.C(100, g4hits.list)"
+# root -l -q "Fun4All_G4_sPHENIX.C(100, g4hits.list)"
 
 
 if [ "$#" -ne 2 ]; then
