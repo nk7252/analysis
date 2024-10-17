@@ -267,7 +267,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_InvMass_smear_weighted_eta_3d = new TH3F(Form("h_InvMass_smear%d_weighted_eta_3d", badcalibsmearint), Form("pT vs Invariant Mass vs eta + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 24, -1.2, 1.2);
   // 2d histogram to check for corelation between eta, and invariant mass
   h_InvMass_smear_eta_2d = new TH2F(Form("h_InvMass_smear%d_eta_2d", badcalibsmearint), Form("eta vs Invariant Mass+ smear: %f percent", badcalibsmearint / 10.0f), 24, -1.2, 1.2, 120, 0, 1.2);
-
+  h_InvMass_smear_weighted_eta_2d = new TH2F(Form("h_InvMass_smear%d_weighted_eta_2d", badcalibsmearint), Form("eta vs Invariant Mass+ smear, weighted: %f percent", badcalibsmearint / 10.0f), 24, -1.2, 1.2, 120, 0, 1.2);
+  
   // for (int i = 0; i < 96; i++) h_pt_rw[i] = (TH1F*) frw->Get(Form("h_pt_eta%d", i));
   // these histograms below were not working when using SPMC bool
   rnd = new TRandom3();
@@ -963,7 +964,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_reco_ALLphotonE_weighted->Fill(photon1.E(), inv_yield);
           h_reco_ALLphotonE_weighted->Fill(photon2.E(), inv_yield);
           h_InvMass_smear_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
-
+          h_InvMass_smear_weighted_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M(), inv_yield);
           if (filltruthspectrum && (matchmctruth))
           {
             float delR = pi0.DeltaR(myVector);
