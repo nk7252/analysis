@@ -189,7 +189,7 @@ class CaloAna : public SubsysReco
   bool poscor = false;         // if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
   bool pp_rawcluster = true;   // if on will use GetEVec, superseeds GetECoreVec. ECore is for AuAu
   bool debug = false;
-  bool Cluster_Debug = false; // cluster etaphi histograms
+  bool Cluster_Debug = true; // cluster etaphi histograms
   bool Cluster_Debug2 = false; // true if you want to add the 2nd cluster for every pair, rather than just individual clusters
   //so if this is true, you will fill every time a cluster shows up past that cut, rather than just the first time
   bool etabyeta = false; // mass and pt eta histograms, 96 for each histogram(4)
