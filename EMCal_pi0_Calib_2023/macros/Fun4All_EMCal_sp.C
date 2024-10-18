@@ -2,11 +2,22 @@
 #if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
 //#ifndef FUN4ALL_YEAR1_C
 //#define FUN4ALL_YEAR1_C
-#include <caloreco/CaloTowerCalib.h>
-#include <caloreco/RawClusterBuilderTemplate.h>
-#include <caloreco/RawClusterPositionCorrection.h>
-//#include <caloreco/RawClusterDeadHotMask.h>
-//#include <caloreco/TowerInfoDeadHotMask.h>
+
+//Geant
+#include <DisplayOn.C>
+#include <G4Setup_sPHENIX.C>
+#include <G4_Mbd.C>
+#include <G4_CaloTrigger.C>
+#include <G4_Centrality.C>
+#include <G4_DSTReader.C>
+#include <G4_Global.C>
+#include <G4_HIJetReco.C>
+#include <G4_Input.C>
+#include <G4_Jets.C>
+#include <G4_KFParticle.C>
+#include <G4_ParticleFlow.C>
+#include <G4_Production.C>
+#include <G4_TopoClusterReco.C>
 
 #include <ffamodules/FlagHandler.h>
 #include <ffamodules/HeadReco.h>
@@ -30,6 +41,8 @@
 #include <caloreco/CaloTowerStatus.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawClusterPositionCorrection.h>
+//#include <caloreco/RawClusterDeadHotMask.h>
+//#include <caloreco/TowerInfoDeadHotMask.h>
 
 #include <calowaveformsim/CaloWaveformSim.h>
 
