@@ -963,9 +963,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_reco_photon2E_weighted->Fill(photon2.E(), inv_yield);
           h_reco_ALLphotonE_weighted->Fill(photon1.E(), inv_yield);
           h_reco_ALLphotonE_weighted->Fill(photon2.E(), inv_yield);
+          
           h_InvMass_smear_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
           h_InvMass_smear_weighted_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M(), inv_yield);
-          
+
           if (filltruthspectrum && (matchmctruth))
           {
             float delR = pi0.DeltaR(myVector);
