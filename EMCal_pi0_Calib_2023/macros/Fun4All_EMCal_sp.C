@@ -59,7 +59,6 @@
 //#include <litecaloeval/LiteCaloEval.h>
 
 R__LOAD_LIBRARY(libcdbobjects)
-
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libfun4allraw.so)
 R__LOAD_LIBRARY(libcalo_reco.so)
@@ -67,6 +66,9 @@ R__LOAD_LIBRARY(libffamodules.so)
 //R__LOAD_LIBRARY(libmbd.so)
 //R__LOAD_LIBRARY(libglobalvertex.so)
 //R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
+R__LOAD_LIBRARY(libg4centrality.so)
+R__LOAD_LIBRARY(libCaloWaveformSim.so)
+R__LOAD_LIBRARY(libfun4allutils.so)
 
 #include <caloana/CaloAna.h>
 R__LOAD_LIBRARY(libcaloana.so)
