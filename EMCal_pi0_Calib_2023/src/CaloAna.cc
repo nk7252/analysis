@@ -966,6 +966,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           
           h_InvMass_smear_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
           h_InvMass_smear_weighted_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M(), inv_yield);
+          h_reco_etaphi_cuts[8]->Fill(pi0.Eta(), pi0.Phi(), inv_yield);
 
           if (filltruthspectrum && (matchmctruth))
           {

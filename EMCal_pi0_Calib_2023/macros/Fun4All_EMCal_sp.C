@@ -123,13 +123,13 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   se->registerInputManager(in);
   se->registerInputManager(intruth);
   se->registerInputManager(inglobal);
+
+  /* calo waveform simulation
   // add this pedestal file for waveform simulation
   Fun4AllInputManager *hitsin = new Fun4AllNoSyncDstInputManager("DST2");
   hitsin->AddFile("pedestal-00046796.root");
   hitsin->Repeat();
   se->registerInputManager(hitsin);
-
-  //* calo waveform simulation
   CEMC_Towers();
   CEMC_Clusters();
   CaloWaveformSim* caloWaveformSim = new CaloWaveformSim();
