@@ -23,6 +23,16 @@
 #include <fun4all/Fun4AllUtils.h>
 #include <fun4all/SubsysReco.h>
 
+#include <caloreco/CaloGeomMapping.h>
+#include <caloreco/CaloTowerBuilder.h>
+#include <caloreco/CaloTowerCalib.h>
+#include <caloreco/CaloWaveformProcessing.h>
+#include <caloreco/CaloTowerStatus.h>
+#include <caloreco/RawClusterBuilderTemplate.h>
+#include <caloreco/RawClusterPositionCorrection.h>
+
+#include <calowaveformsim/CaloWaveformSim.h>
+
 //#include <globalvertex/GlobalVertexReco.h>
 //#include <mbd/MbdReco.h>
 
