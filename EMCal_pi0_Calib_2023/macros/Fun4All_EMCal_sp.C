@@ -130,8 +130,8 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   ca2->set_processing_type(CaloWaveformProcessing::TEMPLATE);
   ca2->set_builder_type(CaloTowerDefs::kWaveformTowerv2);
   //match our current ZS threshold ~14ADC for emcal
-  ca2->set_tbt_softwarezerosuppression("/sphenix/user/nkumar/NK_Work_2024/waveformZS/test/src/_tbt_CEMC_zs_x2.root");
-  //ca2->set_tbt_softwarezerosuppression("/sphenix/user/nkumar/NK_Work_2024/waveformZS/test/src/_tbt_CEMC_zs.root");
+  //ca2->set_tbt_softwarezerosuppression("/sphenix/user/nkumar/NK_Work_2024/waveformZS/test/src/_tbt_CEMC_zs_x2.root");
+  ca2->set_tbt_softwarezerosuppression("/sphenix/user/nkumar/NK_Work_2024/waveformZS/test/src/_tbt_CEMC_zs.root");
   //ca2->set_softwarezerosuppression(true, 14);
   se->registerSubsystem(ca2);
 
