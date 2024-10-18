@@ -257,7 +257,7 @@ class CaloAna : public SubsysReco
   TH3F* h_InvMass_smear_eta_3d = nullptr;
   TH3F* h_InvMass_smear_weighted_eta_3d = nullptr;
   TH2F* h_InvMass_smear_eta_2d = nullptr;
-  Th2F* h_InvMass_smear_weighted_eta_2d = nullptr;
+  TH2F* h_InvMass_smear_weighted_eta_2d = nullptr;
 
   TH1F* h_truthmatched_photon1E;
   TH1F* h_truthmatched_photon2E;
