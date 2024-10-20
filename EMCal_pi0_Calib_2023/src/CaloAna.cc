@@ -515,7 +515,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       if (Cluster_Debug) h_cluster_etaphi_cuts[3]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
       if (eTCutbool)
       {
-        if (pi0smearvec[0].E() < etcut && cutson)
+        if (pi0smearvec[0].Et() < etcut && cutson)
         {
           h_cutCounter->Fill(2);
           continue;
@@ -539,7 +539,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       if (Cluster_Debug) h_cluster_etaphi_cuts[3]->Fill(clus_eta, clus_phi);
       if (eTCutbool)
       {
-        if (photon1.E() < etcut && cutson)
+        if (photon1.Et() < etcut && cutson)
         {
           h_cutCounter->Fill(2);
           continue;
@@ -687,7 +687,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         if (eTCutbool)
         {
-          if (pi0smearvec[1].E() < etcut && cutson)
+          if (pi0smearvec[1].Et() < etcut && cutson)
           {
             h_cutCounter->Fill(7);
             continue;
@@ -762,7 +762,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         if (eTCutbool)
         {
-          if (photon2.E() < etcut && cutson)
+          if (photon2.Et() < etcut && cutson)
           {
             h_cutCounter->Fill(7);
             continue;
