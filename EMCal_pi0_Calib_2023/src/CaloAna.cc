@@ -333,7 +333,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float nClus_ptCut = 0.0;   // 0.5 normally
   float pi0ptcutfactor = 0;  // seto to 0 to effectively disable it
   float ptMaxCut = 100;      // no cut in data, as far as I know. so I set it to a value it is unlikely to reach
-  float pt1ClusCut = 1.3;    // centrality dependence cuts 2.2 for both // 1.3
+  float pt1ClusCut = 1.0;    // centrality dependence cuts 2.2 for both // 1.3
   float pt2ClusCut = 0.7;    // 0.7
   float etcut = 1.0;         // cluster ET cut
   float etacutval = 0.6;     // cluster pseudo-rapidity cut
@@ -485,12 +485,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float prob = recoCluster->get_prob();
     // clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
-    h_cluster_etaphi_cuts[1]->Fill(clus_eta, clus_phi);
+    h_cluster_etaphi_cuts[0]->Fill(clus_eta, clus_phi);
 
     TLorentzVector photon1;
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
     pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
-    
+    h_cluster_etaphi_cuts[1]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
     if (eTCutbool)
     {
       if (pi0smearvec[0].Et() < etcut && cutson)
@@ -499,12 +499,25 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         continue;
       }
     }
+    else if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson)
+    {
+      h_cutCounter->Fill(2);
+      continue;
+    }
+    h_cluster_etaphi_cuts[2]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+    if (Cluster_Debug)
+      {
+        if (filledClustersAfterCut1.insert(recoCluster).second)
+        {
+          //h_cluster_etaphi_cuts[2]->Fill(clus_eta, clus_phi);
+        }
+    }
 
     if (additionalsmearing)
     {
       if (Cluster_Debug) h_cluster_etaphi_cuts[3]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
 
-      //switched in prob cut for etcut
+      // switched in prob cut for etcut
       if (clusterprobcut)
       {
         if (prob < clusterprob && cutson)
@@ -519,18 +532,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         continue;
       }
 
-      if (Cluster_Debug)
-      {
-        if (filledClustersAfterCut1.insert(recoCluster).second)
-        {
-          h_cluster_etaphi_cuts[2]->Fill(clus_eta, clus_phi);
-        }
-      }
-      else if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson)
-      {
-        h_cutCounter->Fill(2);
-        continue;
-      }
       if (Cluster_Debug)
       {
         if (filledClustersAfterCut2.insert(recoCluster).second)
