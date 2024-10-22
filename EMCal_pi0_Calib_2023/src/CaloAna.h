@@ -199,7 +199,7 @@ class CaloAna : public SubsysReco
   bool clusterprobcut = true;  // if true use cluster prob cut, if false use chisq cut
   bool zvtxcut_bool = true;
   // SPMC
-  bool SPMC_bool = true;
+  bool SPMC_bool = false;
   float badcalibsmear;
   bool Pythia_weight = true;
   bool eta_weight = false;
