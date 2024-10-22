@@ -485,12 +485,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float prob = recoCluster->get_prob();
     // clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
-    h_cluster_etaphi_cuts[0]->Fill(clus_eta, clus_phi);
+    h_cluster_etaphi_cuts[1]->Fill(clus_eta, clus_phi);
 
     TLorentzVector photon1;
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
     pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
-    h_cluster_etaphi_cuts[1]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+    h_cluster_etaphi_cuts[2]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
     if (eTCutbool)
     {
       if (pi0smearvec[0].Et() < etcut && cutson)
@@ -504,7 +504,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_cutCounter->Fill(2);
       continue;
     }
-    h_cluster_etaphi_cuts[2]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+    //h_cluster_etaphi_cuts[3]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
     if (Cluster_Debug)
       {
         if (filledClustersAfterCut1.insert(recoCluster).second)
