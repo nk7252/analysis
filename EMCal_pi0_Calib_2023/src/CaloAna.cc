@@ -491,26 +491,21 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
     pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
     h_cluster_etaphi_cuts[2]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-    if (eTCutbool)
+    if (additionalsmearing)
     {
-      if (pi0smearvec[0].Et() < etcut && cutson)
+      if (eTCutbool)
+      {
+        if (pi0smearvec[0].Et() < etcut && cutson)
+        {
+          h_cutCounter->Fill(2);
+          continue;
+        }
+      }
+      else if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson)
       {
         h_cutCounter->Fill(2);
         continue;
       }
-    }
-    else if ((pi0smearvec[0].Pt() < pt1ClusCut || pi0smearvec[0].Pt() > ptMaxCut) && cutson)
-    {
-      h_cutCounter->Fill(2);
-      continue;
-    }
-    //h_cluster_etaphi_cuts[3]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-    if (Cluster_Debug)
-      {
-        if (filledClustersAfterCut1.insert(recoCluster).second)
-        {
-          //h_cluster_etaphi_cuts[2]->Fill(clus_eta, clus_phi);
-        }
     }
 
     if (additionalsmearing)
