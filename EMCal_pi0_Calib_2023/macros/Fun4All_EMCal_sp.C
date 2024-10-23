@@ -52,7 +52,7 @@ void createLocalEMCalCalibFile(const string fname, int runNumber);
 
 // void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
 //void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list")
-void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
+void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list",int iter = 2, const std::string &calib_fname="local_calib_copy.root")
 {
   //bool enableMasking = 0;
 
