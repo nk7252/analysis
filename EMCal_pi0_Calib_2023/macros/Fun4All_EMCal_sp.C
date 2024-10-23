@@ -51,7 +51,8 @@ R__LOAD_LIBRARY(libcaloana.so)
 //void createLocalEMCalCalibFile(const string fname, int runNumber);
 
 // void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
-void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list")
+//void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list")
+void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
 {
   //bool enableMasking = 0;
 
@@ -108,7 +109,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   std::string OutFile = Form("OUTHIST_iter_%s", filename.c_str());
   // std::string OutFile = Form("OUTHIST_iter%d_%s",iter , filename.c_str());
 
-  /*
+  //*
   if (iter == 0)
   {
     cout << "creating emcal calib" << endl;
@@ -124,41 +125,42 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   CaloTowerCalib *calibEMC = new CaloTowerCalib("CEMCCALIB");
   calibEMC->set_detector_type(CaloTowerDefs::CEMC);
   calibEMC->set_directURL(calib_fname.c_str());
+  //calibEMC->set_outputNodePrefix("TOWERINFO_CALIB_");
   se->registerSubsystem(calibEMC);
 
 
   //////////////////
   // Clusters
   std::cout << "Building clusters" << std::endl;
+
   RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
   ClusterBuilder->Detector("CEMC");
-  ClusterBuilder->set_threshold_energy(0.20);  // for when using basic calibration
+  ClusterBuilder->set_threshold_energy(0.70);  // for when using basic calibration
   std::string emc_prof = getenv("CALIBRATIONROOT");
   emc_prof += "/EmcProfile/CEMCprof_Thresh30MeV.root";
   ClusterBuilder->LoadProfile(emc_prof);
   ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
   ClusterBuilder->setOutputClusterNodeName("CLUSTERINFO_CEMC2");
   se->registerSubsystem(ClusterBuilder);
-  */
   /*
     std::cout << "Applying Position Dependent Correction" << std::endl;
     RawClusterPositionCorrection *clusterCorrection = new RawClusterPositionCorrection("CEMC");
     clusterCorrection->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
     se->registerSubsystem(clusterCorrection);
-  */
+  //*/
 
   ///////////////////
   // analysis modules
-  /*
+  //*
   if (iter==1){
   LiteCaloEval *eval7e = new LiteCaloEval("CEMCEVALUATOR2", "CEMC",OutFile);
   eval7e->CaloType(LiteCaloEval::CEMC);
-  eval7e->setInputTowerNodeName("TOWERINFO_CALIB_CEMC");
+  eval7e->setInputTowerNodeName("WAVEFORM_CEMC");TOWERINFO_CALIB_CEMC
   se->registerSubsystem(eval7e);
   }
-  */
-
-  // if (iter>1){
+  //*/
+  //
+  if (iter>1){
   CaloAna *ca = new CaloAna("calomodulename", OutFile);
   
   ca->set_timing_cut_width(16);
@@ -166,7 +168,8 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   ca->set_vertex_cut(20.);
   se->registerSubsystem(ca);
   std::cout << "Subsystems registered" << std::endl;
-  //}
+  //
+  }
 
   se->run(nevents);
   se->End();
@@ -179,7 +182,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   gSystem->Exit(0);
 }
 
-/*
+//*
 void createLocalEMCalCalibFile(const string fname, int runNumber)
 {
   string default_time_independent_calib = "cemc_pi0_twrSlope_v1_default";
@@ -217,4 +220,4 @@ void createLocalEMCalCalibFile(const string fname, int runNumber)
   delete f_cdb;
 }
 //#endif
-*/
+//*/
