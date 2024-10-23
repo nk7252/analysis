@@ -2,22 +2,11 @@
 #if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
 //#ifndef FUN4ALL_YEAR1_C
 //#define FUN4ALL_YEAR1_C
-
-//Geant
-#include <DisplayOn.C>
-#include <G4Setup_sPHENIX.C>
-#include <G4_Mbd.C>
-#include <G4_CaloTrigger.C>
-#include <G4_Centrality.C>
-#include <G4_DSTReader.C>
-#include <G4_Global.C>
-#include <G4_HIJetReco.C>
-#include <G4_Input.C>
-#include <G4_Jets.C>
-#include <G4_KFParticle.C>
-#include <G4_ParticleFlow.C>
-#include <G4_Production.C>
-#include <G4_TopoClusterReco.C>
+#include <caloreco/CaloTowerCalib.h>
+#include <caloreco/RawClusterBuilderTemplate.h>
+#include <caloreco/RawClusterPositionCorrection.h>
+//#include <caloreco/RawClusterDeadHotMask.h>
+//#include <caloreco/TowerInfoDeadHotMask.h>
 
 #include <ffamodules/FlagHandler.h>
 #include <ffamodules/HeadReco.h>
@@ -34,18 +23,6 @@
 #include <fun4all/Fun4AllUtils.h>
 #include <fun4all/SubsysReco.h>
 
-#include <caloreco/CaloGeomMapping.h>
-#include <caloreco/CaloTowerBuilder.h>
-#include <caloreco/CaloTowerCalib.h>
-#include <caloreco/CaloWaveformProcessing.h>
-#include <caloreco/CaloTowerStatus.h>
-#include <caloreco/RawClusterBuilderTemplate.h>
-#include <caloreco/RawClusterPositionCorrection.h>
-//#include <caloreco/RawClusterDeadHotMask.h>
-//#include <caloreco/TowerInfoDeadHotMask.h>
-
-#include <calowaveformsim/CaloWaveformSim.h>
-
 //#include <globalvertex/GlobalVertexReco.h>
 //#include <mbd/MbdReco.h>
 
@@ -59,6 +36,7 @@
 //#include <litecaloeval/LiteCaloEval.h>
 
 R__LOAD_LIBRARY(libcdbobjects)
+
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libfun4allraw.so)
 R__LOAD_LIBRARY(libcalo_reco.so)
@@ -66,9 +44,6 @@ R__LOAD_LIBRARY(libffamodules.so)
 //R__LOAD_LIBRARY(libmbd.so)
 //R__LOAD_LIBRARY(libglobalvertex.so)
 //R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
-R__LOAD_LIBRARY(libg4centrality.so)
-R__LOAD_LIBRARY(libCaloWaveformSim.so)
-R__LOAD_LIBRARY(libfun4allutils.so)
 
 #include <caloana/CaloAna.h>
 R__LOAD_LIBRARY(libcaloana.so)
@@ -123,65 +98,6 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   se->registerInputManager(in);
   se->registerInputManager(intruth);
   se->registerInputManager(inglobal);
-
-  /* calo waveform simulation
-  // add this pedestal file for waveform simulation
-  Fun4AllInputManager *hitsin = new Fun4AllNoSyncDstInputManager("DST2");
-  hitsin->AddFile("pedestal-00046796.root");
-  hitsin->Repeat();
-  se->registerInputManager(hitsin);
-  CEMC_Towers();
-  CEMC_Clusters();
-  CaloWaveformSim* caloWaveformSim = new CaloWaveformSim();
-  caloWaveformSim->set_detector_type(CaloTowerDefs::CEMC);
-  caloWaveformSim->set_detector("CEMC");
-  caloWaveformSim->set_nsamples(12);
-  caloWaveformSim->set_pedestalsamples(12);
-  caloWaveformSim->set_timewidth(0.2);
-  caloWaveformSim->set_peakpos(6);
-  caloWaveformSim->set_calibName("cemc_pi0_twrSlope_v1_default");
-
-  //caloWaveformSim->set_noise_type(CaloWaveformSim::NOISE_NONE);
-  //Emma recomended commenting this out. It seems to work regardless of that.
-  //caloWaveformSim->get_light_collection_model().load_data_file(string(getenv("CALIBRATIONROOT")) + string("/CEMC/LightCollection/Prototype3Module.xml"),"data_grid_light_guide_efficiency", "data_grid_fiber_trans");
-  caloWaveformSim->Verbosity(2);
-  se->registerSubsystem(caloWaveformSim);
-
-
-  CaloTowerBuilder* ca2 = new CaloTowerBuilder();
-  ca2->set_detector_type(CaloTowerDefs::CEMC);
-  ca2->set_nsamples(12);
-  ca2->set_dataflag(false);
-  ca2->set_processing_type(CaloWaveformProcessing::TEMPLATE);
-  ca2->set_builder_type(CaloTowerDefs::kWaveformTowerv2);
-  //match our current ZS threshold ~14ADC for emcal
-  //ca2->set_tbt_softwarezerosuppression("/sphenix/user/nkumar/NK_Work_2024/waveformZS/test/src/_tbt_CEMC_zs_x2.root");
-  ca2->set_tbt_softwarezerosuppression("/sphenix/user/nkumar/NK_Work_2024/waveformZS/test/src/_tbt_CEMC_zs.root");
-  //ca2->set_softwarezerosuppression(true, 14);
-  se->registerSubsystem(ca2);
-
-  CaloTowerStatus *statusEMC = new CaloTowerStatus("CEMCSTATUS");
-  statusEMC->set_detector_type(CaloTowerDefs::CEMC);
-  statusEMC->set_time_cut(1);
-  se->registerSubsystem(statusEMC);
-
-  std::cout << "Calibrating EMCal" << std::endl;
-  CaloTowerCalib *calibEMC = new CaloTowerCalib("CEMCCALIB");
-  calibEMC->set_detector_type(CaloTowerDefs::CEMC);
-  calibEMC->set_outputNodePrefix("TOWERINFO_CALIB_");
-  se->registerSubsystem(calibEMC);
-
-  std::cout << "Building clusters" << std::endl;
-  RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
-  ClusterBuilder->Detector("CEMC");
-  ClusterBuilder->set_threshold_energy(0.030);  // for when using basic calibration
-  std::string emc_prof = getenv("CALIBRATIONROOT");
-  emc_prof += "/EmcProfile/CEMCprof_Thresh30MeV.root";
-  ClusterBuilder->LoadProfile(emc_prof);
-  ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
-  se->registerSubsystem(ClusterBuilder);
-  //*/
-
   cout << "input manager registered" << endl;
 
   // Fun4AllInputManager *in2 = new Fun4AllDstInputManager("DST_TOWERS2");
@@ -302,4 +218,3 @@ void createLocalEMCalCalibFile(const string fname, int runNumber)
 }
 //#endif
 */
-
