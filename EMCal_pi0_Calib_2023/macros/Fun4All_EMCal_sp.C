@@ -33,7 +33,7 @@
 //#include <cdbobjects/CDBTTree.h>  // for CDBTTree
 #include <GlobalVariables.C>
 
-//#include <litecaloeval/LiteCaloEval.h>
+#include <litecaloeval/LiteCaloEval.h>
 
 R__LOAD_LIBRARY(libcdbobjects)
 
@@ -43,7 +43,7 @@ R__LOAD_LIBRARY(libcalo_reco.so)
 R__LOAD_LIBRARY(libffamodules.so)
 //R__LOAD_LIBRARY(libmbd.so)
 //R__LOAD_LIBRARY(libglobalvertex.so)
-//R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
+R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
 
 #include <caloana/CaloAna.h>
 R__LOAD_LIBRARY(libcaloana.so)
