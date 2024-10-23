@@ -212,7 +212,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 1000, -500, 500);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 1000, -500, 500);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
-  h_delR_pionrecTrth = new TH1F("h_delR_recTrth", "", 5000, 0, 5);
+  h_delR_pionrecTrth = new TH1F("h_delR_pionrecTrth", "", 5000, 0, 5);
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
   // histograms to extract MC photon resolution
   h_truthmatched_photon1E = new TH1F("h_truthmatched_photon1E", "matched Photon 1 Energy", 8 * 10, 0, 20);
