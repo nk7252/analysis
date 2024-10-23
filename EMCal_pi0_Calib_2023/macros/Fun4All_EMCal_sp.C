@@ -120,14 +120,14 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
 
   ////////////////////
   // Calibrate towers
-
+  /*
   std::cout << "Calibrating EMCal" << std::endl;
   CaloTowerCalib *calibEMC = new CaloTowerCalib("CEMCCALIB");
   calibEMC->set_detector_type(CaloTowerDefs::CEMC);
   calibEMC->set_directURL(calib_fname.c_str());
   //calibEMC->set_outputNodePrefix("TOWERINFO_CALIB_");
   se->registerSubsystem(calibEMC);
-
+  */
 
   //////////////////
   // Clusters
@@ -160,6 +160,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   }
   //*/
   //
+
   if (iter>1){
   CaloAna *ca = new CaloAna("calomodulename", OutFile);
   
