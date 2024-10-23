@@ -486,7 +486,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     // clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
     h_cluster_etaphi_cuts[1]->Fill(clus_eta, clus_phi);
-    
+
     //*
     if (clusterprobcut)
     {
@@ -538,12 +538,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
     */
 
-
-
     if (additionalsmearing)
     {
       if (Cluster_Debug) h_cluster_etaphi_cuts[3]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-
+      
       /*
       if (clusterprobcut)
       {
@@ -552,7 +550,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_cutCounter->Fill(1);
           continue;
         }
+      }
+      else if (clus_chisq > clus_chisq_cut && cutson)
+      {
+        h_cutCounter->Fill(1);
+        continue;
+      }
       //*/
+      
       if (eTCutbool)
       {
         if (pi0smearvec[0].Et() < etcut && cutson)
@@ -566,663 +571,657 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_cutCounter->Fill(2);
         continue;
       }
-    }
-    else if (clus_chisq > clus_chisq_cut && cutson)
-    {
-      h_cutCounter->Fill(1);
-      continue;
-    }
-
-    if (Cluster_Debug)
-    {
-      if (filledClustersAfterCut2.insert(recoCluster).second)
+      
+      if (Cluster_Debug)
       {
-        h_cluster_etaphi_cuts[4]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        if (filledClustersAfterCut2.insert(recoCluster).second)
+        {
+          h_cluster_etaphi_cuts[4]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        }
       }
     }
-  }
-  else if (!additionalsmearing)
-  {
-    if (Cluster_Debug) h_cluster_etaphi_cuts[3]->Fill(clus_eta, clus_phi);
-
-    if (eTCutbool)
+    else if (!additionalsmearing)
     {
-      if (photon1.Et() < etcut && cutson)
+      if (Cluster_Debug) h_cluster_etaphi_cuts[3]->Fill(clus_eta, clus_phi);
+
+      if (eTCutbool)
+      {
+        if (photon1.Et() < etcut && cutson)
+        {
+          h_cutCounter->Fill(2);
+          continue;
+        }
+      }
+      else if ((photon1.Pt() < pt1ClusCut || photon1.Pt() > ptMaxCut) && cutson)
       {
         h_cutCounter->Fill(2);
         continue;
       }
-    }
-    else if ((photon1.Pt() < pt1ClusCut || photon1.Pt() > ptMaxCut) && cutson)
-    {
-      h_cutCounter->Fill(2);
-      continue;
-    }
 
-    if (Cluster_Debug)
-    {
-      if (filledClustersAfterCut2.insert(recoCluster).second)
+      if (Cluster_Debug)
       {
-        h_cluster_etaphi_cuts[4]->Fill(clus_eta, clus_phi);
+        if (filledClustersAfterCut2.insert(recoCluster).second)
+        {
+          h_cluster_etaphi_cuts[4]->Fill(clus_eta, clus_phi);
+        }
       }
     }
-  }
-  h_clusE->Fill(clusE);
-  // if (clusE < 0.2) continue;
-  //  std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
+    h_clusE->Fill(clusE);
+    // if (clusE < 0.2) continue;
+    //  std::cout << "clusE = " << clusE <<  " clus_eta = " << clus_eta <<  " clus_phi = " << clus_phi <<  " clus_pt = " << clus_pt <<  " clus_chisq = " << clus_chisq << std::endl;
 
-  // loop over the towers in the cluster
-  RawCluster::TowerConstRange towerCR = recoCluster->get_towers();
-  RawCluster::TowerConstIterator toweriter;
-  float lt_e = -1000;
-  unsigned int lt_eta = -1;
-  bool hotClus = false;
-  for (toweriter = towerCR.first; toweriter != towerCR.second; ++toweriter)
-  {
-    int towereta = m_geometry->get_tower_geometry(toweriter->first)->get_bineta();
-    int towerphi = m_geometry->get_tower_geometry(toweriter->first)->get_binphi();
-    unsigned int key = TowerInfoDefs::encode_emcal(towereta, towerphi);
-    unsigned int channel = towers->decode_key(key);
-    float energy = towers->get_tower_at_channel(channel)->get_energy();
-    if (energy > lt_e)
+    // loop over the towers in the cluster
+    RawCluster::TowerConstRange towerCR = recoCluster->get_towers();
+    RawCluster::TowerConstIterator toweriter;
+    float lt_e = -1000;
+    unsigned int lt_eta = -1;
+    bool hotClus = false;
+    for (toweriter = towerCR.first; toweriter != towerCR.second; ++toweriter)
     {
-      lt_e = energy;
-      lt_eta = towereta;
+      int towereta = m_geometry->get_tower_geometry(toweriter->first)->get_bineta();
+      int towerphi = m_geometry->get_tower_geometry(toweriter->first)->get_binphi();
+      unsigned int key = TowerInfoDefs::encode_emcal(towereta, towerphi);
+      unsigned int channel = towers->decode_key(key);
+      float energy = towers->get_tower_at_channel(channel)->get_energy();
+      if (energy > lt_e)
+      {
+        lt_e = energy;
+        lt_eta = towereta;
+      }
     }
-  }
 
-  if (lt_eta > 95)
-  {
-    h_cutCounter->Fill(3);
-    continue;
-  }
-  if (Cluster_Debug && filledClustersAfterCut3.insert(recoCluster).second)
-  {
-    if (additionalsmearing)
-      h_cluster_etaphi_cuts[5]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-    else if (!additionalsmearing)
-      h_cluster_etaphi_cuts[5]->Fill(clus_eta, clus_phi);
-  }
-
-  if (etabyeta) h_pt_eta[lt_eta]->Fill(clus_pt);
-
-  if (dynMaskClus && hotClus == true && cutson)
-  {
-    h_cutCounter->Fill(4);
-    continue;
-  }
-  if (Cluster_Debug && filledClustersAfterCut4.insert(recoCluster).second)
-  {
-    if (additionalsmearing)
-      h_cluster_etaphi_cuts[6]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-    else if (!additionalsmearing)
-      h_cluster_etaphi_cuts[6]->Fill(clus_eta, clus_phi);
-  }
-  if (debug) std::cout << " " << "Cluster Loop: 2 " << std::endl;
-  // for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
-  for (clusterIter2 = std::next(clusterIter); clusterIter2 != clusterEnd.second; ++clusterIter2)
-  {
-    if (clusterIter == clusterIter2)
+    if (lt_eta > 95)
     {
-      h_cutCounter->Fill(5);
+      h_cutCounter->Fill(3);
       continue;
     }
-    if (Cluster_Debug && filledClustersAfterCut5.insert(recoCluster).second)
+    if (Cluster_Debug && filledClustersAfterCut3.insert(recoCluster).second)
     {
       if (additionalsmearing)
-        h_cluster_etaphi_cuts[7]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        h_cluster_etaphi_cuts[5]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
       else if (!additionalsmearing)
-        h_cluster_etaphi_cuts[7]->Fill(clus_eta, clus_phi);
+        h_cluster_etaphi_cuts[5]->Fill(clus_eta, clus_phi);
     }
 
-    RawCluster* recoCluster2 = clusterIter2->second;
+    if (etabyeta) h_pt_eta[lt_eta]->Fill(clus_pt);
 
-    CLHEP::Hep3Vector E_vec_cluster2;
-    if (pp_rawcluster)
+    if (dynMaskClus && hotClus == true && cutson)
     {
-      E_vec_cluster2 = RawClusterUtility::GetEVec(*recoCluster2, vertex);
+      h_cutCounter->Fill(4);
+      continue;
     }
-    else if (!pp_rawcluster)  // i.e if AuAu
+    if (Cluster_Debug && filledClustersAfterCut4.insert(recoCluster).second)
     {
-      E_vec_cluster2 = RawClusterUtility::GetECoreVec(*recoCluster2, vertex);
+      if (additionalsmearing)
+        h_cluster_etaphi_cuts[6]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+      else if (!additionalsmearing)
+        h_cluster_etaphi_cuts[6]->Fill(clus_eta, clus_phi);
     }
+    if (debug) std::cout << " " << "Cluster Loop: 2 " << std::endl;
+    // for (clusterIter2 = clusterEnd.first; clusterIter2 != clusterEnd.second; clusterIter2++)
+    for (clusterIter2 = std::next(clusterIter); clusterIter2 != clusterEnd.second; ++clusterIter2)
+    {
+      if (clusterIter == clusterIter2)
+      {
+        h_cutCounter->Fill(5);
+        continue;
+      }
+      if (Cluster_Debug && filledClustersAfterCut5.insert(recoCluster).second)
+      {
+        if (additionalsmearing)
+          h_cluster_etaphi_cuts[7]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        else if (!additionalsmearing)
+          h_cluster_etaphi_cuts[7]->Fill(clus_eta, clus_phi);
+      }
 
-    float clus2E = E_vec_cluster2.mag();
-    float clus2_eta = E_vec_cluster2.pseudoRapidity();
-    float clus2_phi = E_vec_cluster2.phi();
-    float clus2_pt = E_vec_cluster2.perp();
-    float clus2_chisq = recoCluster2->get_chi2();
-    float prob2 = recoCluster2->get_prob();
-    if (clusterprobcut)
-    {
-      if (prob2 < clusterprob && cutson)
+      RawCluster* recoCluster2 = clusterIter2->second;
+
+      CLHEP::Hep3Vector E_vec_cluster2;
+      if (pp_rawcluster)
+      {
+        E_vec_cluster2 = RawClusterUtility::GetEVec(*recoCluster2, vertex);
+      }
+      else if (!pp_rawcluster)  // i.e if AuAu
+      {
+        E_vec_cluster2 = RawClusterUtility::GetECoreVec(*recoCluster2, vertex);
+      }
+
+      float clus2E = E_vec_cluster2.mag();
+      float clus2_eta = E_vec_cluster2.pseudoRapidity();
+      float clus2_phi = E_vec_cluster2.phi();
+      float clus2_pt = E_vec_cluster2.perp();
+      float clus2_chisq = recoCluster2->get_chi2();
+      float prob2 = recoCluster2->get_prob();
+      if (clusterprobcut)
+      {
+        if (prob2 < clusterprob && cutson)
+        {
+          h_cutCounter->Fill(6);
+          continue;
+        }
+      }
+      else if (clus2_chisq > clus_chisq_cut && cutson)
       {
         h_cutCounter->Fill(6);
         continue;
       }
-    }
-    else if (clus2_chisq > clus_chisq_cut && cutson)
-    {
-      h_cutCounter->Fill(6);
-      continue;
-    }
-    if (Cluster_Debug && filledClustersAfterCut6.insert(recoCluster).second)
-    {
+      if (Cluster_Debug && filledClustersAfterCut6.insert(recoCluster).second)
+      {
+        if (additionalsmearing)
+          h_cluster_etaphi_cuts[8]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+        else if (!additionalsmearing)
+          h_cluster_etaphi_cuts[8]->Fill(clus_eta, clus_phi);
+      }
+      TLorentzVector photon2;
+      photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
+      pi0smearvec[1] = SmearPhoton4vector(photon2, badcalibsmear);
+      TLorentzVector pi0;
+      // TLorentzVector pi0 = photon1 + photon2;
+      pi0smearvec[2] = pi0smearvec[0] + pi0smearvec[1];
+
+      // set pi0 to the smeared version if additional smearing is added
       if (additionalsmearing)
-        h_cluster_etaphi_cuts[8]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+      {
+        pi0 = pi0smearvec[2];
+      }
       else if (!additionalsmearing)
-        h_cluster_etaphi_cuts[8]->Fill(clus_eta, clus_phi);
-    }
-    TLorentzVector photon2;
-    photon2.SetPtEtaPhiE(clus2_pt, clus2_eta, clus2_phi, clus2E);
-    pi0smearvec[1] = SmearPhoton4vector(photon2, badcalibsmear);
-    TLorentzVector pi0;
-    // TLorentzVector pi0 = photon1 + photon2;
-    pi0smearvec[2] = pi0smearvec[0] + pi0smearvec[1];
-
-    // set pi0 to the smeared version if additional smearing is added
-    if (additionalsmearing)
-    {
-      pi0 = pi0smearvec[2];
-    }
-    else if (!additionalsmearing)
-    {
-      pi0 = photon1 + photon2;
-    }
-
-    h_reco_etaphi_cuts[1]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-
-    if (additionalsmearing)
-    {
-      if (eTCutbool)
       {
-        if (pi0smearvec[1].Et() < etcut && cutson)
-        {
-          h_cutCounter->Fill(7);
-          continue;
-        }
-      }
-      else if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson)
-      {
-        h_cutCounter->Fill(7);
-        continue;
+        pi0 = photon1 + photon2;
       }
 
-      if (Cluster_Debug && filledClustersAfterCut7.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[2]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[9]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-        if (filledClustersAfterCut7.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[9]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
-      }
+      h_reco_etaphi_cuts[1]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
 
-      if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson)
-      {
-        h_cutCounter->Fill(8);
-        continue;
-      }
-
-      if (Cluster_Debug && filledClustersAfterCut8.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[3]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[10]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-        if (filledClustersAfterCut8.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[10]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
-      }
-
-      if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson)
-      {
-        h_cutCounter->Fill(9);
-        continue;
-      }
-
-      if (Cluster_Debug && filledClustersAfterCut9.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[4]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[11]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-        if (filledClustersAfterCut9.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[11]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
-      }
-
-      if (pi0smearvec[2].Pt() < pi0ptcut)
-      {
-        h_cutCounter->Fill(10);
-        continue;
-      }
-
-      if (Cluster_Debug && filledClustersAfterCut10.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[5]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[12]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-        if (filledClustersAfterCut10.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[12]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
-      }
-
-      if (etaCutbool && abs(pi0smearvec[2].Eta()) > etacutval)
-      {
-        h_cutCounter->Fill(13);
-        continue;
-      }
-
-      if (Cluster_Debug && filledClustersAfterCut11.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[6]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        h_cluster_etaphi_cuts[13]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
-        if (filledClustersAfterCut11.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[13]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
-      }
-    }
-    else if (!additionalsmearing)
-    {
-      if (eTCutbool)
-      {
-        if (photon2.Et() < etcut && cutson)
-        {
-          h_cutCounter->Fill(7);
-          continue;
-        }
-      }
-      else if ((photon2.Pt() < pt2ClusCut || photon2.Pt() > ptMaxCut) && cutson)
-      {
-        h_cutCounter->Fill(7);
-        continue;
-      }
-
-      if (Cluster_Debug && filledClustersAfterCut7.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[2]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[9]->Fill(clus_eta, clus_phi);
-        if (filledClustersAfterCut7.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[9]->Fill(clus2_eta, clus2_phi);
-      }
-
-      if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson)
-      {
-        h_cutCounter->Fill(8);
-        continue;
-      }
-
-      if (Cluster_Debug && filledClustersAfterCut8.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[3]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[10]->Fill(clus_eta, clus_phi);
-        if (filledClustersAfterCut8.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[10]->Fill(clus2_eta, clus2_phi);
-      }
-
-      if (photon1.DeltaR(photon2) > maxDr && cutson)
-      {
-        h_cutCounter->Fill(9);
-        continue;
-      }
-
-      if (Cluster_Debug && filledClustersAfterCut9.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[4]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[11]->Fill(clus_eta, clus_phi);
-        if (filledClustersAfterCut9.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[11]->Fill(clus2_eta, clus2_phi);
-      }
-
-      if (pi0.Pt() < pi0ptcut)
-      {
-        h_cutCounter->Fill(10);
-        continue;
-      }
-
-      if (Cluster_Debug && filledClustersAfterCut10.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[5]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[12]->Fill(clus_eta, clus_phi);
-        if (filledClustersAfterCut10.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[12]->Fill(clus2_eta, clus2_phi);
-      }
-      if (etaCutbool && abs(pi0.Eta()) > etacutval)
-      {
-        h_cutCounter->Fill(13);
-        continue;
-      }
-
-      if (Cluster_Debug && filledClustersAfterCut11.insert(recoCluster).second)
-      {
-        h_reco_etaphi_cuts[6]->Fill(pi0.Eta(), pi0.Phi());
-        h_cluster_etaphi_cuts[13]->Fill(clus_eta, clus_phi);
-        if (filledClustersAfterCut11.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[13]->Fill(clus2_eta, clus2_phi);
-      }
-    }
-
-    // loop over the towers in the cluster
-    RawCluster::TowerConstRange towerCR2 = recoCluster2->get_towers();
-    RawCluster::TowerConstIterator toweriter2;
-    bool hotClus2 = false;
-    for (toweriter2 = towerCR2.first; toweriter2 != towerCR2.second; ++toweriter2)
-    {
-      int towereta = m_geometry->get_tower_geometry(toweriter2->first)->get_bineta();
-      int towerphi = m_geometry->get_tower_geometry(toweriter2->first)->get_binphi();
-
-      for (size_t i = 0; i < ht_eta.size(); i++)
-      {
-        if (towerphi == ht_phi[i] && towereta == ht_phi[i]) hotClus2 = true;
-      }
-    }
-    h_etaphi_clus->Fill(clus_phi, clus_eta);
-
-    if (dynMaskClus && hotClus2 == true && cutson)
-    {
-      h_cutCounter->Fill(11);
-      continue;
-    }
-
-    if (Cluster_Debug && filledClustersAfterCut12.insert(recoCluster).second)
-    {
       if (additionalsmearing)
-        h_reco_etaphi_cuts[7]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-      else if (!additionalsmearing)
-        h_reco_etaphi_cuts[7]->Fill(pi0.Eta(), pi0.Phi());
-    }
-
-    h_reco_etaphi->Fill(pi0.Phi(), pi0.Eta());  // pi0 is the same as the smeared version if adding smearing
-
-    /////////////////////////////////////////////////
-    //// Truth info
-    // float weight = 1;
-    PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
-    vector<TLorentzVector> truth_photons;
-    // vector<TLorentzVector> truth_pions;
-    if (debug) std::cout << " " << "truth: Primary Loop " << std::endl;
-    if (truthinfo)
-    {
-      PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
-      for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
       {
-        // Get truth particle
-        // PHG4Particle* particle = truthinfo->GetParticle(1);  // primary for the SPMC
-        const PHG4Particle* truth = iter->second;
-        if (!truthinfo->is_primary(truth)) continue;
-        TLorentzVector myVector;
-        // LorentzVector<ROOT::Math::PtEtaPhiM4D<double>> myVector;
-        if (!eta_weight)
+        if (eTCutbool)
         {
-          myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
-          // myVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), truth->get_e());
-        }
-        else if (eta_weight)
-        {
-          myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.54786);
-          // myVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), truth->get_e());
-        }
-        float energy = myVector.E();
-        // weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
-
-        int id = truth->get_pid();
-        h_truth_pid_p->Fill(id);
-
-        double Pt = myVector.Pt();
-        double weight_function;
-        if (Pythia_weight)
-        {
-          double t = 4.5229;
-          double w = 0.0912;
-          double A = 528.197;
-          double B = 141.505;
-          double n = 9.86803;
-          double m_param = 7.48221;
-          double p0 = 0.592415;
-          //"((1 / (1 + exp((x - [0]) / [1]))) * [2] / pow(1 + x / [3], [4]) + (1 - (1 / (1 + exp((x - [0]) / [1])))) * [5] / (pow(x, [6])))"
-          weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
-        }
-        else
-        {
-          //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
-          double t = 4.5;
-          double w = 0.114;
-          double A = 229.6;
-          double B = 14.43;
-          double n = 8.1028;
-          double m_param = 10.654;
-          double p0 = 1.466;
-          weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
-
-          if (eta_weight)
+          if (pi0smearvec[1].Et() < etcut && cutson)
           {
-            inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);  // mT scaling
-            weight_function *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);
+            h_cutCounter->Fill(7);
+            continue;
           }
         }
-
-        inv_yield = WeightScale * Pt * weight_function;  //
-        // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
-
-        if (SPMC_bool && inv_yield != 0)
+        else if ((pi0smearvec[1].Pt() < pt2ClusCut || pi0smearvec[1].Pt() > ptMaxCut) && cutson)
         {
-          float spectrum_value = getSPMCpTspectrum(static_cast<float>(Pt));
-          if (spectrum_value != 0)
+          h_cutCounter->Fill(7);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut7.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[2]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[9]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if (filledClustersAfterCut7.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[9]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
+        }
+
+        if (fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()) > maxAlpha && cutson)
+        {
+          h_cutCounter->Fill(8);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut8.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[3]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[10]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if (filledClustersAfterCut8.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[10]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
+        }
+
+        if (pi0smearvec[0].DeltaR(pi0smearvec[1]) > maxDr && cutson)
+        {
+          h_cutCounter->Fill(9);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut9.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[4]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[11]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if (filledClustersAfterCut9.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[11]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
+        }
+
+        if (pi0smearvec[2].Pt() < pi0ptcut)
+        {
+          h_cutCounter->Fill(10);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut10.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[5]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[12]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if (filledClustersAfterCut10.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[12]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
+        }
+
+        if (etaCutbool && abs(pi0smearvec[2].Eta()) > etacutval)
+        {
+          h_cutCounter->Fill(13);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut11.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[6]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+          h_cluster_etaphi_cuts[13]->Fill(pi0smearvec[0].Eta(), pi0smearvec[0].Phi());
+          if (filledClustersAfterCut11.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[13]->Fill(pi0smearvec[1].Eta(), pi0smearvec[1].Phi());
+        }
+      }
+      else if (!additionalsmearing)
+      {
+        if (eTCutbool)
+        {
+          if (photon2.Et() < etcut && cutson)
           {
-            inv_yield = inv_yield / spectrum_value;
+            h_cutCounter->Fill(7);
+            continue;
+          }
+        }
+        else if ((photon2.Pt() < pt2ClusCut || photon2.Pt() > ptMaxCut) && cutson)
+        {
+          h_cutCounter->Fill(7);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut7.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[2]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[9]->Fill(clus_eta, clus_phi);
+          if (filledClustersAfterCut7.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[9]->Fill(clus2_eta, clus2_phi);
+        }
+
+        if (fabs(photon1.E() - photon2.E()) / (photon1.E() + photon2.E()) > maxAlpha && cutson)
+        {
+          h_cutCounter->Fill(8);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut8.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[3]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[10]->Fill(clus_eta, clus_phi);
+          if (filledClustersAfterCut8.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[10]->Fill(clus2_eta, clus2_phi);
+        }
+
+        if (photon1.DeltaR(photon2) > maxDr && cutson)
+        {
+          h_cutCounter->Fill(9);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut9.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[4]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[11]->Fill(clus_eta, clus_phi);
+          if (filledClustersAfterCut9.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[11]->Fill(clus2_eta, clus2_phi);
+        }
+
+        if (pi0.Pt() < pi0ptcut)
+        {
+          h_cutCounter->Fill(10);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut10.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[5]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[12]->Fill(clus_eta, clus_phi);
+          if (filledClustersAfterCut10.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[12]->Fill(clus2_eta, clus2_phi);
+        }
+        if (etaCutbool && abs(pi0.Eta()) > etacutval)
+        {
+          h_cutCounter->Fill(13);
+          continue;
+        }
+
+        if (Cluster_Debug && filledClustersAfterCut11.insert(recoCluster).second)
+        {
+          h_reco_etaphi_cuts[6]->Fill(pi0.Eta(), pi0.Phi());
+          h_cluster_etaphi_cuts[13]->Fill(clus_eta, clus_phi);
+          if (filledClustersAfterCut11.insert(recoCluster2).second || Cluster_Debug2) h_cluster_etaphi_cuts[13]->Fill(clus2_eta, clus2_phi);
+        }
+      }
+
+      // loop over the towers in the cluster
+      RawCluster::TowerConstRange towerCR2 = recoCluster2->get_towers();
+      RawCluster::TowerConstIterator toweriter2;
+      bool hotClus2 = false;
+      for (toweriter2 = towerCR2.first; toweriter2 != towerCR2.second; ++toweriter2)
+      {
+        int towereta = m_geometry->get_tower_geometry(toweriter2->first)->get_bineta();
+        int towerphi = m_geometry->get_tower_geometry(toweriter2->first)->get_binphi();
+
+        for (size_t i = 0; i < ht_eta.size(); i++)
+        {
+          if (towerphi == ht_phi[i] && towereta == ht_phi[i]) hotClus2 = true;
+        }
+      }
+      h_etaphi_clus->Fill(clus_phi, clus_eta);
+
+      if (dynMaskClus && hotClus2 == true && cutson)
+      {
+        h_cutCounter->Fill(11);
+        continue;
+      }
+
+      if (Cluster_Debug && filledClustersAfterCut12.insert(recoCluster).second)
+      {
+        if (additionalsmearing)
+          h_reco_etaphi_cuts[7]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
+        else if (!additionalsmearing)
+          h_reco_etaphi_cuts[7]->Fill(pi0.Eta(), pi0.Phi());
+      }
+
+      h_reco_etaphi->Fill(pi0.Phi(), pi0.Eta());  // pi0 is the same as the smeared version if adding smearing
+
+      /////////////////////////////////////////////////
+      //// Truth info
+      // float weight = 1;
+      PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
+      vector<TLorentzVector> truth_photons;
+      // vector<TLorentzVector> truth_pions;
+      if (debug) std::cout << " " << "truth: Primary Loop " << std::endl;
+      if (truthinfo)
+      {
+        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
+        {
+          // Get truth particle
+          // PHG4Particle* particle = truthinfo->GetParticle(1);  // primary for the SPMC
+          const PHG4Particle* truth = iter->second;
+          if (!truthinfo->is_primary(truth)) continue;
+          TLorentzVector myVector;
+          // LorentzVector<ROOT::Math::PtEtaPhiM4D<double>> myVector;
+          if (!eta_weight)
+          {
+            myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.13497);
+            // myVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), truth->get_e());
+          }
+          else if (eta_weight)
+          {
+            myVector.SetXYZM(truth->get_px(), truth->get_py(), truth->get_pz(), 0.54786);
+            // myVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), truth->get_e());
+          }
+          float energy = myVector.E();
+          // weight = myVector.Pt() * TMath::Exp(-3 * myVector.Pt());
+
+          int id = truth->get_pid();
+          h_truth_pid_p->Fill(id);
+
+          double Pt = myVector.Pt();
+          double weight_function;
+          if (Pythia_weight)
+          {
+            double t = 4.5229;
+            double w = 0.0912;
+            double A = 528.197;
+            double B = 141.505;
+            double n = 9.86803;
+            double m_param = 7.48221;
+            double p0 = 0.592415;
+            //"((1 / (1 + exp((x - [0]) / [1]))) * [2] / pow(1 + x / [3], [4]) + (1 - (1 / (1 + exp((x - [0]) / [1])))) * [5] / (pow(x, [6])))"
+            weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
           }
           else
           {
-            std::cerr << "Warning: Spectrum value is zero at Pt = " << Pt << std::endl;
-            inv_yield = 0;
+            //--------------------Alternative paramaterization, woods saxon + hagedorn + power law
+            double t = 4.5;
+            double w = 0.114;
+            double A = 229.6;
+            double B = 14.43;
+            double n = 8.1028;
+            double m_param = 10.654;
+            double p0 = 1.466;
+            weight_function = ((1 / (1 + exp((Pt - t) / w))) * A / pow(1 + Pt / p0, m_param) + (1 - (1 / (1 + exp((Pt - t) / w)))) * B / (pow(Pt, n)));
+
+            if (eta_weight)
+            {
+              inv_yield *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);  // mT scaling
+              weight_function *= 0.5 * pow((1.2 + sqrt(pow(0.54786, 2) + pow(Pt, 2))) / (1.2 + sqrt(pow(0.1349768, 2) + pow(Pt, 2))), -10);
+            }
           }
+
+          inv_yield = WeightScale * Pt * weight_function;  //
+          // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
+
+          if (SPMC_bool && inv_yield != 0)
+          {
+            float spectrum_value = getSPMCpTspectrum(static_cast<float>(Pt));
+            if (spectrum_value != 0)
+            {
+              inv_yield = inv_yield / spectrum_value;
+            }
+            else
+            {
+              std::cerr << "Warning: Spectrum value is zero at Pt = " << Pt << std::endl;
+              inv_yield = 0;
+            }
+          }
+
+          h_inv_yield->Fill(Pt, inv_yield);
+          h_yield->Fill(Pt, weight_function);
+          h_InvMass_weighted->Fill(pi0.M(), inv_yield);
+          h_InvMass_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
+          h_InvMass_smear_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
+          // h_InvMass_photonE_smear_weighted_3d->Fill(pi0smearvec[0].Pt(), pi0smearvec[1].Pt(), pi0smearvec[2].M(), inv_yield);
+          // h_InvMass_smear_weighted_asymmetry_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()), inv_yield);
+          h_truth_e->Fill(energy, inv_yield);
+          h_truth_eta->Fill(myVector.Eta(), inv_yield);
+          h_truth_pt->Fill(myVector.Pt(), inv_yield);
+          h_reco_photon1E_weighted->Fill(photon1.E(), inv_yield);
+          h_reco_photon2E_weighted->Fill(photon2.E(), inv_yield);
+          h_reco_ALLphotonE_weighted->Fill(photon1.E(), inv_yield);
+          h_reco_ALLphotonE_weighted->Fill(photon2.E(), inv_yield);
+
+          h_InvMass_smear_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
+          h_InvMass_smear_weighted_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M(), inv_yield);
+          h_reco_etaphi_cuts[8]->Fill(pi0.Eta(), pi0.Phi(), inv_yield);
+
+          if (filltruthspectrum && (matchmctruth))
+          {
+            float delR = pi0.DeltaR(myVector);
+            if ((id == 111 || (eta_weight && id == 221)) && delR < 0.015)
+            {
+              h_truth_spectrum1->Fill(myVector.Pt());
+              h_truthmatched_mass1_2d->Fill(pi0.Pt(), pi0.M(), inv_yield);
+              h_truthmatched_mass1->Fill(pi0.M(), inv_yield);
+            }
+            else if ((id == 111 || (eta_weight && id == 221)) && delR < 0.1)
+            {
+              h_truthmatched_mass2_2d->Fill(pi0.Pt(), pi0.M(), inv_yield);
+              h_truthmatched_mass2->Fill(pi0.M(), inv_yield);
+            }
+            else if ((id == 111 || (eta_weight && id == 221)) && delR < 0.2)
+            {
+              h_truthmatched_mass3_2d->Fill(pi0.Pt(), pi0.M(), inv_yield);
+              h_truthmatched_mass3->Fill(pi0.M(), inv_yield);
+            }
+            // photon truthmatching
+          }
+
+          if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
+          if (debug) std::cout << "M=" << myVector.M() << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
         }
 
-        h_inv_yield->Fill(Pt, inv_yield);
-        h_yield->Fill(Pt, weight_function);
-        h_InvMass_weighted->Fill(pi0.M(), inv_yield);
-        h_InvMass_smear_weighted->Fill(pi0smearvec[2].M(), inv_yield);
-        h_InvMass_smear_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
-        // h_InvMass_photonE_smear_weighted_3d->Fill(pi0smearvec[0].Pt(), pi0smearvec[1].Pt(), pi0smearvec[2].M(), inv_yield);
-        // h_InvMass_smear_weighted_asymmetry_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), fabs(pi0smearvec[0].E() - pi0smearvec[1].E()) / (pi0smearvec[0].E() + pi0smearvec[1].E()), inv_yield);
-        h_truth_e->Fill(energy, inv_yield);
-        h_truth_eta->Fill(myVector.Eta(), inv_yield);
-        h_truth_pt->Fill(myVector.Pt(), inv_yield);
-        h_reco_photon1E_weighted->Fill(photon1.E(), inv_yield);
-        h_reco_photon2E_weighted->Fill(photon2.E(), inv_yield);
-        h_reco_ALLphotonE_weighted->Fill(photon1.E(), inv_yield);
-        h_reco_ALLphotonE_weighted->Fill(photon2.E(), inv_yield);
-
-        h_InvMass_smear_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
-        h_InvMass_smear_weighted_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M(), inv_yield);
-        h_reco_etaphi_cuts[8]->Fill(pi0.Eta(), pi0.Phi(), inv_yield);
-
-        if (filltruthspectrum && (matchmctruth))
+        // truth secondary loops
+        if (debug) std::cout << " " << "truth: Secondary Loop " << std::endl;
+        PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
+        float m_g4 = 0;
+        for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
         {
-          float delR = pi0.DeltaR(myVector);
-          if ((id == 111 || (eta_weight && id == 221)) && delR < 0.015)
+          if (m_g4 >= 19999) break;
+          // Get photons from pi0 decays
+          const PHG4Particle* truth = siter->second;
+          int id = truth->get_pid();
+          h_truth_pid_s->Fill(id);
+          if (filltruthspectrum && (matchmctruth))
           {
-            h_truth_spectrum1->Fill(myVector.Pt());
-            h_truthmatched_mass1_2d->Fill(pi0.Pt(), pi0.M(), inv_yield);
-            h_truthmatched_mass1->Fill(pi0.M(), inv_yield);
+            if (id == 22)
+            {
+              TLorentzVector myPhotonVector;
+              float photonE = truth->get_e();
+              myPhotonVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), photonE);
+              if (additionalsmearing)
+              {
+                float delRP1 = pi0smearvec[0].DeltaR(myPhotonVector);
+                float delRP2 = pi0smearvec[1].DeltaR(myPhotonVector);
+                h_truthmatched_Photon_delR->Fill(delRP1);
+                h_truthmatched_Photon_delR->Fill(delRP2);
+                if (pi0smearvec[0].DeltaR(myPhotonVector) < 0.015)
+                {
+                  h_truthmatched_photon1E->Fill(photonE);
+                  h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE->Fill(photonE);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                }
+                if (pi0smearvec[1].DeltaR(myPhotonVector) < 0.015)
+                {
+                  h_truthmatched_photon2E->Fill(photonE);
+                  h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE->Fill(photonE);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                }
+              }
+              else if (!additionalsmearing)
+              {
+                float delRP1 = photon1.DeltaR(myPhotonVector);
+                float delRP2 = photon2.DeltaR(myPhotonVector);
+                h_truthmatched_Photon_delR->Fill(delRP1);
+                h_truthmatched_Photon_delR->Fill(delRP2);
+                if (photon1.DeltaR(myPhotonVector) < 0.015)
+                {
+                  h_truthmatched_photon1E->Fill(photonE);
+                  h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE->Fill(photonE);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                }
+                if (photon2.DeltaR(myPhotonVector) < 0.015)
+                {
+                  h_truthmatched_photon2E->Fill(photonE);
+                  h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
+                  h_truthmatched_AllphotonE->Fill(photonE);
+                  h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
+                }
+              }
+            }
           }
-          else if ((id == 111 || (eta_weight && id == 221)) && delR < 0.1)
-          {
-            h_truthmatched_mass2_2d->Fill(pi0.Pt(), pi0.M(), inv_yield);
-            h_truthmatched_mass2->Fill(pi0.M(), inv_yield);
-          }
-          else if ((id == 111 || (eta_weight && id == 221)) && delR < 0.2)
-          {
-            h_truthmatched_mass3_2d->Fill(pi0.Pt(), pi0.M(), inv_yield);
-            h_truthmatched_mass3->Fill(pi0.M(), inv_yield);
-          }
-          // photon truthmatching
-        }
 
-        if (debug) std::cout << "truth pt=" << Pt << "   weight function=" << weight_function << "  inv_yield=" << inv_yield << std::endl;
-        if (debug) std::cout << "M=" << myVector.M() << "   E=" << energy << "  pt=" << myVector.Pt() << "  eta=" << myVector.Eta() << std::endl;
+          //*/
+        }
       }
 
-      // truth secondary loops
-      if (debug) std::cout << " " << "truth: Secondary Loop " << std::endl;
-      PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
-      float m_g4 = 0;
-      for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
+      //*
+      for (auto tr_phot : truth_photons)
       {
-        if (m_g4 >= 19999) break;
-        // Get photons from pi0 decays
-        const PHG4Particle* truth = siter->second;
-        int id = truth->get_pid();
-        h_truth_pid_s->Fill(id);
-        if (filltruthspectrum && (matchmctruth))
-        {
-          if (id == 22)
-          {
-            TLorentzVector myPhotonVector;
-            float photonE = truth->get_e();
-            myPhotonVector.SetPxPyPzE(truth->get_px(), truth->get_py(), truth->get_pz(), photonE);
-            if (additionalsmearing)
-            {
-              float delRP1 = pi0smearvec[0].DeltaR(myPhotonVector);
-              float delRP2 = pi0smearvec[1].DeltaR(myPhotonVector);
-              h_truthmatched_Photon_delR->Fill(delRP1);
-              h_truthmatched_Photon_delR->Fill(delRP2);
-              if (pi0smearvec[0].DeltaR(myPhotonVector) < 0.015)
-              {
-                h_truthmatched_photon1E->Fill(photonE);
-                h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
-                h_truthmatched_AllphotonE->Fill(photonE);
-                h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
-              }
-              if (pi0smearvec[1].DeltaR(myPhotonVector) < 0.015)
-              {
-                h_truthmatched_photon2E->Fill(photonE);
-                h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
-                h_truthmatched_AllphotonE->Fill(photonE);
-                h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
-              }
-            }
-            else if (!additionalsmearing)
-            {
-              float delRP1 = photon1.DeltaR(myPhotonVector);
-              float delRP2 = photon2.DeltaR(myPhotonVector);
-              h_truthmatched_Photon_delR->Fill(delRP1);
-              h_truthmatched_Photon_delR->Fill(delRP2);
-              if (photon1.DeltaR(myPhotonVector) < 0.015)
-              {
-                h_truthmatched_photon1E->Fill(photonE);
-                h_truthmatched_photon1E_weighted->Fill(photonE, inv_yield);
-                h_truthmatched_AllphotonE->Fill(photonE);
-                h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
-              }
-              if (photon2.DeltaR(myPhotonVector) < 0.015)
-              {
-                h_truthmatched_photon2E->Fill(photonE);
-                h_truthmatched_photon2E_weighted->Fill(photonE, inv_yield);
-                h_truthmatched_AllphotonE->Fill(photonE);
-                h_truthmatched_AllphotonE_weighted->Fill(photonE, inv_yield);
-              }
-            }
-          }
+        float delR = photon1.DeltaR(tr_phot);
+        if (debug) std::cout << delR << " " << std::endl;
+        h_delR_recTrth->Fill(delR);
+        if (delR < 0.0101)
+        {  // choose this value based on looking at delR distribution
+          float res = photon1.E() / tr_phot.E();
+          h_matched_res->Fill(res, photon1.Eta());
         }
-
-        //*/
       }
-    }
-
-    //*
-    for (auto tr_phot : truth_photons)
-    {
-      float delR = photon1.DeltaR(tr_phot);
-      if (debug) std::cout << delR << " " << std::endl;
-      h_delR_recTrth->Fill(delR);
-      if (delR < 0.0101)
-      {  // choose this value based on looking at delR distribution
-        float res = photon1.E() / tr_phot.E();
-        h_matched_res->Fill(res, photon1.Eta());
+      //*/
+      if (debug) std::cout << " " << "truth: Loops Done " << std::endl;
+      if (additionalsmearing)
+      {
+        h_InvMass_smear->Fill(pi0smearvec[2].M());
+        h_InvMass_smear_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M());
+        h_InvMass_smear_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta());
+        h_InvMass_smear_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M());
       }
-    }
-    //*/
-    if (debug) std::cout << " " << "truth: Loops Done " << std::endl;
-    if (additionalsmearing)
-    {
-      h_InvMass_smear->Fill(pi0smearvec[2].M());
-      h_InvMass_smear_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M());
-      h_InvMass_smear_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta());
-      h_InvMass_smear_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M());
-    }
-    h_pt1->Fill(photon1.Pt());
-    h_pt2->Fill(photon2.Pt());
-    h_InvMass_2d->Fill(pi0.Pt(), pi0.M());
-    h_pion_pt->Fill(pi0.Pt());
-    h_InvMass->Fill(pi0.M());
-    h_reco_photon1E->Fill(photon1.E());
-    h_reco_photon1E_2d->Fill(photon1.Pt(), photon1.E());
-    h_reco_photon2E->Fill(photon2.E());
-    h_reco_photon2E_2d->Fill(photon2.Pt(), photon2.E());
-    h_reco_ALLphotonE->Fill(photon1.E());
-    h_reco_ALLphotonE->Fill(photon2.E());
-    h_reco_ALLphotonE_2d->Fill(photon1.Pt(), photon1.E());
-    h_reco_ALLphotonE_2d->Fill(photon2.Pt(), photon2.E());
+      h_pt1->Fill(photon1.Pt());
+      h_pt2->Fill(photon2.Pt());
+      h_InvMass_2d->Fill(pi0.Pt(), pi0.M());
+      h_pion_pt->Fill(pi0.Pt());
+      h_InvMass->Fill(pi0.M());
+      h_reco_photon1E->Fill(photon1.E());
+      h_reco_photon1E_2d->Fill(photon1.Pt(), photon1.E());
+      h_reco_photon2E->Fill(photon2.E());
+      h_reco_photon2E_2d->Fill(photon2.Pt(), photon2.E());
+      h_reco_ALLphotonE->Fill(photon1.E());
+      h_reco_ALLphotonE->Fill(photon2.E());
+      h_reco_ALLphotonE_2d->Fill(photon1.Pt(), photon1.E());
+      h_reco_ALLphotonE_2d->Fill(photon2.Pt(), photon2.E());
 
-  }  // clusterIter2
-}  // clusteriter1 loop
+    }  // clusterIter2
+  }  // clusteriter1 loop
 
-if (filltruthspectrum)
-{
-  PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
-  if (truthinfo)
+  if (filltruthspectrum)
   {
-    if (matchmctruth)
-    {  // primaries
-      PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
-      for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
-      {
-        const PHG4Particle* truth = iter->second;
-        if (!truthinfo->is_primary(truth)) continue;
-        if (truth->get_pid() == 111 || (eta_weight && truth->get_pid() == 221))
+    PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
+    if (truthinfo)
+    {
+      if (matchmctruth)
+      {  // primaries
+        PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
         {
-          float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
-          float pion_p = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz());
-          float pion_e = truth->get_e();
-          float pion_phi = atan2(truth->get_py(), truth->get_px());
-          float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
-          TLorentzVector truthpi0 = TLorentzVector();
-          truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
-          h_truth_spectrum2->Fill(truthpi0.Pt());
-          h_FullTruth_e->Fill(pion_e);
-          h_FullTruth_eta->Fill(pion_eta);
-          h_FullTruth_pt->Fill(pion_pt);
-          h_FullTruth_p->Fill(pion_p);
-        }
-        if (truth->get_pid() == 221)
-        {
-          h_truth_etaspectrum->Fill(sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py()));
-        }
-        // photon loop
-        if (truth->get_pid() == 22)
-        {
-          float photon_e = truth->get_e();
-          h_truth_ALLphotonE->Fill(photon_e);
-          // what should the photon weight be?
-          // h_truth_ALLphotonE_weighted->Fill(photon_e, inv_yield);
-        }
-      }
-
-      // secondaries
-      PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
-      for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
-      {
-        const PHG4Particle* truth = siter->second;
-        int id = truth->get_pid();
-        h_truth_pid_s->Fill(id);
-        if (filltruthspectrum && (matchmctruth))
-        {
-          if (id == 22)
+          const PHG4Particle* truth = iter->second;
+          if (!truthinfo->is_primary(truth)) continue;
+          if (truth->get_pid() == 111 || (eta_weight && truth->get_pid() == 221))
+          {
+            float pion_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+            float pion_p = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz());
+            float pion_e = truth->get_e();
+            float pion_phi = atan2(truth->get_py(), truth->get_px());
+            float pion_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
+            TLorentzVector truthpi0 = TLorentzVector();
+            truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
+            h_truth_spectrum2->Fill(truthpi0.Pt());
+            h_FullTruth_e->Fill(pion_e);
+            h_FullTruth_eta->Fill(pion_eta);
+            h_FullTruth_pt->Fill(pion_pt);
+            h_FullTruth_p->Fill(pion_p);
+          }
+          if (truth->get_pid() == 221)
+          {
+            h_truth_etaspectrum->Fill(sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py()));
+          }
+          // photon loop
+          if (truth->get_pid() == 22)
           {
             float photon_e = truth->get_e();
-            float photon_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
-            float photon_p = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()); /*
-
-             float photon_phi = atan2(truth->get_py(), truth->get_px());
-             float photon_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
-             TLorentzVector truthphoton = TLorentzVector();
-             truthphoton.SetPtEtaPhiE(photon_pt, photon_eta, photon_phi, photon_e);
-             */
             h_truth_ALLphotonE->Fill(photon_e);
-            h_truth_ALLphotonpt->Fill(photon_pt);
-            h_truth_ALLphotonp->Fill(photon_p);
             // what should the photon weight be?
             // h_truth_ALLphotonE_weighted->Fill(photon_e, inv_yield);
+          }
+        }
+
+        // secondaries
+        PHG4TruthInfoContainer::Range second_range = truthinfo->GetSecondaryParticleRange();
+        for (PHG4TruthInfoContainer::ConstIterator siter = second_range.first; siter != second_range.second; ++siter)
+        {
+          const PHG4Particle* truth = siter->second;
+          int id = truth->get_pid();
+          h_truth_pid_s->Fill(id);
+          if (filltruthspectrum && (matchmctruth))
+          {
+            if (id == 22)
+            {
+              float photon_e = truth->get_e();
+              float photon_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
+              float photon_p = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()); /*
+
+               float photon_phi = atan2(truth->get_py(), truth->get_px());
+               float photon_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
+               TLorentzVector truthphoton = TLorentzVector();
+               truthphoton.SetPtEtaPhiE(photon_pt, photon_eta, photon_phi, photon_e);
+               */
+              h_truth_ALLphotonE->Fill(photon_e);
+              h_truth_ALLphotonpt->Fill(photon_pt);
+              h_truth_ALLphotonp->Fill(photon_p);
+              // what should the photon weight be?
+              // h_truth_ALLphotonE_weighted->Fill(photon_e, inv_yield);
+            }
           }
         }
       }
     }
   }
-}
 
-return Fun4AllReturnCodes::EVENT_OK;
-//}
+  return Fun4AllReturnCodes::EVENT_OK;
+  //}
 }
 
 int CaloAna::End(PHCompositeNode* /*topNode*/)
