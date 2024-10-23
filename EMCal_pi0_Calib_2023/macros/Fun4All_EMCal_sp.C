@@ -48,7 +48,7 @@ R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
 #include <caloana/CaloAna.h>
 R__LOAD_LIBRARY(libcaloana.so)
 #endif
-//void createLocalEMCalCalibFile(const string fname, int runNumber);
+void createLocalEMCalCalibFile(const string fname, int runNumber);
 
 // void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
 //void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list")
