@@ -155,7 +155,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   if (iter==1){
   LiteCaloEval *eval7e = new LiteCaloEval("CEMCEVALUATOR2", "CEMC",OutFile);
   eval7e->CaloType(LiteCaloEval::CEMC);
-  eval7e->setInputTowerNodeName("WAVEFORM_CEMC");TOWERINFO_CALIB_CEMC
+  eval7e->setInputTowerNodeName("WAVEFORM_CEMC");//TOWERINFO_CALIB_CEMC
   se->registerSubsystem(eval7e);
   }
   //*/
