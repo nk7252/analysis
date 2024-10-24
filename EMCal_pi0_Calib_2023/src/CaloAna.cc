@@ -648,7 +648,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     for (auto tr_phot : truth_pi0_photons)
     {
       float delR = pi0smearvec[0].DeltaR(tr_phot);
-      float res = pi0smearvec[0].E() / tr_phot.E();
+      //float res = pi0smearvec[0].E() / tr_phot.E();
       if (delR < 0.02)
       {
         ph1_trEtaPhi.SetPtEtaPhiE(clusE / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clusE);
@@ -873,7 +873,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       for (auto tr_phot : truth_pi0_photons)
       {
         float delR = pi0smearvec[1].DeltaR(tr_phot);
-        float res = pi0smearvec[1].E() / tr_phot.E();
+        //float res = pi0smearvec[1].E() / tr_phot.E();
         if (delR < 0.02)
         {
           ph2_trEtaPhi.SetPtEtaPhiE(clus2E / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clus2E);
