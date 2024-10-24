@@ -14,8 +14,10 @@ class TH3F;
 class TH2F;
 class TH1F;
 class TH1;
+class TH3;
 class TF1;
 class TProfile2D;
+class TProfile;
 class TLorentzVector;
 class TRandom3;
 
@@ -72,6 +74,7 @@ class CaloAna : public SubsysReco
   TH2F* h_ihcal_mbd_correlation = nullptr;
   TH2F* h_emcal_hcal_correlation = nullptr;
   TH2F* h_emcal_zdc_correlation = nullptr;
+  TH2F* h_clusE_nTow{nullptr};
 
   TH1F* h_InvMass = nullptr;
   TH1F* h_InvMass_weighted = nullptr;
@@ -97,9 +100,9 @@ class CaloAna : public SubsysReco
   TH2F* h_cemc_etaphi_wQA = nullptr;
   TH2F* h_hcalin_etaphi_wQA = nullptr;
   TH2F* h_hcalout_etaphi_wQA = nullptr;
+  TH1* h_totalzdc_e;
   TH1* h_delR_recTrth = nullptr;
   TH1* h_delR_pionrecTrth = nullptr;
-  TH1* h_matched_res;
   TH1* h_totalzdc_e;
 
   TProfile2D* h_cemc_etaphi_time = nullptr;
@@ -121,6 +124,7 @@ class CaloAna : public SubsysReco
   TH1* hemcaltime_cut;
   TH1* hihcaltime_cut;
   TH1* hohcaltime_cut;
+  TH1* h_tower_e;
 
   TH1* hvtx_z_raw;
   TH1* hvtx_z_cut;
@@ -220,10 +224,28 @@ class CaloAna : public SubsysReco
   TH1F* h_mass_eta_lt_rw[96];
   TH1F* h_pt_eta_rw[96];
   TH1F* h_pt_rw[96];
+  TH1* h_matched_res;
+  TH1* h_res_e;
+  TH3* h_res_e_phi;
+  TH3* h_res_e_eta;
+  TH3* h_res_e_eta_pdc;
+  TH1* h_res;
+  TH3* h_m_pt_eta;
+  TH3* h_m_ptTr_eta;
+  TH3* h_m_ptTr_eta_trKin;
+  TH3* h_delPhi_e_eta;
+  TH3* h_delEta_e_eta;
+  TH3* h_delPhi_e_phi;
+  TProfile* pr_eta_shower;
+  TProfile* pr_phi_shower;
+  TH2F* h_vert_xy;
+  TH1* h_truthE;
+
   TH2F* h_reco_etaphi_cuts[14];
   TH2F* h_cluster_etaphi_cuts[14];
   TH1F* h_vtxmap_fail;
   TH1F* h_zvtx;
+  TH1F* h_nevents;
   TH1F* h_sp_pt_rw;
   TH1F* h_emcal_e_eta;
   TH1F* h_truth_eta;
