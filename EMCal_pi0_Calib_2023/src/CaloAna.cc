@@ -620,7 +620,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     photon1.SetPtEtaPhiE(clus_pt, clus_eta, clus_phi, clusE);
     pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
 
-    if(SPMC_bool) ? for (auto tr_phot : truth_photons): for (auto tr_phot : truth_pi0_photons);
+    auto& photons = (SPMC_bool) ? truth_photons : truth_pi0_photons;
+    
+    for (auto tr_phot : photons)
     {
       float delR = pi0smearvec[0].DeltaR(tr_phot);
       h_delR_recTrth->Fill(delR);
