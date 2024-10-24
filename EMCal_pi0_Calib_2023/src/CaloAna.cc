@@ -871,7 +871,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           ph2_trEtaPhi.SetPtEtaPhiE(clus2E / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clus2E);
           if (debug) std::cout << "match  eta=" << ph2_trEtaPhi.Eta() << " E=" << ph2_trEtaPhi.E() << std::endl;
-          if (match1) match2 = true;
+          //if (match1) match2 = true;
         }
       }
 
