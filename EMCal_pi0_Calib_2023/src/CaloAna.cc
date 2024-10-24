@@ -877,7 +877,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       TLorentzVector pi0;
       TLorentzVector pi0_trKin = ph1_trEtaPhi + ph2_trEtaPhi;
-      // TLorentzVector pi0 = photon1 + photon2;
       pi0smearvec[2] = pi0smearvec[0] + pi0smearvec[1];
 
       // set pi0 to the smeared version if additional smearing is added
@@ -1292,12 +1291,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_reco_ALLphotonE->Fill(photon2.E());
       h_reco_ALLphotonE_2d->Fill(photon1.Pt(), photon1.E());
       h_reco_ALLphotonE_2d->Fill(photon2.Pt(), photon2.E());
-      if (match2 && pi0_trKin.M() > 0.001)
-      {
-        h_m_ptTr_eta->Fill(pi0.M(), truth_photons.at(0).E(), lt_eta);
-        h_m_ptTr_eta_trKin->Fill(pi0_trKin.M(), truth_photons.at(0).E(), lt_eta);
-        std::cout << pi0_trKin.M() << std::endl;
-      }
+      //if (match2 && pi0_trKin.M() > 0.001)
+      //{
+        //h_m_ptTr_eta->Fill(pi0.M(), truth_photons.at(0).E(), lt_eta);
+        //h_m_ptTr_eta_trKin->Fill(pi0_trKin.M(), truth_photons.at(0).E(), lt_eta);
+        //std::cout << pi0_trKin.M() << std::endl;
+      //}
 
     }  // clusterIter2
   }  // clusteriter1 loop
