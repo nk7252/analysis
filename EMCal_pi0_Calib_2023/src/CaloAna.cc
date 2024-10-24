@@ -244,7 +244,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_m_ptTr_eta= new TH3F("h_m_ptTr_eta","",70,0,0.7,10,0,10,96,0,96);
   h_m_ptTr_eta_trKin = new TH3F("h_m_ptTr_eta_trKin","",70,0,0.7,10,0,10,96,0,96);
   h_res = new TH1F("h_res", "", 50, 0, 1.5);
-  h_delEta_e_eta = new TH3F("h_delEta_e_eta","",100,-0.1,0.1,10,0,20,96,0,96);
+  //h_delEta_e_eta = new TH3F("h_delEta_e_eta","",100,-0.1,0.1,10,0,20,96,0,96);
   //h_delPhi_e_eta = new TH3F("h_delPhi_e_eta","",100,-0.3,0.3,20,0,20,96,0,96);
   //h_delPhi_e_phi = new TH3F("h_delPhi_e_phi","",100,-0.1,0.1,20,0,20,256,0,256);
   //pr_eta_shower = new TProfile("pr_eta_shower","",96,-48.5,47.5, -1,1.5);
@@ -629,7 +629,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         // h_res_e_eta->Fill(res, tr_phot.E(), lt_eta);
         // h_res_e_phi->Fill(res, tr_phot.E(), lt_phi);
         h_res->Fill(res);
-        h_delEta_e_eta->Fill(pi0smearvec[0].Eta() - tr_phot.Eta(), tr_phot.E(), lt_eta);
+        //h_delEta_e_eta->Fill(pi0smearvec[0].Eta() - tr_phot.Eta(), tr_phot.E(), lt_eta);
         // h_delPhi_e_eta->Fill(delPhi, tr_phot.E(), lt_eta);
         // h_delPhi_e_phi->Fill(delPhi, tr_phot.E(), lt_phi);
         h_truthE->Fill(tr_phot.E());
