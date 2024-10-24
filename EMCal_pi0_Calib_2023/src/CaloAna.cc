@@ -237,20 +237,20 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_ALLphotonp = new TH1F("h_truth_ALLphotonp", "All Photon p", 100, 0, 20);
   // truthmatching histograms from blair
   ///*
-  h_res_e = new TH2F("h_res_e","",100,0,1.5,20,0,20);
-  //h_res_e_phi = new TH3F("h_res_e_phi","",100,0,1.5,10,0,20,256,0,256);
-  //h_res_e_eta = new TH3F("h_res_e_eta","",300,0,1.5,40,0,20,96,0,96);
-  //h_m_pt_eta = new TH3F("h_m_pt_eta","",70,0,0.7,10,0,10,96,0,96);
-  h_m_ptTr_eta= new TH3F("h_m_ptTr_eta","",70,0,0.7,10,0,10,96,0,96);
-  h_m_ptTr_eta_trKin = new TH3F("h_m_ptTr_eta_trKin","",70,0,0.7,10,0,10,96,0,96);
+  h_res_e = new TH2F("h_res_e", "", 100, 0, 1.5, 20, 0, 20);
+  // h_res_e_phi = new TH3F("h_res_e_phi","",100,0,1.5,10,0,20,256,0,256);
+  // h_res_e_eta = new TH3F("h_res_e_eta","",300,0,1.5,40,0,20,96,0,96);
+  // h_m_pt_eta = new TH3F("h_m_pt_eta","",70,0,0.7,10,0,10,96,0,96);
+  h_m_ptTr_eta = new TH3F("h_m_ptTr_eta", "", 70, 0, 0.7, 10, 0, 10, 96, 0, 96);
+  h_m_ptTr_eta_trKin = new TH3F("h_m_ptTr_eta_trKin", "", 70, 0, 0.7, 10, 0, 10, 96, 0, 96);
   h_res = new TH1F("h_res", "", 50, 0, 1.5);
-  //h_delEta_e_eta = new TH3F("h_delEta_e_eta","",100,-0.1,0.1,10,0,20,96,0,96);
-  //h_delPhi_e_eta = new TH3F("h_delPhi_e_eta","",100,-0.3,0.3,20,0,20,96,0,96);
-  //h_delPhi_e_phi = new TH3F("h_delPhi_e_phi","",100,-0.1,0.1,20,0,20,256,0,256);
-  //pr_eta_shower = new TProfile("pr_eta_shower","",96,-48.5,47.5, -1,1.5);
-  //pr_phi_shower = new TProfile("pr_phi_shower","",256,-128.5,127.5, -1,1.5);
-  //h_vert_xy = new TH2F("h_vert_xy","",500,-120,120,500,-120,120);
-  h_truthE = new TH1F("h_truthE","",10000,0,30);
+  // h_delEta_e_eta = new TH3F("h_delEta_e_eta","",100,-0.1,0.1,10,0,20,96,0,96);
+  // h_delPhi_e_eta = new TH3F("h_delPhi_e_eta","",100,-0.3,0.3,20,0,20,96,0,96);
+  // h_delPhi_e_phi = new TH3F("h_delPhi_e_phi","",100,-0.1,0.1,20,0,20,256,0,256);
+  // pr_eta_shower = new TProfile("pr_eta_shower","",96,-48.5,47.5, -1,1.5);
+  // pr_phi_shower = new TProfile("pr_phi_shower","",256,-128.5,127.5, -1,1.5);
+  // h_vert_xy = new TH2F("h_vert_xy","",500,-120,120,500,-120,120);
+  h_truthE = new TH1F("h_truthE", "", 10000, 0, 30);
   //*/
 
   h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 8 * 10, 0, 20);
@@ -509,6 +509,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             h_FullTruth_eta->Fill(pion_eta);
             h_FullTruth_pt->Fill(pion_pt);
             h_FullTruth_p->Fill(pion_p);
+            if (debug) std::cout << "primary pid=" << truth->get_pid() << "   E=" << pion_e << "  pt=" << pion_pt << "  eta=" << pion_eta << "  phi=" << pion_phi << std::endl;
+            truth_photons.push_back(truthpi0);
           }
           if (truth->get_pid() == 221)
           {
@@ -563,8 +565,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   }
 
   // float smear = 0.00;
-  //bool match1 = false;
-  //bool match2 = false;
+  bool match1 = false;
+  bool match2 = false;
   if (debug) std::cout << " " << "Cluster Loop: 1 " << std::endl;
   for (clusterIter = clusterEnd.first; clusterIter != clusterEnd.second; clusterIter++)
   {
@@ -591,6 +593,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     // clus_pt *= rnd->Gaus(1, smear);
     float clus_chisq = recoCluster->get_chi2();
     h_cluster_etaphi_cuts[1]->Fill(clus_eta, clus_phi);
+
+    // int lt_eta = recoCluster->get_lead_tower().first;
+    // int lt_phi = recoCluster->get_lead_tower().second;
 
     //*
     if (clusterprobcut)
@@ -629,7 +634,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         // h_res_e_eta->Fill(res, tr_phot.E(), lt_eta);
         // h_res_e_phi->Fill(res, tr_phot.E(), lt_phi);
         h_res->Fill(res);
-        //h_delEta_e_eta->Fill(pi0smearvec[0].Eta() - tr_phot.Eta(), tr_phot.E(), lt_eta);
+        // h_delEta_e_eta->Fill(pi0smearvec[0].Eta() - tr_phot.Eta(), tr_phot.E(), lt_eta);
         // h_delPhi_e_eta->Fill(delPhi, tr_phot.E(), lt_eta);
         // h_delPhi_e_phi->Fill(delPhi, tr_phot.E(), lt_phi);
         h_truthE->Fill(tr_phot.E());
@@ -646,7 +651,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         ph1_trEtaPhi.SetPtEtaPhiE(clusE / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clusE);
         if (debug) std::cout << "match  eta=" << ph1_trEtaPhi.Eta() << " E=" << ph1_trEtaPhi.E() << std::endl;
-        //match1 = true;
+        match1 = true;
         break;
       }
     }
@@ -871,7 +876,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           ph2_trEtaPhi.SetPtEtaPhiE(clus2E / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clus2E);
           if (debug) std::cout << "match  eta=" << ph2_trEtaPhi.Eta() << " E=" << ph2_trEtaPhi.E() << std::endl;
-          //if (match1) match2 = true;
+          if (match1) match2 = true;
         }
       }
 
@@ -1291,12 +1296,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_reco_ALLphotonE->Fill(photon2.E());
       h_reco_ALLphotonE_2d->Fill(photon1.Pt(), photon1.E());
       h_reco_ALLphotonE_2d->Fill(photon2.Pt(), photon2.E());
-      //if (match2 && pi0_trKin.M() > 0.001)
-      //{
-        //h_m_ptTr_eta->Fill(pi0.M(), truth_photons.at(0).E(), lt_eta);
-        //h_m_ptTr_eta_trKin->Fill(pi0_trKin.M(), truth_photons.at(0).E(), lt_eta);
-        //std::cout << pi0_trKin.M() << std::endl;
-      //}
+      if (match2 && pi0_trKin.M() > 0.001)
+      {
+        // h_m_ptTr_eta->Fill(pi0.M(), truth_photons.at(0).E(), lt_eta);
+        // h_m_ptTr_eta_trKin->Fill(pi0_trKin.M(), truth_photons.at(0).E(), lt_eta);
+        std::cout << pi0_trKin.M() << std::endl;
+      }
 
     }  // clusterIter2
   }  // clusteriter1 loop
