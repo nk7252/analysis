@@ -264,6 +264,9 @@ int CaloAna::Init(PHCompositeNode*)
 
   h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 8 * 10, 0, 20, 100, 0, 20);
   h_yield = new TH2F("h_yield", "Yield distribution", 8 * 10, 0, 20, 100, 0, 70);
+  h_truthmatched_mass = new TH1F("h_truthmatched_mass", "Invariant Mass, ph truth matched", 600, 0, 1.2);
+  h_truthmatched_mass_2d = new TH2F("h_truthmatched_mass_2d", "pT vs Invariant Mass, ph truth matched", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_truthmatched_mass_eta_2d = new TH2F("h_truthmatched_mass_eta_2d", "eta vs Invariant Mass, ph truth matched", 24, -1.2, 1.2, 600, 0, 1.2);
   h_truthmatched_mass1 = new TH1F("h_truthmatched_mass1", "Invariant Mass, truth matched(delR<0.015)", 600, 0, 1.2);
   h_truthmatched_mass2 = new TH1F("h_truthmatched_mass2", "Invariant Mass, truth matched(delR<0.1)", 600, 0, 1.2);
   h_truthmatched_mass3 = new TH1F("h_truthmatched_mass3", "Invariant Mass, truth matched(delR<0.2)", 600, 0, 1.2);
@@ -625,10 +628,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float delPhi = pi0smearvec[0].Phi() - tr_phot.Phi();
       if (delPhi > TMath::TwoPi()) delPhi -= TMath::TwoPi();
       if (delPhi < -TMath::TwoPi()) delPhi += TMath::TwoPi();
-      if (delR < 0.02 && res < 1.3 && res > 0.3)
+      if (delR < 0.02)
       {
         if (debug) std::cout << "match clusE=" << pi0smearvec[0].E() << "  truthE=" << tr_phot.E() << " delPhi=" << delPhi << std::endl;
-
         h_matched_res->Fill(res, pi0smearvec[0].Eta());
         h_res_e->Fill(res, pi0smearvec[0].E());
         // h_res_e_eta->Fill(res, tr_phot.E(), lt_eta);
@@ -647,7 +649,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       float delR = pi0smearvec[0].DeltaR(tr_phot);
       float res = pi0smearvec[0].E() / tr_phot.E();
-      if (delR < 0.02 && res < 1.5 && res > 0.7)
+      if (delR < 0.02)
       {
         ph1_trEtaPhi.SetPtEtaPhiE(clusE / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clusE);
         if (debug) std::cout << "match  eta=" << ph1_trEtaPhi.Eta() << " E=" << ph1_trEtaPhi.E() << std::endl;
@@ -872,7 +874,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         float delR = pi0smearvec[1].DeltaR(tr_phot);
         float res = pi0smearvec[1].E() / tr_phot.E();
-        if (delR < 0.02 && res < 1.5 && res > 0.7)
+        if (delR < 0.02)
         {
           ph2_trEtaPhi.SetPtEtaPhiE(clus2E / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clus2E);
           if (debug) std::cout << "match  eta=" << ph2_trEtaPhi.Eta() << " E=" << ph2_trEtaPhi.E() << std::endl;
@@ -1182,7 +1184,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
           if (filltruthspectrum && (matchmctruth))
           {
-            float delR = pi0.DeltaR(myVector);
+            float delR = pi0smearvec[2].DeltaR(myVector);
             if ((id == 111 || (eta_weight && id == 221)) && delR < 0.015)
             {
               h_truth_spectrum1->Fill(myVector.Pt());
@@ -1300,6 +1302,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         // h_m_ptTr_eta->Fill(pi0.M(), truth_photons.at(0).E(), lt_eta);
         // h_m_ptTr_eta_trKin->Fill(pi0_trKin.M(), truth_photons.at(0).E(), lt_eta);
+        h_delR_pionrecTrth->Fill(pi0smearvec[2].DeltaR(pi0_trKin));
+        h_truthmatched_mass->Fill(pi0smearvec[2].M());
+        h_truthmatched_mass_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M());
+        h_truthmatched_mass_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M());
+        h_reco_etaphi_cuts[9]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
         std::cout << pi0_trKin.M() << std::endl;
       }
 
