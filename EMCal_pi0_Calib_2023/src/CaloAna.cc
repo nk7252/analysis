@@ -564,7 +564,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   // float smear = 0.00;
   bool match1 = false;
-  bool match2 = false;
+  //bool match2 = false;
   if (debug) std::cout << " " << "Cluster Loop: 1 " << std::endl;
   for (clusterIter = clusterEnd.first; clusterIter != clusterEnd.second; clusterIter++)
   {
