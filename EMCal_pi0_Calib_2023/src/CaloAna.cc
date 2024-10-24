@@ -563,7 +563,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   }
 
   // float smear = 0.00;
-  bool match1 = false;
+  //bool match1 = false;
   //bool match2 = false;
   if (debug) std::cout << " " << "Cluster Loop: 1 " << std::endl;
   for (clusterIter = clusterEnd.first; clusterIter != clusterEnd.second; clusterIter++)
@@ -646,7 +646,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         ph1_trEtaPhi.SetPtEtaPhiE(clusE / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clusE);
         if (debug) std::cout << "match  eta=" << ph1_trEtaPhi.Eta() << " E=" << ph1_trEtaPhi.E() << std::endl;
-        match1 = true;
+        //match1 = true;
         break;
       }
     }
