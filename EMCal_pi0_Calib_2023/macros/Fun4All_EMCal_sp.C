@@ -133,7 +133,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   // Clusters
   std::cout << "Building clusters" << std::endl;
 
-  /*RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
+  ///*RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
   ClusterBuilder->Detector("CEMC");
   ClusterBuilder->set_threshold_energy(0.070);  // for when using basic calibration
   std::string emc_prof = getenv("CALIBRATIONROOT");
