@@ -621,7 +621,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     pi0smearvec[0] = SmearPhoton4vector(photon1, badcalibsmear);
 
     auto& photons = (SPMC_bool) ? truth_photons : truth_pi0_photons;
-    
+
     for (auto tr_phot : photons)
     {
       float delR = pi0smearvec[0].DeltaR(tr_phot);
@@ -647,13 +647,13 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     TLorentzVector ph1_trEtaPhi;
     ph1_trEtaPhi.SetPtEtaPhiE(0, 0, 0, 0);
-    for (auto tr_phot : truth_pi0_photons)
+    for (auto tr_phot : photons)
     {
       float delR = pi0smearvec[0].DeltaR(tr_phot);
       //float res = pi0smearvec[0].E() / tr_phot.E();
       if (delR < 0.02)
       {
-        ph1_trEtaPhi.SetPtEtaPhiE(clusE / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clusE);
+        ph1_trEtaPhi.SetPtEtaPhiE(tr_phot.E() / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), tr_phot.E());
         if (debug) std::cout << "match  eta=" << ph1_trEtaPhi.Eta() << " E=" << ph1_trEtaPhi.E() << std::endl;
         match1 = true;
         break;
@@ -872,13 +872,13 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
       TLorentzVector ph2_trEtaPhi;
       ph2_trEtaPhi.SetPtEtaPhiE(0, 0, 0, 0);
-      for (auto tr_phot : truth_pi0_photons)
+      for (auto tr_phot : photons)
       {
         float delR = pi0smearvec[1].DeltaR(tr_phot);
         //float res = pi0smearvec[1].E() / tr_phot.E();
         if (delR < 0.02)
         {
-          ph2_trEtaPhi.SetPtEtaPhiE(clus2E / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), clus2E);
+          ph2_trEtaPhi.SetPtEtaPhiE(tr_phot.E() / TMath::CosH(tr_phot.Eta()), tr_phot.Eta(), tr_phot.Phi(), tr_phot.E());
           if (debug) std::cout << "match  eta=" << ph2_trEtaPhi.Eta() << " E=" << ph2_trEtaPhi.E() << std::endl;
           if (match1) match2 = true;
         }
@@ -1309,7 +1309,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_truthmatched_mass_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M());
         h_truthmatched_mass_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M());
         h_reco_etaphi_cuts[9]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
-        std::cout << pi0_trKin.M() << std::endl;
+        h_reco_etaphi_cuts[10]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi(), inv_yield);
+        //std::cout << pi0_trKin.M() << std::endl;
       }
 
     }  // clusterIter2
