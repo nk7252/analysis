@@ -25,7 +25,7 @@ fi
   echo "All list files created successfully."
 
   #number of jobs 
-  j=5000
+  j=2000
 
   # Count the number of lines in dst_calo_cluster.list
   #num_lines=$(wc -l < dst_calo_cluster.list)
