@@ -198,18 +198,18 @@ class CaloAna : public SubsysReco
   //so if this is true, you will fill every time a cluster shows up past that cut, rather than just the first time
   bool etabyeta = false; // mass and pt eta histograms, 96 for each histogram(4)
   //cuts
-  bool eTCutbool = true;       // replace pt1 and pt2 cuts with et cuts
-  bool etaCutbool = true;      // do an eta cut or not
-  bool clusterprobcut = true;  // if true use cluster prob cut, if false use chisq cut
-  bool zvtxcut_bool = true;
+  bool eTCutbool = false;       // replace pt1 and pt2 cuts with et cuts
+  bool etaCutbool = false;      // do an eta cut or not
+  bool clusterprobcut = false;  // if true use cluster prob cut, if false use chisq cut
+  bool zvtxcut_bool = false;
   // SPMC
-  bool SPMC_bool = false;
+  bool SPMC_bool = true;
   float badcalibsmear;
-  bool Pythia_weight = true;
+  bool Pythia_weight = false;
   bool eta_weight = false;
   // NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   bool additionalsmearing = true;  // should be on for spmc in all cases. if you want 0 use 0 for smearint
-  int badcalibsmearint = 0;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  int badcalibsmearint = 125;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   // gen MC: pythia, *should remove smeared/weighted histograms.*
   bool matchmctruth = true;  // these two might be redundant
   bool filltruthspectrum = true;
