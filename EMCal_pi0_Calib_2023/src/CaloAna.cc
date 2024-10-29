@@ -124,11 +124,13 @@ int CaloAna::Init(PHCompositeNode*)
     {
       frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/seta_spectrum.root", "READ");
       h_original = (TH1F*) frw->Get("seta_pt_spectrum");
+      std::cout << "Using eta spectrum" << std::endl;
     }
     else
     {
       frw = TFile::Open("/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/spi0_spectrum.root", "READ");
       h_original = (TH1F*) frw->Get("spi0_pt_spectrum");
+      std::cout << "Using pi0 spectrum" << std::endl;
     }
 
     if (h_original == nullptr)
