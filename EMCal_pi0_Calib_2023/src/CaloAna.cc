@@ -210,8 +210,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_e = new TH1F("h_truth_e", "", 100, 0, 20);
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 20);
   h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 8 * 10, 0, 20);
-  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 8 * 10, 0, 20);
-  h_truth_etaspectrum = new TH1F("h_truth_etaspectrum", "", 8 * 10, 0, 20);
+  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 200, 0, 20);
+  h_truth_etaspectrum = new TH1F("h_truth_etaspectrum", "", 200, 0, 20);
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 1000, -500, 500);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 1000, -500, 500);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
