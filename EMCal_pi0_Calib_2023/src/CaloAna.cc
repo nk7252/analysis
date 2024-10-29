@@ -351,7 +351,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
   float maxDr = 100;         // cone cut, 100 is effectively off
-  float maxAlpha = 0.3;      // asymmetry cut
+  float maxAlpha = 0.6;      // asymmetry cut
   float clus_chisq_cut = 10;  // normally 4
   float clusterprob = 0.1;   // replacing chisqr cut
   float nClus_ptCut = 0.0;   // 0.5 normally
