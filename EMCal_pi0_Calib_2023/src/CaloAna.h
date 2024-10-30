@@ -198,10 +198,10 @@ class CaloAna : public SubsysReco
   //so if this is true, you will fill every time a cluster shows up past that cut, rather than just the first time
   bool etabyeta = false; // mass and pt eta histograms, 96 for each histogram(4)
   //cuts
-  bool eTCutbool = false;       // replace pt1 and pt2 cuts with et cuts
-  bool etaCutbool = false;      // do an eta cut or not
-  bool clusterprobcut = false;  // if true use cluster prob cut, if false use chisq cut
-  bool zvtxcut_bool = false;
+  bool eTCutbool = true;       // replace pt1 and pt2 cuts with et cuts
+  bool etaCutbool = true;      // do an eta cut or not
+  bool clusterprobcut = true;  // if true use cluster prob cut, if false use chisq cut
+  bool zvtxcut_bool = true;
   // SPMC
   bool SPMC_bool = true;
   float badcalibsmear;
