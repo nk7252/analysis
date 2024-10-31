@@ -589,7 +589,7 @@ int Fun4All_G4_sPHENIX(
     emc_prof += "/EmcProfile/CEMCprof_Thresh30MeV.root";
     ClusterBuilder->LoadProfile(emc_prof);
     ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
-    ClusterBuilder->setOutputClusterNodeName("CLUSTERINFO_CEMC2");
+    //ClusterBuilder->setOutputClusterNodeName("CLUSTERINFO_CEMC2");
     se->registerSubsystem(ClusterBuilder);
     //*/
     
