@@ -29,7 +29,9 @@ fi
   #pythia pp. run 11 is pythia pp min bias. run 15 is pythia pp 20 micro-s streaming
   #CreateFileList.pl DST_CALO_CLUSTER G4Hits -type 3 -run 11 -nopileup
 
-  #CreateFileList.pl DST_CALO_WAVEFORM DST_TRUTH -type 3 -run 15 -nopileup -n 1000000000
+  #CreateFileList.pl DST_CALO_CLUSTER DST_CALO_WAVEFORM DST_TRUTH G4Hits DST_GLOBAL -type 3 -run 15 -nopileup -n 1000000000
+  #CreateFileList.pl DST_CALO_CLUSTER DST_CALO_WAVEFORM DST_TRUTH G4Hits DST_GLOBAL -type 3 -run 15 -nopileup
+  #CreateFileList.pl -type 3 -run 15 -nopileup
   
   #
   #CreateFileList.pl -run 15 -type 3 -nop DST_CALO_CLUSTER DST_TRUTH -n 100000
