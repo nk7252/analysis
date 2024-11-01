@@ -1272,7 +1272,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_reco_etaphi_cuts[9]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
         h_reco_etaphi_cuts[10]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi(), inv_yield);
         //std::cout << pi0_trKin.M() << std::endl;
-        if(eta_weight && pi0_trKin.M() >= 0.4 && pi0_trKin.M() <= 0.8)//
+        if(eta_weight && )//pi0_trKin.M() >= 0.4 && pi0_trKin.M() <= 0.8
         { 
           h_truthmatched_mass_etameson_weighted->Fill(pi0smearvec[2].M(), inv_yield);
           h_truthmatched_mass_etameson_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
