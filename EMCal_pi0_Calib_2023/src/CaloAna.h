@@ -229,6 +229,7 @@ class CaloAna : public SubsysReco
   TH3* h_res_e_eta;
   TH3* h_res_e_eta_pdc;
   TH1* h_res;
+  TH2F* h_res_ptTr;
   TH3* h_m_pt_eta;
   TH3* h_m_ptTr_eta;
   TH3* h_m_ptTr_eta_trKin;
