@@ -209,7 +209,7 @@ class CaloAna : public SubsysReco
   bool eta_weight = true;
   // NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   bool additionalsmearing = true;  // should be on for spmc in all cases. if you want 0 use 0 for smearint
-  int badcalibsmearint = 125;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
+  int badcalibsmearint = 0;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   // gen MC: pythia, *should remove smeared/weighted histograms.*
   bool matchmctruth = true;  // these two might be redundant
   bool filltruthspectrum = true;
@@ -258,6 +258,7 @@ class CaloAna : public SubsysReco
   TH1F* h_FullTruth_p;
   TH1F* h_truth_spectrum1;
   TH1F* h_truth_spectrum2;
+  TH1F* h_truth_spectrum3;
   TH1F* h_truth_etaspectrum;
   TH1F* h_truthmatched_mass1;
   TH1F* h_truthmatched_mass2;

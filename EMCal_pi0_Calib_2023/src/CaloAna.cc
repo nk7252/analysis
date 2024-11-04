@@ -211,6 +211,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 20);
   h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 8 * 10, 0, 20);
   h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 200, 0, 20);
+  h_truth_spectrum3 = new TH1F("h_truth_spectrum3", "", 200, 0, 20);
   h_truth_etaspectrum = new TH1F("h_truth_etaspectrum", "", 200, 0, 20);
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 1000, -500, 500);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 1000, -500, 500);
@@ -507,6 +508,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             TLorentzVector truthpi0 = TLorentzVector();
             truthpi0.SetPtEtaPhiE(pion_pt, pion_eta, pion_phi, pion_e);
             h_truth_spectrum2->Fill(truthpi0.Pt());
+            if(abs(pion_eta) <= 1.0) h_truth_spectrum3->Fill(pion_pt);
             h_FullTruth_e->Fill(pion_e);
             h_FullTruth_eta->Fill(pion_eta);
             h_FullTruth_pt->Fill(pion_pt);
@@ -527,6 +529,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               TLorentzVector truthetameson = TLorentzVector();
               truthetameson.SetPtEtaPhiE(eta_pt, eta_prapid, eta_phi, eta_e);
               h_truth_spectrum2->Fill(eta_pt);
+              if(abs(eta_pt) <= 1.0) h_truth_spectrum3->Fill(eta_pt);
               h_FullTruth_e->Fill(eta_e);
               h_FullTruth_eta->Fill(eta_prapid);
               h_FullTruth_pt->Fill(eta_pt);
