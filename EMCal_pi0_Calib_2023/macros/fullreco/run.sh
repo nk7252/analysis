@@ -25,7 +25,7 @@ fi
   echo "All list files created successfully."
 
   #number of jobs 
-  j=2000
+  j=1000
 
   # Count the number of lines in dst_calo_cluster.list
   #num_lines=$(wc -l < dst_calo_cluster.list)
@@ -92,7 +92,7 @@ Priority                      = +12
 Output                        = condor.out
 Error                         = condor.err
 Log                           = /tmp/condor$li.log
-PeriodicHold                  = (NumJobStarts>=1 && JobStatus == 1)
+#PeriodicHold                  = (NumJobStarts>=1 && JobStatus == 1)
 concurrency_limits            = CONCURRENCY_LIMIT_DEFAULT:100
 
 
