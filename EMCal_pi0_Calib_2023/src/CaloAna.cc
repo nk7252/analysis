@@ -219,6 +219,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
   h_truthmatched_mass_etameson_weighted_2d = new TH2F("h_truthmatched_mass_etameson_weighted_2d", "pT vs Invariant Mass, truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2);
   h_truthmatched_mass_etameson_weighted = new TH1F("h_truthmatched_mass_etameson_weighted", "Invariant Mass, truth matched, weighted", 600, 0, 1.2);
+  h_truthmatched_mass_etameson_weighted_etabin_3d = new TH3F("h_truthmatched_mass_etameson_weighted_etabin_3d", "pT vs Invariant Mass vs eta (bin), truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2, 96, 0, 96);
+  h_truthmatched_mass_etameson_weighted_eta_3d = new TH3F("h_truthmatched_mass_etameson_weighted_eta_3d", "pT vs Invariant Mass vs eta, truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2, 96, -1.2, 1.2);
   // histograms to extract MC photon resolution
   
   h_truthmatched_AllphotonE = new TH1F("h_truthmatched_AllphotonE", "All Photon Energy", 8 * 10, 0, 20);
@@ -1279,6 +1281,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_truthmatched_mass_etameson_weighted->Fill(pi0smearvec[2].M(), inv_yield);
           h_truthmatched_mass_etameson_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
           h_reco_etaphi_cuts[11]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi(), inv_yield);
+          h_truthmatched_mass_etameson_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(),inv_yield);
+          h_truthmatched_mass_etameson_weighted_etabin_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(),inv_yield);
         }
       }
     }  // clusterIter2
