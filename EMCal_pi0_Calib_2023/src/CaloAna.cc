@@ -229,6 +229,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_temp_pion_eta = new TH1F("h_temp_pion_eta", "missing primary truth pion candidates, Eta", 96, -1.2, 1.2);
   h_temp_pion_phi = new TH1F("h_temp_pion_phi", "missing primary truth pion candidates, Phi", 256, -1 * TMath::Pi(), TMath::Pi());
   h_temp_pion_mass = new TH1F("h_temp_pion_mass", "missing primary truth pion candidates, Mass", 600, 0, 1.2);
+  h_temp_pion_multimatch = new TH1F("h_temp_pion_multimatch", "missing primary truth pion candidates, multiple matches", 2, 0, 2);
 
   // histograms to extract MC photon resolution
   h_truthmatched_AllphotonE = new TH1F("h_truthmatched_AllphotonE", "All Photon Energy", 8 * 10, 0, 20);
@@ -572,12 +573,13 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               const PHG4Particle* p2 = *it2;
               TLorentzVector temp_pion = TLorentzVector();
               temp_pion.SetPxPyPzE(p1->get_px() + p2->get_px(), p1->get_py() + p2->get_py(), p1->get_pz() + p2->get_pz(), p1->get_e() + p2->get_e());
-
+              bool doublecount = false;
               // Skip pairs with particles that have already been used
-              // if (used_photons.count(p1) > 0 || used_photons.count(p2) > 0)
-              //{
-              // continue;
-              //}
+              if (used_photons.count(p1) > 0 || used_photons.count(p2) > 0)
+              {
+                //continue;
+                doublecount = true;
+              }
 
               // Check if the pair's mass is near the target mass, accounting for floating point error
               if (fabs(temp_pion.M() - 0.135) < 0.01)
@@ -591,6 +593,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                 h_temp_pion_phi->Fill(temp_pion.Phi());
                 h_temp_pion_mass->Fill(temp_pion.M());
                 h_truth_spectrum5->Fill(temp_pion.Pt());
+                h_temp_pion_multimatch->Fill(1);
                 // break;
               }
             }
