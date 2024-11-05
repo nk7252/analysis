@@ -500,7 +500,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       if (matchmctruth)
       {  // primaries
-        std::unordered_set<PHG4Particle*> truth_photons;
+        std::unordered_set<PHG4Particle*> truth_Prim_photons;
         std::unordered_set<PHG4Particle*> used_photons;
         std::vector<std::pair<PHG4Particle*, PHG4Particle*>> primary_reco_pions;
 
@@ -553,7 +553,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           // photon loop
           if (truth->get_pid() == 22)
           {
-            truthphotons.insert(truth);
+            truth_Prim_photons.insert(truth);
             float photon_e = truth->get_e();
             h_truth_ALLphotonE->Fill(photon_e);
             // what should the photon weight be?
@@ -564,9 +564,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         if (missingprimarypions)
         {
           // Iterate over unique pairs of photons
-          for (auto it1 = truth_photons.begin(); it1 != truth_photons.end(); ++it1)
+          for (auto it1 = truth_Prim_photons.begin(); it1 != truth_Prim_photons.end(); ++it1)
           {
-            for (auto it2 = std::next(it1); it2 != truth_photons.end(); ++it2)
+            for (auto it2 = std::next(it1); it2 != truth_Prim_photons.end(); ++it2)
             {
               PHG4Particle* p1 = *it1;
               PHG4Particle* p2 = *it2;
