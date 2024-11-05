@@ -573,12 +573,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               const PHG4Particle* p2 = *it2;
               TLorentzVector temp_pion = TLorentzVector();
               temp_pion.SetPxPyPzE(p1->get_px() + p2->get_px(), p1->get_py() + p2->get_py(), p1->get_pz() + p2->get_pz(), p1->get_e() + p2->get_e());
-              bool doublecount = false;
+              bool multicount = false;
               // Skip pairs with particles that have already been used
               if (used_photons.count(p1) > 0 || used_photons.count(p2) > 0)
               {
                 //continue;
-                doublecount = true;
+                multicount = true;
               }
 
               // Check if the pair's mass is near the target mass, accounting for floating point error
@@ -593,7 +593,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                 h_temp_pion_phi->Fill(temp_pion.Phi());
                 h_temp_pion_mass->Fill(temp_pion.M());
                 h_truth_spectrum5->Fill(temp_pion.Pt());
-                h_temp_pion_multimatch->Fill(1);
+                if(multicount) h_temp_pion_multimatch->Fill(1);
                 // break;
               }
             }
