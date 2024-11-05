@@ -500,9 +500,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       if (matchmctruth)
       {  // primaries
-        std::unordered_set<PHG4Particle*> truth_Prim_photons;
-        std::unordered_set<PHG4Particle*> used_photons;
-        std::vector<std::pair<PHG4Particle*, PHG4Particle*>> primary_reco_pions;
+        std::unordered_set<const PHG4Particle*> truth_Prim_photons;
+        std::unordered_set<const PHG4Particle*> used_photons;
+        std::vector<std::pair<const PHG4Particle*,const PHG4Particle*>> primary_reco_pions;
 
         PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
         for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
