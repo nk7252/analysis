@@ -582,7 +582,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               }
 
               // Check if the pair's mass is near the target mass, accounting for floating point error
-              if (fabs(temp_pion.M() - 0.135) < 0.001)
+              if (fabs(temp_pion.M() - 0.135) < 0.00001)
               {
                 primary_reco_pions.emplace_back(p1, p2);  // Store the pair
                 used_photons.insert(p1);                  // Mark photons as used
