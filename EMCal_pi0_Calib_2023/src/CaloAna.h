@@ -203,16 +203,17 @@ class CaloAna : public SubsysReco
   bool clusterprobcut = false;  // if true use cluster prob cut, if false use chisq cut
   bool zvtxcut_bool = false;
   // SPMC
-  bool SPMC_bool = true;
+  bool SPMC_bool = false;
   float badcalibsmear;
   bool Pythia_weight = false;
-  bool eta_weight = true;
+  bool eta_weight = false;
   // NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   bool additionalsmearing = true;  // should be on for spmc in all cases. if you want 0 use 0 for smearint
   int badcalibsmearint = 0;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
   // gen MC: pythia, *should remove smeared/weighted histograms.*
   bool matchmctruth = true;  // these two might be redundant
   bool filltruthspectrum = true;
+  bool missingprimarypions = true; // if true, will combine truth photons until the mass is within 0.001 of the pi0 mass. these pions will be added to the pion spectrum
 
   TH2F* h_reco_etaphi;
   TH1F* h_pt1;
@@ -259,6 +260,8 @@ class CaloAna : public SubsysReco
   TH1F* h_truth_spectrum1;
   TH1F* h_truth_spectrum2;
   TH1F* h_truth_spectrum3;
+  TH1F* h_truth_spectrum4;
+  TH1F* h_truth_spectrum5;
   TH1F* h_truth_etaspectrum;
   TH1F* h_truthmatched_mass1;
   TH1F* h_truthmatched_mass2;
@@ -311,6 +314,11 @@ class CaloAna : public SubsysReco
   TH1F* h_reco_photon2E_weighted;
   TH1F* h_reco_ALLphotonE_weighted;
   TH1F* h_truthmatched_Photon_delR;
+
+  TH1F* h_temp_pion_pt;
+  TH1F* h_temp_pion_eta;
+  TH1F* h_temp_pion_phi;
+  TH1F* h_temp_pion_mass;
 
   float target_pi0_mass = 0.145;
   double truth_pt;

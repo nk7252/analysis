@@ -120,7 +120,7 @@ Priority                      = +12
 Output                        = condor.out
 Error                         = condor.err
 Log                           = /tmp/condor$li.log
-PeriodicHold                  = (NumJobStarts>=1 && JobStatus == 1)
+#PeriodicHold                  = (NumJobStarts>=1 && JobStatus == 1)
 concurrency_limits            = CONCURRENCY_LIMIT_DEFAULT:100
 
 
