@@ -568,8 +568,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           {
             for (auto it2 = std::next(it1); it2 != truth_Prim_photons.end(); ++it2)
             {
-              PHG4Particle* p1 = *it1;
-              PHG4Particle* p2 = *it2;
+              const PHG4Particle* p1 = *it1;
+              const PHG4Particle* p2 = *it2;
               TLorentzVector temp_pion = TLorentzVector();
               temp_pion.SetPxPyPzE(p1->get_px() + p2->get_px(), p1->get_py() + p2->get_py(), p1->get_pz() + p2->get_pz(), p1->get_e() + p2->get_e());
 
