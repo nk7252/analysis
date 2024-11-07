@@ -320,6 +320,8 @@ class CaloAna : public SubsysReco
   TH1F* h_temp_pion_phi;
   TH1F* h_temp_pion_mass;
   TH1F* h_temp_pion_multimatch;
+  TH1F* h_primaryphotonpair_massdiff;
+  TH1F* h_primaryphotonpair_massdiff2; 
 
   float target_pi0_mass = 0.145;
   double truth_pt;

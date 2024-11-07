@@ -230,6 +230,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_temp_pion_phi = new TH1F("h_temp_pion_phi", "missing primary truth pion candidates, Phi", 256, -1 * TMath::Pi(), TMath::Pi());
   h_temp_pion_mass = new TH1F("h_temp_pion_mass", "missing primary truth pion candidates, Mass", 600, 0, 1.2);
   h_temp_pion_multimatch = new TH1F("h_temp_pion_multimatch", "missing primary truth pion candidates, multiple matches", 2, 0, 2);
+  h_primaryphotonpair_massdiff = new TH1F("h_primaryphotonpair_massdiff", "mass difference between primary photon pairs", 10000, 0, 1);
+  h_primaryphotonpair_massdiff2 = new TH1F("h_primaryphotonpair_massdiff2", "mass difference between primary photon pairs, zoomed in", 10000, 0, 0.0001);
 
   // histograms to extract MC photon resolution
   h_truthmatched_AllphotonE = new TH1F("h_truthmatched_AllphotonE", "All Photon Energy", 8 * 10, 0, 20);
@@ -580,9 +582,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                 //continue;
                 multicount = true;
               }
-
+              float massdiff = fabs(temp_pion.M() - 0.135);
+              h_primaryphotonpair_massdiff->Fill(massdiff);
+              if (massdiff<1) h_primaryphotonpair_massdiff2->Fill(massdiff);
               // Check if the pair's mass is near the target mass, accounting for floating point error
-              if (fabs(temp_pion.M() - 0.135) < 0.00001)//( temp_pion.M() == 0.135)//0.13497
+              if (massdiff < 0.00001)//( temp_pion.M() == 0.135)//0.13497
               {
                 primary_reco_pions.emplace_back(p1, p2);  // Store the pair
                 used_photons.insert(p1);                  // Mark photons as used
