@@ -579,7 +579,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               // Skip pairs with particles that have already been used
               if (used_photons.count(p1) > 0 || used_photons.count(p2) > 0)
               {
-                //continue;
+                continue;
                 multicount = true;
               }
               float massdiff = fabs(temp_pion.M() - 0.135);
@@ -600,7 +600,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                 if(multicount) h_temp_pion_multimatch->Fill(1);
                 else h_temp_pion_multimatch->Fill(2);
                 
-                // break;
+                //break;
               }
               else h_temp_pion_multimatch->Fill(0);
             }
