@@ -586,7 +586,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               h_primaryphotonpair_massdiff->Fill(massdiff);
               if (massdiff<1) h_primaryphotonpair_massdiff2->Fill(massdiff);
               // Check if the pair's mass is near the target mass, accounting for floating point error
-              if (massdiff < 0.00001)//( temp_pion.M() == 0.135)//0.13497
+              if (massdiff < 0.0001)//( temp_pion.M() == 0.135)//0.13497
               {
                 primary_reco_pions.emplace_back(p1, p2);  // Store the pair
                 used_photons.insert(p1);                  // Mark photons as used
