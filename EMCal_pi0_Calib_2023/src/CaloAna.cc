@@ -594,8 +594,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                 h_temp_pion_mass->Fill(temp_pion.M());
                 h_truth_spectrum5->Fill(temp_pion.Pt());
                 if(multicount) h_temp_pion_multimatch->Fill(1);
+                
                 // break;
               }
+              else h_temp_pion_multimatch->Fill(0);
             }
           }
         }
