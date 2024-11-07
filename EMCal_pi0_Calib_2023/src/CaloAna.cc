@@ -579,8 +579,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               // Skip pairs with particles that have already been used
               if (used_photons.count(p1) > 0 || used_photons.count(p2) > 0)
               {
-                continue;
                 multicount = true;
+                continue;
               }
               float massdiff = fabs(temp_pion.M() - 0.135);
               h_primaryphotonpair_massdiff->Fill(massdiff);
