@@ -230,8 +230,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_temp_pion_phi = new TH1F("h_temp_pion_phi", "missing primary truth pion candidates, Phi", 256, -1 * TMath::Pi(), TMath::Pi());
   h_temp_pion_mass = new TH1F("h_temp_pion_mass", "missing primary truth pion candidates, Mass", 600, 0, 1.2);
   h_temp_pion_multimatch = new TH1F("h_temp_pion_multimatch", "missing primary truth pion candidates, multiple matches", 2, 0, 2);
-  h_primaryphotonpair_massdiff = new TH1F("h_primaryphotonpair_massdiff", "mass difference between primary photon pairs", 10000, -0.000025, 1);
-  h_primaryphotonpair_massdiff2 = new TH1F("h_primaryphotonpair_massdiff2", "mass difference between primary photon pairs, zoomed in", 10000, -0.000025, 0.000025);
+  h_primaryphotonpair_massdiff = new TH1F("h_primaryphotonpair_massdiff", "mass difference between primary photon pairs", 100, -0.000025, 1);
+  h_primaryphotonpair_massdiff2 = new TH1F("h_primaryphotonpair_massdiff2", "mass difference between primary photon pairs, zoomed in", 100, -0.000025, 0.000025);
 
   // histograms to extract MC photon resolution
   h_truthmatched_AllphotonE = new TH1F("h_truthmatched_AllphotonE", "All Photon Energy", 8 * 10, 0, 20);
