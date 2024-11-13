@@ -253,7 +253,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_m_ptTr_eta = new TH3F("h_m_ptTr_eta", "", 70, 0, 0.7, 10, 0, 10, 96, 0, 96);
   h_m_ptTr_eta_trKin = new TH3F("h_m_ptTr_eta_trKin", "", 70, 0, 0.7, 10, 0, 10, 96, 0, 96);
   h_res = new TH1F("h_res", "", 50, 0, 1.5);
-  h_res_ptTr = new TH2F("h_res_ptTr", "", 8 * 10, 0, 20, 50, 0, 1.5);
+  h_res_ptTr = new TH2F("h_res_ptTr", "", 8 * 10, 0, 20, 750, 0, 1.5);
   // h_delEta_e_eta = new TH3F("h_delEta_e_eta","",100,-0.1,0.1,10,0,20,96,0,96);
   // h_delPhi_e_eta = new TH3F("h_delPhi_e_eta","",100,-0.3,0.3,20,0,20,96,0,96);
   // h_delPhi_e_phi = new TH3F("h_delPhi_e_phi","",100,-0.1,0.1,20,0,20,256,0,256);
