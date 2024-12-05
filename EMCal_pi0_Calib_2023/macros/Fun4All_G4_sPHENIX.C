@@ -118,9 +118,10 @@ int Fun4All_G4_sPHENIX(
   Input::READHITS = true;
   //INPUTREADHITS::filename[0] = inputFile;
   // if you use a filelist
+  float tower_cluster_threshold = 0.03;//0.03 and 0.07
   INPUTREADHITS::listfile[0] = inputFile0;
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
-  std::string OutFile = Form("OUTHIST_iter_%s", filename.c_str());
+  std::string OutFile = Form("OUTHIST_iter_tct%dMeV_%s", static_cast<int>(tower_cluster_threshold * 1000.f), filename.c_str());
   //INPUTREADHITS::listfile[1] = inputFile1;
   // Or:
   // Use particle generator
@@ -584,7 +585,7 @@ int Fun4All_G4_sPHENIX(
     std::cout << "Building clusters" << std::endl;
     RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
     ClusterBuilder->Detector("CEMC");
-    ClusterBuilder->set_threshold_energy(0.070);  // for when using basic calibration
+    ClusterBuilder->set_threshold_energy(tower_cluster_threshold);  // for when using basic calibration
     std::string emc_prof = getenv("CALIBRATIONROOT");
     emc_prof += "/EmcProfile/CEMCprof_Thresh30MeV.root";
     ClusterBuilder->LoadProfile(emc_prof);

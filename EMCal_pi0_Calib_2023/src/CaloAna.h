@@ -315,6 +315,15 @@ class CaloAna : public SubsysReco
   TH1F* h_reco_ALLphotonE_weighted;
   TH1F* h_truthmatched_Photon_delR;
 
+  TH2F* h_pi0_ELoss_2d;
+  TH2F* h_pi0_ERatio_2d;
+  TH2F* h_pi0_ELoss_weighted_2d;
+  TH2F* h_pi0_ERatio_weighted_2d;
+  TH2F* h_eta_ELoss_2d;
+  TH2F* h_eta_ERatio_2d;
+  TH2F* h_eta_ELoss_weighted_2d;
+  TH2F* h_eta_ERatio_weighted_2d;
+
   TH1F* h_temp_pion_pt;
   TH1F* h_temp_pion_eta;
   TH1F* h_temp_pion_phi;

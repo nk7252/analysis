@@ -261,6 +261,14 @@ int CaloAna::Init(PHCompositeNode*)
   // pr_phi_shower = new TProfile("pr_phi_shower","",256,-128.5,127.5, -1,1.5);
   // h_vert_xy = new TH2F("h_vert_xy","",500,-120,120,500,-120,120);
   h_truthE = new TH1F("h_truthE", "", 10000, 0, 30);
+  h_pi0_ELoss_2d = new TH2F("h_pi0_ELoss_2d", "pT vs Eloss", 8 * 10, 0, 20, 1200, 0, 1.2);
+  h_pi0_ERatio_2d = new TH2F("h_pi0_ERatio_2d", "pT vs ERatio", 8 * 10, 0, 20, 300, 0, 3);
+  h_eta_ELoss_2d = new TH2F("h_eta_ELoss_2d", "pT vs Eloss", 8 * 10, 0, 20, 1200, 0, 1.2);
+  h_eta_ERatio_2d = new TH2F("h_eta_ERatio_2d", "pT vs ERatio", 8 * 10, 0, 20, 300, 0, 3);
+  h_pi0_ELoss_Weighted_2d = new TH2F("h_pi0_ELoss_Weighted_2d", "pT vs Eloss, weighted", 8 * 10, 0, 20, 1200, 0, 1.2);
+  h_pi0_ERatio_Weighted_2d = new TH2F("h_pi0_ERatio_Weighted_2d", "pT vs ERatio, weighted", 8 * 10, 0, 20, 300, 0, 3);
+  h_eta_ELoss_Weighted_2d = new TH2F("h_eta_ELoss_Weighted_2d", "pT vs Eloss, weighted", 8 * 10, 0, 20, 1200, 0, 1.2);
+  h_eta_ERatio_Weighted_2d = new TH2F("h_eta_ERatio_Weighted_2d", "pT vs ERatio, weighted", 8 * 10, 0, 20, 300, 0, 3);
   //*/
 
   h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 8 * 10, 0, 20);
@@ -1342,7 +1350,13 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_truthmatched_mass_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M());
         h_reco_etaphi_cuts[9]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
         h_reco_etaphi_cuts[10]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi(), inv_yield);
-        // std::cout << pi0_trKin.M() << std::endl;
+        h_pi0_ELoss_2d->Fill(pi0_trKin.Pt(), pi0_trKin.E() - pi0smearvec[2].E());
+        h_pi0_ELoss_weighted_2d->Fill(pi0_trKin.Pt(), pi0_trKin.E() - pi0smearvec[2].E(), inv_yield);
+        if(pi0_trKin.E() != 0){
+          h_pi0_ERatio_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E());
+          h_pi0_ERatio_weighted_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E(), inv_yield);
+        }
+        // std::cout << pi0_trKin.M() << std::endl;//
         if (eta_weight)  //&&pi0_trKin.M() >= 0.4 && pi0_trKin.M() <= 0.8
         {
           h_truthmatched_mass_etameson_weighted->Fill(pi0smearvec[2].M(), inv_yield);
@@ -1350,6 +1364,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_reco_etaphi_cuts[11]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi(), inv_yield);
           h_truthmatched_mass_etameson_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
           h_truthmatched_mass_etameson_weighted_etabin_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
+          h_eta_ELoss_2d->Fill(pi0_trKin.Pt(), pi0_trKin.E() - pi0smearvec[2].E());
+          if(pi0_trKin.E() != 0) h_eta_ERatio_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E());
         }
       }
     }  // clusterIter2
