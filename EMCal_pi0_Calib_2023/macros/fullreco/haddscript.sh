@@ -68,7 +68,7 @@ if [ -s root_files.txt ]; then
   output_file="${output_dir}/${common_part}.root"
 
   # Merge the ROOT files
-  hadd -f "$output_file" $(<root_files.txt)
+  hadd -f  -j 8 "$output_file" $(<root_files.txt)
 else
   echo "No ROOT files found to merge."
   exit 1
