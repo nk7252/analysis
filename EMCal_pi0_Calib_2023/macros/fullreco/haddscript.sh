@@ -73,3 +73,6 @@ else
   echo "No ROOT files found to merge."
   exit 1
 fi
+
+echo "Merged ROOT file: $output_file"
+echo "Done."
