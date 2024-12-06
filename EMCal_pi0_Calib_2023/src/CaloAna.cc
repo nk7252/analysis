@@ -265,8 +265,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_pi0_ERatio_2d = new TH2F("h_pi0_ERatio_2d", "pT vs ERatio;Truth Meson pT (GeV);Meson ERatio(GeV)", 8 * 10, 0, 20, 1000, 0, 10);
   h_eta_ELoss_2d = new TH2F("h_eta_ELoss_2d", "pT vs Eloss;Truth Meson pT (GeV);Truth_E - Reco_E(GeV)", 8 * 10, 0, 20, 2000, -10, 10);
   h_eta_ERatio_2d = new TH2F("h_eta_ERatio_2d", "pT vs ERatio;Truth Meson pT (GeV);Meson ERatio(GeV)", 8 * 10, 0, 20, 1000, 0, 10);
-  h_clus_ELoss_2d = new TH2F("h_clus_ELoss_2d", "Cluster Eloss;Truth CLuster pT (GeV);Truth_E - Reco_E(GeV)", 100, 0, 2, 2000, -10, 10);
-  h_clus_ERatio_2d = new TH2F("h_clus_ERatio_2d", "Cluster ERatio;Truth CLuster pT (GeV);Cluster ERatio(GeV)", 100, 0, 2, 1000, 0, 100);
+  h_clus_ELoss_2d = new TH2F("h_clus_ELoss_2d", "Cluster Eloss;Truth CLuster pT (GeV);Truth_E - Reco_E(GeV)", 8 * 10, 0, 20, 2000, -10, 10);
+  h_clus_ERatio_2d = new TH2F("h_clus_ERatio_2d", "Cluster ERatio;Truth CLuster pT (GeV);Cluster ERatio(GeV)", 8 * 10, 0, 20, 1000, 0, 100);
   //*/
 
   h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 8 * 10, 0, 20);
