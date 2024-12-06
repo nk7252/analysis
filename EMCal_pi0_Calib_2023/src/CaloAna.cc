@@ -265,10 +265,10 @@ int CaloAna::Init(PHCompositeNode*)
   h_pi0_ERatio_2d = new TH2F("h_pi0_ERatio_2d", "pT vs ERatio", 8 * 10, 0, 20, 300, 0, 3);
   h_eta_ELoss_2d = new TH2F("h_eta_ELoss_2d", "pT vs Eloss", 8 * 10, 0, 20, 1200, 0, 1.2);
   h_eta_ERatio_2d = new TH2F("h_eta_ERatio_2d", "pT vs ERatio", 8 * 10, 0, 20, 300, 0, 3);
-  h_pi0_ELoss_Weighted_2d = new TH2F("h_pi0_ELoss_Weighted_2d", "pT vs Eloss, weighted", 8 * 10, 0, 20, 1200, 0, 1.2);
-  h_pi0_ERatio_Weighted_2d = new TH2F("h_pi0_ERatio_Weighted_2d", "pT vs ERatio, weighted", 8 * 10, 0, 20, 300, 0, 3);
-  h_eta_ELoss_Weighted_2d = new TH2F("h_eta_ELoss_Weighted_2d", "pT vs Eloss, weighted", 8 * 10, 0, 20, 1200, 0, 1.2);
-  h_eta_ERatio_Weighted_2d = new TH2F("h_eta_ERatio_Weighted_2d", "pT vs ERatio, weighted", 8 * 10, 0, 20, 300, 0, 3);
+  h_pi0_ELoss_weighted_2d = new TH2F("h_pi0_ELoss_Weighted_2d", "pT vs Eloss, weighted", 8 * 10, 0, 20, 1200, 0, 1.2);
+  h_pi0_ERatio_weighted_2d = new TH2F("h_pi0_ERatio_Weighted_2d", "pT vs ERatio, weighted", 8 * 10, 0, 20, 300, 0, 3);
+  h_eta_ELoss_weighted_2d = new TH2F("h_eta_ELoss_Weighted_2d", "pT vs Eloss, weighted", 8 * 10, 0, 20, 1200, 0, 1.2);
+  h_eta_ERatio_weighted_2d = new TH2F("h_eta_ERatio_Weighted_2d", "pT vs ERatio, weighted", 8 * 10, 0, 20, 300, 0, 3);
   //*/
 
   h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 8 * 10, 0, 20);
@@ -1365,7 +1365,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_truthmatched_mass_etameson_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
           h_truthmatched_mass_etameson_weighted_etabin_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
           h_eta_ELoss_2d->Fill(pi0_trKin.Pt(), pi0_trKin.E() - pi0smearvec[2].E());
-          if(pi0_trKin.E() != 0) h_eta_ERatio_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E());
+          h_eta_ELoss_weighted_2d->Fill(pi0_trKin.Pt(), pi0_trKin.E() - pi0smearvec[2].E(), inv_yield);
+          if(pi0_trKin.E() != 0){
+            h_eta_ERatio_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E());
+            h_eta_ERatio_weighted_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E(), inv_yield);
+          }
         }
       }
     }  // clusterIter2
