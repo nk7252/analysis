@@ -161,6 +161,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_reco_etaphi = new TH2F("h_reco_etaphi", "Reco etaphi clusters", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2);
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
   h_zvtx = new TH1F("h_zvtx", "Zvtx", 1000, -500, 500);
+  h_vert_xy = new TH2F("h_vert_xy", "Vertex XY", 100, -10, 10, 100, -10, 10);
   h_nevents = new TH1F("h_nevents", "Number of events", 2, 0, 2);
 
   // if (Cluster_Debug)
@@ -199,8 +200,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_etaphi_clus = new TH2F("h_etaphi_clus", "", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2);
   h_clusE = new TH1F("h_clusE", "", 100, 0, 20);
   h_emcal_e_eta = new TH1F("h_emcal_e_eta", "", 96, 0, 96);
-  //h_pt1 = new TH1F("h_pt1", "", 100, 0, 20);
-  //h_pt2 = new TH1F("h_pt2", "", 100, 0, 20);
+  // h_pt1 = new TH1F("h_pt1", "", 100, 0, 20);
+  // h_pt2 = new TH1F("h_pt2", "", 100, 0, 20);
   h_pion_pt = new TH1F("h_pion_pt", "", 100, 0, 20);
   h_pion_pt_weight = new TH1F("h_pion_pt_weight", "", 100, 0, 20);
   h_nclusters = new TH1F("h_nclusters", "", 1000, 0, 1000);
@@ -222,7 +223,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
   h_truthmatched_mass_etameson_weighted_2d = new TH2F("h_truthmatched_mass_etameson_weighted_2d", "pT vs Invariant Mass, truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2);
   h_truthmatched_mass_etameson_weighted = new TH1F("h_truthmatched_mass_etameson_weighted", "Invariant Mass, truth matched, weighted", 600, 0, 1.2);
-  //h_truthmatched_mass_etameson_weighted_etabin_3d = new TH3F("h_truthmatched_mass_etameson_weighted_etabin_3d", "pT vs Invariant Mass vs eta (bin), truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2, 96, 0, 96);
+  // h_truthmatched_mass_etameson_weighted_etabin_3d = new TH3F("h_truthmatched_mass_etameson_weighted_etabin_3d", "pT vs Invariant Mass vs eta (bin), truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2, 96, 0, 96);
   h_truthmatched_mass_etameson_weighted_eta_3d = new TH3F("h_truthmatched_mass_etameson_weighted_eta_3d", "pT vs Invariant Mass vs eta, truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2, 96, -1.2, 1.2);
 
   h_temp_pion_pt = new TH1F("h_temp_pion_pt", "missing primary truth pion candidates, pT", 200, 0, 20);
@@ -396,13 +397,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   //-----------------------get vertex----------------------------------------//
 
   float vtx_z = 0;
+  float vtx_x = 0;
+  float vtx_y = 0;
   if (getVtx)
   {
     GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
     if (!vertexmap)
     {
       // if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
-      std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
+      if (debug) std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
       // return 0;
@@ -415,18 +418,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         vtx_z = vtx->get_z();
         h_zvtx->Fill(vtx_z);
-        std::cout << "vtx_z: " << vtx_z << std::endl;
+        if (debug) std::cout << "vtx_z: " << vtx_z << std::endl;
       }
       else
       {
-        std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
+        if (debug) std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
         h_vtxmap_fail->Fill(1);
         VertexMapFailcounter++;
       }
     }
     else
     {
-      std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;//if (debug) 
+      if (debug) std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;  // if (debug)
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
     }
@@ -436,6 +439,32 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     h_cutCounter->Fill(12);
     return Fun4AllReturnCodes::EVENT_OK;
   }
+  
+  if(SPMC_bool)
+  {
+    PHG4TruthInfoContainer::VtxRange vtxrange = truthinfo->GetVtxRange();
+    int n_vertex = 0;
+    float vertex_x[1000] = {0};
+    float vertex_y[1000] = {0};
+    float vertex_z[1000] = {0};
+    float vertex_id[1000] = {0};
+    for (PHG4TruthInfoContainer::ConstVtxIterator iter = vtxrange.first; iter != vtxrange.second; ++iter)
+    {
+      PHG4VtxPoint* vtx = iter->second;
+      // if ( n_vertex > 0) continue;
+      vertex_x[n_vertex] = vtx->get_x();
+      vertex_y[n_vertex] = vtx->get_y();
+      vertex_z[n_vertex] = vtx->get_z();
+      vertex_id[n_vertex] = vtx->get_id();
+      h_vert_xy->Fill(vertex_x[n_vertex], vertex_y[n_vertex]);
+      if (vertex_id[n_vertex] == 1)
+        if (false) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
+      if (iter<10) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
+      n_vertex++;
+      if (n_vertex >= 100000) break;
+    }
+  }
+
 
   //////////////////////////////////////////////
   //         towers
@@ -513,7 +542,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {  // primaries
         std::unordered_set<const PHG4Particle*> truth_Prim_photons;
         std::unordered_set<const PHG4Particle*> used_photons;
-        std::vector<std::pair<const PHG4Particle*,const PHG4Particle*>> primary_reco_pions;
+        std::vector<std::pair<const PHG4Particle*, const PHG4Particle*>> primary_reco_pions;
 
         PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
         for (PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter)
@@ -583,19 +612,19 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               const PHG4Particle* p2 = *it2;
               TLorentzVector temp_pion = TLorentzVector();
               temp_pion.SetPxPyPzE(p1->get_px() + p2->get_px(), p1->get_py() + p2->get_py(), p1->get_pz() + p2->get_pz(), p1->get_e() + p2->get_e());
-              //bool multicount = false;
-              // Skip pairs with particles that have already been used
+              // bool multicount = false;
+              //  Skip pairs with particles that have already been used
               if (used_photons.count(p1) > 0 || used_photons.count(p2) > 0)
               {
-                //multicount = true;
+                // multicount = true;
                 h_temp_pion_multimatch->Fill(1);
                 continue;
               }
               float massdiff = fabs(temp_pion.M() - 0.135);
               h_primaryphotonpair_massdiff->Fill(massdiff);
-              if (massdiff<1) h_primaryphotonpair_massdiff2->Fill(massdiff);
+              if (massdiff < 1) h_primaryphotonpair_massdiff2->Fill(massdiff);
               // Check if the pair's mass is near the target mass, accounting for floating point error
-              if (massdiff < 0.00003)//( temp_pion.M() == 0.135)//0.13497
+              if (massdiff < 0.00003)  //( temp_pion.M() == 0.135)//0.13497
               {
                 primary_reco_pions.emplace_back(p1, p2);  // Store the pair
                 used_photons.insert(p1);                  // Mark photons as used
@@ -607,9 +636,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                 h_temp_pion_mass->Fill(temp_pion.M());
                 h_truth_spectrum5->Fill(temp_pion.Pt());
                 h_temp_pion_multimatch->Fill(2);
-                //break;
+                // break;
               }
-              else h_temp_pion_multimatch->Fill(0);
+              else
+                h_temp_pion_multimatch->Fill(0);
             }
           }
         }
@@ -721,11 +751,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     // auto& photons = (SPMC_bool) ? truth_photons : truth_pi0_photons;
     auto& photons = truth_pi0_photons;
-    //std::cout << "truth_pi0_photons.size() = " << truth_pi0_photons.size() << std::endl;
+    // std::cout << "truth_pi0_photons.size() = " << truth_pi0_photons.size() << std::endl;
     h_ndecayphotons->Fill(truth_pi0_photons.size());
 
     for (auto tr_phot : photons)
-    { 
+    {
       float delR = pi0smearvec[0].DeltaR(tr_phot);
       h_delR_recTrth->Fill(delR);
       float res = pi0smearvec[0].E() / tr_phot.E();
@@ -1353,7 +1383,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_reco_etaphi_cuts[9]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
         h_reco_etaphi_cuts[10]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi(), inv_yield);
         h_pi0_ELoss_2d->Fill(pi0_trKin.Pt(), pi0_trKin.E() - pi0smearvec[2].E());
-        if(pi0_trKin.E() != 0) h_pi0_ERatio_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E());
+        if (pi0_trKin.E() != 0) h_pi0_ERatio_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E());
         // std::cout << pi0_trKin.M() << std::endl;//
         if (eta_weight)  //&&pi0_trKin.M() >= 0.4 && pi0_trKin.M() <= 0.8
         {
@@ -1362,13 +1392,13 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           h_reco_etaphi_cuts[11]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi(), inv_yield);
           h_truthmatched_mass_etameson_weighted_eta_3d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), pi0smearvec[2].Eta(), inv_yield);
           h_eta_ELoss_2d->Fill(pi0_trKin.Pt(), pi0_trKin.E() - pi0smearvec[2].E());
-          if(pi0_trKin.E() != 0) h_eta_ERatio_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E());
+          if (pi0_trKin.E() != 0) h_eta_ERatio_2d->Fill(pi0_trKin.Pt(), pi0smearvec[2].E() / pi0_trKin.E());
         }
       }
     }  // clusterIter2
-  
-  h_clusmultimatch->Fill(multimatchint);
-  multimatchint = 0;
+
+    h_clusmultimatch->Fill(multimatchint);
+    multimatchint = 0;
   }  // clusteriter1 loop
 
   return Fun4AllReturnCodes::EVENT_OK;
