@@ -18,7 +18,7 @@
 #include <g4main/PHG4HitContainer.h>
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
-#include "PHG4VtxPoint.h"
+#include "g4main/PHG4VtxPoint.h"
 #include <phool/PHCompositeNode.h>
 #include <phool/getClass.h>
 #include <phool/recoConsts.h>
