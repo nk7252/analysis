@@ -720,7 +720,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     // auto& photons = (SPMC_bool) ? truth_photons : truth_pi0_photons;
     auto& photons = truth_pi0_photons;
-    std::cout << "truth_pi0_photons.size() = " << truth_pi0_photons.size() << std::endl;
+    //std::cout << "truth_pi0_photons.size() = " << truth_pi0_photons.size() << std::endl;
 
     for (auto tr_phot : photons)
     { 
