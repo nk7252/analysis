@@ -461,7 +461,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_vert_xy->Fill(vertex_x[n_vertex], vertex_y[n_vertex]);
       if (vertex_id[n_vertex] == 1)
         if (false) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
-      if (iter<10) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
+      if (n_vertex<10) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
       n_vertex++;
       if (n_vertex >= 100000) break;
     }
