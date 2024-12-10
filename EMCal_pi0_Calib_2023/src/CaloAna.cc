@@ -442,6 +442,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   
   if(SPMC_bool)
   {
+    PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
     PHG4TruthInfoContainer::VtxRange vtxrange = truthinfo->GetVtxRange();
     int n_vertex = 0;
     float vertex_x[1000] = {0};
