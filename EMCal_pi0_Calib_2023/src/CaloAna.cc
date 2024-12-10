@@ -468,6 +468,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   vtx_z = vertex_z[0];
   vtx_x = vertex_x[0];
   vtx_y = vertex_y[0];
+  std::cout << "truth vertex: " << vtx_x << " " << vtx_y << " " << vtx_z << std::endl;
   }
 
 
