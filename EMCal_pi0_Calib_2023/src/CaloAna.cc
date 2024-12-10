@@ -463,6 +463,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       n_vertex++;
       if (n_vertex >= 100000) break;
     }
+  vtx_z = vertex_z[0];
+  vtx_x = vertex_x[0];
+  vtx_y = vertex_y[0];
   }
 
 
