@@ -267,6 +267,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_eta_ERatio_2d = new TH2F("h_eta_ERatio_2d", "pT vs ERatio", 8 * 10, 0, 20, 1000, 0, 10);
   h_clus_ELoss_2d = new TH2F("h_clus_ELoss_2d", "Cluster Eloss", 100, 0, 2, 2000, -10, 10);
   h_clus_ERatio_2d = new TH2F("h_clus_ERatio_2d", "Cluster ERatio", 100, 0, 2, 1000, 0, 100);
+  h_clusmultimatch = new TH1F("h_clusmultimatch", "Cluster multi match", 100, 0, 100);
   //*/
 
   h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 8 * 10, 0, 20);
@@ -666,6 +667,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // float smear = 0.00;
   bool match1 = false;
   bool match2 = false;
+  int multimatchint = 0;
   if (debug) std::cout << " " << "Cluster Loop: 1 " << std::endl;
   for (clusterIter = clusterEnd.first; clusterIter != clusterEnd.second; clusterIter++)
   {
@@ -720,7 +722,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     auto& photons = truth_pi0_photons;
 
     for (auto tr_phot : photons)
-    {
+    { 
+      
       float delR = pi0smearvec[0].DeltaR(tr_phot);
       h_delR_recTrth->Fill(delR);
       float res = pi0smearvec[0].E() / tr_phot.E();
@@ -742,6 +745,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_truthE->Fill(tr_phot.E());
         h_clus_ELoss_2d->Fill(tr_phot.Pt(), tr_phot.E() - clusE);
         h_clus_ERatio_2d->Fill(tr_phot.Pt(), clusE / tr_phot.E());
+        multimatchint++;
       }
     }
 
@@ -1360,6 +1364,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         }
       }
     }  // clusterIter2
+  
+  h_clusmultimatch->Fill(multimatchint);
+  multimatchint = 0;
   }  // clusteriter1 loop
 
   return Fun4AllReturnCodes::EVENT_OK;
