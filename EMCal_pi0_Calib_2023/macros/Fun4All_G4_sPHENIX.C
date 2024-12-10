@@ -51,6 +51,7 @@
 #include <caloreco/RawClusterPositionCorrection.h>
 
 #include <calowaveformsim/CaloWaveformSim.h>
+#include<Calo_Calib.C>
 
 #include <phool/PHRandomSeed.h>
 #include <phool/recoConsts.h>
@@ -482,10 +483,12 @@ int Fun4All_G4_sPHENIX(
   int runnumber = runseg.first;
   cout << "run number = " << runnumber << endl;
   Enable::CDB = true;
+  rc->set_StringFlag("CDB_GLOBALTAG", "MDC2");
+  rc->set_uint64Flag("TIMESTAMP", runnumber);
   // global tag 
-  rc->set_StringFlag("CDB_GLOBALTAG",CDB::global_tag);
+  //rc->set_StringFlag("CDB_GLOBALTAG",CDB::global_tag);
   // 64 bit timestamp
-  rc->set_uint64Flag("TIMESTAMP",CDB::timestamp);
+  //rc->set_uint64Flag("TIMESTAMP",CDB::timestamp);
   //---------------
   // World Settings
   //---------------

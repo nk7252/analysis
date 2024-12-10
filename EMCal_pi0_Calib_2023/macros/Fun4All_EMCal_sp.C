@@ -152,7 +152,7 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
 
   ///////////////////
   // analysis modules
-  //*
+  /*
   if (iter==1){
   LiteCaloEval *eval7e = new LiteCaloEval("CEMCEVALUATOR2", "CEMC",OutFile);
   eval7e->CaloType(LiteCaloEval::CEMC);

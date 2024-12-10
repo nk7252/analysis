@@ -3,7 +3,6 @@
 #ifndef MACRO_FUN4ALLG4WAVEFORM_C
 #define MACRO_FUN4ALLG4WAVEFORM_C
 
-
 #include <GlobalVariables.C>
 
 #include <G4_CEmc_Spacal.C>
@@ -15,10 +14,12 @@
 #include <caloreco/CaloGeomMapping.h>
 #include <caloreco/CaloTowerBuilder.h>
 #include <caloreco/CaloTowerCalib.h>
-#include <caloreco/CaloWaveformProcessing.h>
 #include <caloreco/CaloTowerStatus.h>
+#include <caloreco/CaloWaveformProcessing.h>
 
 #include <calowaveformsim/CaloWaveformSim.h>
+
+#include<Calo_Calib.C>
 
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllOutputManager.h>
@@ -40,288 +41,81 @@ R__LOAD_LIBRARY(libfun4allutils.so)
 
 void Fun4All_G4_Waveform(
     const int nEvents = 1,
-    const string &inputFile0 = "G4Hits_pythia8_pp_mb-0000000015-000000.root",
-    const string &inputFile1 = "pedestal-00046796.root",  
-    const string &outputFile = "DST_CALO_WAVEFORM_pythia8_pp_mb-0000000015-000000.root",
+    const string &inputFile0 = "dst_calo_cluster.list",
     const string &outdir = ".",
+    int iter = 2,
     const string &cdbtag = "MDC2_ana.418")
 
 {
-  
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(1); // set it to 1 if you want event printouts
+  se->Verbosity(0);  // set it to 1 if you want event printouts
 
   recoConsts *rc = recoConsts::instance();
 
+  ifstream file(inputFile0);
+  string first_file;
+  getline(file, first_file);
   //===============
   // conditions DB flags
   //===============
-  Enable::CDB = true;
-  rc->set_StringFlag("CDB_GLOBALTAG", cdbtag);
-  rc->set_uint64Flag("TIMESTAMP", CDB::timestamp);
+  pair<int, int> runseg = Fun4AllUtils::GetRunSegment(first_file);
+  int runnumber = runseg.first;
+  cout << "run number = " << runnumber << endl;
+  rc->set_StringFlag("CDB_GLOBALTAG", "MDC2");
+  rc->set_uint64Flag("TIMESTAMP", runnumber);
   CDBInterface::instance()->Verbosity(1);
 
-  // you only need a list that have all G4hits and primary truth to run the
-  // correction it is safe to just have the g4hit list
-  //-----------------------------
-  
-  //===============
-  // Input options
-  //===============
-  // verbosity setting (applies to all input managers)
-  Input::VERBOSITY = 1;
-  // First enable the input generators
-  // Either:
-  // read previously generated g4-hits files, in this case it opens a DST and skips
-  // the simulations step completely. The G4Setup macro is only loaded to get information
-  // about the number of layers used for the cell reco code
-  Input::READHITS = true;
+  //--------------
+  // Set up Input Manager
+  Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_CALO_CLUSTER");
+  cout << "add listfiles to input manager" << endl;
+  in->AddListFile(inputFile0,1);
+  cout << "files added" << endl;
+  se->registerInputManager(in);
+  cout << "input manager registered" << endl;
 
-  INPUTREADHITS::filename[0] = inputFile0;
-    
+  std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
+  std::string OutFile = Form("OUTHIST_iter_%s", filename.c_str());
 
-
-
-  //-----------------
-  // Initialize the selected Input/Event generation
-  //-----------------
-  // This creates the input generator(s)
-  InputInit();
-
-  // register all input generators with Fun4All
-  InputRegister();
-
-// register the flag handling
-  FlagHandler *flag = new FlagHandler();
-  se->registerSubsystem(flag);
-
-  // set up production relatedstuff
-   Enable::PRODUCTION = true;
-
-  //======================
-  // Write the DST
-  //======================
-
-  Enable::DSTOUT = true;
-  Enable::DSTOUT_COMPRESS = false;
-  DstOut::OutputDir = outdir;
-  DstOut::OutputFile = outputFile;
-
-  //======================
-  // What to run
-  //======================
-  //the only reason that we are including the calo_cluster node is we want to use the CEMC geom node from it, 
-  //but we have calib node name confliting(it has a towerinfov1 calib node with the same name we want to usebut we want to make it v2) if we do that...
-  //so I will call the cemc tower reco here just to have the geom node.
-  //by doing this it also remove the dependncy for running the calo_cluster before this pass so we can process it independently from G4Hits ;) and all of our output node name is exactly same with real data
-  CEMC_Cells();
-  CEMC_Towers();
-
-  CaloWaveformSim *caloWaveformSim = new CaloWaveformSim();
-  caloWaveformSim->set_detector_type(CaloTowerDefs::HCALOUT);
-  caloWaveformSim->set_detector("HCALOUT");
-  caloWaveformSim->set_nsamples(12);
-  caloWaveformSim->set_pedestalsamples(12);
-  caloWaveformSim->set_timewidth(0.2);
-  caloWaveformSim->set_peakpos(6);
-  //caloWaveformSim->Verbosity(2);
-  //caloWaveformSim->set_noise_type(CaloWaveformSim::NOISE_NONE);
-  se->registerSubsystem(caloWaveformSim);
-  
-
-  caloWaveformSim = new CaloWaveformSim();
-  caloWaveformSim->set_detector_type(CaloTowerDefs::HCALIN);
-  caloWaveformSim->set_detector("HCALIN");
-  caloWaveformSim->set_nsamples(12);
-  caloWaveformSim->set_pedestalsamples(12);
-  caloWaveformSim->set_timewidth(0.2);
-  caloWaveformSim->set_peakpos(6);
-  //  caloWaveformSim->set_noise_type(CaloWaveformSim::NOISE_NONE);
-  se->registerSubsystem(caloWaveformSim);
-
-
-  caloWaveformSim = new CaloWaveformSim();
-  caloWaveformSim->set_detector_type(CaloTowerDefs::CEMC);
-  caloWaveformSim->set_detector("CEMC");
-  caloWaveformSim->set_nsamples(12);
-  caloWaveformSim->set_pedestalsamples(12);
-  caloWaveformSim->set_timewidth(0.2);
-  caloWaveformSim->set_peakpos(6);
-  caloWaveformSim->set_calibName("cemc_pi0_twrSlope_v1_default");
-  
-  //  caloWaveformSim->set_noise_type(CaloWaveformSim::NOISE_NONE);
-  
-  caloWaveformSim->get_light_collection_model().load_data_file(
-  string(getenv("CALIBRATIONROOT")) +
-  string("/CEMC/LightCollection/Prototype3Module.xml"),
-  "data_grid_light_guide_efficiency", "data_grid_fiber_trans");
-  
-  se->registerSubsystem(caloWaveformSim);
-
-  CaloTowerBuilder *ca2 = new CaloTowerBuilder();
-  ca2->set_detector_type(CaloTowerDefs::HCALOUT);
-  ca2->set_nsamples(12);
-  ca2->set_dataflag(false);
-  ca2->set_processing_type(CaloWaveformProcessing::TEMPLATE);
-  ca2->set_builder_type(CaloTowerDefs::kWaveformTowerv2);
-  //match our current ZS threshold ~7ADC for hcal
-  ca2->set_softwarezerosuppression(true, 7);
-  se->registerSubsystem(ca2);
-
-  ca2 = new CaloTowerBuilder();
-  ca2->set_detector_type(CaloTowerDefs::HCALIN);
-  ca2->set_nsamples(12);
-  ca2->set_dataflag(false);
-  ca2->set_processing_type(CaloWaveformProcessing::TEMPLATE);
-  ca2->set_builder_type(CaloTowerDefs::kWaveformTowerv2);
-  ca2->set_softwarezerosuppression(true, 7);
-  se->registerSubsystem(ca2);
-
-  ca2 = new CaloTowerBuilder();
-  ca2->set_detector_type(CaloTowerDefs::CEMC);
-  ca2->set_nsamples(12);
-  ca2->set_dataflag(false);
-  ca2->set_processing_type(CaloWaveformProcessing::TEMPLATE);
-  ca2->set_builder_type(CaloTowerDefs::kWaveformTowerv2);
-  //match our current ZS threshold ~14ADC for emcal
-  ca2->set_softwarezerosuppression(true, 14);
-  se->registerSubsystem(ca2);
-
-  /////////////////////////////////////////////////////
-  // Set status of towers, Calibrate towers,  Cluster
-  /////////////////////////////////////////////////////
-  std::cout << "status setters" << std::endl;
-  CaloTowerStatus *statusEMC = new CaloTowerStatus("CEMCSTATUS");
-  statusEMC->set_detector_type(CaloTowerDefs::CEMC);
-  statusEMC->set_time_cut(1);
-  se->registerSubsystem(statusEMC);
-
-  CaloTowerStatus *statusHCalIn = new CaloTowerStatus("HCALINSTATUS");
-  statusHCalIn->set_detector_type(CaloTowerDefs::HCALIN);
-  statusHCalIn->set_time_cut(2);
-  se->registerSubsystem(statusHCalIn);
-
-  CaloTowerStatus *statusHCALOUT = new CaloTowerStatus("HCALOUTSTATUS");
-  statusHCALOUT->set_detector_type(CaloTowerDefs::HCALOUT);
-  statusHCALOUT->set_time_cut(2);
-  se->registerSubsystem(statusHCALOUT);
-
-  ////////////////////
-  // Calibrate towers
-  std::cout << "Calibrating EMCal" << std::endl;
-  CaloTowerCalib *calibEMC = new CaloTowerCalib("CEMCCALIB");
-  calibEMC->set_detector_type(CaloTowerDefs::CEMC);
-  calibEMC->set_outputNodePrefix("TOWERINFO_CALIB_");
-  se->registerSubsystem(calibEMC);
-
-  std::cout << "Calibrating OHcal" << std::endl;
-  CaloTowerCalib *calibOHCal = new CaloTowerCalib("HCALOUTCALIB");
-  calibOHCal->set_detector_type(CaloTowerDefs::HCALOUT);
-  calibOHCal->set_outputNodePrefix("TOWERINFO_CALIB_");
-  se->registerSubsystem(calibOHCal);
-
-  std::cout << "Calibrating IHcal" << std::endl;
-  CaloTowerCalib *calibIHCal = new CaloTowerCalib("HCALINCALIB");
-  calibIHCal->set_detector_type(CaloTowerDefs::HCALIN);
-  calibIHCal->set_outputNodePrefix("TOWERINFO_CALIB_");
-  se->registerSubsystem(calibIHCal);
-  //////////////////
-  // Clusters
+  /*
+  // re-cluster
   std::cout << "Building clusters" << std::endl;
   RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
   ClusterBuilder->Detector("CEMC");
-  ClusterBuilder->set_threshold_energy(0.030);  // for when using basic calibration
+  ClusterBuilder->set_threshold_energy(0.070);  // for when using basic calibration
   std::string emc_prof = getenv("CALIBRATIONROOT");
   emc_prof += "/EmcProfile/CEMCprof_Thresh30MeV.root";
   ClusterBuilder->LoadProfile(emc_prof);
   ClusterBuilder->set_UseTowerInfo(1);  // to use towerinfo objects rather than old RawTower
+  ClusterBuilder->setOutputClusterNodeName("CLUSTERINFO_CEMC2");
   se->registerSubsystem(ClusterBuilder);
+  //*/
 
-
-  //--------------
-  // Timing module is last to register
-  //--------------
-  TimerStats *ts = new TimerStats();
-  ts->OutFileName("jobtime.root");
-  se->registerSubsystem(ts);
-
-  //--------------
-  // Set up Input Managers
-  //--------------
-
-  InputManagers();
-  
-  Fun4AllInputManager *hitsin = new Fun4AllNoSyncDstInputManager("DST2");
-  hitsin->AddFile(inputFile1);
-  hitsin->Repeat();
-  se->registerInputManager(hitsin);
-
-  if (Enable::PRODUCTION)
+  //--------------Calibrating EMCal
+  Process_Calo_Calib();
+  ///////////////////
+  // analysis modules
+  if (iter > 1)
   {
-    Production_CreateOutputDir();
+    CaloAna *ca = new CaloAna("calomodulename", OutFile);
+    ca->set_timing_cut_width(16);
+    ca->apply_vertex_cut(false);
+    ca->set_vertex_cut(20.);
+    se->registerSubsystem(ca);
+    std::cout << "Subsystems registered" << std::endl;
+    //
   }
 
-  if (Enable::DSTOUT)
-  {
-    string FullOutFile = DstOut::OutputFile;
-    Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", FullOutFile);
-    out->AddNode("Sync");
-    out->AddNode("EventHeader");
-// Inner Hcal
-    //this is what production macto gives us
-    out->AddNode("CLUSTERINFO_HCALIN");
-    out->AddNode("TOWERINFO_CALIB_HCALIN");
-    out->AddNode("WAVEFORM_HCALIN");
-    out->AddNode("TOWERS_HCALIN");
-    
 
-// Outer Hcal
-    out->AddNode("CLUSTERINFO_HCALOUT");
-    out->AddNode("TOWERINFO_CALIB_HCALOUT");
-    out->AddNode("WAVEFORM_HCALOUT");
-    out->AddNode("TOWERS_HCALOUT");
-    
-
-// CEmc
-    out->AddNode("CLUSTERINFO_CEMC");
-    out->AddNode("CLUSTER_POS_COR_CEMC");
-    out->AddNode("TOWERINFO_CALIB_CEMC");
-    out->AddNode("WAVEFORM_CEMC");
-    out->AddNode("TOWERS_CEMC");
-    
-
-// leave the topo cluster here in case we run this during pass3
-    out->AddNode("TOPOCLUSTER_ALLCALO");
-    out->AddNode("TOPOCLUSTER_EMCAL");
-    out->AddNode("TOPOCLUSTER_HCAL");
-    se->registerOutputManager(out);
-  }
-
-  //-----------------
-  // Event processing
-  //-----------------
-  // if we use a negative number of events we go back to the command line here
-  if (nEvents < 0)
-  {
-    return 0;
-  }
-  se->run(nEvents);
-
-  //-----
-  // Exit
-  //-----
-
-  CDBInterface::instance()->Print(); // print used DB files
+  se->run(nevents);
   se->End();
   se->PrintTimer();
-  std::cout << "All done" << std::endl;
   delete se;
-  if (Enable::PRODUCTION)
-  {
-    Production_MoveOutput();
-  }
+  std::cout << "All done!" << std::endl;
 
+  TFile *f_done_signal = new TFile("DONE.root", "recreate");
+  std::cout << "All done!" << std::endl;
   gSystem->Exit(0);
 }
 
-#endif // MACRO_FUN4ALLG4WAVEFORM_C
+#endif  // MACRO_FUN4ALLG4WAVEFORM_C
