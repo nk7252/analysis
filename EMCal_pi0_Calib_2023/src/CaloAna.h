@@ -239,7 +239,6 @@ class CaloAna : public SubsysReco
   TH3* h_delPhi_e_phi;
   TProfile* pr_eta_shower;
   TProfile* pr_phi_shower;
-  TH2F* h_vert_xy;
   TH1* h_truthE;
 
   TH2F* h_reco_etaphi_cuts[14];

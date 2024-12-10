@@ -161,7 +161,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_reco_etaphi = new TH2F("h_reco_etaphi", "Reco etaphi clusters", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2);
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
   h_zvtx = new TH1F("h_zvtx", "Zvtx", 1000, -500, 500);
-  h_vert_xy = new TH2F("h_vert_xy", "Vertex XY", 100, -10, 10, 100, -10, 10);
+  h_vert_xy = new TH2F("h_vert_xy", "Vertex XY",500,-120,120,500,-120,120);
   h_nevents = new TH1F("h_nevents", "Number of events", 2, 0, 2);
 
   // if (Cluster_Debug)
