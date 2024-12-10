@@ -2,20 +2,22 @@
 
 #./test_run.sh 100 dst_calo_cluster.list
 #which runs it as 
-# root -l -q "Fun4All_G4_Waveform.C(100, dst_calo_cluster.list)"
+# root -l -q "Fun4All_G4_Waveform.C(100, dst_calo_cluster.list, g4hits.list)"
 
 
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0  <n_events> <cluster_list> "
-    echo "Default Usage is: $0  100 dst_calo_cluster.list"
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0  <n_events> <cluster_list> <truth_list>"
+    echo "Default Usage is: $0  100 dst_calo_cluster.list g4hits.list"
     exit 1
 fi
 
 n_events="$1"
 cluster_list="$2"
+truth_list="$3"
 
 #create absolute path for input files
 input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${cluster_list}"
+input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${truth_list}"
 
 #important setup for path if you are running on condor
 export USER="nkumar -u -n"
@@ -37,5 +39,5 @@ printenv
 cd $baseDir
 
 # Execute the custom ROOT script with arguments
-root -l -q "Fun4All_G4_Waveform.C($n_events,\"$input_file1\")"
+root -l -q "Fun4All_G4_Waveform.C($n_events,\"$input_file1\",\"$input_file2\")"
 

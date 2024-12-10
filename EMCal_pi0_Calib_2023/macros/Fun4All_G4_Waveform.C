@@ -10,6 +10,7 @@
 #include <G4_HcalOut_ref.C>
 #include <G4_Input.C>
 #include <G4_Production.C>
+#include <G4_Global.C>
 
 #include <caloreco/CaloGeomMapping.h>
 #include <caloreco/CaloTowerBuilder.h>
@@ -47,6 +48,7 @@ R__LOAD_LIBRARY(libcaloana.so)
 void Fun4All_G4_Waveform(
     const int nevents = 1,
     const string &inputFile0 = "dst_calo_cluster.list",
+    const string &inputFile1 = "g4hits.list",
     const string &outdir = ".",
     int iter = 2,
     const string &cdbtag = "MDC2_ana.418")
@@ -73,10 +75,13 @@ void Fun4All_G4_Waveform(
   //--------------
   // Set up Input Manager
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_CALO_CLUSTER");
+  Fun4AllInputManager *intruth = new Fun4AllDstInputManager("G4Hits");
   cout << "add listfiles to input manager" << endl;
   in->AddListFile(inputFile0,1);
+  intruth->AddListFile(inputFile1,1);
   cout << "files added" << endl;
   se->registerInputManager(in);
+  se->registerInputManager(intruth);
   cout << "input manager registered" << endl;
 
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
@@ -95,6 +100,8 @@ void Fun4All_G4_Waveform(
   ClusterBuilder->setOutputClusterNodeName("CLUSTERINFO_CEMC2");
   se->registerSubsystem(ClusterBuilder);
   //*/
+  //global vertex reco
+  Global_Reco();
 
   //--------------Calibrating EMCal
   Process_Calo_Calib();

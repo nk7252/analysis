@@ -642,7 +642,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                 truth_pi0_photons.push_back(myVector);
                 if (debug) std::cout << "2nd photons  pt=" << photon_pt << " e=" << photon_e << " phi=" << phot_phi << " eta=" << phot_eta << endl;
               }
-              else if (parent->get_pid() == 111)
+              else if (!eta_weight && parent->get_pid() == 111)
               {
                 if (photon_pt < 0.1) continue;
                 float phot_phi = atan2(truth->get_py(), truth->get_px());
@@ -724,7 +724,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
     for (auto tr_phot : photons)
     { 
-      
       float delR = pi0smearvec[0].DeltaR(tr_phot);
       h_delR_recTrth->Fill(delR);
       float res = pi0smearvec[0].E() / tr_phot.E();
