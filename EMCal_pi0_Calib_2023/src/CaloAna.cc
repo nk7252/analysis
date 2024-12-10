@@ -401,7 +401,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     if (!vertexmap)
     {
       // if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
-      if (debug) std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
+      std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
       // return 0;
@@ -414,18 +414,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         vtx_z = vtx->get_z();
         h_zvtx->Fill(vtx_z);
-        if (debug) std::cout << "vtx_z: " << vtx_z << std::endl;
+        std::cout << "vtx_z: " << vtx_z << std::endl;
       }
       else
       {
-        if (debug) std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
+        std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
         h_vtxmap_fail->Fill(1);
         VertexMapFailcounter++;
       }
     }
     else
     {
-      if (debug) std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;
+      std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;//if (debug) 
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
     }
