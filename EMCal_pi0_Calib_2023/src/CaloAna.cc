@@ -511,7 +511,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   {
     RawCluster* recoCluster = clusterIter->second;
 
-    CLHEP::Hep3Vector vertex(0, 0, vtx_z);
+    CLHEP::Hep3Vector vertex(vtx_x, vtx_y, vtx_z);
     CLHEP::Hep3Vector E_vec_cluster = RawClusterUtility::GetECoreVec(*recoCluster, vertex);
 
     float clus_pt = E_vec_cluster.perp();
@@ -709,7 +709,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   {
     RawCluster* recoCluster = clusterIter->second;
 
-    CLHEP::Hep3Vector vertex(0, 0, vtx_z);
+    CLHEP::Hep3Vector vertex(vtx_x, vtx_y, vtx_z);
     CLHEP::Hep3Vector E_vec_cluster;
     if (pp_rawcluster)
     {
