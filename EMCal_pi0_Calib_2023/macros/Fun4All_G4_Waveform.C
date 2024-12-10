@@ -23,6 +23,8 @@
 
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllOutputManager.h>
+#include <fun4all/Fun4AllUtils.h>
+//#include <fun4allutils/TimerStats.h>
 #include <fun4all/Fun4AllServer.h>
 
 #include <ffamodules/CDBInterface.h>
@@ -39,8 +41,11 @@ R__LOAD_LIBRARY(libcalo_reco.so)
 R__LOAD_LIBRARY(libffamodules.so)
 R__LOAD_LIBRARY(libfun4allutils.so)
 
+#include <caloana/CaloAna.h>
+R__LOAD_LIBRARY(libcaloana.so)
+
 void Fun4All_G4_Waveform(
-    const int nEvents = 1,
+    const int nevents = 1,
     const string &inputFile0 = "dst_calo_cluster.list",
     const string &outdir = ".",
     int iter = 2,
