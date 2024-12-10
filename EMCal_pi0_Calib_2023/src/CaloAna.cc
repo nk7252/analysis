@@ -268,6 +268,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_clus_ELoss_2d = new TH2F("h_clus_ELoss_2d", "Cluster Eloss;Truth CLuster pT (GeV);Truth_E - Reco_E(GeV)", 8 * 10, 0, 20, 2000, -10, 10);
   h_clus_ERatio_2d = new TH2F("h_clus_ERatio_2d", "reco/truth Cluster ERatio;Truth CLuster pT (GeV);Cluster ERatio(GeV)", 8 * 10, 0, 20, 1000, 0, 100);
   h_clusmultimatch = new TH1F("h_clusmultimatch", "Cluster multi match", 11, -0.5, 10.5);
+  h_ndecayphotons = new TH1F("h_ndecayphotons", "Number of decay photons", 5, -0.5, 4.5);
   //*/
 
   h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 8 * 10, 0, 20);
@@ -721,6 +722,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     // auto& photons = (SPMC_bool) ? truth_photons : truth_pi0_photons;
     auto& photons = truth_pi0_photons;
     //std::cout << "truth_pi0_photons.size() = " << truth_pi0_photons.size() << std::endl;
+    h_ndecayphotons->Fill(truth_pi0_photons.size());
 
     for (auto tr_phot : photons)
     { 

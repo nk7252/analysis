@@ -322,6 +322,7 @@ class CaloAna : public SubsysReco
   TH2F* h_clus_ELoss_2d;
   TH2F* h_clus_ERatio_2d;
   TH1F* h_clusmultimatch;
+  TH1F* h_ndecayphotons;
 
   TH1F* h_temp_pion_pt;
   TH1F* h_temp_pion_eta;
