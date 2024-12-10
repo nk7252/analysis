@@ -118,7 +118,7 @@ int Fun4All_G4_sPHENIX(
   Input::READHITS = true;
   //INPUTREADHITS::filename[0] = inputFile;
   // if you use a filelist
-  float tower_cluster_threshold = 0.07;//0.03 and 0.07
+  float tower_cluster_threshold = 0.03;//0.03 and 0.07
   INPUTREADHITS::listfile[0] = inputFile0;
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
   std::string OutFile = Form("OUTHIST_iter_tct%dMeV_%s", static_cast<int>(tower_cluster_threshold * 1000.f), filename.c_str());
