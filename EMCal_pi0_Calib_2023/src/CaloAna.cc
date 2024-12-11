@@ -211,7 +211,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_truth_eta = new TH1F("h_truth_eta", "", 100, -1.2, 1.2);
   h_truth_e = new TH1F("h_truth_e", "", 100, 0, 20);
   h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 20);
-  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 8 * 10, 0, 20);
+  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 20 * 10, 0, 50);
   h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 200, 0, 20);
   h_truth_spectrum3 = new TH1F("h_truth_spectrum3", "", 200, 0, 20);
   h_truth_spectrum4 = new TH1F("h_truth_spectrum4", "primary and secondary pions", 200, 0, 20);
@@ -222,10 +222,10 @@ int CaloAna::Init(PHCompositeNode*)
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
   h_delR_pionrecTrth = new TH1F("h_delR_pionrecTrth", "", 5000, 0, 5);
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
-  h_truthmatched_mass_etameson_weighted_2d = new TH2F("h_truthmatched_mass_etameson_weighted_2d", "pT vs Invariant Mass, truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_truthmatched_mass_etameson_weighted_2d = new TH2F("h_truthmatched_mass_etameson_weighted_2d", "pT vs Invariant Mass, truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2);
   h_truthmatched_mass_etameson_weighted = new TH1F("h_truthmatched_mass_etameson_weighted", "Invariant Mass, truth matched, weighted", 600, 0, 1.2);
-  // h_truthmatched_mass_etameson_weighted_etabin_3d = new TH3F("h_truthmatched_mass_etameson_weighted_etabin_3d", "pT vs Invariant Mass vs eta (bin), truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2, 96, 0, 96);
-  h_truthmatched_mass_etameson_weighted_eta_3d = new TH3F("h_truthmatched_mass_etameson_weighted_eta_3d", "pT vs Invariant Mass vs eta, truth matched, weighted", 8 * 10, 0, 20, 600, 0, 1.2, 96, -1.2, 1.2);
+  // h_truthmatched_mass_etameson_weighted_etabin_3d = new TH3F("h_truthmatched_mass_etameson_weighted_etabin_3d", "pT vs Invariant Mass vs eta (bin), truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2, 96, 0, 96);
+  h_truthmatched_mass_etameson_weighted_eta_3d = new TH3F("h_truthmatched_mass_etameson_weighted_eta_3d", "pT vs Invariant Mass vs eta, truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2, 96, -1.2, 1.2);
 
   h_temp_pion_pt = new TH1F("h_temp_pion_pt", "missing primary truth pion candidates, pT", 200, 0, 20);
   h_temp_pion_eta = new TH1F("h_temp_pion_eta", "missing primary truth pion candidates, Eta", 96, -1.2, 1.2);
@@ -236,13 +236,13 @@ int CaloAna::Init(PHCompositeNode*)
   h_primaryphotonpair_massdiff2 = new TH1F("h_primaryphotonpair_massdiff2", "mass difference between primary photon pairs, zoomed in", 100, -0.00003, 0.00003);
 
   // histograms to extract MC photon resolution
-  h_truthmatched_AllphotonE = new TH1F("h_truthmatched_AllphotonE", "All Photon Energy", 8 * 10, 0, 20);
-  h_truth_ALLphotonE = new TH1F("h_truth_ALLphotonE", "All Photon Energy", 8 * 10, 0, 20);
-  h_truthmatched_AllphotonE_weighted = new TH1F("h_truthmatched_AllphotonE_weighted", "All Photon Energy, weighted", 8 * 10, 0, 20);
-  // h_truth_ALLphotonE_weighted = new TH1F("h_truth_ALLphotonE_weighted", "All Photon Energy, weighted", 8 * 10, 0, 20);
+  h_truthmatched_AllphotonE = new TH1F("h_truthmatched_AllphotonE", "All Photon Energy", 20 * 10, 0, 50);
+  h_truth_ALLphotonE = new TH1F("h_truth_ALLphotonE", "All Photon Energy", 20 * 10, 0, 50);
+  h_truthmatched_AllphotonE_weighted = new TH1F("h_truthmatched_AllphotonE_weighted", "All Photon Energy, weighted", 20 * 10, 0, 50);
+  // h_truth_ALLphotonE_weighted = new TH1F("h_truth_ALLphotonE_weighted", "All Photon Energy, weighted", 20 * 10, 0, 50);
   // reco photons
-  h_reco_ALLphotonE_2d = new TH2F("h_reco_ALLphotonE_2d", "pT vs All Reco Photon Energy", 8 * 10, 0, 20, 8 * 10, 0, 20);
-  h_reco_ALLphotonE = new TH1F("h_reco_ALLphotonE", "All Reco Photon Energy", 8 * 10, 0, 20);
+  h_reco_ALLphotonE_2d = new TH2F("h_reco_ALLphotonE_2d", "pT vs All Reco Photon Energy", 20 * 10, 0, 50, 20 * 10, 0, 50);
+  h_reco_ALLphotonE = new TH1F("h_reco_ALLphotonE", "All Reco Photon Energy", 20 * 10, 0, 50);
   // All truth photons(secondaries)
   h_truth_ALLphotonpt = new TH1F("h_truth_ALLphotonpt", "All Photon pt", 100, 0, 20);
   h_truth_ALLphotonp = new TH1F("h_truth_ALLphotonp", "All Photon p", 100, 0, 20);
@@ -255,7 +255,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_m_ptTr_eta = new TH3F("h_m_ptTr_eta", "", 70, 0, 0.7, 10, 0, 10, 96, 0, 96);
   h_m_ptTr_eta_trKin = new TH3F("h_m_ptTr_eta_trKin", "", 70, 0, 0.7, 10, 0, 10, 96, 0, 96);
   h_res = new TH1F("h_res", "", 750, 0, 1.5);
-  h_res_ptTr = new TH2F("h_res_ptTr", "", 8 * 10, 0, 20, 750, 0, 1.5);
+  h_res_ptTr = new TH2F("h_res_ptTr", "", 20 * 10, 0, 50, 750, 0, 1.5);
   // h_delEta_e_eta = new TH3F("h_delEta_e_eta","",100,-0.1,0.1,10,0,20,96,0,96);
   // h_delPhi_e_eta = new TH3F("h_delPhi_e_eta","",100,-0.3,0.3,20,0,20,96,0,96);
   // h_delPhi_e_phi = new TH3F("h_delPhi_e_phi","",100,-0.1,0.1,20,0,20,256,0,256);
@@ -263,36 +263,36 @@ int CaloAna::Init(PHCompositeNode*)
   // pr_phi_shower = new TProfile("pr_phi_shower","",256,-128.5,127.5, -1,1.5);
   // h_vert_xy = new TH2F("h_vert_xy","",500,-120,120,500,-120,120);
   h_truthE = new TH1F("h_truthE", "", 10000, 0, 30);
-  h_pi0_ELoss_2d = new TH2F("h_pi0_ELoss_2d", "pT vs Eloss;Truth Meson pT (GeV);Truth_E - Reco_E(GeV)", 8 * 10, 0, 20, 2000, -10, 10);
-  h_pi0_ERatio_2d = new TH2F("h_pi0_ERatio_2d", "pT vs reco/truth ERatio;Truth Meson pT (GeV);Meson ERatio(GeV)", 8 * 10, 0, 20, 1000, 0, 10);
-  h_eta_ELoss_2d = new TH2F("h_eta_ELoss_2d", "pT vs Eloss;Truth Meson pT (GeV);Truth_E - Reco_E(GeV)", 8 * 10, 0, 20, 2000, -10, 10);
-  h_eta_ERatio_2d = new TH2F("h_eta_ERatio_2d", "pT vs reco/truth ERatio;Truth Meson pT (GeV);Meson ERatio(GeV)", 8 * 10, 0, 20, 1000, 0, 10);
-  h_clus_ELoss_2d = new TH2F("h_clus_ELoss_2d", "Cluster Eloss;Truth CLuster pT (GeV);Truth_E - Reco_E(GeV)", 8 * 10, 0, 20, 2000, -10, 10);
-  h_clus_ERatio_2d = new TH2F("h_clus_ERatio_2d", "reco/truth Cluster ERatio;Truth CLuster pT (GeV);Cluster ERatio(GeV)", 8 * 10, 0, 20, 1000, 0, 100);
+  h_pi0_ELoss_2d = new TH2F("h_pi0_ELoss_2d", "pT vs Eloss;Truth Meson pT (GeV);Truth_E - Reco_E(GeV)", 20 * 10, 0, 50, 2000, -10, 10);
+  h_pi0_ERatio_2d = new TH2F("h_pi0_ERatio_2d", "pT vs reco/truth ERatio;Truth Meson pT (GeV);Meson ERatio(GeV)", 20 * 10, 0, 50, 1000, 0, 10);
+  h_eta_ELoss_2d = new TH2F("h_eta_ELoss_2d", "pT vs Eloss;Truth Meson pT (GeV);Truth_E - Reco_E(GeV)", 20 * 10, 0, 50, 2000, -10, 10);
+  h_eta_ERatio_2d = new TH2F("h_eta_ERatio_2d", "pT vs reco/truth ERatio;Truth Meson pT (GeV);Meson ERatio(GeV)", 20 * 10, 0, 50, 1000, 0, 10);
+  h_clus_ELoss_2d = new TH2F("h_clus_ELoss_2d", "Cluster Eloss;Truth CLuster pT (GeV);Truth_E - Reco_E(GeV)", 20 * 10, 0, 50, 2000, -10, 10);
+  h_clus_ERatio_2d = new TH2F("h_clus_ERatio_2d", "reco/truth Cluster ERatio;Truth CLuster pT (GeV);Cluster ERatio(GeV)", 20 * 10, 0, 50, 1000, 0, 100);
   h_clusmultimatch = new TH1F("h_clusmultimatch", "Cluster multi match", 11, -0.5, 10.5);
   h_ndecayphotons = new TH1F("h_ndecayphotons", "Number of decay photons", 5, -0.5, 4.5);
   //*/
 
-  h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 8 * 10, 0, 20);
-  h_reco_photon2E_weighted = new TH1F("h_reco_photon2E_weighted", "Reco Photon 2 Energy, weighted", 8 * 10, 0, 20);
-  h_reco_ALLphotonE_weighted = new TH1F("h_reco_ALLphotonE_weighted", "All Reco Photon Energy, weighted", 8 * 10, 0, 20);
+  h_reco_photon1E_weighted = new TH1F("h_reco_photon1E_weighted", "Reco Photon 1 Energy, weighted", 20 * 10, 0, 50);
+  h_reco_photon2E_weighted = new TH1F("h_reco_photon2E_weighted", "Reco Photon 2 Energy, weighted", 20 * 10, 0, 50);
+  h_reco_ALLphotonE_weighted = new TH1F("h_reco_ALLphotonE_weighted", "All Reco Photon Energy, weighted", 20 * 10, 0, 50);
 
   // pT differential Inv Mass
   h_InvMass = new TH1F("h_InvMass", "Invariant Mass", 600, 0, 1.2);
-  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_InvMass_2d = new TH2F("h_InvMass_2d", "pT vs Invariant Mass", 20 * 10, 0, 50, 600, 0, 1.2);
   h_InvMass_weighted = new TH1F("h_InvMass_weighted", "Invariant Mass, weighted WSHP", 600, 0, 1.2);
 
-  h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 8 * 10, 0, 20, 100, 0, 20);
-  h_yield = new TH2F("h_yield", "Yield distribution", 8 * 10, 0, 20, 100, 0, 70);
+  h_inv_yield = new TH2F("h_inv_yield", "Invariant Yield distribution", 20 * 10, 0, 50, 100, 0, 20);
+  h_yield = new TH2F("h_yield", "Yield distribution", 20 * 10, 0, 50, 100, 0, 70);
   h_truthmatched_mass = new TH1F("h_truthmatched_mass", "Invariant Mass, ph truth matched", 600, 0, 1.2);
-  h_truthmatched_mass_2d = new TH2F("h_truthmatched_mass_2d", "pT vs Invariant Mass, ph truth matched", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_truthmatched_mass_2d = new TH2F("h_truthmatched_mass_2d", "pT vs Invariant Mass, ph truth matched", 20 * 10, 0, 50, 600, 0, 1.2);
   h_truthmatched_mass_eta_2d = new TH2F("h_truthmatched_mass_eta_2d", "eta vs Invariant Mass, ph truth matched", 24, -1.2, 1.2, 600, 0, 1.2);
   h_truthmatched_mass1 = new TH1F("h_truthmatched_mass1", "Invariant Mass, truth matched(delR<0.015)", 600, 0, 1.2);
   h_truthmatched_mass2 = new TH1F("h_truthmatched_mass2", "Invariant Mass, truth matched(delR<0.1)", 600, 0, 1.2);
   h_truthmatched_mass3 = new TH1F("h_truthmatched_mass3", "Invariant Mass, truth matched(delR<0.2)", 600, 0, 1.2);
-  h_truthmatched_mass1_2d = new TH2F("h_truthmatched_mass1_2d", "pT vs Invariant Mass, truth matched(delR<0.015)", 8 * 10, 0, 20, 600, 0, 1.2);
-  h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 8 * 10, 0, 20, 600, 0, 1.2);
-  h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.2)", 8 * 10, 0, 20, 600, 0, 1.2);
+  h_truthmatched_mass1_2d = new TH2F("h_truthmatched_mass1_2d", "pT vs Invariant Mass, truth matched(delR<0.015)", 20 * 10, 0, 50, 600, 0, 1.2);
+  h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 20 * 10, 0, 50, 600, 0, 1.2);
+  h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.2)", 20 * 10, 0, 50, 600, 0, 1.2);
   h_FullTruth_eta = new TH1F("h_FullTruth_eta", "Full Truth eta", 100, -1.2, 1.2);
   h_FullTruth_e = new TH1F("h_FullTruth_e", "Full Truth e", 100, 0, 20);
   h_FullTruth_pt = new TH1F("h_FullTruth_pt", "Full Truth pt", 100, 0, 20);
@@ -301,11 +301,11 @@ int CaloAna::Init(PHCompositeNode*)
   // 3d histogram to check for corelation between photon/cluster energies and invariant mass.
   // h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%d_weighted_photonE_3d",badcalibsmearint ), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 40, 0, 20, 40, 0, 20, 60, 0, 1.2);
   // 3d histogram to check for for corelation between pt invariant mass and asymmetry
-  // h_InvMass_smear_weighted_asymmetry_3d = new TH3F(Form("h_InvMass_smear%d_weighted_asymmetry_3d", badcalibsmearint ),Form("pT vs Invariant Mass vs asymmetry + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 10, 0, 1);
+  // h_InvMass_smear_weighted_asymmetry_3d = new TH3F(Form("h_InvMass_smear%d_weighted_asymmetry_3d", badcalibsmearint ),Form("pT vs Invariant Mass vs asymmetry + smear, weighted: %f percent", badcalibsmearint / 10.0f), 20 * 10, 0, 50, 60, 0, 1.2, 10, 0, 1);
 
   // 3d histogram to check for corelation between eta, pt and invariant mass
-  h_InvMass_smear_eta_3d = new TH3F(Form("h_InvMass_smear%d_eta_3d", badcalibsmearint), Form("pT vs Invariant Mass vs eta + smear: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 24, -1.2, 1.2);
-  h_InvMass_smear_weighted_eta_3d = new TH3F(Form("h_InvMass_smear%d_weighted_eta_3d", badcalibsmearint), Form("pT vs Invariant Mass vs eta + smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 60, 0, 1.2, 24, -1.2, 1.2);
+  h_InvMass_smear_eta_3d = new TH3F(Form("h_InvMass_smear%d_eta_3d", badcalibsmearint), Form("pT vs Invariant Mass vs eta + smear: %f percent", badcalibsmearint / 10.0f), 20 * 10, 0, 50, 60, 0, 1.2, 24, -1.2, 1.2);
+  h_InvMass_smear_weighted_eta_3d = new TH3F(Form("h_InvMass_smear%d_weighted_eta_3d", badcalibsmearint), Form("pT vs Invariant Mass vs eta + smear, weighted: %f percent", badcalibsmearint / 10.0f), 20 * 10, 0, 50, 60, 0, 1.2, 24, -1.2, 1.2);
   // 2d histogram to check for corelation between eta, and invariant mass
   h_InvMass_smear_eta_2d = new TH2F(Form("h_InvMass_smear%d_eta_2d", badcalibsmearint), Form("eta vs Invariant Mass+ smear: %f percent", badcalibsmearint / 10.0f), 24, -1.2, 1.2, 120, 0, 1.2);
   h_InvMass_smear_weighted_eta_2d = new TH2F(Form("h_InvMass_smear%d_weighted_eta_2d", badcalibsmearint), Form("eta vs Invariant Mass+ smear, weighted: %f percent", badcalibsmearint / 10.0f), 24, -1.2, 1.2, 120, 0, 1.2);
@@ -318,12 +318,12 @@ int CaloAna::Init(PHCompositeNode*)
 
   h_InvMass_smear = new TH1F(Form("h_InvMass_smear_%d", badcalibsmearint), Form("Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 600, 0, 1.2);
 
-  h_InvMass_smear_2d = new TH2F(Form("h_InvMass_smear_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 600, 0, 1.2);
+  h_InvMass_smear_2d = new TH2F(Form("h_InvMass_smear_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear: %f percent", badcalibsmearint / 10.0f), 20 * 10, 0, 50, 600, 0, 1.2);
 
   // weighted variants
   h_InvMass_smear_weighted = new TH1F(Form("h_InvMass_smear_weighted_%d", badcalibsmearint), Form("Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 600, 0, 1.2);
 
-  h_InvMass_smear_weighted_2d = new TH2F(Form("h_InvMass_smear_weighted_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 8 * 10, 0, 20, 600, 0, 1.2);
+  h_InvMass_smear_weighted_2d = new TH2F(Form("h_InvMass_smear_weighted_2d_%d", badcalibsmearint), Form("pT vs Invariant Mass + const smear, weighted: %f percent", badcalibsmearint / 10.0f), 20 * 10, 0, 50, 600, 0, 1.2);
 
   // towers node selection
   calotowerinfostring = (clust_waveform == true) ? "WAVEFORM_CEMC" : "TOWERINFO_CALIB_CEMC";
