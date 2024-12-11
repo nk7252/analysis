@@ -18,10 +18,10 @@
 #include <g4main/PHG4HitContainer.h>
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
-#include "g4main/PHG4VtxPoint.h"
 #include <phool/PHCompositeNode.h>
 #include <phool/getClass.h>
 #include <phool/recoConsts.h>
+#include "g4main/PHG4VtxPoint.h"
 
 // G4Cells includes
 #include <g4detectors/PHG4Cell.h>
@@ -162,7 +162,7 @@ int CaloAna::Init(PHCompositeNode*)
   h_reco_etaphi = new TH2F("h_reco_etaphi", "Reco etaphi clusters", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2);
   h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
   h_zvtx = new TH1F("h_zvtx", "Zvtx", 1000, -500, 500);
-  h_vert_xy = new TH2F("h_vert_xy", "Vertex XY",500,-120,120,500,-120,120);
+  h_vert_xy = new TH2F("h_vert_xy", "Vertex XY", 500, -120, 120, 500, -120, 120);
   h_nevents = new TH1F("h_nevents", "Number of events", 2, 0, 2);
 
   // if (Cluster_Debug)
@@ -440,8 +440,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     h_cutCounter->Fill(12);
     return Fun4AllReturnCodes::EVENT_OK;
   }
-  
-  if(SPMC_bool)
+
+  if (SPMC_bool)
   {
     PHG4TruthInfoContainer* truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
     PHG4TruthInfoContainer::VtxRange vtxrange = truthinfo->GetVtxRange();
@@ -450,6 +450,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float vertex_y[1000] = {0};
     float vertex_z[1000] = {0};
     float vertex_id[1000] = {0};
+    int Pvtx_id = 0;
     for (PHG4TruthInfoContainer::ConstVtxIterator iter = vtxrange.first; iter != vtxrange.second; ++iter)
     {
       PHG4VtxPoint* vtx = iter->second;
@@ -458,19 +459,23 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       vertex_y[n_vertex] = vtx->get_y();
       vertex_z[n_vertex] = vtx->get_z();
       vertex_id[n_vertex] = vtx->get_id();
-      h_vert_xy->Fill(vertex_x[n_vertex], vertex_y[n_vertex]);
       if (vertex_id[n_vertex] == 1)
+      {
         if (false) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
-      if (n_vertex<10) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
+        if (n_vertex < 10) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
+        
+        Pvtx_id = n_vertex;
+        std::cout << "truth vertex: " << vertex_x[n_vertex] << " " << vertex_y[n_vertex] << " " << vertex_z[n_vertex] << ", ID:" << vertex_id[n_vertex] << std::endl;
+        h_vert_xy->Fill(vertex_x[n_vertex], vertex_y[n_vertex]);
+      }
       n_vertex++;
       if (n_vertex >= 100000) break;
     }
-  vtx_z = vertex_z[0];
-  vtx_x = vertex_x[0];
-  vtx_y = vertex_y[0];
-  std::cout << "truth vertex: " << vtx_x << " " << vtx_y << " " << vtx_z << std::endl;
+    vtx_z = vertex_z[Pvtx_id];
+    vtx_x = vertex_x[Pvtx_id];
+    vtx_y = vertex_y[Pvtx_id];
+    std::cout << "truth vertex: " << vtx_x << " " << vtx_y << " " << vtx_z << ", ID:" << vertex_id[0] << std::endl;
   }
-
 
   //////////////////////////////////////////////
   //         towers
@@ -578,7 +583,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           if (truth->get_pid() == 221)
           {
             h_truth_etaspectrum->Fill(sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py()));
-            std::cout << "Primary eta found at vertex: " << truth->get_vtx_id() << std::endl;
+            if (debug) std::cout << "Primary eta found at vertex: " << truth->get_vtx_id() << std::endl;
             if (eta_weight)
             {
               float eta_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
@@ -673,7 +678,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               if (eta_weight && parent->get_pid() == 221)
               {
                 if (photon_pt < 0.1) continue;
-                std::cout << "Parent eta found at vertex: " << parent->get_vtx_id() << std::endl;
+                if (debug) std::cout << "Parent eta found at vertex: " << parent->get_vtx_id() << std::endl;
                 float phot_phi = atan2(truth->get_py(), truth->get_px());
                 float phot_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
                 TLorentzVector myVector;
