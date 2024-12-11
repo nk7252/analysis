@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#./test_run.sh 100 dst_calo_cluster.list
+#./test_run.sh 100 dst_calo_cluster.list g4hits.list
 #which runs it as 
 # root -l -q "Fun4All_G4_Waveform.C(100, dst_calo_cluster.list, g4hits.list)"
 
@@ -16,8 +16,8 @@ cluster_list="$2"
 truth_list="$3"
 
 #create absolute path for input files
-input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${cluster_list}"
-input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${truth_list}"
+input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condorscripts/sim_singleparticle/${cluster_list}"
+input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condorscripts/sim_singleparticle/${truth_list}"
 
 #important setup for path if you are running on condor
 export USER="nkumar -u -n"

@@ -1,5 +1,11 @@
 #!/usr/bin/bash
 
+#important setup for path if you are running on condor
+export USER="nkumar -u -n"
+export LOGNAME=${USER}
+export HOME=/sphenix/u/${LOGNAME}
+baseDir=/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros
+
 export TargetDir="$PWD"/condorout
 
 
@@ -76,7 +82,7 @@ fi
 
     
     cp -v "$PWD"/../../CondorRun.sh CondorRunJob$li.sh
-    cp "$PWD"/../../../Fun4All_G4_Waveform.C .
+    cp ${baseDir}/Fun4All_G4_Waveform.C .
 
     chmod +x CondorRunJob$li.sh
         
