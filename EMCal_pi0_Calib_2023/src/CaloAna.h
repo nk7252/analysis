@@ -320,7 +320,9 @@ class CaloAna : public SubsysReco
   TH2F* h_eta_ELoss_2d;
   TH2F* h_eta_ERatio_2d;
   TH2F* h_clus_ELoss_2d;
+  TH2F* h_clus_ELoss_weighted_2d;
   TH2F* h_clus_ERatio_2d;
+  TH2F* h_clus_ERatio_weighted_2d;
   TH1F* h_clusmultimatch;
   TH1F* h_ndecayphotons;
 

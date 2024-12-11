@@ -199,24 +199,24 @@ int CaloAna::Init(PHCompositeNode*)
 
   // cluster QA
   h_etaphi_clus = new TH2F("h_etaphi_clus", "", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2);
-  h_clusE = new TH1F("h_clusE", "", 100, 0, 20);
+  h_clusE = new TH1F("h_clusE", "", 100, 0, 50);
   h_emcal_e_eta = new TH1F("h_emcal_e_eta", "", 96, 0, 96);
   // h_pt1 = new TH1F("h_pt1", "", 100, 0, 20);
   // h_pt2 = new TH1F("h_pt2", "", 100, 0, 20);
-  h_pion_pt = new TH1F("h_pion_pt", "", 100, 0, 20);
-  h_pion_pt_weight = new TH1F("h_pion_pt_weight", "", 100, 0, 20);
+  h_pion_pt = new TH1F("h_pion_pt", "", 100, 0, 50);
+  h_pion_pt_weight = new TH1F("h_pion_pt_weight", "", 100, 0, 50);
   h_nclusters = new TH1F("h_nclusters", "", 1000, 0, 1000);
 
   // Truth histos
   h_truth_eta = new TH1F("h_truth_eta", "", 100, -1.2, 1.2);
-  h_truth_e = new TH1F("h_truth_e", "", 100, 0, 20);
-  h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 20);
-  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 20 * 10, 0, 50);
-  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 200, 0, 20);
-  h_truth_spectrum3 = new TH1F("h_truth_spectrum3", "", 200, 0, 20);
-  h_truth_spectrum4 = new TH1F("h_truth_spectrum4", "primary and secondary pions", 200, 0, 20);
-  h_truth_spectrum5 = new TH1F("h_truth_spectrum5", "primary + matched (2 truth photons) truth pions", 200, 0, 20);
-  h_truth_etaspectrum = new TH1F("h_truth_etaspectrum", "", 200, 0, 20);
+  h_truth_e = new TH1F("h_truth_e", "", 100, 0, 50);
+  h_truth_pt = new TH1F("h_truth_pt", "", 100, 0, 50);
+  h_truth_spectrum1 = new TH1F("h_truth_spectrum1", "", 5 * 10, 0, 50);
+  h_truth_spectrum2 = new TH1F("h_truth_spectrum2", "", 5 * 10, 0, 50);
+  h_truth_spectrum3 = new TH1F("h_truth_spectrum3", "", 5 * 10, 0, 50);
+  h_truth_spectrum4 = new TH1F("h_truth_spectrum4", "primary and secondary pions", 5 * 10, 0, 50);
+  h_truth_spectrum5 = new TH1F("h_truth_spectrum5", "primary + matched (2 truth photons) truth pions", 5 * 10, 0, 50);
+  h_truth_etaspectrum = new TH1F("h_truth_etaspectrum", "", 5 * 10, 0, 50);
   h_truth_pid_p = new TH1F("h_truth_pid_p", "Primary particle PIDs", 1000, -500, 500);
   h_truth_pid_s = new TH1F("h_truth_pid_s", "Secondary particle PIDs", 1000, -500, 500);
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
@@ -227,7 +227,7 @@ int CaloAna::Init(PHCompositeNode*)
   // h_truthmatched_mass_etameson_weighted_etabin_3d = new TH3F("h_truthmatched_mass_etameson_weighted_etabin_3d", "pT vs Invariant Mass vs eta (bin), truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2, 96, 0, 96);
   h_truthmatched_mass_etameson_weighted_eta_3d = new TH3F("h_truthmatched_mass_etameson_weighted_eta_3d", "pT vs Invariant Mass vs eta, truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2, 96, -1.2, 1.2);
 
-  h_temp_pion_pt = new TH1F("h_temp_pion_pt", "missing primary truth pion candidates, pT", 200, 0, 20);
+  h_temp_pion_pt = new TH1F("h_temp_pion_pt", "missing primary truth pion candidates, pT", 5 * 10, 0, 50);
   h_temp_pion_eta = new TH1F("h_temp_pion_eta", "missing primary truth pion candidates, Eta", 96, -1.2, 1.2);
   h_temp_pion_phi = new TH1F("h_temp_pion_phi", "missing primary truth pion candidates, Phi", 256, -1 * TMath::Pi(), TMath::Pi());
   h_temp_pion_mass = new TH1F("h_temp_pion_mass", "missing primary truth pion candidates, Mass", 600, 0, 1.2);
@@ -244,11 +244,11 @@ int CaloAna::Init(PHCompositeNode*)
   h_reco_ALLphotonE_2d = new TH2F("h_reco_ALLphotonE_2d", "pT vs All Reco Photon Energy", 20 * 10, 0, 50, 20 * 10, 0, 50);
   h_reco_ALLphotonE = new TH1F("h_reco_ALLphotonE", "All Reco Photon Energy", 20 * 10, 0, 50);
   // All truth photons(secondaries)
-  h_truth_ALLphotonpt = new TH1F("h_truth_ALLphotonpt", "All Photon pt", 100, 0, 20);
-  h_truth_ALLphotonp = new TH1F("h_truth_ALLphotonp", "All Photon p", 100, 0, 20);
+  h_truth_ALLphotonpt = new TH1F("h_truth_ALLphotonpt", "All Photon pt", 5 * 10, 0, 50);
+  h_truth_ALLphotonp = new TH1F("h_truth_ALLphotonp", "All Photon p", 5 * 10, 0, 50);
   // truthmatching histograms from blair
   ///*
-  h_res_e = new TH2F("h_res_e", "", 750, 0, 1.5, 20, 0, 20);
+  h_res_e = new TH2F("h_res_e", "", 750, 0, 1.5, 50, 0, 50);
   // h_res_e_phi = new TH3F("h_res_e_phi","",100,0,1.5,10,0,20,256,0,256);
   // h_res_e_eta = new TH3F("h_res_e_eta","",300,0,1.5,40,0,20,96,0,96);
   // h_m_pt_eta = new TH3F("h_m_pt_eta","",70,0,0.7,10,0,10,96,0,96);
@@ -268,7 +268,10 @@ int CaloAna::Init(PHCompositeNode*)
   h_eta_ELoss_2d = new TH2F("h_eta_ELoss_2d", "pT vs Eloss;Truth Meson pT (GeV);Truth_E - Reco_E(GeV)", 20 * 10, 0, 50, 2000, -10, 10);
   h_eta_ERatio_2d = new TH2F("h_eta_ERatio_2d", "pT vs reco/truth ERatio;Truth Meson pT (GeV);Meson ERatio(GeV)", 20 * 10, 0, 50, 1000, 0, 10);
   h_clus_ELoss_2d = new TH2F("h_clus_ELoss_2d", "Cluster Eloss;Truth CLuster pT (GeV);Truth_E - Reco_E(GeV)", 20 * 10, 0, 50, 2000, -10, 10);
+  h_clus_ELoss_weighted_2d = new TH2F("h_clus_ELoss_weighted_2d", "Cluster Eloss, weighted;Truth CLuster pT (GeV);Truth_E - Reco_E(GeV)", 20 * 10, 0, 50, 2000, -10, 10);
   h_clus_ERatio_2d = new TH2F("h_clus_ERatio_2d", "reco/truth Cluster ERatio;Truth CLuster pT (GeV);Cluster ERatio(GeV)", 20 * 10, 0, 50, 1000, 0, 100);
+  h_clus_ERatio_weighted_2d = new TH2F("h_clus_ERatio_weighted_2d", "reco/truth Cluster ERatio, weighted;Truth CLuster pT (GeV);Cluster ERatio(GeV)", 20 * 10, 0, 50, 1000, 0, 100);
+
   h_clusmultimatch = new TH1F("h_clusmultimatch", "Cluster multi match", 11, -0.5, 10.5);
   h_ndecayphotons = new TH1F("h_ndecayphotons", "Number of decay photons", 5, -0.5, 4.5);
   //*/
@@ -294,9 +297,9 @@ int CaloAna::Init(PHCompositeNode*)
   h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 20 * 10, 0, 50, 600, 0, 1.2);
   h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.2)", 20 * 10, 0, 50, 600, 0, 1.2);
   h_FullTruth_eta = new TH1F("h_FullTruth_eta", "Full Truth eta", 100, -1.2, 1.2);
-  h_FullTruth_e = new TH1F("h_FullTruth_e", "Full Truth e", 100, 0, 20);
-  h_FullTruth_pt = new TH1F("h_FullTruth_pt", "Full Truth pt", 100, 0, 20);
-  h_FullTruth_p = new TH1F("h_FullTruth_p", "Full Truth p", 100, 0, 20);
+  h_FullTruth_e = new TH1F("h_FullTruth_e", "Full Truth e", 10 * 10, 0, 50);
+  h_FullTruth_pt = new TH1F("h_FullTruth_pt", "Full Truth pt", 10 * 10, 0, 50);
+  h_FullTruth_p = new TH1F("h_FullTruth_p", "Full Truth p", 10 * 10, 0, 50);
 
   // 3d histogram to check for corelation between photon/cluster energies and invariant mass.
   // h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%d_weighted_photonE_3d",badcalibsmearint ), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 40, 0, 20, 40, 0, 20, 60, 0, 1.2);
@@ -770,9 +773,9 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float delR = pi0smearvec[0].DeltaR(tr_phot);
       h_delR_recTrth->Fill(delR);
       float res = pi0smearvec[0].E() / tr_phot.E();
-      float delPhi = pi0smearvec[0].Phi() - tr_phot.Phi();
-      if (delPhi > TMath::TwoPi()) delPhi -= TMath::TwoPi();
-      if (delPhi < -TMath::TwoPi()) delPhi += TMath::TwoPi();
+      //float delPhi = pi0smearvec[0].Phi() - tr_phot.Phi();
+      //if (delPhi > TMath::TwoPi()) delPhi -= TMath::TwoPi();
+      //if (delPhi < -TMath::TwoPi()) delPhi += TMath::TwoPi();
       if (delR < 0.02)
       {
         if (debug) std::cout << "match clusE=" << pi0smearvec[0].E() << "  truthE=" << tr_phot.E() << " delPhi=" << delPhi << std::endl;
@@ -1387,6 +1390,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_reco_ALLphotonE->Fill(photon2.E());
       h_reco_ALLphotonE_2d->Fill(photon1.Pt(), photon1.E());
       h_reco_ALLphotonE_2d->Fill(photon2.Pt(), photon2.E());
+      for (auto tr_phot : photons)
+      {
+        float delR = pi0smearvec[0].DeltaR(tr_phot);
+        if (delR < 0.02)
+        {
+          h_clus_ELoss_weighted_2d->Fill(tr_phot.Pt(), tr_phot.E() - clusE);
+          h_clus_ERatio_weighted_2d->Fill(tr_phot.Pt(), clusE / tr_phot.E());
+        }
+      }
       if (match2 && pi0_trKin.M() > 0.001)
       {
         h_delR_pionrecTrth->Fill(pi0smearvec[2].DeltaR(pi0_trKin));
@@ -1409,6 +1421,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         }
       }
     }  // clusterIter2
+
 
     h_clusmultimatch->Fill(multimatchint);
     multimatchint = 0;
