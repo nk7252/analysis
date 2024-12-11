@@ -464,17 +464,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         if (false) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
         if (n_vertex < 10) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
         
-        Pvtx_id = n_vertex;
+        //Pvtx_id = n_vertex;
         std::cout << "truth vertex: " << vertex_x[n_vertex] << " " << vertex_y[n_vertex] << " " << vertex_z[n_vertex] << ", ID:" << vertex_id[n_vertex] << std::endl;
         h_vert_xy->Fill(vertex_x[n_vertex], vertex_y[n_vertex]);
+        vtx_x = vertex_x[n_vertex];
+        vtx_y = vertex_y[n_vertex];
+        vtx_z = vertex_z[n_vertex];
       }
       n_vertex++;
       if (n_vertex >= 100000) break;
     }
-    vtx_z = vertex_z[Pvtx_id];
-    vtx_x = vertex_x[Pvtx_id];
-    vtx_y = vertex_y[Pvtx_id];
-    std::cout << "truth vertex: " << vtx_x << " " << vtx_y << " " << vtx_z << ", ID:" << vertex_id[0] << std::endl;
+    //std::cout << "truth vertex: " << vtx_x << " " << vtx_y << " " << vtx_z << ", ID:" << vertex_id[0] << std::endl;
   }
 
   //////////////////////////////////////////////
