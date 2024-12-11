@@ -28,7 +28,7 @@ fi
       exit 1
   fi
 
-  echo "All list files created successfully."
+  #echo "All list files created successfully."
 
   #number of jobs 
   j=1000
@@ -44,7 +44,7 @@ fi
   #  j=1000
   #fi
 
-  tot_files=$( cat ${listfile} | wc -l )
+  tot_files=$( cat ${listfile1} | wc -l )
   echo "total files: $tot_files"
   rem=$(( $tot_files%$j ))
   files_per_job=$(( $tot_files/$j ))
