@@ -463,7 +463,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       {
         //if (false) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
         // Pvtx_id = n_vertex;
-        std::cout << "truth vertex: " << vertex_x[n_vertex] << " " << vertex_y[n_vertex] << " " << vertex_z[n_vertex] << ", ID:" << vertex_id[n_vertex] << std::endl;
+        //std::cout << "truth vertex: " << vertex_x[n_vertex] << " " << vertex_y[n_vertex] << " " << vertex_z[n_vertex] << ", ID:" << vertex_id[n_vertex] << std::endl;
         h_vert_xy->Fill(vertex_x[n_vertex], vertex_y[n_vertex]);
         vtx_x = vertex_x[n_vertex];
         vtx_y = vertex_y[n_vertex];
@@ -1298,6 +1298,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           inv_yield = WeightScale * Pt * weight_function;  //
           // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
 
+          /*
           if (SPMC_bool && inv_yield != 0)
           {
             float spectrum_value = getSPMCpTspectrum(static_cast<float>(Pt));
@@ -1311,6 +1312,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               inv_yield = 0;
             }
           }
+          */
 
           h_inv_yield->Fill(Pt, inv_yield);
           h_yield->Fill(Pt, weight_function);
