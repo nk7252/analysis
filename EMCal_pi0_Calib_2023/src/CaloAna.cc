@@ -578,6 +578,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           if (truth->get_pid() == 221)
           {
             h_truth_etaspectrum->Fill(sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py()));
+            std::cout << "Primary eta found at vertex: " << truth->get_vtx_id() << std::endl;
             if (eta_weight)
             {
               float eta_pt = sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py());
@@ -672,6 +673,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               if (eta_weight && parent->get_pid() == 221)
               {
                 if (photon_pt < 0.1) continue;
+                std::cout << "Parent eta found at vertex: " << parent->get_vtx_id() << std::endl;
                 float phot_phi = atan2(truth->get_py(), truth->get_px());
                 float phot_eta = atanh(truth->get_pz() / sqrt(truth->get_px() * truth->get_px() + truth->get_py() * truth->get_py() + truth->get_pz() * truth->get_pz()));
                 TLorentzVector myVector;
