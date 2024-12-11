@@ -773,7 +773,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       float delR = pi0smearvec[0].DeltaR(tr_phot);
       h_delR_recTrth->Fill(delR);
       float res = pi0smearvec[0].E() / tr_phot.E();
-      //float delPhi = pi0smearvec[0].Phi() - tr_phot.Phi();
+      float delPhi = pi0smearvec[0].Phi() - tr_phot.Phi();
       //if (delPhi > TMath::TwoPi()) delPhi -= TMath::TwoPi();
       //if (delPhi < -TMath::TwoPi()) delPhi += TMath::TwoPi();
       if (delR < 0.02)
