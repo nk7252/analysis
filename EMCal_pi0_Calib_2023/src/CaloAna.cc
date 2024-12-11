@@ -450,7 +450,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     float vertex_y[1000] = {0};
     float vertex_z[1000] = {0};
     float vertex_id[1000] = {0};
-    int Pvtx_id = 0;
     for (PHG4TruthInfoContainer::ConstVtxIterator iter = vtxrange.first; iter != vtxrange.second; ++iter)
     {
       PHG4VtxPoint* vtx = iter->second;
