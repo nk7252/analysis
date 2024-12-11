@@ -101,7 +101,7 @@ void Fun4All_G4_Waveform(
   se->registerSubsystem(ClusterBuilder);
   //*/
   //global vertex reco
-  Global_Reco();
+  //Global_Reco();
 
   //--------------Calibrating EMCal
   Process_Calo_Calib();
