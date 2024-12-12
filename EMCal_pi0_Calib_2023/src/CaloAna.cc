@@ -222,10 +222,10 @@ int CaloAna::Init(PHCompositeNode*)
   h_delR_recTrth = new TH1F("h_delR_recTrth", "", 1000, 0, 5);
   h_delR_pionrecTrth = new TH1F("h_delR_pionrecTrth", "", 5000, 0, 5);
   h_matched_res = new TH2F("h_matched_res", "", 100, 0, 1.5, 20, -1, 1);
-  h_truthmatched_mass_etameson_weighted_2d = new TH2F("h_truthmatched_mass_etameson_weighted_2d", "pT vs Invariant Mass, truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2);
-  h_truthmatched_mass_etameson_weighted = new TH1F("h_truthmatched_mass_etameson_weighted", "Invariant Mass, truth matched, weighted", 600, 0, 1.2);
-  // h_truthmatched_mass_etameson_weighted_etabin_3d = new TH3F("h_truthmatched_mass_etameson_weighted_etabin_3d", "pT vs Invariant Mass vs eta (bin), truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2, 96, 0, 96);
-  h_truthmatched_mass_etameson_weighted_eta_3d = new TH3F("h_truthmatched_mass_etameson_weighted_eta_3d", "pT vs Invariant Mass vs eta, truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2, 96, -1.2, 1.2);
+  h_FullTruth_eta = new TH1F("h_FullTruth_eta", "Full Truth eta", 100, -1.2, 1.2);
+  h_FullTruth_e = new TH1F("h_FullTruth_e", "Full Truth e", 10 * 10, 0, 50);
+  h_FullTruth_pt = new TH1F("h_FullTruth_pt", "Full Truth pt", 10 * 10, 0, 50);
+  h_FullTruth_p = new TH1F("h_FullTruth_p", "Full Truth p", 10 * 10, 0, 50);
 
   h_temp_pion_pt = new TH1F("h_temp_pion_pt", "missing primary truth pion candidates, pT", 5 * 10, 0, 50);
   h_temp_pion_eta = new TH1F("h_temp_pion_eta", "missing primary truth pion candidates, Eta", 96, -1.2, 1.2);
@@ -296,10 +296,12 @@ int CaloAna::Init(PHCompositeNode*)
   h_truthmatched_mass1_2d = new TH2F("h_truthmatched_mass1_2d", "pT vs Invariant Mass, truth matched(delR<0.015)", 20 * 10, 0, 50, 600, 0, 1.2);
   h_truthmatched_mass2_2d = new TH2F("h_truthmatched_mass2_2d", "pT vs Invariant Mass, truth matched(delR<0.1)", 20 * 10, 0, 50, 600, 0, 1.2);
   h_truthmatched_mass3_2d = new TH2F("h_truthmatched_mass3_2d", "pT vs Invariant Mass, truth matched(delR<0.2)", 20 * 10, 0, 50, 600, 0, 1.2);
-  h_FullTruth_eta = new TH1F("h_FullTruth_eta", "Full Truth eta", 100, -1.2, 1.2);
-  h_FullTruth_e = new TH1F("h_FullTruth_e", "Full Truth e", 10 * 10, 0, 50);
-  h_FullTruth_pt = new TH1F("h_FullTruth_pt", "Full Truth pt", 10 * 10, 0, 50);
-  h_FullTruth_p = new TH1F("h_FullTruth_p", "Full Truth p", 10 * 10, 0, 50);
+  h_truthmatched_mass_weighted = new TH1F("h_truthmatched_mass_weighted", "Invariant Mass, truth matched, weighted", 600, 0, 1.2);
+  h_truthmatched_mass_weighted_2d = new TH2F("h_truthmatched_mass_weighted_2d", "pT vs Invariant Mass, truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2);
+  h_truthmatched_mass_etameson_weighted_2d = new TH2F("h_truthmatched_mass_etameson_weighted_2d", "pT vs Invariant Mass, truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2);
+  h_truthmatched_mass_etameson_weighted = new TH1F("h_truthmatched_mass_etameson_weighted", "Invariant Mass, truth matched, weighted", 600, 0, 1.2);
+  // h_truthmatched_mass_etameson_weighted_etabin_3d = new TH3F("h_truthmatched_mass_etameson_weighted_etabin_3d", "pT vs Invariant Mass vs eta (bin), truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2, 96, 0, 96);
+  h_truthmatched_mass_etameson_weighted_eta_3d = new TH3F("h_truthmatched_mass_etameson_weighted_eta_3d", "pT vs Invariant Mass vs eta, truth matched, weighted", 20 * 10, 0, 50, 600, 0, 1.2, 96, -1.2, 1.2);
 
   // 3d histogram to check for corelation between photon/cluster energies and invariant mass.
   // h_InvMass_photonE_smear_weighted_3d = new TH3F(Form("h_InvMass_smear%d_weighted_photonE_3d",badcalibsmearint ), Form("Photon Energies vs Invariant Mass, smear, weighted: %f percent",badcalibsmearint / 10.0f), 40, 0, 20, 40, 0, 20, 60, 0, 1.2);
@@ -1404,6 +1406,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         h_delR_pionrecTrth->Fill(pi0smearvec[2].DeltaR(pi0_trKin));
         h_truthmatched_mass->Fill(pi0smearvec[2].M());
         h_truthmatched_mass_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M());
+        h_truthmatched_mass_weighted->Fill(pi0smearvec[2].M(), inv_yield);
+        h_truthmatched_mass_weighted_2d->Fill(pi0smearvec[2].Pt(), pi0smearvec[2].M(), inv_yield);
         h_truthmatched_mass_eta_2d->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].M());
         h_reco_etaphi_cuts[9]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi());
         h_reco_etaphi_cuts[10]->Fill(pi0smearvec[2].Eta(), pi0smearvec[2].Phi(), inv_yield);
