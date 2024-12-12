@@ -186,7 +186,7 @@ class CaloAna : public SubsysReco
   float _vz = 0.;
   bool m_vtxCut = false;
   bool dynMaskClus = false;
-  bool getVtx = true;
+  bool getVtx = true;//add bool for sim vertex
   bool cutson = true;
   bool clust_waveform = true;  // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
   bool recluster = false;      // if on will use CLUSTERINFO_CEMC2 for clusterContainer
@@ -206,7 +206,7 @@ class CaloAna : public SubsysReco
   bool SPMC_bool = true;
   float badcalibsmear;
   bool Pythia_weight = false;
-  bool eta_weight = true;
+  bool eta_weight = false;
   // NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   bool additionalsmearing = true;  // should be on for spmc in all cases. if you want 0 use 0 for smearint
   int badcalibsmearint = 0;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
