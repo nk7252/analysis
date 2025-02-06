@@ -1,6 +1,8 @@
 #include "CaloAna.h"
 
-// Global vertex includes
+// vertex includes
+#include <globalvertex/MbdVertex.h>
+#include <globalvertex/MbdVertexMap.h>
 #include <globalvertex/GlobalVertex.h>
 #include <globalvertex/GlobalVertexMap.h>
 
@@ -386,7 +388,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float pt2ClusCut = 0.6;     // 0.7
   float etcut = 1.0;          // cluster ET cut
   float etacutval = 0.6;      // cluster pseudo-rapidity cut
-  float zvtx_cut_val = 30;    // z vertex cut value
+  float zvtx_cut_val = 60;    // z vertex cut value
 
   /*
   if (nClusCount > 30)
@@ -407,7 +409,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float vtx_y = 0;
   if (getVtx)
   {
-    GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
+    if (MBDvtx) MbdVertexMap *vertexmap = findNode::getClass<MbdVertexMap>(topNode, "MbdVertexMap");
+    else GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
     if (!vertexmap)
     {
       // if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
@@ -419,7 +422,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
     if (vertexmap && !vertexmap->empty())
     {
-      GlobalVertex* vtx = vertexmap->begin()->second;
+      if (MBDvtx) MbdVertex* vtx = mbdmap->begin()->second;
+      else GlobalVertex* vtx = vertexmap->begin()->second;
       if (vtx)
       {
         vtx_z = vtx->get_z();

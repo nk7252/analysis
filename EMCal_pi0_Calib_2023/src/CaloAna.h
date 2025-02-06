@@ -187,6 +187,7 @@ class CaloAna : public SubsysReco
   bool m_vtxCut = false;
   bool dynMaskClus = false;
   bool getVtx = true; //add bool for sim vertex
+  bool MBDvtx = true;
   bool cutson = true;
   bool clust_waveform = true;  // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
   bool recluster = false;      // if on will use CLUSTERINFO_CEMC2 for clusterContainer
@@ -199,14 +200,14 @@ class CaloAna : public SubsysReco
   bool etabyeta = false; // mass and pt eta histograms, 96 for each histogram(4)
   //cuts
   bool eTCutbool = false;       // replace pt1 and pt2 cuts with et cuts
-  bool etaCutbool = false;      // do an eta cut or not
+  bool etaCutbool = true;      // do an eta cut or not
   bool clusterprobcut = false;  // if true use cluster prob cut, if false use chisq cut
-  bool zvtxcut_bool = false;
+  bool zvtxcut_bool = true;
   // SPMC
-  bool SPMC_bool = true;
+  bool SPMC_bool = false;
   float badcalibsmear;
   bool Pythia_weight = false;
-  bool eta_weight = true;
+  bool eta_weight = false;
   // NEVER USE LEADING ZEROS IN DECIMALS. IT WILL BE INTERPRETED AS OCTAL
   bool additionalsmearing = true;  // should be on for spmc in all cases. if you want 0 use 0 for smearint
   int badcalibsmearint = 125;      // thousandths. note that if pos corr is on I found 130 to be right. without I found 125.
