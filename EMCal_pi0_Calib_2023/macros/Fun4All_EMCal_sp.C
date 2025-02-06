@@ -52,7 +52,15 @@ void createLocalEMCalCalibFile(const string fname, int runNumber);
 
 // void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
 //void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list")
-void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata_sp.txt", const std::string &fname_truth = "g4hits.list", const std::string &fnameglobal = "dst_global.list",int iter = 2, const std::string &calib_fname="local_calib_copy.root")
+void Fun4All_EMCal_sp(
+  int nevents = 10000,
+  const std::string &fname = "inputdata_sp.txt",
+  const std::string &fname_calo = "dst_calo_cluster.list",
+  const std::string &fname_truth = "g4hits.list", 
+  const std::string &fname_mbd = "dst_mbd_epd.list",
+  const std::string &fname_global = "dst_global.list",
+  int iter = 2, 
+  const std::string &calib_fname="local_calib_copy.root")
 {
   //bool enableMasking = 0;
 
@@ -85,19 +93,22 @@ void Fun4All_EMCal_sp(int nevents = 10000, const std::string &fname = "inputdata
   //===============
   // add input managers
   //===============
-  Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_TOWERS");
-  Fun4AllInputManager *intruth = new Fun4AllDstInputManager("DST_TRUTH");
+  Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_CALO_CLUSTER");
+  Fun4AllInputManager *intruth = new Fun4AllDstInputManager("G4HITS");
   Fun4AllInputManager *inglobal = new Fun4AllDstInputManager("DST_GLOBAL");
+  Fun4AllInputManager *inmbd = new Fun4AllDstInputManager("DST_MBD");
   cout << "add listfiles to input manager" << endl;
 
   in->AddListFile(fname,1);
   intruth->AddListFile(fname_truth,1);
   inglobal->AddListFile(fnameglobal,1);
+  inmbd->AddListFile(fname_mbd,1);
   
   cout << "files added" << endl;
 
   se->registerInputManager(in);
   se->registerInputManager(intruth);
+  se->registerInputManager(inmbd);
   se->registerInputManager(inglobal);
   cout << "input manager registered" << endl;
 

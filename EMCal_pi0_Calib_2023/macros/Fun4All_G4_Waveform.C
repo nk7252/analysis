@@ -50,6 +50,8 @@ void Fun4All_G4_Waveform(
     const int nevents = 1,
     const string &inputFile0 = "dst_calo_cluster.list",
     const string &inputFile1 = "g4hits.list",
+    const string &inputFile2 = "dst_mbd_epd.list",
+    const string &inputFile3 = "dst_global.list",
     const string &outdir = ".",
     int iter = 2,
     const string &cdbtag = "MDC2_ana.418")
@@ -77,12 +79,18 @@ void Fun4All_G4_Waveform(
   // Set up Input Manager
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_CALO_CLUSTER");
   Fun4AllInputManager *intruth = new Fun4AllDstInputManager("G4Hits");
+  Fun4AllInputManager *inmbd = new Fun4AllDstInputManager("DST_MBD");
+  Fun4AllInputManager *inglobal = new Fun4AllDstInputManager("DST_GLOBAL");
   cout << "add listfiles to input manager" << endl;
   in->AddListFile(inputFile0,1);
   intruth->AddListFile(inputFile1,1);
+  inmbd->AddListFile(inputFile2,1);
+  inglobal->AddListFile(inputFile3,1);
   cout << "files added" << endl;
   se->registerInputManager(in);
   se->registerInputManager(intruth);
+  se->registerInputManager(inmbd);
+  se->registerInputManager(inglobal);
   cout << "input manager registered" << endl;
 
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
@@ -102,7 +110,8 @@ void Fun4All_G4_Waveform(
   se->registerSubsystem(ClusterBuilder);
   //*/
   //global vertex reco
-  //Mbd_Reco()
+  Enable::MBDRECO = true;
+  Mbd_Reco();
   //Global_Reco();
 
   //--------------Calibrating EMCal
