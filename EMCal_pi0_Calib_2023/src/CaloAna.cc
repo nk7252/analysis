@@ -81,13 +81,13 @@
 #include <vector>
 
 /// HEPMC truth includes
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include <HepMC/GenEvent.h>
-#include <HepMC/GenVertex.h>
-#pragma GCC diagnostic pop
-#include <phhepmc/PHHepMCGenEvent.h>
-#include <phhepmc/PHHepMCGenEventMap.h>
+//#pragma GCC diagnostic push
+//#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+//#include <HepMC/GenEvent.h>
+//#include <HepMC/GenVertex.h>
+//#pragma GCC diagnostic pop
+//#include <phhepmc/PHHepMCGenEvent.h>
+//#include <phhepmc/PHHepMCGenEventMap.h>
 
 R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
 
