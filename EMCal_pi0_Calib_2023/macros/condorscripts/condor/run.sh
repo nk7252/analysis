@@ -109,7 +109,7 @@ fi
 
     
     cp -v "$PWD"/../../CondorRun.sh CondorRunJob$li.sh
-    cp "$PWD"/../../../Fun4All_G4_Waveform.C .
+    cp "$PWD"/../../../../Fun4All_G4_Waveform.C .
 
     chmod +x CondorRunJob$li.sh
         
