@@ -362,6 +362,7 @@ int CaloAna::Init(PHCompositeNode*)
   VertexMapFailcounter = 0;
   if (additionalsmearing == false) std::cout << "additional smearing is not being added" << std::endl;
   if (additionalsmearing == true) std::cout << "additional smearing is being added" << std::endl;
+  if (debug) std::cout << " " << "CaloAna: End Init  " << std::endl;
   // return 0;
   return Fun4AllReturnCodes::EVENT_OK;
 }
