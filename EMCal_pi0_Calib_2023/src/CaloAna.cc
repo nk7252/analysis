@@ -582,8 +582,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   if (!truth_jets)
   {
     std::cout
-        << "MyJetAnalysis::process_event - Error: can not find Truth JetContainer node:"
-        << truthJetName << std::endl;
+        << "MyJetAnalysis::process_event - Error: can not find Truth JetContainer node: "
+        << "AntiKt_Truth_r04" << std::endl;
     //exit(-1);
     return Fun4AllReturnCodes::EVENT_OK;
   }
