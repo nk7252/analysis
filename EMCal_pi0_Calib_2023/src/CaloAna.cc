@@ -566,8 +566,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   if (!reco_jets)
   {
     std::cout
-        << "CaloAna::process_event - Error: can not find Reco JetContainer node:"
-        << recoJetName << std::endl;
+        << "CaloAna::process_event - Error: can not find Reco JetContainer node:" << "AntiKt_Tower_r04" << std::endl;
     // return Fun4AllReturnCodes::EVENT_OK;
     exit(-1);
   }
