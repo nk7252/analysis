@@ -18,10 +18,10 @@ mbd_list="$4"
 global_list="$5"
 
 #create absolute path for input files
-input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${cluster_list}"
-input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${truth_list}"
-input_file3="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${mbd_list}"
-input_file4="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condor/${global_list}"
+input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condorscripts/condor/${cluster_list}"
+input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condorscripts/condor/${truth_list}"
+input_file3="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condorscripts/condor/${mbd_list}"
+input_file4="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condorscripts/condor/${global_list}"
 
 
 #important setup for path if you are running on condor
@@ -45,4 +45,4 @@ cd $baseDir
 
 
 # Execute the custom ROOT script with arguments
-root -l -q "Fun4All_EMCal_sp.C($n_events,\"$input_file1\",\"$input_file2\",\"$input_file3\",\"$input_file4\")"
+root -l -q "Fun4All_G4_Waveform.C($n_events,\"$input_file1\",\"$input_file2\",\"$input_file3\",\"$input_file4\")"
