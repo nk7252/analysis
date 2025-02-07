@@ -176,7 +176,7 @@ void Fun4All_G4_Waveform(
   {
     CaloAna *ca = new CaloAna("calomodulename", OutFile);
     //ca->set_timing_cut_width(16);
-    ca->Set_Debug(1);//set to 1 for debug output
+    ca->Set_Debug(0);//set to 1 for debug output
 
     ca->set_SPMC_bools(false, false, false);//SPMC, Pythia_weight, eta_weight
     ca->set_general_bools(false, false, false, false);// debug, Cluster_Debug, Cluster_Debug2, etabyeta
@@ -185,7 +185,7 @@ void Fun4All_G4_Waveform(
     ca->set_cluschi2_cut(10);
     ca->set_eta_cut(0.6);
     ca->set_zvtx_cut(30.);
-    ca->set_EfficiencyRange(14, 30);
+    ca->set_EfficiencyRange(0, 3000);
     ca->set_cluspt_cut(0.6, 1.0);
 
     se->registerSubsystem(ca);
