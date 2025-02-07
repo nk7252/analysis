@@ -191,7 +191,7 @@ class CaloAna : public SubsysReco
   bool getVtx = true; //add bool for sim vertex
   bool MBDvtx = true;
   bool cutson = true;
-  bool clust_waveform = true;  // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
+  bool clust_waveform = false;  // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
   bool recluster = false;      // if on will use CLUSTERINFO_CEMC2 for clusterContainer
   bool poscor = false;         // if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
   bool pp_rawcluster = true;   // if on will use GetEVec, superseeds GetECoreVec. ECore is for AuAu
