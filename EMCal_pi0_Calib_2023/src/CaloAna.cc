@@ -423,7 +423,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       if (mbdvertexmap && !mbdvertexmap->empty())
       {
-        MbdVertex* mbdvtx = vertexmap->begin()->second;
+        MbdVertex* mbdvtx = mbdvertexmap->begin()->second;
         if (mbdvtx)
         {
           vtx_z = mbdvtx->get_z();
