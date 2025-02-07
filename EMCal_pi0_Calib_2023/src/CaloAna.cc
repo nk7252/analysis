@@ -7,78 +7,89 @@
 #include <globalvertex/MbdVertexMap.h>
 
 // Fun4All includes
-#include <Event/Event.h>
-#include <Event/packet.h>
+#include "CLHEP/Vector/ThreeVector.h"        // for Hep3Vector
+#include "CLHEP/Vector/ThreeVector.icc"      // for Hep3Vector::Hep3Vector
+#include "fun4all/SubsysReco.h"              // for SubsysReco
+#include "phool/phool.h"                     // for PHWHERE
+//#include <Event/Event.h>
+//#include <Event/packet.h>
 #include <cdbobjects/CDBTTree.h>  // for CDBTTree
-#include <ffamodules/CDBInterface.h>
-#include <ffamodules/FlagHandler.h>
-#include <ffamodules/HeadReco.h>
-#include <ffamodules/SyncReco.h>
+//#include <ffamodules/CDBInterface.h>
+//#include <ffamodules/FlagHandler.h>
+//#include <ffamodules/HeadReco.h>
+//#include <ffamodules/SyncReco.h>
 #include <fun4all/Fun4AllHistoManager.h>
 #include <fun4all/Fun4AllReturnCodes.h>
-#include <g4main/PHG4Hit.h>
-#include <g4main/PHG4HitContainer.h>
+//#include <g4main/PHG4Hit.h>
+//#include <g4main/PHG4HitContainer.h>
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
-#include <phool/PHCompositeNode.h>
+//#include <phool/PHCompositeNode.h>
 #include <phool/getClass.h>
-#include <phool/recoConsts.h>
+//#include <phool/recoConsts.h>
 #include "g4main/PHG4VtxPoint.h"
 
 // G4Cells includes
-#include <g4detectors/PHG4Cell.h>
-#include <g4detectors/PHG4CellContainer.h>
+//#include <g4detectors/PHG4Cell.h>
+//#include <g4detectors/PHG4CellContainer.h>
 
 // Calorimeter/Cluster includes
 #include <calobase/RawCluster.h>
 #include <calobase/RawClusterContainer.h>
 #include <calobase/RawClusterUtility.h>
-#include <calobase/RawTower.h>
-#include <calobase/RawTowerContainer.h>
+//#include <calobase/RawTower.h>
+//#include <calobase/RawTowerContainer.h>
 #include <calobase/RawTowerGeom.h>
 #include <calobase/RawTowerGeomContainer.h>
 #include <calobase/TowerInfo.h>
 #include <calobase/TowerInfoContainer.h>
-#include <calobase/TowerInfoContainerv1.h>
-#include <calobase/TowerInfoContainerv2.h>
-#include <calobase/TowerInfoContainerv3.h>
+//#include <calobase/TowerInfoContainerv1.h>
+//#include <calobase/TowerInfoContainerv2.h>
+//#include <calobase/TowerInfoContainerv3.h>
 #include <calobase/TowerInfoDefs.h>
-#include <calobase/TowerInfov1.h>
-#include <calobase/TowerInfov2.h>
+//#include <calobase/TowerInfov1.h>
+//#include <calobase/TowerInfov2.h>
 
 // MBD
-#include <mbd/BbcGeom.h>
-#include <mbd/MbdPmtContainerV1.h>
-#include <mbd/MbdPmtHit.h>
+//#include <mbd/BbcGeom.h>
+//#include <mbd/MbdPmtContainerV1.h>
+//#include <mbd/MbdPmtHit.h>
 
 // ROOT includes
-#include <Math/Vector4D.h>  // for ROOT::Math::PtEtaPhiMVector
-#include <TCanvas.h>
+//#include <Math/Vector4D.h>  // for ROOT::Math::PtEtaPhiMVector
+//#include <TCanvas.h>
 #include <TF1.h>
 #include <TFile.h>
 #include <TH1.h>
-#include <TH1F.h>
+//#include <TH1F.h>
 #include <TH2.h>
 #include <TH3.h>
-#include <TH3F.h>
+//#include <TH3F.h>
 #include <TLorentzVector.h>
 #include <TMath.h>
 #include <TNtuple.h>
-#include <TProfile.h>
+//#include <TProfile.h>
 #include <TRandom3.h>
 #include <TTree.h>
+#include <TAxis.h>                           // for TAxis
+#include <TString.h>                         // for Form
 
 // general includes
-#include <cassert>
+//#include <cassert>
 #include <cmath>
 #include <iostream>
 #include <random>
 #include <set>
-#include <sstream>
+//#include <sstream>
 #include <string>
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <Rtypes.h>                          // for R__LOAD_LIBRARY
+#include <stdlib.h>                          // for exit, size_t
+#include <iterator>                          // for next
+#include <stdexcept>                         // for runtime_error
+
 
 /// HEPMC truth includes
 // #pragma GCC diagnostic push

@@ -4,6 +4,8 @@
 #include <fun4all/SubsysReco.h>
 #include <random>
 #include <vector>
+#include <string>                // for basic_string, string
+
 // Forward declarations
 class Fun4AllHistoManager;
 class PHCompositeNode;
