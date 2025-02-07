@@ -130,7 +130,6 @@ void Fun4All_G4_Waveform(
   //Enable::MBDRECO = true;
   //Mbd_Reco();
   //Global_Reco();
-
   //--------------Calibrating EMCal
   Process_Calo_Calib();
   ///////////////////
