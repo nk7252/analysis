@@ -19,7 +19,7 @@ fi
   #export listfile3="dst_truth_g4hit.list"
   #export listfile3="g4hits.list"
   export listfile4="dst_global.list"
-  export listfile5="dst_jet_truth.list"
+  export listfile5="dst_truth_jet.list"
 
   #only delete and regenerate if switching file source or number of events
   #rm $listfile
