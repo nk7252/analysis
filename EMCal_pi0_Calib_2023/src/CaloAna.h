@@ -50,6 +50,8 @@ class CaloAna : public SubsysReco
 
   void Detector(const std::string& name) { detector = name; }
   //void set_timing_cut_width(const int& t) { _range = t; }
+  
+  void Debug(int i) { debug = i; }
 
   float getWeight(int ieta, float pt);
   float getSPMCpTspectrum(float pt);
