@@ -41,7 +41,7 @@ fi
   #run 111 also works see https://wiki.sphenix.bnl.gov/index.php?title=MDC2_2022
 # to test use a small set. like  -n 1000
   # Check if the list files were created successfully
-  if [[ ! -f $listfile || ! -f $listfile2 || ! -f $listfile3 || ! -f $listfile4]]; then
+  if [[ ! -f $listfile || ! -f $listfile2 || ! -f $listfile3 || ! -f $listfile4 || ! -f $listfile5 ]]; then
       echo "Error: One or more list files were not created successfully."
       exit 1
   fi
