@@ -23,6 +23,13 @@
 
 #include<Calo_Calib.C>
 
+//jet includes
+#include <jetbase/FastJetAlgo.h>
+#include <jetbase/JetReco.h>
+#include <jetbase/TowerJetInput.h>
+#include <G4_Jets.C>
+#include <HIJetReco.C>
+
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllOutputManager.h>
 #include <fun4all/Fun4AllUtils.h>
