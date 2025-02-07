@@ -353,7 +353,7 @@ int CaloAna::Init(PHCompositeNode*)
   // towers node selection
   calotowerinfostring = (clust_waveform == true) ? "WAVEFORM_CEMC" : "TOWERINFO_CALIB_CEMC";
   // clustercontainer node selection//&& SPMC_bool == false
-  clustcontainerstring = (poscor == true) ? "CLUSTER_POS_COR_CEMC" : ((recluster == true) ? "CLUSTERINFO_CEMC2" : ((clust_waveform == true) ? "CLUSTERINFO_CEMC" : "CLUSTER_CEMC"));
+  clustcontainerstring = (poscor == true) ? "CLUSTER_POS_COR_CEMC" : ((recluster == true) ? "CLUSTERINFO_CEMC2" : ((clust_waveform == true) ? "CLUSTERINFO_CEMC" : "CLUSTERINFO_CEMC"));
   std::cout << "clustcontainerstring: " << clustcontainerstring << std::endl;
   std::cout << "calotowerinfostring: " << calotowerinfostring << std::endl;
 
