@@ -136,7 +136,7 @@ void Fun4All_G4_Waveform(
   std::string jetreco_input_prefix = "TOWERINFO_CALIB";
   std::string jetreco_wvm_input_prefix = "WAVEFORM";
   
-  ///*
+  
   JetReco *truthjetreco = new JetReco();
   TruthJetInput *tji = new TruthJetInput(Jet::PARTICLE);
   tji->add_embedding_flag(0);  // changes depending on signal vs. embedded
@@ -146,7 +146,7 @@ void Fun4All_G4_Waveform(
   truthjetreco->set_input_node("TRUTH");
   truthjetreco->Verbosity(0);
   se->registerSubsystem(truthjetreco);
-
+  /*
   RetowerCEMC *rcemc = new RetowerCEMC(); 
   rcemc->Verbosity(0); 
   rcemc->set_towerinfo(true);
@@ -170,6 +170,7 @@ void Fun4All_G4_Waveform(
   towerjetrecounsub->Verbosity(0);
   se->registerSubsystem(towerjetrecounsub);
   //*/
+
   // analysis modules
   if (iter > 1)
   {

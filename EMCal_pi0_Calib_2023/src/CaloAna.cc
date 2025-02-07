@@ -563,19 +563,38 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     throw std::runtime_error("failed to find TOWERGEOM node in RawClusterDeadHotMask::CreateNodeTree");
   }
 
+
+  
+  /// Get reco jets
+  /*
   JetContainer* reco_jets = findNode::getClass<JetContainer>(topNode, "AntiKt_Tower_r04");  //"AntiKt_Tower_r04_Sub1"recoJetName
   if (!reco_jets)
   {
     std::cout
         << "CaloAna::process_event - Error: can not find Reco JetContainer node:" << "AntiKt_Tower_r04" << std::endl;
-    // return Fun4AllReturnCodes::EVENT_OK;
-    exit(-1);
+    return Fun4AllReturnCodes::EVENT_OK;
+    //exit(-1);
   }
+  //*/
+
+  /// Get truth jets
+  JetContainer *truth_jets = findNode::getClass<JetContainer>(topNode, "AntiKt_Truth_r04"); // truthJetName
+  if (!truth_jets)
+  {
+    std::cout
+        << "MyJetAnalysis::process_event - Error: can not find Truth JetContainer node:"
+        << truthJetName << std::endl;
+    //exit(-1);
+    return Fun4AllReturnCodes::EVENT_OK;
+  }
+
+
+
   bool range_efficient = false;
   // loop over jets and check if pT range is efficient
   if (pythiajets)
   {
-    for (auto jet : *reco_jets)
+    for (auto jet : *truth_jets)
     {
       if (jet->get_pt() > efficiencyrange.first && jet->get_pt() < efficiencyrange.second)
       {
