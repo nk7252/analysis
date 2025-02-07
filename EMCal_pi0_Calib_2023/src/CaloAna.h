@@ -3,8 +3,8 @@
 
 #include <fun4all/SubsysReco.h>
 #include <random>
+#include <string>  // for basic_string, string
 #include <vector>
-#include <string>                // for basic_string, string
 
 // Forward declarations
 class Fun4AllHistoManager;
@@ -49,9 +49,7 @@ class CaloAna : public SubsysReco
   int process_clusters(PHCompositeNode*);
 
   void Detector(const std::string& name) { detector = name; }
-  void set_timing_cut_width(const int& t) { _range = t; }
-  void set_vertex_cut(const float& v) { _vz = v; }
-  void apply_vertex_cut(bool Vtx_cut) { m_vtxCut = Vtx_cut; }
+  //void set_timing_cut_width(const int& t) { _range = t; }
 
   float getWeight(int ieta, float pt);
   float getSPMCpTspectrum(float pt);
@@ -62,13 +60,46 @@ class CaloAna : public SubsysReco
   double generateRandomNumber();
   TLorentzVector SmearPhoton4vector(const TLorentzVector& sourcephoton, double smearfactor);
 
+  void set_SPMC_bools(bool SPMC_bool_in, bool Pythia_weight_in, bool eta_weight_in)
+  {
+    SPMC_bool = SPMC_bool_in;
+    Pythia_weight = Pythia_weight_in;
+    eta_weight = eta_weight_in;
+  }
+  void set_general_bools(bool debug_in, bool Cluster_Debug_in, bool Cluster_Debug2_in, bool etabyeta_in)
+  {
+    debug = debug_in;
+    Cluster_Debug = Cluster_Debug_in;
+    Cluster_Debug2 = Cluster_Debug2_in;
+    etabyeta = etabyeta_in;
+  }
+  void set_cut_bools(bool eTCutbool_in, bool etaCutbool_in, bool clusterprobcut_in, bool zvtxcut_bool_in)
+  {
+    eTCutbool = eTCutbool_in;
+    etaCutbool = etaCutbool_in;
+    clusterprobcut = clusterprobcut_in;
+    zvtxcut_bool = zvtxcut_bool_in;
+  }
+
+  void set_eta_cut(float eta_cut) {etacutval = eta_cut;}
+
+  void set_zvtx_cut(float zvtx_cut) {zvtx_cut_val = zvtx_cut;}
+
+  void set_clusprob_cut(float clusprob_cut) {clusterprob = clusprob_cut;}
+
+  void set_cluschi2_cut(float cluschi2_cut) {clus_chisq_cut = cluschi2_cut;}
+
+  void set_cluspt_cut(float pt1, float pt2) {cluspTcut = std::make_pair(pt1, pt2);}
+
+  void set_EfficiencyRange(float ptlow, float pthigh) {efficiencyrange = std::make_pair(ptlow, pthigh);}
+
  protected:
   std::string detector;
   std::string outfilename;
   int Getpeaktime(TH1* h);
   Fun4AllHistoManager* hm = nullptr;
   TFile* outfile = nullptr;
-  TFile* frw= nullptr;
+  TFile* frw = nullptr;
   TH1F* h_cutCounter = nullptr;
 
   TH2F* h_emcal_mbd_correlation = nullptr;
@@ -183,28 +214,40 @@ class CaloAna : public SubsysReco
   // float pt1ClusCut = 1.3;  // centrality dependence cuts 2.2 for both // 1.3
   // float pt2ClusCut = 0.7;  // // 0.7
   // float pi0ptcut = 1.22 * (pt1ClusCut + pt2ClusCut);
+  // cuts
+  bool cutson = true;
+  std::pair<float, float> cluspTcut{0.6, 1.0};
+  float maxAlpha{0.7};
+  // float clusEMin{1.5};
+  bool eTCutbool = false;  // replace pt1 and pt2 cuts with et cuts
+  bool etaCutbool = true;  // do an eta cut or not
+  float etacutval{0.6};
+  int clus_chisq_cut{10};
+  bool clusterprobcut = false;  // if true use cluster prob cut, if false use chisq cut
+  float clusterprob{0.1};
+  bool zvtxcut_bool = true;
+  float zvtx_cut_val{30};
 
+  bool debug = false;
   int _range = 1;
   float _vz = 0.;
   bool m_vtxCut = false;
   bool dynMaskClus = false;
-  bool getVtx = true; //add bool for sim vertex
+  bool getVtx = true;  // add bool for sim vertex
   bool MBDvtx = true;
-  bool cutson = true;
-  bool clust_waveform = false;  // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
-  bool recluster = false;      // if on will use CLUSTERINFO_CEMC2 for clusterContainer
-  bool poscor = false;         // if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
-  bool pp_rawcluster = true;   // if on will use GetEVec, superseeds GetECoreVec. ECore is for AuAu
-  bool debug = false;
-  bool Cluster_Debug = true; // cluster etaphi histograms
-  bool Cluster_Debug2 = false; // true if you want to add the 2nd cluster for every pair, rather than just individual clusters
-  //so if this is true, you will fill every time a cluster shows up past that cut, rather than just the first time
-  bool etabyeta = false; // mass and pt eta histograms, 96 for each histogram(4)
-  //cuts
-  bool eTCutbool = false;       // replace pt1 and pt2 cuts with et cuts
-  bool etaCutbool = true;      // do an eta cut or not
-  bool clusterprobcut = false;  // if true use cluster prob cut, if false use chisq cut
-  bool zvtxcut_bool = true;
+
+  std::pair<float, float> efficiencyrange{0, 3000};  // eficiency range for jets
+  bool pythiajets = true;                            // if true will cut on fully efficient range for jets
+  bool clust_waveform = false;                       // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
+  bool recluster = false;                            // if on will use CLUSTERINFO_CEMC2 for clusterContainer
+  bool poscor = false;                               // if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
+  bool pp_rawcluster = true;                         // if on will use GetEVec, superseeds GetECoreVec. ECore is for AuAu
+
+  bool etabyeta = false;        // mass and pt eta histograms, 96 for each histogram(4)
+  bool Cluster_Debug = true;    // cluster etaphi histograms
+  bool Cluster_Debug2 = false;  // true if you want to add the 2nd cluster for every pair, rather than just individual clusters
+  // so if this is true, you will fill every time a cluster shows up past that cut, rather than just the first time
+
   // SPMC
   bool SPMC_bool = false;
   float badcalibsmear;
@@ -216,7 +259,7 @@ class CaloAna : public SubsysReco
   // gen MC: pythia, *should remove smeared/weighted histograms.*
   bool matchmctruth = true;  // these two might be redundant
   bool filltruthspectrum = true;
-  bool missingprimarypions = true; // if true, will combine truth photons until the mass is within 0.001 of the pi0 mass. these pions will be added to the pion spectrum
+  bool missingprimarypions = true;  // if true, will combine truth photons until the mass is within 0.001 of the pi0 mass. these pions will be added to the pion spectrum
 
   TH2F* h_reco_etaphi;
   TH1F* h_pt1;
@@ -337,7 +380,7 @@ class CaloAna : public SubsysReco
   TH1F* h_temp_pion_mass;
   TH1F* h_temp_pion_multimatch;
   TH1F* h_primaryphotonpair_massdiff;
-  TH1F* h_primaryphotonpair_massdiff2; 
+  TH1F* h_primaryphotonpair_massdiff2;
 
   float target_pi0_mass = 0.145;
   double truth_pt;

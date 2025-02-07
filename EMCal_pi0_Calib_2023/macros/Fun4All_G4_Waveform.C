@@ -122,13 +122,48 @@ void Fun4All_G4_Waveform(
   //--------------Calibrating EMCal
   Process_Calo_Calib();
   ///////////////////
+  std::cout << "Running HIJetReco" << std::endl;
+  GlobalVertex::VTXTYPE vertex_type = GlobalVertex::MBD;
+  //Jet_Reco();
+  //HIJetReco();
+  std::string jetreco_input_prefix = "TOWERINFO_CALIB";
+  std::string jetreco_wvm_input_prefix = "WAVEFORM";
+  
+  ///*
+  RetowerCEMC *rcemc = new RetowerCEMC(); 
+  rcemc->Verbosity(0); 
+  rcemc->set_towerinfo(true);
+  rcemc->set_frac_cut(0.5); //fraction of retower that must be masked to mask the full retower
+  rcemc->set_towerNodePrefix(jetreco_input_prefix);
+  se->registerSubsystem(rcemc);
+
+  JetReco *towerjetrecounsub = new JetReco("TOWERJETRECO");
+  towerjetrecounsub->add_input(new TowerJetInput(Jet::CEMC_TOWERINFO_RETOWER, jetreco_input_prefix));//Jet::CEMC_TOWER
+  towerjetrecounsub->add_input(new TowerJetInput(Jet::HCALIN_TOWERINFO, jetreco_input_prefix));//Jet::HCALIN_TOWER
+  towerjetrecounsub->add_input(new TowerJetInput(Jet::HCALOUT_TOWERINFO, jetreco_input_prefix));//Jet::HCALOUT_TOWER
+  towerjetrecounsub->set_GlobalVertexType(HIJETS::vertex_type);
+  towerjetrecounsub->add_algo(new FastJetAlgo(Jet::ANTIKT, 0.4), "AntiKt_Tower_r04");
+  towerjetrecounsub->set_algo_node("ANTIKT");
+  towerjetrecounsub->set_input_node("TOWER");
+  towerjetrecounsub->Verbosity(0);
+  se->registerSubsystem(towerjetrecounsub);
+  //*/
   // analysis modules
   if (iter > 1)
   {
     CaloAna *ca = new CaloAna("calomodulename", OutFile);
-    ca->set_timing_cut_width(16);
-    ca->apply_vertex_cut(false);
-    ca->set_vertex_cut(20.);
+    //ca->set_timing_cut_width(16);
+
+    ca->set_SPMC_bools(false, false, false);//SPMC, Pythia_weight, eta_weight
+    ca->set_general_bools(false, false, false, false);// debug, Cluster_Debug, Cluster_Debug2, etabyeta
+    ca->set_cut_bools(false, true, false, true);// eTCutbool, etaCutbool, clusterprobcut, zvtxcut_bool
+    //ca->set_clusprob_cut(0.1);if false above no need to set this
+    ca->set_cluschi2_cut(10);
+    ca->set_eta_cut(0.6);
+    ca->set_zvtx_cut(30.);
+    ca->set_EfficiencyRange(14, 30);
+    ca->set_cluspt_cut(0.6, 1.0);
+
     se->registerSubsystem(ca);
     std::cout << "Subsystems registered" << std::endl;
     //

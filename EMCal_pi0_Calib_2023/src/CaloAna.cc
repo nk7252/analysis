@@ -7,89 +7,88 @@
 #include <globalvertex/MbdVertexMap.h>
 
 // Fun4All includes
-#include "CLHEP/Vector/ThreeVector.h"        // for Hep3Vector
-//#include "CLHEP/Vector/ThreeVector.icc"      // for Hep3Vector::Hep3Vector
-#include "fun4all/SubsysReco.h"              // for SubsysReco
-#include "phool/phool.h"                     // for PHWHERE
-//#include <Event/Event.h>
-//#include <Event/packet.h>
+#include "CLHEP/Vector/ThreeVector.h"  // for Hep3Vector
+// #include "CLHEP/Vector/ThreeVector.icc"      // for Hep3Vector::Hep3Vector
+#include "fun4all/SubsysReco.h"  // for SubsysReco
+#include "phool/phool.h"         // for PHWHERE
+// #include <Event/Event.h>
+// #include <Event/packet.h>
 #include <cdbobjects/CDBTTree.h>  // for CDBTTree
-//#include <ffamodules/CDBInterface.h>
-//#include <ffamodules/FlagHandler.h>
-//#include <ffamodules/HeadReco.h>
-//#include <ffamodules/SyncReco.h>
+// #include <ffamodules/CDBInterface.h>
+// #include <ffamodules/FlagHandler.h>
+// #include <ffamodules/HeadReco.h>
+// #include <ffamodules/SyncReco.h>
 #include <fun4all/Fun4AllHistoManager.h>
 #include <fun4all/Fun4AllReturnCodes.h>
-//#include <g4main/PHG4Hit.h>
-//#include <g4main/PHG4HitContainer.h>
+// #include <g4main/PHG4Hit.h>
+// #include <g4main/PHG4HitContainer.h>
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
-//#include <phool/PHCompositeNode.h>
+// #include <phool/PHCompositeNode.h>
 #include <phool/getClass.h>
-//#include <phool/recoConsts.h>
+// #include <phool/recoConsts.h>
 #include "g4main/PHG4VtxPoint.h"
 
 // G4Cells includes
-//#include <g4detectors/PHG4Cell.h>
-//#include <g4detectors/PHG4CellContainer.h>
+// #include <g4detectors/PHG4Cell.h>
+// #include <g4detectors/PHG4CellContainer.h>
 
 // Calorimeter/Cluster includes
 #include <calobase/RawCluster.h>
 #include <calobase/RawClusterContainer.h>
 #include <calobase/RawClusterUtility.h>
-//#include <calobase/RawTower.h>
-//#include <calobase/RawTowerContainer.h>
+// #include <calobase/RawTower.h>
+// #include <calobase/RawTowerContainer.h>
 #include <calobase/RawTowerGeom.h>
 #include <calobase/RawTowerGeomContainer.h>
 #include <calobase/TowerInfo.h>
 #include <calobase/TowerInfoContainer.h>
-//#include <calobase/TowerInfoContainerv1.h>
-//#include <calobase/TowerInfoContainerv2.h>
-//#include <calobase/TowerInfoContainerv3.h>
+// #include <calobase/TowerInfoContainerv1.h>
+// #include <calobase/TowerInfoContainerv2.h>
+// #include <calobase/TowerInfoContainerv3.h>
 #include <calobase/TowerInfoDefs.h>
-//#include <calobase/TowerInfov1.h>
-//#include <calobase/TowerInfov2.h>
+// #include <calobase/TowerInfov1.h>
+// #include <calobase/TowerInfov2.h>
 
 // MBD
-//#include <mbd/BbcGeom.h>
-//#include <mbd/MbdPmtContainerV1.h>
-//#include <mbd/MbdPmtHit.h>
+// #include <mbd/BbcGeom.h>
+// #include <mbd/MbdPmtContainerV1.h>
+// #include <mbd/MbdPmtHit.h>
 
 // ROOT includes
-//#include <Math/Vector4D.h>  // for ROOT::Math::PtEtaPhiMVector
-//#include <TCanvas.h>
+// #include <Math/Vector4D.h>  // for ROOT::Math::PtEtaPhiMVector
+// #include <TCanvas.h>
 #include <TF1.h>
 #include <TFile.h>
 #include <TH1.h>
-//#include <TH1F.h>
+// #include <TH1F.h>
 #include <TH2.h>
 #include <TH3.h>
-//#include <TH3F.h>
+// #include <TH3F.h>
 #include <TLorentzVector.h>
 #include <TMath.h>
 #include <TNtuple.h>
-//#include <TProfile.h>
+// #include <TProfile.h>
+#include <TAxis.h>  // for TAxis
 #include <TRandom3.h>
+#include <TString.h>  // for Form
 #include <TTree.h>
-#include <TAxis.h>                           // for TAxis
-#include <TString.h>                         // for Form
 
 // general includes
-//#include <cassert>
+// #include <cassert>
 #include <cmath>
 #include <iostream>
 #include <random>
 #include <set>
-//#include <sstream>
+// #include <sstream>
+#include <Rtypes.h>   // for R__LOAD_LIBRARY
+#include <stdlib.h>   // for exit, size_t
+#include <iterator>   // for next
+#include <stdexcept>  // for runtime_error
 #include <string>
 #include <unordered_set>
 #include <utility>
 #include <vector>
-#include <Rtypes.h>                          // for R__LOAD_LIBRARY
-#include <stdlib.h>                          // for exit, size_t
-#include <iterator>                          // for next
-#include <stdexcept>                         // for runtime_error
-
 
 /// HEPMC truth includes
 // #pragma GCC diagnostic push
@@ -174,8 +173,10 @@ int CaloAna::Init(PHCompositeNode*)
   //  cutQA
   h_reco_etaphi = new TH2F("h_reco_etaphi", "Reco etaphi clusters", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2);
   std::string vtxtype;
-  if (MBDvtx) vtxtype = "MBD";
-  else vtxtype = "Global";
+  if (MBDvtx)
+    vtxtype = "MBD";
+  else
+    vtxtype = "Global";
   h_vtxmap_fail = new TH1F(Form("h_vtxmap_fail_%s", vtxtype.c_str()), Form("%s Vertex Map Failure type", vtxtype.c_str()), 3, -0.5, 2.5);
   h_vtxmap_fail->GetXaxis()->SetBinLabel(0, "Missing Vertex Map");
   h_vtxmap_fail->GetXaxis()->SetBinLabel(1, "Empty Vertex Map");
@@ -396,17 +397,17 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
   float maxDr = 100;          // cone cut, 100 is effectively off
-  float maxAlpha = 0.6;       // asymmetry cut
-  float clus_chisq_cut = 10;  // normally 4
-  float clusterprob = 0.1;    // replacing chisqr cut
+  //float maxAlpha = 0.6;       // asymmetry cut
+  //float clus_chisq_cut = 10;  // normally 4
+  //float clusterprob = 0.1;    // replacing chisqr cut
   float nClus_ptCut = 0.0;    // 0.5 normally
   float pi0ptcutfactor = 0;   // seto to 0 to effectively disable it
   float ptMaxCut = 100;       // no cut in data, as far as I know. so I set it to a value it is unlikely to reach
-  float pt1ClusCut = 1.0;     // centrality dependence cuts 2.2 for both // 1.3
-  float pt2ClusCut = 0.6;     // 0.7
+  float pt1ClusCut = cluspTcut.first//= 1.0;     // centrality dependence cuts 2.2 for both // 1.3
+  float pt2ClusCut = cluspTcut.second//0.6;     // 0.7
   float etcut = 1.0;          // cluster ET cut
-  float etacutval = 0.6;      // cluster pseudo-rapidity cut
-  float zvtx_cut_val = 60;    // z vertex cut value
+  //float etacutval = 0.6;      // cluster pseudo-rapidity cut
+  //float zvtx_cut_val = 30;    // z vertex cut value
 
   /*
   if (nClusCount > 30)
@@ -559,6 +560,33 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               << "CreateNodeTree"
               << ": Could not find node " << towergeomnodename << std::endl;
     throw std::runtime_error("failed to find TOWERGEOM node in RawClusterDeadHotMask::CreateNodeTree");
+  }
+
+  JetContainer* reco_jets = findNode::getClass<JetContainer>(topNode, "AntiKt_Tower_r04");  //"AntiKt_Tower_r04_Sub1"recoJetName
+  if (!reco_jets)
+  {
+    std::cout
+        << "CaloAna::process_event - Error: can not find Reco JetContainer node:"
+        << recoJetName << std::endl;
+    // return Fun4AllReturnCodes::EVENT_OK;
+    exit(-1);
+  }
+  bool range_efficient = false;
+  // loop over jets and check if pT range is efficient
+  if (pythiajets)
+  {
+    for (auto jet : *reco_jets)
+    {
+      if (jet->get_pt() > efficiencyrange.first && jet->get_pt() < efficiencyrange.second)
+      {
+        range_efficient = true;
+      }
+    }
+    if (!range_efficient)
+    {
+      if(debug) std::cout << "CaloAna::process_event - Error: pT range not efficient for Jet Sample"<<  << std::endl;
+      return Fun4AllReturnCodes::EVENT_OK;
+    }
   }
 
   RawClusterContainer::ConstRange clusterEnd = clusterContainer->getClusters();
