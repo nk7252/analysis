@@ -29,9 +29,9 @@
 // #include <phool/recoConsts.h>
 #include "g4main/PHG4VtxPoint.h"
 
-// G4Cells includes
-// #include <g4detectors/PHG4Cell.h>
-// #include <g4detectors/PHG4CellContainer.h>
+/// Jet includes
+#include <jetbase/Jet.h>
+#include <jetbase/JetContainer.h>
 
 // Calorimeter/Cluster includes
 #include <calobase/RawCluster.h>
@@ -403,8 +403,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float nClus_ptCut = 0.0;    // 0.5 normally
   float pi0ptcutfactor = 0;   // seto to 0 to effectively disable it
   float ptMaxCut = 100;       // no cut in data, as far as I know. so I set it to a value it is unlikely to reach
-  float pt1ClusCut = cluspTcut.first//= 1.0;     // centrality dependence cuts 2.2 for both // 1.3
-  float pt2ClusCut = cluspTcut.second//0.6;     // 0.7
+  float pt1ClusCut = cluspTcut.first;//= 1.0;     // centrality dependence cuts 2.2 for both // 1.3
+  float pt2ClusCut = cluspTcut.second;//0.6;     // 0.7
   float etcut = 1.0;          // cluster ET cut
   //float etacutval = 0.6;      // cluster pseudo-rapidity cut
   //float zvtx_cut_val = 30;    // z vertex cut value
