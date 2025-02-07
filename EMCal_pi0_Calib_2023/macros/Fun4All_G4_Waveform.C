@@ -114,8 +114,8 @@ void Fun4All_G4_Waveform(
   se->registerSubsystem(ClusterBuilder);
   //*/
   //global vertex reco
-  Enable::MBDRECO = true;
-  Mbd_Reco();
+  //Enable::MBDRECO = true;
+  //Mbd_Reco();
   //Global_Reco();
 
   //--------------Calibrating EMCal
