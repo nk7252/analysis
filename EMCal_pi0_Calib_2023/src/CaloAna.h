@@ -58,7 +58,7 @@ class CaloAna : public SubsysReco
   void fitEtaSlices(const std::string& infile, const std::string& fitOutFile, const std::string& cdbFile);
 
   double generateRandomNumber();
-  TLorentzVector SmearPhoton4vector(TLorentzVector sourcephoton, double smearfactor);
+  TLorentzVector SmearPhoton4vector(const TLorentzVector& sourcephoton, double smearfactor);
 
  protected:
   std::string detector;
