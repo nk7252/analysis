@@ -5,7 +5,7 @@
 # root -l -q "Fun4All_EMCal_sp.C(100, dst_calo_cluster.list, dst_truth.list, dst_mbd_epd.list, dst_global.list, dst_truth_jet.list)"
 
 
-if [ "$#" -ne 5 ]; then
+if [ "$#" -ne 6 ]; then
     echo "Usage: $0  <n_events> <cluster_list> <truth_list> <mbd_list> <global_list> <truth_jet_list>"
     echo "Default Usage is: $0  100 dst_calo_cluster.list dst_truth.list dst_mbd_epd.list dst_global.list dst_truth_jet.list"
     exit 1
