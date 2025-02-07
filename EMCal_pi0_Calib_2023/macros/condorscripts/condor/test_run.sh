@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#./test_run.sh 100 dst_calo_cluster.list g4hits.list dst_mbd_epd.list dst_global.list
+#./test_run.sh 100 dst_calo_cluster.list dst_truth.list dst_mbd_epd.list dst_global.list
 #which runs it as 
-# root -l -q "Fun4All_EMCal_sp.C(100, dst_calo_cluster.list, g4hits.list, dst_mbd_epd.list, dst_global.list)"
+# root -l -q "Fun4All_EMCal_sp.C(100, dst_calo_cluster.list, dst_truth.list, dst_mbd_epd.list, dst_global.list)"
 
 
 if [ "$#" -ne 5 ]; then
     echo "Usage: $0  <n_events> <cluster_list> <truth_list> <mbd_list> <global_list>"
-    echo "Default Usage is: $0  100 dst_calo_cluster.list g4hits.list dst_mbd_epd.list dst_global.list"
+    echo "Default Usage is: $0  100 dst_calo_cluster.list dst_truth.list dst_mbd_epd.list dst_global.list"
     exit 1
 fi
 

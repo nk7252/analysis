@@ -13,7 +13,7 @@ fi
 
   #export listfile="dst_calo_waveform.list"
   export listfile="dst_calo_cluster.list"
-  export listfile2="g4hits.list"
+  export listfile2="dst_truth.list"
   #export listfile2="dst_truth.list"
   export listfile3="dst_mbd_epd.list"
   #export listfile3="dst_truth_g4hit.list"
@@ -98,7 +98,7 @@ fi
     sed -n $start_file\,${end_file}p ${listfile3} > tmp3.txt
     sed -n $start_file\,${end_file}p ${listfile4} > tmp4.txt
     mv tmp.txt ${WorkDir}/inputdata.txt
-    mv tmp2.txt ${WorkDir}/inputdatahits.txt
+    mv tmp2.txt ${WorkDir}/inputdatatruth.txt
     mv tmp3.txt ${WorkDir}/inputdatambd.txt
     mv tmp4.txt ${WorkDir}/inputdataglobal.txt
     
@@ -113,7 +113,7 @@ fi
     
     cat >>ff.sub<< EOF
 +JobFlavour                   = "workday"
-transfer_input_files          = ${WorkDir}/CondorRunJob$li.sh , ${WorkDir}/Fun4All_G4_Waveform.C , ${WorkDir}/inputdata.txt , ${WorkDir}/inputdatahits.txt , ${WorkDir}/inputdataglobal.txt , ${WorkDir}/inputdatambd.txt
+transfer_input_files          = ${WorkDir}/CondorRunJob$li.sh , ${WorkDir}/Fun4All_G4_Waveform.C , ${WorkDir}/inputdata.txt , ${WorkDir}/inputdatatruth.txt , ${WorkDir}/inputdataglobal.txt , ${WorkDir}/inputdatambd.txt
 Executable                    = CondorRunJob$li.sh
 request_memory                = 10GB
 Universe                      = vanilla

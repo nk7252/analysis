@@ -49,7 +49,7 @@ R__LOAD_LIBRARY(libcaloana.so)
 void Fun4All_G4_Waveform(
     const int nevents = 1,
     const string &inputFile0 = "dst_calo_cluster.list",
-    const string &inputFile1 = "g4hits.list",
+    const string &inputFile1 = "dst_truth.list",
     const string &inputFile2 = "dst_mbd_epd.list",
     const string &inputFile3 = "dst_global.list",
     const string &outdir = ".",
@@ -77,16 +77,20 @@ void Fun4All_G4_Waveform(
 
   //--------------
   // Set up Input Manager
+  cout << "Setting up input manager" << endl;
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_CALO_CLUSTER");
-  Fun4AllInputManager *intruth = new Fun4AllDstInputManager("G4Hits");
+  Fun4AllInputManager *intruth = new Fun4AllDstInputManager("DST_TRUTH");
   Fun4AllInputManager *inmbd = new Fun4AllDstInputManager("DST_MBD");
   Fun4AllInputManager *inglobal = new Fun4AllDstInputManager("DST_GLOBAL");
+
   cout << "add listfiles to input manager" << endl;
   in->AddListFile(inputFile0,1);
   intruth->AddListFile(inputFile1,1);
   inmbd->AddListFile(inputFile2,1);
   inglobal->AddListFile(inputFile3,1);
   cout << "files added" << endl;
+
+  cout << "register input manager" << endl;
   se->registerInputManager(in);
   se->registerInputManager(intruth);
   se->registerInputManager(inmbd);

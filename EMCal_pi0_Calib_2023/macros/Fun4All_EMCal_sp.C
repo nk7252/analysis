@@ -56,7 +56,7 @@ void Fun4All_EMCal_sp(
   int nevents = 10000,
   const std::string &fname = "inputdata_sp.txt",
   const std::string &fname_calo = "dst_calo_cluster.list",
-  const std::string &fname_truth = "g4hits.list", 
+  const std::string &fname_truth = "dst_truth.list", 
   const std::string &fname_mbd = "dst_mbd_epd.list",
   const std::string &fname_global = "dst_global.list",
   int iter = 2, 
@@ -94,7 +94,7 @@ void Fun4All_EMCal_sp(
   // add input managers
   //===============
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_CALO_CLUSTER");
-  Fun4AllInputManager *intruth = new Fun4AllDstInputManager("G4HITS");
+  Fun4AllInputManager *intruth = new Fun4AllDstInputManager("DST_TRUTH");
   Fun4AllInputManager *inglobal = new Fun4AllDstInputManager("DST_GLOBAL");
   Fun4AllInputManager *inmbd = new Fun4AllDstInputManager("DST_MBD");
   cout << "add listfiles to input manager" << endl;
