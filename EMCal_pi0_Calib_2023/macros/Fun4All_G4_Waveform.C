@@ -73,6 +73,7 @@ void Fun4All_G4_Waveform(
   cout << "run number = " << runnumber << endl;
   rc->set_StringFlag("CDB_GLOBALTAG", "MDC2");
   rc->set_uint64Flag("TIMESTAMP", runnumber);
+  std::cout << "Timestamp : " << rc->get_uint64Flag("TIMESTAMP") << std::endl;
   CDBInterface::instance()->Verbosity(1);
 
   //--------------
