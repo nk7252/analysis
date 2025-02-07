@@ -584,7 +584,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
     if (!range_efficient)
     {
-      if(debug) std::cout << "CaloAna::process_event - Error: pT range not efficient for Jet Sample"<<  << std::endl;
+      if(debug) std::cout << "CaloAna::process_event - Error: pT range not efficient for Jet Sample" << std::endl;
       return Fun4AllReturnCodes::EVENT_OK;
     }
   }
