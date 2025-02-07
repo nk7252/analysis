@@ -8,7 +8,7 @@
 
 // Fun4All includes
 #include "CLHEP/Vector/ThreeVector.h"        // for Hep3Vector
-#include "CLHEP/Vector/ThreeVector.icc"      // for Hep3Vector::Hep3Vector
+//#include "CLHEP/Vector/ThreeVector.icc"      // for Hep3Vector::Hep3Vector
 #include "fun4all/SubsysReco.h"              // for SubsysReco
 #include "phool/phool.h"                     // for PHWHERE
 //#include <Event/Event.h>
