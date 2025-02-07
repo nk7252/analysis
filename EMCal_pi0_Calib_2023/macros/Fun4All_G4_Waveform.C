@@ -89,7 +89,7 @@ void Fun4All_G4_Waveform(
   cout << "Setting up input manager" << endl;
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_CALO_CLUSTER");
   Fun4AllInputManager *intruth = new Fun4AllDstInputManager("DST_TRUTH");
-  Fun4AllInputManager *inmbd = new Fun4AllDstInputManager("DST_MBD");
+  Fun4AllInputManager *inmbd = new Fun4AllDstInputManager("DST_MBD_EPD");
   Fun4AllInputManager *inglobal = new Fun4AllDstInputManager("DST_GLOBAL");
   Fun4AllInputManager *intruthjet = new Fun4AllDstInputManager("DST_TRUTH_JET");
 
