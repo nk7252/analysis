@@ -1647,7 +1647,7 @@ double CaloAna::generateRandomNumber()
 
 // function to smear photon 4 vectors
 
-TLorentzVector CaloAna::SmearPhoton4vector(TLorentzVector sourcephoton, double smearfactor)
+TLorentzVector CaloAna::SmearPhoton4vector(const TLorentzVector sourcephoton, double smearfactor)
 {
   double smear = generateRandomNumber() * smearfactor + 1;
   TLorentzVector smearedphoton = sourcephoton * smear;
