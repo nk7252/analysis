@@ -407,22 +407,20 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float vtx_z = 0;
   float vtx_x = 0;
   float vtx_y = 0;
+  if (MBDvtx)MbdVertexMap *vertexmap = findNode::getClass<MbdVertexMap>(topNode, "MbdVertexMap");
+  else GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
   if (getVtx)
   {
-    if (MBDvtx) MbdVertexMap *vertexmap = findNode::getClass<MbdVertexMap>(topNode, "MbdVertexMap");
-    else GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
     if (!vertexmap)
     {
       // if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
       if (debug) std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
-      // return 0;
-      //  return Fun4AllReturnCodes::ABORTRUN;
     }
     if (vertexmap && !vertexmap->empty())
     {
-      if (MBDvtx) MbdVertex* vtx = mbdmap->begin()->second;
+      if (MBDvtx) MbdVertex* vtx = vertexmap->begin()->second;
       else GlobalVertex* vtx = vertexmap->begin()->second;
       if (vtx)
       {
