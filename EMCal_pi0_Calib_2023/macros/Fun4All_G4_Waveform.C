@@ -59,6 +59,7 @@ void Fun4All_G4_Waveform(
     const string &inputFile1 = "dst_truth.list",
     const string &inputFile2 = "dst_mbd_epd.list",
     const string &inputFile3 = "dst_global.list",
+    const string &inputFile4 = "dst_truth_jet.list",
     const string &outdir = ".",
     int iter = 2,
     const string &cdbtag = "MDC2_ana.418")
@@ -90,12 +91,15 @@ void Fun4All_G4_Waveform(
   Fun4AllInputManager *intruth = new Fun4AllDstInputManager("DST_TRUTH");
   Fun4AllInputManager *inmbd = new Fun4AllDstInputManager("DST_MBD");
   Fun4AllInputManager *inglobal = new Fun4AllDstInputManager("DST_GLOBAL");
+  Fun4AllInputManager *intruthjet = new Fun4AllDstInputManager("DST_TRUTH_JET");
+
 
   cout << "add listfiles to input manager" << endl;
   in->AddListFile(inputFile0,1);
   intruth->AddListFile(inputFile1,1);
   inmbd->AddListFile(inputFile2,1);
   inglobal->AddListFile(inputFile3,1);
+  intruthjet->AddListFile(inputFile4,1);
   cout << "files added" << endl;
 
   cout << "register input manager" << endl;
@@ -103,6 +107,7 @@ void Fun4All_G4_Waveform(
   se->registerInputManager(intruth);
   se->registerInputManager(inmbd);
   se->registerInputManager(inglobal);
+  se->registerInputManager(intruthjet);
   cout << "input manager registered" << endl;
 
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
@@ -131,6 +136,8 @@ void Fun4All_G4_Waveform(
   ///////////////////
   std::cout << "Running HIJetReco" << std::endl;
   GlobalVertex::VTXTYPE vertex_type = GlobalVertex::MBD;
+
+  /*  
   //Jet_Reco();
   //HIJetReco();
   std::string jetreco_input_prefix = "TOWERINFO_CALIB";
@@ -146,7 +153,6 @@ void Fun4All_G4_Waveform(
   truthjetreco->set_input_node("TRUTH");
   truthjetreco->Verbosity(0);
   se->registerSubsystem(truthjetreco);
-  /*
   RetowerCEMC *rcemc = new RetowerCEMC(); 
   rcemc->Verbosity(0); 
   rcemc->set_towerinfo(true);

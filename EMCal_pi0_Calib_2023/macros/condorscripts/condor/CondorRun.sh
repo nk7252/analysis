@@ -12,7 +12,7 @@ root '' > notes.log
 
 
 
-root -b "Fun4All_G4_Waveform.C(0,\"inputdata.txt\",\"inputdatatruth.txt\",\"inputdatambd.txt\",\"inputdataglobal.txt\")"
+root -b "Fun4All_G4_Waveform.C(0,\"inputdata.txt\",\"inputdatatruth.txt\",\"inputdatambd.txt\",\"inputdataglobal.txt\",\"inputdatatjet.txt\")"
 #root -b "Fun4All_G4_Waveform.C(0,\"inputdata.txt\",\"inputdatatruth.txt\")"
 
 echo "JOB COMPLETE!"

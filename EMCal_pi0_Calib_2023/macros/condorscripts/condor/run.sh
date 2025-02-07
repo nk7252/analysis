@@ -19,6 +19,7 @@ fi
   #export listfile3="dst_truth_g4hit.list"
   #export listfile3="g4hits.list"
   export listfile4="dst_global.list"
+  export listfile5="dst_jet_truth.list"
 
   #only delete and regenerate if switching file source or number of events
   #rm $listfile
@@ -97,10 +98,12 @@ fi
     sed -n $start_file\,${end_file}p ${listfile2} > tmp2.txt
     sed -n $start_file\,${end_file}p ${listfile3} > tmp3.txt
     sed -n $start_file\,${end_file}p ${listfile4} > tmp4.txt
+    sed -n $start_file\,${end_file}p ${listfile5} > tmp5.txt
     mv tmp.txt ${WorkDir}/inputdata.txt
     mv tmp2.txt ${WorkDir}/inputdatatruth.txt
     mv tmp3.txt ${WorkDir}/inputdatambd.txt
     mv tmp4.txt ${WorkDir}/inputdataglobal.txt
+    mv tmp5.txt ${WorkDir}/inputdatatjet.txt
     
     pushd ${WorkDir}
 
@@ -113,7 +116,7 @@ fi
     
     cat >>ff.sub<< EOF
 +JobFlavour                   = "workday"
-transfer_input_files          = ${WorkDir}/CondorRunJob$li.sh , ${WorkDir}/Fun4All_G4_Waveform.C , ${WorkDir}/inputdata.txt , ${WorkDir}/inputdatatruth.txt , ${WorkDir}/inputdataglobal.txt , ${WorkDir}/inputdatambd.txt
+transfer_input_files          = ${WorkDir}/CondorRunJob$li.sh , ${WorkDir}/Fun4All_G4_Waveform.C , ${WorkDir}/inputdata.txt , ${WorkDir}/inputdatatruth.txt , ${WorkDir}/inputdataglobal.txt , ${WorkDir}/inputdatambd.txt , ${WorkDir}/inputdatatjet.txt
 Executable                    = CondorRunJob$li.sh
 request_memory                = 10GB
 Universe                      = vanilla
