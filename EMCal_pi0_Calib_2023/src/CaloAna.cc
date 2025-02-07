@@ -173,10 +173,17 @@ int CaloAna::Init(PHCompositeNode*)
   // if (SPMC_bool) h_sp_pt_rw->SetDirectory(outfile);  // Attach pt weight to outfile
   //  cutQA
   h_reco_etaphi = new TH2F("h_reco_etaphi", "Reco etaphi clusters", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2);
-  h_vtxmap_fail = new TH1F("h_vtxmap_fail", "Vtxmap Fail", 2, 0, 2);
-  h_zvtx = new TH1F("h_zvtx", "Zvtx", 1000, -500, 500);
+  std::string vtxtype;
+  if (MBDvtx) vtxtype = "MBD";
+  else vtxtype = "Global";
+  h_vtxmap_fail = new TH1F(Form("h_vtxmap_fail_%s", vtxtype.c_str()), Form("%s Vertex Map Failure type", vtxtype.c_str()), 3, -0.5, 2.5);
+  h_vtxmap_fail->GetXaxis()->SetBinLabel(0, "Missing Vertex Map");
+  h_vtxmap_fail->GetXaxis()->SetBinLabel(1, "Empty Vertex Map");
+  h_vtxmap_fail->GetXaxis()->SetBinLabel(2, "No Vertex");
+  h_zvtx = new TH1F(Form("h_zvtx_%s", vtxtype.c_str()), Form("%s Z Vertex; z vtx (cm)", vtxtype.c_str()), 100, -100, 100);
   h_vert_xy = new TH2F("h_vert_xy", "Vertex XY", 500, -120, 120, 500, -120, 120);
-  h_nevents = new TH1F("h_nevents", "Number of events", 2, 0, 2);
+  h_nevents = new TH1F("h_nevents", "Number of events", 1, 0.5, 1.5);
+  h_nevents->GetXaxis()->SetBinLabel(1, "N Events");
 
   // if (Cluster_Debug)
   //{
@@ -427,7 +434,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       // if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
       if (!MBDvtx) std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
       if (MBDvtx) std::cout << "CaloAna MbdVertexMap node is missing" << std::endl;
-      h_vtxmap_fail->Fill(1);
+      h_vtxmap_fail->Fill(0);
       VertexMapFailcounter++;
     }
     if (MBDvtx)
@@ -444,7 +451,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         else
         {
           if (debug) std::cout << "CaloAna MBDVertex node returns no vtx" << std::endl;
-          h_vtxmap_fail->Fill(1);
+          h_vtxmap_fail->Fill(2);
           VertexMapFailcounter++;
         }
       }
@@ -469,7 +476,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         else
         {
           if (debug) std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
-          h_vtxmap_fail->Fill(1);
+          h_vtxmap_fail->Fill(2);
           VertexMapFailcounter++;
         }
       }
