@@ -1,10 +1,10 @@
 #include "CaloAna.h"
 
 // vertex includes
-#include <globalvertex/MbdVertex.h>
-#include <globalvertex/MbdVertexMap.h>
 #include <globalvertex/GlobalVertex.h>
 #include <globalvertex/GlobalVertexMap.h>
+#include <globalvertex/MbdVertex.h>
+#include <globalvertex/MbdVertexMap.h>
 
 // Fun4All includes
 #include <Event/Event.h>
@@ -81,13 +81,13 @@
 #include <vector>
 
 /// HEPMC truth includes
-//#pragma GCC diagnostic push
-//#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-//#include <HepMC/GenEvent.h>
-//#include <HepMC/GenVertex.h>
-//#pragma GCC diagnostic pop
-//#include <phhepmc/PHHepMCGenEvent.h>
-//#include <phhepmc/PHHepMCGenEventMap.h>
+// #pragma GCC diagnostic push
+// #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+// #include <HepMC/GenEvent.h>
+// #include <HepMC/GenVertex.h>
+// #pragma GCC diagnostic pop
+// #include <phhepmc/PHHepMCGenEvent.h>
+// #include <phhepmc/PHHepMCGenEventMap.h>
 
 R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
 
@@ -407,41 +407,70 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   float vtx_z = 0;
   float vtx_x = 0;
   float vtx_y = 0;
-  if (MBDvtx)MbdVertexMap *vertexmap = findNode::getClass<MbdVertexMap>(topNode, "MbdVertexMap");
-  else GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
+  MbdVertexMap* mbdvertexmap = findNode::getClass<MbdVertexMap>(topNode, "MbdVertexMap");
+  GlobalVertexMap* vertexmap = findNode::getClass<GlobalVertexMap>(topNode, "GlobalVertexMap");
   if (getVtx)
   {
-    if (!vertexmap)
+    if ((!MBDvtx && !vertexmap) || (MBDvtx && !mbdvertexmap))
     {
       // if (debug) std::cout << PHWHERE << " Fatal Error - GlobalVertexMap node is missing"<< std::endl;
-      if (debug) std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
+      if (!MBDvtx) std::cout << "CaloAna GlobalVertexMap node is missing" << std::endl;
+      if (MBDvtx) std::cout << "CaloAna MbdVertexMap node is missing" << std::endl;
       h_vtxmap_fail->Fill(1);
       VertexMapFailcounter++;
     }
-    if (vertexmap && !vertexmap->empty())
+    if (MBDvtx)
     {
-      if (MBDvtx) MbdVertex* vtx = vertexmap->begin()->second;
-      else GlobalVertex* vtx = vertexmap->begin()->second;
-      if (vtx)
+      if (mbdvertexmap && !mbdvertexmap->empty())
       {
-        vtx_z = vtx->get_z();
-        h_zvtx->Fill(vtx_z);
-        if (debug) std::cout << "vtx_z: " << vtx_z << std::endl;
+        MbdVertex* mbdvtx = vertexmap->begin()->second;
+        if (mbdvtx)
+        {
+          vtx_z = mbdvtx->get_z();
+          h_zvtx->Fill(vtx_z);
+          if (debug) std::cout << "vtx_z: " << vtx_z << std::endl;
+        }
+        else
+        {
+          if (debug) std::cout << "CaloAna MBDVertex node returns no vtx" << std::endl;
+          h_vtxmap_fail->Fill(1);
+          VertexMapFailcounter++;
+        }
       }
       else
       {
-        if (debug) std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
+        if (debug) std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;  // if (debug)
         h_vtxmap_fail->Fill(1);
         VertexMapFailcounter++;
       }
     }
     else
     {
-      if (debug) std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;  // if (debug)
-      h_vtxmap_fail->Fill(1);
-      VertexMapFailcounter++;
+      if (vertexmap && !vertexmap->empty())
+      {
+        GlobalVertex* vtx = vertexmap->begin()->second;
+        if (vtx)
+        {
+          vtx_z = vtx->get_z();
+          h_zvtx->Fill(vtx_z);
+          if (debug) std::cout << "vtx_z: " << vtx_z << std::endl;
+        }
+        else
+        {
+          if (debug) std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
+          h_vtxmap_fail->Fill(1);
+          VertexMapFailcounter++;
+        }
+      }
+      else
+      {
+        if (debug) std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;  // if (debug)
+        h_vtxmap_fail->Fill(1);
+        VertexMapFailcounter++;
+      }
     }
   }
+
   if (zvtxcut_bool && abs(vtx_z) > zvtx_cut_val)
   {
     h_cutCounter->Fill(12);
@@ -465,12 +494,12 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       vertex_y[n_vertex] = vtx->get_y();
       vertex_z[n_vertex] = vtx->get_z();
       vertex_id[n_vertex] = vtx->get_id();
-      //if (n_vertex < 10) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
+      // if (n_vertex < 10) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
       if (vertex_id[n_vertex] == 1)
       {
-        //if (false) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
-        // Pvtx_id = n_vertex;
-        //std::cout << "truth vertex: " << vertex_x[n_vertex] << " " << vertex_y[n_vertex] << " " << vertex_z[n_vertex] << ", ID:" << vertex_id[n_vertex] << std::endl;
+        // if (false) std::cout << "vx=" << vertex_x[n_vertex] << "  vy=" << vertex_y[n_vertex] << "   vz=" << vertex_z[n_vertex] << "  id=" << vertex_id[n_vertex] << std::endl;
+        //  Pvtx_id = n_vertex;
+        // std::cout << "truth vertex: " << vertex_x[n_vertex] << " " << vertex_y[n_vertex] << " " << vertex_z[n_vertex] << ", ID:" << vertex_id[n_vertex] << std::endl;
         h_vert_xy->Fill(vertex_x[n_vertex], vertex_y[n_vertex]);
         vtx_x = vertex_x[n_vertex];
         vtx_y = vertex_y[n_vertex];
@@ -778,8 +807,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
       h_delR_recTrth->Fill(delR);
       float res = pi0smearvec[0].E() / tr_phot.E();
       float delPhi = pi0smearvec[0].Phi() - tr_phot.Phi();
-      //if (delPhi > TMath::TwoPi()) delPhi -= TMath::TwoPi();
-      //if (delPhi < -TMath::TwoPi()) delPhi += TMath::TwoPi();
+      // if (delPhi > TMath::TwoPi()) delPhi -= TMath::TwoPi();
+      // if (delPhi < -TMath::TwoPi()) delPhi += TMath::TwoPi();
       if (delR < 0.02)
       {
         if (debug) std::cout << "match clusE=" << pi0smearvec[0].E() << "  truthE=" << tr_phot.E() << " delPhi=" << delPhi << std::endl;
@@ -1427,7 +1456,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         }
       }
     }  // clusterIter2
-
 
     h_clusmultimatch->Fill(multimatchint);
     multimatchint = 0;
