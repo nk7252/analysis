@@ -145,10 +145,15 @@ void Fun4All_G4_Waveform(
   se->registerSubsystem(rcemc);
 
   JetReco *towerjetrecounsub = new JetReco("TOWERJETRECO");
-  towerjetrecounsub->add_input(new TowerJetInput(Jet::CEMC_TOWERINFO_RETOWER, jetreco_input_prefix));//Jet::CEMC_TOWER
-  towerjetrecounsub->add_input(new TowerJetInput(Jet::HCALIN_TOWERINFO, jetreco_input_prefix));//Jet::HCALIN_TOWER
-  towerjetrecounsub->add_input(new TowerJetInput(Jet::HCALOUT_TOWERINFO, jetreco_input_prefix));//Jet::HCALOUT_TOWER
-  towerjetrecounsub->set_GlobalVertexType(HIJETS::vertex_type);
+  TowerJetInput *incemc = new TowerJetInput(Jet::CEMC_TOWERINFO_RETOWER, jetreco_input_prefix);
+  TowerJetInput *inihcal = new TowerJetInput(Jet::HCALIN_TOWERINFO, jetreco_input_prefix);
+  TowerJetInput *inohcal = new TowerJetInput(Jet::HCALOUT_TOWERINFO, jetreco_input_prefix);
+  incemc->set_GlobalVertexType(HIJETS::vertex_type);
+  inihcal->set_GlobalVertexType(HIJETS::vertex_type);
+  inohcal->set_GlobalVertexType(HIJETS::vertex_type);
+  towerjetrecounsub->add_input(incemc);//Jet::CEMC_TOWER
+  towerjetrecounsub->add_input(inihcal);//Jet::HCALIN_TOWER
+  towerjetrecounsub->add_input(inohcal);//Jet::HCALOUT_TOWER
   towerjetrecounsub->add_algo(new FastJetAlgo(Jet::ANTIKT, 0.4), "AntiKt_Tower_r04");
   towerjetrecounsub->set_algo_node("ANTIKT");
   towerjetrecounsub->set_input_node("TOWER");
