@@ -191,7 +191,7 @@ void Fun4All_G4_Waveform(
     ca->set_eta_cut(0.6);
     ca->set_zvtx_cut(30.);
     ca->set_pythiajets(true);// set to true if you want to cut on fully efficient range for jets
-    ca->set_EfficiencyRange(0, 14);// efficiency range for jets. effectively off for now using 0, 3000
+    ca->set_EfficiencyRange(0, 3000);// efficiency range for jets. effectively off for now using 0, 3000
     //14,30 for jet 10 // 30,3000 for jet 30 // 0,14 for MB
     ca->set_cluspt_cut(0.6, 1.0);
 
