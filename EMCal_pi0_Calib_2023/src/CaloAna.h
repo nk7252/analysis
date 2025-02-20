@@ -253,6 +253,7 @@ class CaloAna : public SubsysReco
 
   // SPMC
   bool SPMC_bool = true;
+  bool ptreweight = false;// if true will reweight the flat p spectrum so it can be weighted with pT
   float badcalibsmear;
   bool Pythia_weight = false;
   bool eta_weight = false;

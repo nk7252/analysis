@@ -129,7 +129,7 @@ int CaloAna::Init(PHCompositeNode*)
   // create and register your histos (all types) here
   //////////////////////////
   // pT rewieghting
-  if (SPMC_bool)
+  if (SPMC_bool&& ptreweight)
   {
     TH1F* h_original = nullptr;
 
@@ -1403,8 +1403,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           inv_yield = WeightScale * Pt * weight_function;  //
           // h_pion_pt_weight->Fill(pi0.Pt(), inv_yield);
 
-          /*
-          if (SPMC_bool && inv_yield != 0)
+          ///*
+          if (SPMC_bool && ptreweight && inv_yield != 0)
           {
             float spectrum_value = getSPMCpTspectrum(static_cast<float>(Pt));
             if (spectrum_value != 0)
@@ -1417,7 +1417,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
               inv_yield = 0;
             }
           }
-          */
+          //*/
 
           h_inv_yield->Fill(Pt, inv_yield);
           h_yield->Fill(Pt, weight_function);
