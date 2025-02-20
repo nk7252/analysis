@@ -240,7 +240,7 @@ class CaloAna : public SubsysReco
   bool MBDvtx = true;
 
   std::pair<float, float> efficiencyrange{0, 3000};  // eficiency range for jets
-  bool pythiajets = true;                            // if true will cut on fully efficient range for jets
+  bool pythiajets = false;                            // if true will cut on fully efficient range for jets
   bool clust_waveform = false;                       // if on will use  WAVEFORM_CEMC for towers, superseeds TOWERINFO_CALIB_CEMC
   bool recluster = false;                            // if on will use CLUSTERINFO_CEMC2 for clusterContainer
   bool poscor = false;                               // if on will use position correction for clusterContainer, superseeds CLUSTER_CEMC
@@ -252,7 +252,7 @@ class CaloAna : public SubsysReco
   // so if this is true, you will fill every time a cluster shows up past that cut, rather than just the first time
 
   // SPMC
-  bool SPMC_bool = false;
+  bool SPMC_bool = true;
   float badcalibsmear;
   bool Pythia_weight = false;
   bool eta_weight = false;
@@ -381,6 +381,8 @@ class CaloAna : public SubsysReco
   TH1F* h_temp_pion_eta;
   TH1F* h_temp_pion_phi;
   TH1F* h_temp_pion_mass;
+  TH2F* h_temp_pion_etaphi;
+  TH1F* h_temp_pion_energy;
   TH1F* h_temp_pion_multimatch;
   TH1F* h_primaryphotonpair_massdiff;
   TH1F* h_primaryphotonpair_massdiff2;

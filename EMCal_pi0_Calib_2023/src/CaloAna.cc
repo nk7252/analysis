@@ -252,6 +252,8 @@ int CaloAna::Init(PHCompositeNode*)
   h_temp_pion_eta = new TH1F("h_temp_pion_eta", "missing primary truth pion candidates, Eta", 96, -1.2, 1.2);
   h_temp_pion_phi = new TH1F("h_temp_pion_phi", "missing primary truth pion candidates, Phi", 256, -1 * TMath::Pi(), TMath::Pi());
   h_temp_pion_mass = new TH1F("h_temp_pion_mass", "missing primary truth pion candidates, Mass", 600, 0, 1.2);
+  h_temp_pion_etaphi = new TH2F("h_temp_pion_etaphi", "missing primary truth pion candidates, Eta vs Phi", 256, -1 * TMath::Pi(), TMath::Pi(), 96, -1.2, 1.2);
+  h_temp_pion_energy = new TH1F("h_temp_pion_energy", "missing primary truth pion candidates, Energy", 100, 0, 50);
   h_temp_pion_multimatch = new TH1F("h_temp_pion_multimatch", "missing primary truth pion candidates, multiple matches", 3, 0, 3);
   h_primaryphotonpair_massdiff = new TH1F("h_primaryphotonpair_massdiff", "mass difference between primary photon pairs", 100, -0.00003, 1);
   h_primaryphotonpair_massdiff2 = new TH1F("h_primaryphotonpair_massdiff2", "mass difference between primary photon pairs, zoomed in", 100, -0.00003, 0.00003);
@@ -744,6 +746,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                 h_temp_pion_pt->Fill(temp_pion.Pt());
                 h_temp_pion_eta->Fill(temp_pion.Eta());
                 h_temp_pion_phi->Fill(temp_pion.Phi());
+                h_temp_pion_etaphi->Fill(temp_pion.Eta(), temp_pion.Phi());
+                h_temp_pion_energy->Fill(temp_pion.E());
                 h_temp_pion_mass->Fill(temp_pion.M());
                 h_truth_spectrum5->Fill(temp_pion.Pt());
                 h_temp_pion_multimatch->Fill(2);
