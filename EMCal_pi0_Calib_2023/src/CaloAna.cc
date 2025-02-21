@@ -496,7 +496,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   if (zvtxcut_bool && abs(vtx_z) > zvtx_cut_val)
   {
     if (_eventcounter<20) std::cout << "CaloAna::process_event - Fatal Error - Vertex z is out of cut range" << std::endl;
-    h_cutCouinter->Fill(12);
+    h_cutCounter->Fill(12);
     return Fun4AllReturnCodes::EVENT_OK;
   }
 
