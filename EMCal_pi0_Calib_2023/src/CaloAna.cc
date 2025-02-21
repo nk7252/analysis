@@ -129,7 +129,7 @@ int CaloAna::Init(PHCompositeNode*)
   // create and register your histos (all types) here
   //////////////////////////
   // pT rewieghting
-  if (SPMC_bool&& ptreweight)
+  if (SPMC_bool && ptreweight)
   {
     TH1F* h_original = nullptr;
 
@@ -399,18 +399,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   // cuts
   if (debug) std::cout << " " << "Cuts " << std::endl;
-  float maxDr = 100;          // cone cut, 100 is effectively off
-  //float maxAlpha = 0.6;       // asymmetry cut
-  //float clus_chisq_cut = 10;  // normally 4
-  //float clusterprob = 0.1;    // replacing chisqr cut
-  float nClus_ptCut = 0.0;    // 0.5 normally
-  float pi0ptcutfactor = 0;   // seto to 0 to effectively disable it
-  float ptMaxCut = 100;       // no cut in data, as far as I know. so I set it to a value it is unlikely to reach
-  float pt1ClusCut = cluspTcut.first;//= 1.0;     // centrality dependence cuts 2.2 for both // 1.3
-  float pt2ClusCut = cluspTcut.second;//0.6;     // 0.7
-  float etcut = 1.0;          // cluster ET cut
-  //float etacutval = 0.6;      // cluster pseudo-rapidity cut
-  //float zvtx_cut_val = 30;    // z vertex cut value
+  float maxDr = 100;  // cone cut, 100 is effectively off
+  // float maxAlpha = 0.6;       // asymmetry cut
+  // float clus_chisq_cut = 10;  // normally 4
+  // float clusterprob = 0.1;    // replacing chisqr cut
+  float nClus_ptCut = 0.0;              // 0.5 normally
+  float pi0ptcutfactor = 0;             // seto to 0 to effectively disable it
+  float ptMaxCut = 100;                 // no cut in data, as far as I know. so I set it to a value it is unlikely to reach
+  float pt1ClusCut = cluspTcut.first;   //= 1.0;     // centrality dependence cuts 2.2 for both // 1.3
+  float pt2ClusCut = cluspTcut.second;  // 0.6;     // 0.7
+  float etcut = 1.0;                    // cluster ET cut
+  // float etacutval = 0.6;      // cluster pseudo-rapidity cut
+  // float zvtx_cut_val = 30;    // z vertex cut value
 
   /*
   if (nClusCount > 30)
@@ -454,14 +454,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         }
         else
         {
-          if (_eventcounter<20) std::cout << "(shown for event<20) CaloAna MBDVertex node returns no vtx" << std::endl;
+          if (_eventcounter < 20) std::cout << "(shown for event<20) CaloAna MBDVertex node returns no vtx" << std::endl;
           h_vtxmap_fail->Fill(2);
           VertexMapFailcounter++;
         }
       }
       else
       {
-        if (_eventcounter<20) std::cout << "(shown for event<20) CaloAna MBDVertexMap node is empty" << std::endl;  // if (debug)
+        if (_eventcounter < 20) std::cout << "(shown for event<20) CaloAna MBDVertexMap node is empty" << std::endl;  // if (debug)
         h_vtxmap_fail->Fill(1);
         VertexMapFailcounter++;
       }
@@ -475,18 +475,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           vtx_z = vtx->get_z();
           h_zvtx->Fill(vtx_z);
-          if (_eventcounter<20) std::cout << "vtx_z: " << vtx_z << std::endl;
+          if (_eventcounter < 20) std::cout << "vtx_z: " << vtx_z << std::endl;
         }
         else
         {
-          if (_eventcounter<20) std::cout << "(shown for event<20) CaloAna GlobalVertex node returns no vtx" << std::endl;
+          if (_eventcounter < 20) std::cout << "(shown for event<20) CaloAna GlobalVertex node returns no vtx" << std::endl;
           h_vtxmap_fail->Fill(2);
           VertexMapFailcounter++;
         }
       }
       else
       {
-        if (_eventcounter<100) std::cout << "(shown for event<20) CaloAna GlobalVertexMap node is empty" << std::endl;  // if (debug)
+        if (_eventcounter < 100) std::cout << "(shown for event<20) CaloAna GlobalVertexMap node is empty" << std::endl;  // if (debug)
         h_vtxmap_fail->Fill(1);
         VertexMapFailcounter++;
       }
@@ -495,7 +495,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   if (zvtxcut_bool && abs(vtx_z) > zvtx_cut_val)
   {
-    if (_eventcounter<20) std::cout << "(shown for event<20) CaloAna::process_event -  Vertex z is out of cut range" << std::endl;
+    if (_eventcounter < 20) std::cout << "(shown for event<20) CaloAna::process_event -  Vertex z is out of cut range" << std::endl;
     h_cutCounter->Fill(12);
     return Fun4AllReturnCodes::EVENT_OK;
   }
@@ -566,8 +566,6 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     throw std::runtime_error("failed to find TOWERGEOM node in RawClusterDeadHotMask::CreateNodeTree");
   }
 
-
-  
   /// Get reco jets
   /*
   JetContainer* reco_jets = findNode::getClass<JetContainer>(topNode, "AntiKt_Tower_r04");  //"AntiKt_Tower_r04_Sub1"recoJetName
@@ -581,17 +579,15 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
   //*/
 
   /// Get truth jets
-  JetContainer *truth_jets = findNode::getClass<JetContainer>(topNode, "AntiKt_Truth_r04"); // truthJetName
+  JetContainer* truth_jets = findNode::getClass<JetContainer>(topNode, "AntiKt_Truth_r04");  // truthJetName
   if (!truth_jets)
   {
     std::cout
         << "MyJetAnalysis::process_event - Error: can not find Truth JetContainer node: "
         << "AntiKt_Truth_r04" << std::endl;
-    //exit(-1);
+    // exit(-1);
     return Fun4AllReturnCodes::EVENT_OK;
   }
-
-
 
   bool range_efficient = false;
   // loop over jets and check if pT range is efficient
@@ -606,7 +602,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     }
     if (!range_efficient)
     {
-      if(debug) std::cout << "CaloAna::process_event - Error: pT range not efficient for Jet Sample" << std::endl;
+      if (debug) std::cout << "CaloAna::process_event - Error: pT range not efficient for Jet Sample" << std::endl;
       return Fun4AllReturnCodes::EVENT_OK;
     }
   }
@@ -653,8 +649,10 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
     {
       if (matchmctruth)
       {  // primaries
-        std::unordered_set<const PHG4Particle*> truth_Prim_photons;
-        std::unordered_set<const PHG4Particle*> used_photons;
+        //std::unordered_set<const PHG4Particle*> truth_Prim_photons;
+        std::vector<const PHG4Particle*> truth_Prim_photons_vec;
+        //std::unordered_set<const PHG4Particle*> used_photons;
+        std::vector<const PHG4Particle*> used_photons_vec;
         std::vector<std::pair<const PHG4Particle*, const PHG4Particle*>> primary_reco_pions;
 
         PHG4TruthInfoContainer::Range range = truthinfo->GetPrimaryParticleRange();
@@ -707,7 +705,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           // photon loop
           if (truth->get_pid() == 22)
           {
-            truth_Prim_photons.insert(truth);
+            truth_Prim_photons_vec.push_back(truth);
+            // truth_Prim_photons.insert(truth);
             float photon_e = truth->get_e();
             h_truth_ALLphotonE->Fill(photon_e);
             // what should the photon weight be?
@@ -717,35 +716,39 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
         if (missingprimarypions)
         {
-          if (_eventcounter<20) std::cout << "CaloAna::process_event -  Missing primary pions, begin" << std::endl;
+          if (_eventcounter < 20) std::cout << "CaloAna::process_event -  Missing primary pions, begin" << std::endl;
+
           // Iterate over unique pairs of photons
-          for (auto it1 = truth_Prim_photons.begin(); it1 != truth_Prim_photons.end(); ++it1)
+          for (auto it1 = truth_Prim_photons_vec.begin(); it1 != truth_Prim_photons_vec.end(); ++it1)
           {
-            if(_eventcounter<20) std::cout << "CaloAna::process_event -  Missing primary pions- photon loop 1" << std::endl;
-            for (auto it2 = std::next(it1); it2 != truth_Prim_photons.end(); ++it2)
+            if (_eventcounter < 20) std::cout << "CaloAna::process_event -  Missing primary pions- photon loop 1" << std::endl;
+
+            for (auto it2 = std::next(it1); it2 != truth_Prim_photons_vec.end(); ++it2)
             {
-              if (_eventcounter<20) std::cout << "CaloAna::process_event -  Missing primary pions- photon loop 2" << std::endl;
+              if (_eventcounter < 20) std::cout << "CaloAna::process_event -  Missing primary pions- photon loop 2" << std::endl;
+
               const PHG4Particle* p1 = *it1;
               const PHG4Particle* p2 = *it2;
-              TLorentzVector temp_pion = TLorentzVector();
+              TLorentzVector temp_pion;
               temp_pion.SetPxPyPzE(p1->get_px() + p2->get_px(), p1->get_py() + p2->get_py(), p1->get_pz() + p2->get_pz(), p1->get_e() + p2->get_e());
-              // bool multicount = false;
-              //  Skip pairs with particles that have already been used
-              if (used_photons.count(p1) > 0 || used_photons.count(p2) > 0)
+
+              // Check if photons were already used
+              if (std::find(used_photons_vec.begin(), used_photons_vec.end(), p1) != used_photons_vec.end() ||
+                  std::find(used_photons_vec.begin(), used_photons_vec.end(), p2) != used_photons_vec.end())
               {
-                // multicount = true;
                 h_temp_pion_multimatch->Fill(1);
                 continue;
               }
+
               float massdiff = fabs(temp_pion.M() - 0.135);
               h_primaryphotonpair_massdiff->Fill(massdiff);
               if (massdiff < 1) h_primaryphotonpair_massdiff2->Fill(massdiff);
-              // Check if the pair's mass is near the target mass, accounting for floating point error
-              if (massdiff < 0.00003)  //( temp_pion.M() == 0.135)//0.13497
+
+              if (massdiff < 0.00003)
               {
-                primary_reco_pions.emplace_back(p1, p2);  // Store the pair
-                used_photons.insert(p1);                  // Mark photons as used
-                used_photons.insert(p2);
+                primary_reco_pions.emplace_back(p1, p2);
+                used_photons_vec.push_back(p1);
+                used_photons_vec.push_back(p2);
 
                 h_temp_pion_pt->Fill(temp_pion.Pt());
                 h_temp_pion_eta->Fill(temp_pion.Eta());
@@ -755,10 +758,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
                 h_temp_pion_mass->Fill(temp_pion.M());
                 h_truth_spectrum5->Fill(temp_pion.Pt());
                 h_temp_pion_multimatch->Fill(2);
-                // break;
               }
               else
+              {
                 h_temp_pion_multimatch->Fill(0);
+              }
             }
           }
         }
