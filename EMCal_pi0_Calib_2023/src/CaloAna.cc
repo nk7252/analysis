@@ -705,6 +705,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
           // photon loop
           if (truth->get_pid() == 22)
           {
+            if (_eventcounter < 20) std::cout << "CaloAna::process_event -  Primary photon found" << std::endl;
             truth_Prim_photons_vec.push_back(truth);
             // truth_Prim_photons.insert(truth);
             float photon_e = truth->get_e();
@@ -715,7 +716,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         }
         if (truth_Prim_photons_vec.size() == 0)
         {
-          if (_eventcounter < 20) std::cout << "CaloAna::process_event - no primary photons found" << std::endl;
+          if (_eventcounter < 20) std::cout << "CaloAna::process_event - no primary photons in vector" << std::endl;
           h_cutCounter->Fill(11);
         }
         if (missingprimarypions)
