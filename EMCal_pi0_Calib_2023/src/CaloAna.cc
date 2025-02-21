@@ -713,7 +713,11 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
             // h_truth_ALLphotonE_weighted->Fill(photon_e, inv_yield);
           }
         }
-
+        if (truth_Prim_photons_vec.size() == 0)
+        {
+          if (_eventcounter < 20) std::cout << "CaloAna::process_event - no primary photons found" << std::endl;
+          h_cutCounter->Fill(11);
+        }
         if (missingprimarypions)
         {
           if (_eventcounter < 20) std::cout << "CaloAna::process_event -  Missing primary pions, begin" << std::endl;
