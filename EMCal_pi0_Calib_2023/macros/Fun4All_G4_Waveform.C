@@ -125,7 +125,8 @@ void Fun4All_G4_Waveform(
   se->registerSubsystem(ClusterBuilder);
   //*/
   //global vertex reco
-  Enable::MBDRECO = true;
+  Enable::MBDFAKE = true;// for single particle
+  //Enable::MBDRECO = true; //for full pythia 
   Mbd_Reco();
   Global_Reco();
   //--------------Calibrating EMCal
