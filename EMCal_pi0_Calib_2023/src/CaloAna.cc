@@ -454,14 +454,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         }
         else
         {
-          if (debug) std::cout << "CaloAna MBDVertex node returns no vtx" << std::endl;
+          if (_eventcounter<20) std::cout << "CaloAna MBDVertex node returns no vtx" << std::endl;
           h_vtxmap_fail->Fill(2);
           VertexMapFailcounter++;
         }
       }
       else
       {
-        if (debug) std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;  // if (debug)
+        if (_eventcounter<20) std::cout << "CaloAna MBDVertexMap node is empty" << std::endl;  // if (debug)
         h_vtxmap_fail->Fill(1);
         VertexMapFailcounter++;
       }
@@ -475,18 +475,18 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         {
           vtx_z = vtx->get_z();
           h_zvtx->Fill(vtx_z);
-          if (debug) std::cout << "vtx_z: " << vtx_z << std::endl;
+          if (_eventcounter<20) std::cout << "vtx_z: " << vtx_z << std::endl;
         }
         else
         {
-          if (debug) std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
+          if (_eventcounter<20) std::cout << "CaloAna GlobalVertex node returns no vtx" << std::endl;
           h_vtxmap_fail->Fill(2);
           VertexMapFailcounter++;
         }
       }
       else
       {
-        if (debug) std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;  // if (debug)
+        if (_eventcounter<100) std::cout << "CaloAna GlobalVertexMap node is empty" << std::endl;  // if (debug)
         h_vtxmap_fail->Fill(1);
         VertexMapFailcounter++;
       }
@@ -495,7 +495,8 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
   if (zvtxcut_bool && abs(vtx_z) > zvtx_cut_val)
   {
-    h_cutCounter->Fill(12);
+    if (_eventcounter<20) std::cout << "CaloAna::process_event - Fatal Error - Vertex z is out of cut range" << std::endl;
+    h_cutCouinter->Fill(12);
     return Fun4AllReturnCodes::EVENT_OK;
   }
 
