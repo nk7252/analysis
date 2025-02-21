@@ -7,7 +7,7 @@
 
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0  <n_events> <cluster_list> <truth_list> <mbd_list> <global_list> <truth_jet_list>"
-    echo "Default Usage is: $0  100 dst_calo_cluster.list dst_truth.list dst_mbd_epd.list dst_global.list dst_truth_jet.list"
+    echo "Default Usage is: $0  100 /sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list /sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list"
     exit 1
 fi
 
