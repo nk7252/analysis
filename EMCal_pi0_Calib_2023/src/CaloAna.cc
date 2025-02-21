@@ -717,11 +717,14 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
 
         if (missingprimarypions)
         {
+          if (_eventcounter<20) std::cout << "CaloAna::process_event -  Missing primary pions, begin" << std::endl;
           // Iterate over unique pairs of photons
           for (auto it1 = truth_Prim_photons.begin(); it1 != truth_Prim_photons.end(); ++it1)
           {
+            if(_eventcounter<20) std::cout << "CaloAna::process_event -  Missing primary pions- photon loop 1" << std::endl;
             for (auto it2 = std::next(it1); it2 != truth_Prim_photons.end(); ++it2)
             {
+              if (_eventcounter<20) std::cout << "CaloAna::process_event -  Missing primary pions- photon loop 2" << std::endl;
               const PHG4Particle* p1 = *it1;
               const PHG4Particle* p2 = *it2;
               TLorentzVector temp_pion = TLorentzVector();
