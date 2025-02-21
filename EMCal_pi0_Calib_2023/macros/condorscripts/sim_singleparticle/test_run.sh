@@ -16,8 +16,8 @@ cluster_list="$2"
 truth_list="$3"
 
 #create absolute path for input files
-input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condorscripts/sim_singleparticle/${cluster_list}"
-input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/condorscripts/sim_singleparticle/${truth_list}"
+input_file1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0${cluster_list}"
+input_file2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0${truth_list}"
 
 #important setup for path if you are running on condor
 export USER="nkumar -u -n"

@@ -11,15 +11,8 @@ else
   mkdir ${TargetDir}
 fi
 
-  #export listfile="dst_calo_waveform.list"
-  export listfile="dst_calo_cluster.list"
-  export listfile2="dst_truth.list"
-  #export listfile2="dst_truth.list"
-  export listfile3="dst_mbd_epd.list"
-  #export listfile3="dst_truth_g4hit.list"
-  #export listfile3="g4hits.list"
-  export listfile4="dst_global.list"
-  export listfile5="dst_truth_jet.list"
+  export listfile="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list"
+  export listfile2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list"
 
   #only delete and regenerate if switching file source or number of events
   #rm $listfile
@@ -41,7 +34,7 @@ fi
   #run 111 also works see https://wiki.sphenix.bnl.gov/index.php?title=MDC2_2022
 # to test use a small set. like  -n 1000
   # Check if the list files were created successfully
-  if [[ ! -f $listfile || ! -f $listfile2 || ! -f $listfile3 || ! -f $listfile4 || ! -f $listfile5 ]]; then
+  if [[ ! -f $listfile || ! -f $listfile2 ]]; then
       echo "Error: One or more list files were not created successfully."
       exit 1
   fi
@@ -96,17 +89,10 @@ fi
 
     sed -n $start_file\,${end_file}p ${listfile} > tmp.txt
     sed -n $start_file\,${end_file}p ${listfile2} > tmp2.txt
-    sed -n $start_file\,${end_file}p ${listfile3} > tmp3.txt
-    sed -n $start_file\,${end_file}p ${listfile4} > tmp4.txt
-    sed -n $start_file\,${end_file}p ${listfile5} > tmp5.txt
     mv tmp.txt ${WorkDir}/inputdata.txt
     mv tmp2.txt ${WorkDir}/inputdatatruth.txt
-    mv tmp3.txt ${WorkDir}/inputdatambd.txt
-    mv tmp4.txt ${WorkDir}/inputdataglobal.txt
-    mv tmp5.txt ${WorkDir}/inputdatatjet.txt
     
     pushd ${WorkDir}
-
     
     cp -v "$PWD"/../../CondorRun.sh CondorRunJob$li.sh
     cp "$PWD"/../../../../Fun4All_G4_Waveform.C .

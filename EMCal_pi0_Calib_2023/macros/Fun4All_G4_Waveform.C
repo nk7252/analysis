@@ -55,11 +55,8 @@ R__LOAD_LIBRARY(libcaloana.so)
 
 void Fun4All_G4_Waveform(
     const int nevents = 1,
-    const string &inputFile0 = "dst_calo_cluster.list",
-    const string &inputFile1 = "dst_truth.list",
-    const string &inputFile2 = "dst_mbd_epd.list",
-    const string &inputFile3 = "dst_global.list",
-    const string &inputFile4 = "dst_truth_jet.list",
+    const string &inputFile0 = "/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list",
+    const string &inputFile1 = "/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list",
     const string &outdir = ".",
     int iter = 2,
     const string &cdbtag = "MDC2_ana.418")
@@ -89,25 +86,16 @@ void Fun4All_G4_Waveform(
   cout << "Setting up input manager" << endl;
   Fun4AllInputManager *in = new Fun4AllDstInputManager("DST_CALO_CLUSTER");
   Fun4AllInputManager *intruth = new Fun4AllDstInputManager("DST_TRUTH");
-  Fun4AllInputManager *inmbd = new Fun4AllDstInputManager("DST_MBD_EPD");
-  Fun4AllInputManager *inglobal = new Fun4AllDstInputManager("DST_GLOBAL");
-  Fun4AllInputManager *intruthjet = new Fun4AllDstInputManager("DST_TRUTH_JET");
 
 
   cout << "add listfiles to input manager" << endl;
   in->AddListFile(inputFile0,1);
   intruth->AddListFile(inputFile1,1);
-  inmbd->AddListFile(inputFile2,1);
-  inglobal->AddListFile(inputFile3,1);
-  intruthjet->AddListFile(inputFile4,1);
   cout << "files added" << endl;
 
   cout << "register input manager" << endl;
   se->registerInputManager(in);
   se->registerInputManager(intruth);
-  se->registerInputManager(inmbd);
-  se->registerInputManager(inglobal);
-  se->registerInputManager(intruthjet);
   cout << "input manager registered" << endl;
 
   std::string filename = first_file.substr(first_file.find_last_of("/\\") + 1);
@@ -127,15 +115,25 @@ void Fun4All_G4_Waveform(
   se->registerSubsystem(ClusterBuilder);
   //*/
   //global vertex reco
-  //Enable::MBDRECO = true;
-  //Mbd_Reco();
-  //Global_Reco();
+  Enable::MBDRECO = true;
+  Mbd_Reco();
+  Global_Reco();
   //--------------Calibrating EMCal
   Process_Calo_Calib();
   ///////////////////
-  std::cout << "Running HIJetReco" << std::endl;
+  //std::cout << "Running HIJetReco" << std::endl;
   GlobalVertex::VTXTYPE vertex_type = GlobalVertex::MBD;
 
+  JetReco *truthjetreco = new JetReco();
+  TruthJetInput *tji = new TruthJetInput(Jet::PARTICLE);
+  tji->add_embedding_flag(1);  // (1) for pythia simulations, (2) for pythia embedding into hijing
+  truthjetreco->add_input(tji);
+  truthjetreco->add_algo(new FastJetAlgo(Jet::ANTIKT, 0.4), "AntiKt_Truth_r04");
+  truthjetreco->set_algo_node("ANTIKT");
+  truthjetreco->set_input_node("TRUTH");
+  truthjetreco->Verbosity(0);
+  se->registerSubsystem(truthjetreco);
+  
   /*  
   //Jet_Reco();
   //HIJetReco();

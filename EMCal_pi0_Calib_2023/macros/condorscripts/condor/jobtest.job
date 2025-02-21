@@ -20,7 +20,6 @@ Log                             = $(Initialdir)/condorscripts/condor/test_run_Lo
 PeriodicHold                    = (NumJobStarts>=1 && JobStatus == 1)
 concurrency_limits              = CONCURRENCY_LIMIT_DEFAULT:100
 
-Arguments      = 1000 dst_calo_cluster.list dst_truth.list dst_mbd_epd.list dst_global.list dst_truth_jet.list
-#inputdata_sp.txt g4hits.list
+Arguments      = 1000 dst_calo_cluster.list g4hits.list
 
 Queue
