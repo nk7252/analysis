@@ -12,6 +12,9 @@
 #include <G4_Production.C>
 #include <G4_Mbd.C>
 #include <G4_Global.C>
+#include <g4mbd/MbdDigitization.h>
+#include <g4mbd/MbdVertexFastSimReco.h>
+#include <mbd/MbdReco.h>
 
 #include <caloreco/CaloGeomMapping.h>
 #include <caloreco/CaloTowerBuilder.h>
@@ -49,6 +52,13 @@ R__LOAD_LIBRARY(libCaloWaveformSim.so)
 R__LOAD_LIBRARY(libcalo_reco.so)
 R__LOAD_LIBRARY(libffamodules.so)
 R__LOAD_LIBRARY(libfun4allutils.so)
+R__LOAD_LIBRARY(libffarawobjects.so)
+R__LOAD_LIBRARY(libglobalvertex.so)
+R__LOAD_LIBRARY(libg4eval.so)
+R__LOAD_LIBRARY(libjetbase.so)
+R__LOAD_LIBRARY(libg4jets.so)
+R__LOAD_LIBRARY(libmbd.so)
+R__LOAD_LIBRARY(libg4mbd.so)
 
 #include <caloana/CaloAna.h>
 R__LOAD_LIBRARY(libcaloana.so)
@@ -133,7 +143,7 @@ void Fun4All_G4_Waveform(
   truthjetreco->set_input_node("TRUTH");
   truthjetreco->Verbosity(0);
   se->registerSubsystem(truthjetreco);
-  
+
   /*  
   //Jet_Reco();
   //HIJetReco();
