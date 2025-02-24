@@ -16,8 +16,10 @@ if [ -d ${TargetDir} ]; then
 else
   mkdir ${TargetDir}
 fi
-  export listfile1="dst_calo_cluster.list"
-  export listfile2="g4hits.list"
+
+    #single pion
+  export listfile1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list"
+  export listfile2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list"
 
   #single particle pion
   #G4Hits || ! -f $listfile3 
@@ -91,7 +93,7 @@ fi
 +JobFlavour                   = "workday"
 transfer_input_files          = ${WorkDir}/CondorRunJob$li.sh, ${WorkDir}/inputdata.txt, ${WorkDir}/inputdatahits.txt, ${WorkDir}/Fun4All_G4_Waveform.C
 Executable                    = CondorRunJob$li.sh
-request_memory                = 10GB
+request_memory                = 8GB
 Universe                      = vanilla
 Notification                  = Never
 GetEnv                        = True
