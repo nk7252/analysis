@@ -51,7 +51,7 @@ fi
   #number of jobs 
   #j=5000
   # Count the number of lines in dst_calo_cluster.list
-  num_lines=$(wc -l < $listfile1)
+  num_lines=$(wc -l < $listfile)
 
   # Set j to a fraction of the number of lines (round down)
   if [ $num_lines -lt 20 ]; then
