@@ -12,7 +12,7 @@ else
 fi
 
   #pythia MB
-  export listfile1="/sphenix/user/nkumar/NK_Work_2024/filelists/pythia/MB/0xingpprun21/tmp/tmp/dst_calo_cluster.list"
+  export listfile="/sphenix/user/nkumar/NK_Work_2024/filelists/pythia/MB/0xingpprun21/tmp/tmp/dst_calo_cluster.list"
   export listfile2="/sphenix/user/nkumar/NK_Work_2024/filelists/pythia/MB/0xingpprun21/tmp/tmp/g4hits.list"
   #single pion
   #export listfile="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list"
