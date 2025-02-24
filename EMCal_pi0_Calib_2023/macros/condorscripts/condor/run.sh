@@ -110,7 +110,7 @@ fi
 +JobFlavour                   = "workday"
 transfer_input_files          = ${WorkDir}/CondorRunJob$li.sh , ${WorkDir}/Fun4All_G4_Waveform.C , ${WorkDir}/inputdata.txt , ${WorkDir}/inputdatatruth.txt , ${WorkDir}/inputdataglobal.txt , ${WorkDir}/inputdatambd.txt , ${WorkDir}/inputdatatjet.txt
 Executable                    = CondorRunJob$li.sh
-request_memory                = 10GB
+request_memory                = 8GB
 Universe                      = vanilla
 Notification                  = Never
 GetEnv                        = True
