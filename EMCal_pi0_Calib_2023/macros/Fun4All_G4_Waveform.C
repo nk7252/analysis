@@ -65,8 +65,8 @@ R__LOAD_LIBRARY(libcaloana.so)
 
 void Fun4All_G4_Waveform(
     const int nevents = 1,
-    const string &inputFile0 = "/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list",
-    const string &inputFile1 = "/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list",
+    const string &inputFile0 = "/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list",// "/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list"
+    const string &inputFile1 = "/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list",// "/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list"
     const string &outdir = ".",
     int iter = 2,
     const string &cdbtag = "MDC2_ana.418")
@@ -208,7 +208,6 @@ void Fun4All_G4_Waveform(
     std::cout << "Subsystems registered" << std::endl;
     //
   }
-
 
   se->run(nevents);
   se->End();

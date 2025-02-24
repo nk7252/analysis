@@ -11,8 +11,12 @@ else
   mkdir ${TargetDir}
 fi
 
-  export listfile="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list"
-  export listfile2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list"
+  #pythia MB
+  export listfile1="/sphenix/user/nkumar/NK_Work_2024/filelists/pythia/MB/0xingpprun21/tmp/tmp/dst_calo_cluster.list"
+  export listfile2="/sphenix/user/nkumar/NK_Work_2024/filelists/pythia/MB/0xingpprun21/tmp/tmp/g4hits.list"
+  #single pion
+  #export listfile="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list"
+  #export listfile2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list"
 
   #only delete and regenerate if switching file source or number of events
   #rm $listfile
@@ -45,19 +49,21 @@ fi
   #DST_GLOBAL-nopileup-n 10000000 DST_CALO_CLUSTER
   #DST_CALO_WAVEFORM
   #number of jobs 
-  j=5000
-
-
+  #j=5000
   # Count the number of lines in dst_calo_cluster.list
-  #num_lines=$(wc -l < dst_calo_cluster.list)
+  num_lines=$(wc -l < $listfile1)
 
-  # Set j to half the number of lines (round down)
-  #j=$((num_lines / 2))
+  # Set j to a fraction of the number of lines (round down)
+  if [ $num_lines -lt 20 ]; then
+    j=1
+  else
+    j=$((num_lines / 20))
+  fi
 
   # Cap j at 1000 if it exceeds this value
-  #if [ $j -gt 1000 ]; then
-  #  j=1000
-  #fi
+  if [ $j -gt 5000 ]; then
+    j=5000
+  fi
 
   tot_files=$( cat ${listfile} | wc -l )
   echo "total files: $tot_files"

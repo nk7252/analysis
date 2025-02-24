@@ -252,7 +252,7 @@ class CaloAna : public SubsysReco
   // so if this is true, you will fill every time a cluster shows up past that cut, rather than just the first time
 
   // SPMC
-  bool SPMC_bool = true;
+  bool SPMC_bool = false;
   bool ptreweight = false;// if true will reweight the flat p spectrum so it can be weighted with pT
   float badcalibsmear;
   bool Pythia_weight = false;
