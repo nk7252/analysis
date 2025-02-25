@@ -94,7 +94,11 @@ class CaloAna : public SubsysReco
   void set_cluspt_cut(float pt1, float pt2) {cluspTcut = std::make_pair(pt1, pt2);}
 
   void set_pythiajets(bool pythiajets_in) {pythiajets = pythiajets_in;}
-  void set_EfficiencyRange(float ptlow, float pthigh) {efficiencyrange = std::make_pair(ptlow, pthigh);}
+  void set_EfficiencyRange(float ptlow, float pthigh) 
+  {
+    if (pthigh == 0) pythiajets = false;
+    efficiencyrange = std::make_pair(ptlow, pthigh);
+  }
 
  protected:
   std::string detector;

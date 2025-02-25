@@ -192,7 +192,7 @@ void Fun4All_G4_Waveform(
     //ca->set_timing_cut_width(16);
     ca->Set_Debug(0);//set to 1 for debug output
 
-    ca->set_SPMC_bools(false, false, false);//SPMC, Pythia_weight, eta_weight
+    ca->set_SPMC_bools(true, false, false);//SPMC, Pythia_weight, eta_weight
     ca->set_general_bools(false, false, false, false);// debug, Cluster_Debug, Cluster_Debug2, etabyeta
     ca->set_cut_bools(false, true, false, true);// eTCutbool, etaCutbool, clusterprobcut, zvtxcut_bool
     //ca->set_clusprob_cut(0.1);if false above no need to set this
