@@ -195,7 +195,22 @@ int CaloAna::Init(PHCompositeNode*)
   }
   //}
 
-  h_cutCounter = new TH1F("h_cutCounter", "Cut Counter", 13, 0.5, 13.5);
+  h_cutCounter = new TH1F("h_cutCounter", "Cut Counter", 15, 0.5, 15.5);
+  h_cutCounter->GetXaxis()->SetBinLabel(1, "clus1#chi^{2}");
+  h_cutCounter->GetXaxis()->SetBinLabel(2, "clus1pt");
+  h_cutCounter->GetXaxis()->SetBinLabel(3, "towereta");
+  h_cutCounter->GetXaxis()->SetBinLabel(4, "hotclus1");
+  h_cutCounter->GetXaxis()->SetBinLabel(5, "clus1=clus2");
+  h_cutCounter->GetXaxis()->SetBinLabel(6, "clus2#chi^{2}");
+  h_cutCounter->GetXaxis()->SetBinLabel(7, "clus2pt");
+  h_cutCounter->GetXaxis()->SetBinLabel(8, "assym");
+  h_cutCounter->GetXaxis()->SetBinLabel(9, "dR");
+  h_cutCounter->GetXaxis()->SetBinLabel(10, "pi0pt");
+  h_cutCounter->GetXaxis()->SetBinLabel(11, "hotclus2");
+  h_cutCounter->GetXaxis()->SetBinLabel(12, "zvtx");
+  h_cutCounter->GetXaxis()->SetBinLabel(13, "pi0eta");
+  h_cutCounter->GetXaxis()->SetBinLabel(14, "no_tprim_ph");
+
   // list of cuts
   //  clus1 chi2, clus1 cuts, tower eta>95,hotclus1,clus1=clus2,clus2 chi2, clus2 cuts, assym, Dr, pi0pt cut, hotclus2
 
@@ -717,7 +732,7 @@ int CaloAna::process_towers(PHCompositeNode* topNode)
         if (truth_Prim_photons_vec.size() == 0)
         {
           if (_eventcounter < 20) std::cout << "CaloAna::process_event - no primary photons in vector" << std::endl;
-          h_cutCounter->Fill(11);
+          h_cutCounter->Fill(14);
         }
         if (missingprimarypions)
         {
