@@ -18,8 +18,8 @@ else
 fi
 
     #single pion
-  export listfile1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/dst_calo_cluster.list"
-  export listfile2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/pi0/g4hits.list"
+  export listfile1="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/eta/dst_calo_cluster.list"
+  export listfile2="/sphenix/user/nkumar/analysis/EMCal_pi0_Calib_2023/macros/listfiles/single/run24/eta/g4hits.list"
 
   #single particle pion
   #G4Hits || ! -f $listfile3 

@@ -192,14 +192,14 @@ void Fun4All_G4_Waveform(
     //ca->set_timing_cut_width(16);
     ca->Set_Debug(0);//set to 1 for debug output
 
-    ca->set_SPMC_bools(true, false, false);//SPMC, Pythia_weight, eta_weight
+    ca->set_SPMC_bools(true, false, true);//SPMC, Pythia_weight, eta_weight
     ca->set_general_bools(false, false, false, false);// debug, Cluster_Debug, Cluster_Debug2, etabyeta
     ca->set_cut_bools(false, true, false, true);// eTCutbool, etaCutbool, clusterprobcut, zvtxcut_bool
     //ca->set_clusprob_cut(0.1);if false above no need to set this
     ca->set_cluschi2_cut(10);
     ca->set_eta_cut(0.6);
     ca->set_zvtx_cut(30.);
-    ca->set_pythiajets(true);// set to true if you want to cut on fully efficient range for jets
+    ca->set_pythiajets(false);// set to true if you want to cut on fully efficient range for jets
     ca->set_EfficiencyRange(0, 3000);// efficiency range for jets. effectively off for now using 0, 3000
     //14,30 for jet 10 // 30,3000 for jet 30 // 0,14 for MB
     ca->set_cluspt_cut(0.6, 1.0);
